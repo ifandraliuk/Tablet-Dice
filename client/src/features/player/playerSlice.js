@@ -81,10 +81,26 @@ export const addClass = createAsyncThunk('player/classes/create', async(classDat
 
 
 // Posting a class to user
-export const postTalent = createAsyncThunk('player/talents/createAll', async(talentData, thunkAPI)=>{
+/* export const postTalent = createAsyncThunk('player/talents/createAll', async(talentData, thunkAPI)=>{
     try {
         const token = thunkAPI.getState().auth.user.token
         return await playerService.postTalent(talentData, token)        
+    } catch (error) {
+        const msg = 
+        (error.response && 
+            error.response.data && 
+            error.response.data.message) || 
+            error.message || 
+            error.toString()
+        return thunkAPI.rejectWithValue(msg)        
+    }
+}) */
+
+// Posting a class to user
+export const putTalent = createAsyncThunk('player/talents/putAll', async(talentData, thunkAPI)=>{
+    try {
+        const token = thunkAPI.getState().auth.user.token
+        return await playerService.putTalent(talentData, token)        
     } catch (error) {
         const msg = 
         (error.response && 
@@ -156,7 +172,7 @@ export const playerSlice = createSlice({
             state.isError = true
             state.message = action.payload
         })
-        .addCase(postTalent.pending, (state)=>{
+/*         .addCase(postTalent.pending, (state)=>{
             state.isLoading = true
         })
         .addCase(postTalent.fulfilled, (state, action)=> {
@@ -165,6 +181,19 @@ export const playerSlice = createSlice({
            // state.general = action.payload
         })
         .addCase(postTalent.rejected, (state, action)=> {
+            state.isLoading = false
+            state.isError = true
+            state.message = action.payload
+        }) */
+        .addCase(putTalent.pending, (state)=>{
+            state.isLoading = true
+        })
+        .addCase(putTalent.fulfilled, (state, action)=> {
+            state.isLoading = false
+            state.isSuccess = true
+           // state.general = action.payload
+        })
+        .addCase(putTalent.rejected, (state, action)=> {
             state.isLoading = false
             state.isError = true
             state.message = action.payload

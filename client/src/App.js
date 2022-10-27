@@ -10,7 +10,6 @@ import Talents from './pages/Talents';
 import Enemies from './pages/Enemies';
 import RegisterPage from './pages/RegisterPage';
 
-
 function App() {
 
   return (

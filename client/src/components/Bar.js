@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react'
-import { ButtonGroup, Container } from 'react-bootstrap'
 import ProgressBar from 'react-bootstrap/ProgressBar';
 
 
@@ -12,7 +11,7 @@ function Bar({name, max, curr}) {
     const label = name === "vitality" ? "Trefferpunkte" 
     : name === "stamina" ? "Ausdauer"
     : name === "spirit" ? "Spirituele Kraft"
-    : "primary"
+    : "Mana"
     useEffect(()=> {
           let val = curr/max*100
           if(val <= 100 && val>=0){

@@ -12,7 +12,7 @@ import { getPlayer } from '../features/player/playerSlice';
 import {logout, reset} from '../features/auth/AuthSlice'
 import ClassList from '../components/ClassList';
 import ChooseClass from '../components/ChooseClass';
-
+import TalentsList from '../components/TalentsList';
 
 function ShowPlayer() {
   const {user, isLoading, isError, message} = useSelector((state)=>state.auth)
@@ -38,7 +38,7 @@ function ShowPlayer() {
   }, [user, player.isError, navigate, isError, dispatch, message])
 
   if(isLoading || player.isLoading) {
-    return <Spinner/>
+    return <Spinner animation="border"/>
   }
 
   return (
@@ -53,7 +53,10 @@ function ShowPlayer() {
         </Col>
       </Row>
     {/**<Row className="">{player && player.attributes && <Bars attr={player.attributes}/>}</Row>**/}
-    <Col xxl={3}>{player && player.attributes ? (<AttributesFull attr={player.attributes}/>): (<Attributes/>) }</Col>
+    <Row>
+      <Col xxl={3}>{player && player.attributes ? (<AttributesFull attr={player.attributes}/>): (<Attributes/>) }</Col>
+     {player.talents &&  <Col><TalentsList props={player.talents}/></Col>}
+      </Row>
     <Row className="m-2">
       <Col className="bg-light">Waffen</Col>
       <Col>Talente</Col>

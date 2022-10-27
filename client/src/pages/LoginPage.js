@@ -16,6 +16,15 @@ function Login() {
     const dispatch = useDispatch()
     const {user, isLoading, isError, isSuccess, msg} = useSelector((state)=>state.auth)
     
+    //styles
+    const loginContainer = {
+       // backgroundColor: "red",
+        marginTop: 5,
+        padding: 10,
+        display: "grid",
+        alignItems: "center",
+
+    }
     
     const handleSubmit = e => {
         e.preventDefault()
@@ -46,8 +55,10 @@ function Login() {
         }))
     }
   return (
+    
     <Container className="col-md-12 col-sm-12 col-lg-5 rounded mt-5 d-flex justify-content-center align-items-center bg-light">
-        <Row className="p-4">
+        {/* style={loginContainer}*/}
+        <Row>
             <Col>
             <h4>Willkommen in Dragonlands!</h4>
                 <Form className="">
@@ -59,8 +70,8 @@ function Login() {
                         <Form.Label>Gib dein Passwort ein</Form.Label>
                         <Form.Control name="pwd" type="password" placeholder='...' onChange={onChange} value={pwd}></Form.Control>
                     </Form.Group>
-                    <Button  variant='primary mt-2 col-12' type="submit" onClick={handleSubmit}>Einloggen</Button>
-                    <Button as={Link} to="/register" variant='outline-info mt-2 col-12'>Neuen Charakter erstellen</Button>
+                    <Button  variant='dark mt-2 col-12' type="submit" onClick={handleSubmit}>Einloggen</Button>
+                    <Button as={Link} to="/register" variant='outline-dark mt-2 col-12'>Neuen Charakter erstellen</Button>
                 </Form>
             </Col>
         </Row>

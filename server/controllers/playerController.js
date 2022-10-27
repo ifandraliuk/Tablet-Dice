@@ -12,7 +12,7 @@ const mongoose = require('mongoose')
 const getPlayer = asyncHandler(async (req, res) => {
     const user = await User.findById(req.user.id)
     .populate({path: 'userclass', select:'name category description abilities advantages', model: 'Userclass'}, )
-    .populate({path:'talents.talent',  model:'Talent', select:'category name'})
+    .populate({path:'talents.talent',  model:'Talent', select:'category name dice'})
     //console.log(user.userclass.name)
     if(!user){
         res.status(500).json({message: 'Spieler nicht gefunden'})
@@ -131,6 +131,7 @@ const addClass = asyncHandler( async (req, res) => {
 })
 
 const postTalent = asyncHandler(async (req, res)=>{
+    console.log(req.body)
     if(!req.body.point || !req.body.name){
         res.status(400)
         throw new Error('Bitte überprüfe deine Eingabe!')
@@ -138,7 +139,6 @@ const postTalent = asyncHandler(async (req, res)=>{
     //find talent by name
     const talent = await Talent.findOne({name: req.body.name})
     if(talent){
-
         const userTalent = await UserTalents.create({
             talent: talent._id,
             points: req.body.point,
@@ -156,6 +156,48 @@ const postTalent = asyncHandler(async (req, res)=>{
 
 })
 
+const putTalent = asyncHandler(async (req, res)=>{
+    if(!req.body.point || !req.body.name){
+        res.status(400)
+        throw new Error('Bitte überprüfe deine Eingabe!')
+    }
+    console.log(typeof(req.body.point))
+    const talent = await Talent.findOne({name: req.body.name})
+    if(!talent){
+        res.status(400)
+        throw new Error('Talent nicht gefunden...')        
+    }
+    console.log(talent._id)
+    const updated = await User.findOneAndUpdate({
+        user: req.user.id,
+        'talents.talent': talent._id
+    },
+    {
+        $set: {
+            'talents.$.points': parseInt(req.body.point)
+        }
+    }, {new: true})
+    if(!updated){
+        const userTalent = await UserTalents.create({
+            talent: talent._id,
+            points: req.body.point,
+        })
+        if(!userTalent){
+            res.status(400)
+            throw new Error('Talent konnte nicht erstellt werden...') 
+        }
+        const created = await User.findByIdAndUpdate(req.user.id, {$push:{talents: userTalent}}, {new: true}) 
+        if(!created){
+            res.status(400)
+            throw new Error('Talent konnte nicht erstellt werden...') 
+        }
+        console.log("Talent was erstellt und hinzgefügt")
+    } else {
+        console.log("Talent was updated")
+    }
+    res.status(200)
+})
+
 module.exports = {
-    getPlayer, setAttributes, getGeneral, setGeneral, addClass, postTalent
+    getPlayer, setAttributes, getGeneral, setGeneral, addClass, postTalent, putTalent,
 }

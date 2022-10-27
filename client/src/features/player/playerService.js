@@ -55,7 +55,7 @@ const addClass = async (classData, token) => {
 }
 
 // Post class to user
-const postTalent = async (talentData, token) => {
+/* const postTalent = async (talentData, token) => {
     console.log('frontend request to post a talent to user')
     const config = {
         headers: {
@@ -65,10 +65,22 @@ const postTalent = async (talentData, token) => {
 
     const response = await axios.post(API_URL + 'talents', talentData, config )
     return response.data
+} */
+// Update class to user
+const putTalent = async (talentData, token) => {
+    console.log('frontend request to put a talent to user')
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+
+    const response = await axios.put(API_URL + 'talents', talentData, config )
+    return response.data
 }
 
 const playerService = {
-    getPlayer, createAttributes, createGeneral, addClass, postTalent
+    getPlayer, createAttributes, createGeneral, addClass, putTalent,
 
 }
 

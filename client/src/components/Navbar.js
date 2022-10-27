@@ -7,7 +7,6 @@ import { useSelector, useDispatch} from 'react-redux';
 import {logout, reset} from '../features/auth/AuthSlice'
 function NavbarComp() {
   const {user} = useSelector((state)=>state.auth)
-  const navigate = useNavigate()
   const dispatch = useDispatch()
 
   const onLogout = () => {
