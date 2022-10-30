@@ -42,15 +42,9 @@ const weaponSchema = mongoose.Schema(
         price: {
             type: Number,  
         },
-        equipped: {
-            type: Boolean,
-        },
-        inventory: {
-            type: Boolean,
-        },
-        companion: {
-            type: Boolean,
-        },
+        status: {
+            type: String,
+        }
 
     }
 )
@@ -80,15 +74,9 @@ const equipmentSchema = mongoose.Schema(
         price: {
             type: Number,  
         },
-        equipped: {
-            type: Boolean,
-        },
-        inventory: {
-            type: Boolean,
-        },
-        companion: {
-            type: Boolean,
-        },
+        status: {
+            type: String,
+        }
 
 })
 
@@ -132,7 +120,56 @@ const itemsSchema = mongoose.Schema(
     }
 )
 
+
+const itemSchema = mongoose.Schema({
+    name: {
+        type: String,
+        required: [true, 'Bitte einen Namen eingeben!']
+    },
+    category: {
+        type: String,
+        required: [true, 'Bitte Kategory eingeben!']
+    },
+    genus: {
+        type: String,
+        required: [true, 'Bitte die Gattung eingeben! (Schwert, Axt, Werkzeug)']
+    },
+    type: {
+        type: String,
+        required: [true, 'Bitte den Itemstyp eingeben! (1-hand)']
+    },
+    value: {
+        type: Number,
+        required: [true, 'Bitte Distanz, Rüstwert o. Anzahl eingeben! (Numerisch)']
+    },
+    description: {
+        type: String,
+    },
+    price: {
+        type: String,  
+    },
+    bonuses: {
+        type: String,
+    },
+    set: {
+        type: String,
+    },
+    dice: {
+        type: String, // Schafen/Widerstand
+    },
+    weight: {
+        type: Number,
+    },
+    status: {
+        type: String,
+    },
+    icon: {
+        type: String,
+    }
+})
+
 module.exports = mongoose.model('Resource',resourceSchema)
 module.exports = mongoose.model('Equipment', equipmentSchema)
 module.exports = mongoose.model('Weapon', weaponSchema)
 module.exports = mongoose.model('Items', itemsSchema)
+module.exports = mongoose.model('Item', itemSchema)

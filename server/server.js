@@ -22,6 +22,7 @@ app.use('/player', require('./routes/playerRoutes'))
 app.use('/talents', require('./routes/talentRoutes'))
 
 app.use('/classes', require('./routes/classesRoutes'))
+app.use('/items', require('./routes/itemsRoutes'))
 
 // Attributes (dexterity, vitality)
 app.use('/attributes', require('./routes/attributeRoutes'))
