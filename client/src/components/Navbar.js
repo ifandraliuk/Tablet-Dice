@@ -21,6 +21,7 @@ function NavbarComp() {
             <Navbar.Collapse id="responsive-navbar-nav">
               <Nav className="me-auto">
                 <Nav.Link as={Link} to="/create">Tagebuch</Nav.Link>
+                <Nav.Link as={Link} to="/inventory">Inventar</Nav.Link>
                 <Nav.Link as={Link} to="/talents">Alle Talente</Nav.Link>
                 
               </Nav>

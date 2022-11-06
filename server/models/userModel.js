@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const userTalents = require('./userTalentsModel')
+const inventory = require('./inventoryModel')
 const general = require('./generalModel')
 const attribute = require('./attributesModel')
 
@@ -25,6 +26,10 @@ const userSchema = mongoose.Schema({
     talents: {
         ref: 'UserTalents',
         type: [userTalents.schema]
+    },
+    inventory:{
+        ref: 'Inventory',
+        type: [inventory.schema]
     },
     attributes: {
         type: attribute.schema

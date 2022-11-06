@@ -31,7 +31,6 @@ function ShowPlayer() {
       dispatch(logout())
     }
     dispatch(getPlayer())
-    // Dismount general info
      return () => {
       dispatch(reset())
     } 
@@ -49,7 +48,7 @@ function ShowPlayer() {
           <Row className=""><Image fluid src="rogue-f.jpg"></Image></Row>
         </Col>
         <Col className="col-12 col-md-9 ">{
-          player && player.userclass ? (<ClassList userclass={player.userclass} attr={player.attributes}/>) : (<ChooseClass/>)}
+          player && player.userclass ? (<><ClassList userclass={player.userclass} attr={player.attributes}/></>) : (<ChooseClass/>)}
         </Col>
       </Row>
     {/**<Row className="">{player && player.attributes && <Bars attr={player.attributes}/>}</Row>**/}

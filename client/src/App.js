@@ -9,6 +9,8 @@ import CreatePlayer from './pages/CreatePlayer';
 import Talents from './pages/Talents';
 import Enemies from './pages/Enemies';
 import RegisterPage from './pages/RegisterPage';
+import InventoryPage from './pages/InventoryPage';
+
 
 function App() {
 
@@ -20,6 +22,7 @@ function App() {
         <Route path="/register" element={<RegisterPage/>}></Route>     
         <Route path="/player" element={<ShowPlayer/>}></Route>
         <Route path="/create" element={<CreatePlayer/>}></Route>
+        <Route path="/inventory" element={<InventoryPage/>}></Route>
         <Route path="/talents" element={<Talents/>}></Route>
         <Route path="/enemies" element={<Enemies/>}></Route>
       </Routes>

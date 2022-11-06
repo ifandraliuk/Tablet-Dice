@@ -28,7 +28,6 @@ function Talents() {
   const sorted = Object.fromEntries(
     Object.entries(els).sort(([,a],[,b]) => parseInt(b)-parseInt(a))
 );
-console.log(player.talents)
   useEffect(()=> {
     if(!user) {
       navigate("/")

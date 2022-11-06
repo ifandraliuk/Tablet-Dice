@@ -5,6 +5,8 @@ const Attribute = require('../models/attributesModel')
 const General = require('../models/generalModel')
 const Talent = require('../models/talentModel')
 const UserTalents = require('../models/userTalentsModel')
+const Item = require('../models/itemsModel')
+const Inventory = require('../models/inventoryModel')
 const mongoose = require('mongoose')
 // @desc Get user data
 // @route GET /users/player
@@ -13,6 +15,7 @@ const getPlayer = asyncHandler(async (req, res) => {
     const user = await User.findById(req.user.id)
     .populate({path: 'userclass', select:'name category description abilities advantages', model: 'Userclass'}, )
     .populate({path:'talents.talent',  model:'Talent', select:'category name dice'})
+    .populate({path:'inventory.item',  model:'Item', select:'_id name category dice'})
     //console.log(user.userclass.name)
     if(!user){
         res.status(500).json({message: 'Spieler nicht gefunden'})
@@ -124,12 +127,12 @@ const addClass = asyncHandler( async (req, res) => {
     if(!user){
         res.status(401).json({message: "Update nicht erfolgreich"})
     }
-    console.log(userclass._id) 
     res.status(200).json(user)
     //const toUpdate = await Talent.findByIdAndUpdate(req.params.id, req.body, {new: true,})
     //res.status(200).json(toUpdate)
 })
 
+/* 
 const postTalent = asyncHandler(async (req, res)=>{
     console.log(req.body)
     if(!req.body.point || !req.body.name){
@@ -155,19 +158,18 @@ const postTalent = asyncHandler(async (req, res)=>{
     }
 
 })
+ */
 
 const putTalent = asyncHandler(async (req, res)=>{
     if(!req.body.point || !req.body.name){
         res.status(400)
         throw new Error('Bitte überprüfe deine Eingabe!')
     }
-    console.log(typeof(req.body.point))
     const talent = await Talent.findOne({name: req.body.name})
     if(!talent){
         res.status(400)
         throw new Error('Talent nicht gefunden...')        
     }
-    console.log(talent._id)
     const updated = await User.findOneAndUpdate({
         user: req.user.id,
         'talents.talent': talent._id
@@ -191,13 +193,95 @@ const putTalent = asyncHandler(async (req, res)=>{
             res.status(400)
             throw new Error('Talent konnte nicht erstellt werden...') 
         }
-        console.log("Talent was erstellt und hinzgefügt")
+        console.log("Talent wurde erstellt und hinzgefügt")
     } else {
         console.log("Talent was updated")
     }
     res.status(200)
 })
 
+
+// @desc Add item to the users or update its amount
+// @route PUT /player/inventory
+// @access Private
+const updateInventory = asyncHandler(async (req, res)=>{
+    if(!req.body.amount || !req.body.item || !req.body.status){
+        res.status(400)
+        throw new Error('Bitte überprüfe deine Eingabe!')
+    }
+    const item = await Item.findOne({name: req.body.item})
+    console.log(item, item._id)
+    if(!item){
+        res.status(400)
+        throw new Error('Item nicht gefunden...')        
+    }
+    const updated = await User.findOneAndUpdate({
+        user: req.user.id,
+        'inventory.item': item._id
+    },
+    {
+        $set: {
+            'inventory.$.amount': parseInt(req.body.amount),
+            'inventory.$.status': parseInt(req.body.status),
+        }
+    }, {new: true})
+    if(!updated){
+        // new item from the db - add to inventory
+        const inventory = await Inventory.create({
+            item: item._id,
+            amount: req.body.amount,
+            status: req.user.name
+        })
+        if(!inventory) {
+            res.status(400)
+            throw new Error('Item konnte weder erstellt noch updated werden...') 
+        }
+        const created = await User.findByIdAndUpdate(req.user.id, {$push:{inventory: inventory}}, {new: true}) 
+        if(!created){
+            res.status(400)
+            throw new Error('Item konnte nicht zum Nutzer hinzugefügt werden...') 
+        }
+        console.log("Item wurde erstellt und hinzgefügt")
+        res.status(200).json(created)
+    }
+    res.status(200).json(updated)
+})
+
+const deleteItem =  asyncHandler(async (req, res) => {
+    if(!req.params.id){
+        res.status(400)
+        throw new Error('Bitte überprüfe deine Eingabe!')
+    }
+/*     const item = Inventory.findById(req.params.id)
+    if(!item){
+        res.status(400)
+        throw new Error('Item nicht gefunden!')
+    }*/
+    //await item.remove()
+    const removed = await User.findOneAndUpdate({
+        user: req.user.id,
+        'inventory._id': req.params.id
+    }, 
+    {
+        $pull: {
+            'inventory': {_id:req.params.id}
+        }
+    }, {new: true})
+    if(!removed){
+        res.status(400)
+        throw new Error('Removed geht nicht!', req.params.id)
+    }
+    res.status(200).json({id:req.params.id})
+})
+
 module.exports = {
-    getPlayer, setAttributes, getGeneral, setGeneral, addClass, postTalent, putTalent,
+    getPlayer, 
+    setAttributes, 
+    getGeneral, 
+    setGeneral,
+    addClass, 
+    /*postTalent, */
+    updateInventory,
+    deleteItem,
+    putTalent,
 }

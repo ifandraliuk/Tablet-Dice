@@ -112,6 +112,35 @@ export const putTalent = createAsyncThunk('player/talents/putAll', async(talentD
     }
 })
 
+export const updateInventory = createAsyncThunk('player/inventory/putAll', async(inventoryData, thunkAPI)=>{
+    try {
+        const token = thunkAPI.getState().auth.user.token
+        return await playerService.updateInventory(inventoryData, token)        
+    } catch (error) {
+        const msg = 
+        (error.response && 
+            error.response.data && 
+            error.response.data.message) || 
+            error.message || 
+            error.toString()
+        return thunkAPI.rejectWithValue(msg)        
+    }
+})
+export const deleteItem = createAsyncThunk('player/inventory/delete', async(id, thunkAPI)=>{
+    try {
+        const token = thunkAPI.getState().auth.user.token
+        return await playerService.deleteItem(id, token)        
+    } catch (error) {
+        const msg = 
+        (error.response && 
+            error.response.data && 
+            error.response.data.message) || 
+            error.message || 
+            error.toString()
+        return thunkAPI.rejectWithValue(msg)        
+    }
+})
+
 export const playerSlice = createSlice({
     name: 'player',
     initialState,
@@ -165,33 +194,44 @@ export const playerSlice = createSlice({
         .addCase(addClass.fulfilled, (state, action)=> {
             state.isLoading = false
             state.isSuccess = true
-           // state.general = action.payload
         })
         .addCase(addClass.rejected, (state, action)=> {
             state.isLoading = false
             state.isError = true
             state.message = action.payload
         })
-/*         .addCase(postTalent.pending, (state)=>{
+         .addCase(updateInventory.pending, (state)=>{
             state.isLoading = true
         })
-        .addCase(postTalent.fulfilled, (state, action)=> {
+        .addCase(updateInventory.fulfilled, (state, action)=> {
             state.isLoading = false
             state.isSuccess = true
-           // state.general = action.payload
+            //state.player.inventory = action.payload
         })
-        .addCase(postTalent.rejected, (state, action)=> {
+        .addCase(updateInventory.rejected, (state, action)=> {
             state.isLoading = false
             state.isError = true
             state.message = action.payload
-        }) */
+        }) 
+        .addCase(deleteItem.pending, (state)=>{
+            state.isLoading = true
+        })
+        .addCase(deleteItem.fulfilled, (state, action)=> {
+            state.isLoading = false
+            state.isSuccess = true
+            state.player.inventory = state.player.inventory.filter((item)=>item._id !== action.payload.id)
+        })
+        .addCase(deleteItem.rejected, (state, action)=> {
+            state.isLoading = false
+            state.isError = true
+            state.message = action.payload
+        }) 
         .addCase(putTalent.pending, (state)=>{
             state.isLoading = true
         })
         .addCase(putTalent.fulfilled, (state, action)=> {
             state.isLoading = false
             state.isSuccess = true
-           // state.general = action.payload
         })
         .addCase(putTalent.rejected, (state, action)=> {
             state.isLoading = false
