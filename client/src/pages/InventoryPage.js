@@ -10,14 +10,16 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
-import { getPlayer, updateInventory, deleteItem } from '../features/player/playerSlice';
+import { getPlayer, toInventory, updateInventory, deleteItem } from '../features/player/playerSlice';
 import CloseButton from 'react-bootstrap/CloseButton';
-
+import Figure from 'react-bootstrap/Figure';
 
 function InventoryPage() {
   const {inventory, isLoading, isError, message} = useSelector((state)=>state.inventory)
   const {player} = useSelector((state)=>state.player)
   const {user} = useSelector((state)=>state.auth)
+  const [toUpdate, setUpdate] = useState([])
+  const [edit, activeEdit] = useState(false)
   const [detailsId, setId] = useState(-1)
   let categories = []
   let genus = []
@@ -57,14 +59,14 @@ function InventoryPage() {
     return out
   }
   const getDetails = e => {
-    setId(e.target.name)
+    setId(parseInt(e.target.name))
+    console.log(e.target.name, detailsId)
   }
 
   const addItem = e => {
     let id = e.target.name
-    console.log(inventory[id].name, 1, user.name)
-    dispatch(updateInventory({item: inventory[id].name, amount: 1, status: user.name}))
-    dispatch(getPlayer())
+    dispatch(toInventory({item: inventory[id].name, amount: 1, status: user.name}))
+    //dispatch(getPlayer())
   }
   const toDelete = e => {
     console.log(e.target.name)
@@ -72,12 +74,28 @@ function InventoryPage() {
     dispatch(deleteItem(player.inventory[id]._id))
     //dispatch(getPlayer())
   }
+
+  const handleEdit = e => {
+    activeEdit(edit => !edit)
+  }
+  const handleSave = e => {
+    console.log(toUpdate)
+    
+  }
+  const handleChange = e => {
+    console.log(`id: ${e.target.id} value: ${e.target.value} name: ${e.target.name}`)
+    if(toUpdate.length > 0) {
+      console.log("searching for an item...")
+    }  else {
+      setUpdate([{name:e.target.name, [e.target.id]: e.target.value}])
+    }
+    //const id = selected.findIndex(el=>el.name === e.target.id)
+    
+  }
   return (
-    <Container>
+    <Container fluid>
     <NavbarComp/>
-    {selected.category}
-    {selected.genus}
-    <Row>
+    <Row className="mt-3">
       <Col>
       {player && player.inventory && player.inventory.length < 0 ?
        (
@@ -89,9 +107,15 @@ function InventoryPage() {
       </Card>
        ) : 
        (
+        <Form>
+          <ButtonGroup>
+            <Button variant="dark" onClick={handleEdit}>Bearbeiten</Button>
+            <Button className={edit? "":"disabled"} variant="secondary"  onClick={handleSave} type="submit">Speichern</Button>
+            </ButtonGroup>
         <Table>
           <thead>
             <tr>
+              <th>#</th>
               <th>Name</th>
               <th>Anzahl</th>
               <th>Status</th>
@@ -100,19 +124,30 @@ function InventoryPage() {
           </thead>
           <tbody>
             {player && player.inventory && Object.keys(player.inventory).map((ind)=>{
-              if(user && player.inventory[ind].status === user.name) {
+              
                 return (
                   <tr key={player.inventory[ind]._id}>
+                    {player.inventory[ind].item.category === "Rüstung" && <td><Figure ><Figure.Image src="/icons/Helmxhdpi.png"/></Figure></td>}
+                    
+                    {player.inventory[ind].item.category==="Waffe" && <td className='pb-0'><Figure className='mb-0'><Figure.Image width={48} height={48} src={`/icons/${player.inventory[ind].item.genus}xhdpi.png`}/></Figure></td>}
+                    {player.inventory[ind].item.category==="Ressource" && <td><Figure><Figure.Image src="/icons/ressource-framedxhdpi.png"/></Figure></td>}
                     <td>{player.inventory[ind].item.name}</td>
-                    <td>{player.inventory[ind].amount}</td>
-                    <td>{player.inventory[ind].status}</td>
+                    {edit ? (<td><Form.Control id="amount" name={player.inventory[ind].item.name} type="number" onChange={handleChange} defaultValue={player.inventory[ind].amount}></Form.Control></td>):<td>{player.inventory[ind].amount}</td>}
+                    {edit? (<td>
+                      <Form.Select id="status" name={player.inventory[ind].item.name} defaultValue={player.inventory[ind].status} onChange={handleChange}>
+                        <option>{user.name}</option>
+                        <option>Ausrüsten</option>
+                        <option>Begleiter</option>
+                      </Form.Select>
+                      </td>):(<td>{player.inventory[ind].status}</td>)}
                     <td><CloseButton name={ind} onClick={toDelete}/></td>
                   </tr>
                 )
-              }
+              
             })}
           </tbody>
         </Table>
+        </Form>
        )
     }
       </Col>
@@ -122,13 +157,15 @@ function InventoryPage() {
       <Col>
       <ButtonGroup>
       {categories.map((category)=>(  
-        <Button key={category} variant="dark" name={category} onClick={e=>{setSelect({...selected, category: [e.target.name]})}}>{category}</Button>
+        <Button key={category} type="radio" variant="dark" name={category} onClick={e=>{setSelect({...selected, category: [e.target.name]})}}>{category}</Button>
       ))} 
-      {filterGenuses(selected.category).map((genus)=>{
+      <Button variant="outline-secondary" type="reset" onClick={clear}>Löschen</Button> 
+    </ButtonGroup>
+    <ButtonGroup>
+    {filterGenuses(selected.category).map((genus)=>{
         return(
         <Button key={genus} variant="secondary" name={genus} onClick={e=>{setSelect({...selected, genus: [e.target.name]})}}>{genus}</Button>
       )})}
-      <Button variant="outline-secondary" onClick={clear}>Löschen</Button> 
     </ButtonGroup>
       </Col>
     </Row>
@@ -162,8 +199,8 @@ function InventoryPage() {
         </Table>
         </Col>
         <Col>
-          {detailsId >= 0 ? (
-            <Card style={{ width: '18rem' }} className="position-fixed">
+          {inventory[detailsId] && detailsId >= 0 ? (
+            <Card style={{ width: '18rem' }} >
             <Card.Header>{inventory[detailsId].name}</Card.Header>
             <ListGroup variant="flush">
               <ListGroup.Item>{`Kategorie: ${inventory[detailsId].category}`}</ListGroup.Item>
@@ -175,7 +212,7 @@ function InventoryPage() {
               <ListGroup.Item>{`Gewicht: ${inventory[detailsId].weight}`}</ListGroup.Item>
             </ListGroup>
           </Card>
-          ) : (<Card style={{ width: '18rem' }} className="position-fixed">
+          ) : (<Card style={{ width: '18rem' }}>
             <Card.Header>Erweitert</Card.Header>
             <ListGroup variant="flush">
             <ListGroup.Item>...</ListGroup.Item>

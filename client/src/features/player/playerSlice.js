@@ -112,6 +112,21 @@ export const putTalent = createAsyncThunk('player/talents/putAll', async(talentD
     }
 })
 
+export const toInventory = createAsyncThunk('player/inventory/post', async(itemData, thunkAPI)=>{
+    try {
+        const token = thunkAPI.getState().auth.user.token
+        return await playerService.toInventory(itemData, token)        
+    } catch (error) {
+        const msg = 
+        (error.response && 
+            error.response.data && 
+            error.response.data.message) || 
+            error.message || 
+            error.toString()
+        return thunkAPI.rejectWithValue(msg)        
+    }
+})
+
 export const updateInventory = createAsyncThunk('player/inventory/putAll', async(inventoryData, thunkAPI)=>{
     try {
         const token = thunkAPI.getState().auth.user.token
@@ -206,9 +221,22 @@ export const playerSlice = createSlice({
         .addCase(updateInventory.fulfilled, (state, action)=> {
             state.isLoading = false
             state.isSuccess = true
-            //state.player.inventory = action.payload
+            state.player.inventory = action.payload
         })
         .addCase(updateInventory.rejected, (state, action)=> {
+            state.isLoading = false
+            state.isError = true
+            state.message = action.payload
+        })
+        .addCase(toInventory.pending, (state)=>{
+            state.isLoading = true
+        })
+        .addCase(toInventory.fulfilled, (state, action)=> {
+            state.isLoading = false
+            state.isSuccess = true
+            state.player.inventory.push(action.payload)
+        })
+        .addCase(toInventory.rejected, (state, action)=> {
             state.isLoading = false
             state.isError = true
             state.message = action.payload

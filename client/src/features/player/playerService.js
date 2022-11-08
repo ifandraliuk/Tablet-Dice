@@ -66,10 +66,22 @@ const putTalent = async (talentData, token) => {
     const response = await axios.put(API_URL + 'talents', talentData, config )
     return response.data
 }
+// Put item to inventory class to user
+const toInventory = async (itemData, token) => {
+    console.log('frontend request to post an item to users inventory')
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+
+    const response = await axios.post(API_URL + 'inventory', itemData, config )
+    return response.data
+}
 
 // Put item to inventory class to user
 const updateInventory = async (inventoryData, token) => {
-    console.log('frontend request to post an item to users inventory')
+    console.log('frontend request to update an item to users inventory')
     const config = {
         headers: {
             Authorization: `Bearer ${token}`
@@ -93,7 +105,7 @@ const deleteItem = async (id, token) => {
 }
 
 const playerService = {
-    getPlayer, createAttributes, createGeneral, addClass, putTalent, updateInventory, deleteItem,
+    getPlayer, createAttributes, createGeneral, addClass, putTalent, toInventory, updateInventory, deleteItem,
 
 }
 

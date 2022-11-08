@@ -15,7 +15,7 @@ const getPlayer = asyncHandler(async (req, res) => {
     const user = await User.findById(req.user.id)
     .populate({path: 'userclass', select:'name category description abilities advantages', model: 'Userclass'}, )
     .populate({path:'talents.talent',  model:'Talent', select:'category name dice'})
-    .populate({path:'inventory.item',  model:'Item', select:'_id name category dice'})
+    .populate({path:'inventory.item',  model:'Item', select:'_id name category dice genus'})
     //console.log(user.userclass.name)
     if(!user){
         res.status(500).json({message: 'Spieler nicht gefunden'})
@@ -200,8 +200,40 @@ const putTalent = asyncHandler(async (req, res)=>{
     res.status(200)
 })
 
+// @desc Add item to users inventory
+// @route POST /player/inventory
+// @access Private
+const toInventory = asyncHandler(async (req, res)=>{
+    if(!req.body.amount || !req.body.item || !req.body.status){
+        res.status(400)
+        throw new Error('Bitte überprüfe deine Eingabe!')
+    }
+    const item = await Item.findOne({name: req.body.item})
+    if(!item){
+        res.status(400)
+        throw new Error('Item nicht gefunden...')        
+    }
+    // new item from the db - add to inventory
+    const inventory = await Inventory.create({
+        item: item._id,
+        amount: req.body.amount,
+        status: req.user.name
+    })
+    if(!inventory) {
+        res.status(400)
+        throw new Error('Item konnte weder erstellt noch updated werden...') 
+    }
+    const created = await User.findByIdAndUpdate(req.user.id, {$push:{inventory: inventory}}, {new: true}) 
+    if(!created){
+        res.status(400)
+        throw new Error('Item konnte nicht zum Nutzer hinzugefügt werden...') 
+    }
+    console.log("Item wurde erstellt und hinzgefügt")
+    res.status(200).json({_id: inventory._id, item: item, amount: req.body.amount, status: req.user.name})
+})
 
-// @desc Add item to the users or update its amount
+
+// @desc Update item in users inventory
 // @route PUT /player/inventory
 // @access Private
 const updateInventory = asyncHandler(async (req, res)=>{
@@ -210,7 +242,6 @@ const updateInventory = asyncHandler(async (req, res)=>{
         throw new Error('Bitte überprüfe deine Eingabe!')
     }
     const item = await Item.findOne({name: req.body.item})
-    console.log(item, item._id)
     if(!item){
         res.status(400)
         throw new Error('Item nicht gefunden...')        
@@ -222,42 +253,24 @@ const updateInventory = asyncHandler(async (req, res)=>{
     {
         $set: {
             'inventory.$.amount': parseInt(req.body.amount),
-            'inventory.$.status': parseInt(req.body.status),
+            'inventory.$.status': req.body.status,
         }
-    }, {new: true})
+    }, {new: true}).populate({path:'inventory.item',  model:'Item', select:'_id name category dice'})
     if(!updated){
-        // new item from the db - add to inventory
-        const inventory = await Inventory.create({
-            item: item._id,
-            amount: req.body.amount,
-            status: req.user.name
-        })
-        if(!inventory) {
-            res.status(400)
-            throw new Error('Item konnte weder erstellt noch updated werden...') 
-        }
-        const created = await User.findByIdAndUpdate(req.user.id, {$push:{inventory: inventory}}, {new: true}) 
-        if(!created){
-            res.status(400)
-            throw new Error('Item konnte nicht zum Nutzer hinzugefügt werden...') 
-        }
-        console.log("Item wurde erstellt und hinzgefügt")
-        res.status(200).json(created)
+        res.status(400).json({error: "Item ist noch nicht hinzugefügt"})
     }
-    res.status(200).json(updated)
+    res.status(200).json(updated.inventory)
 })
 
+
+// @desc Remove item from users inventory
+// @route DELETE /player/inventory/:id
+// @access Private
 const deleteItem =  asyncHandler(async (req, res) => {
     if(!req.params.id){
         res.status(400)
         throw new Error('Bitte überprüfe deine Eingabe!')
     }
-/*     const item = Inventory.findById(req.params.id)
-    if(!item){
-        res.status(400)
-        throw new Error('Item nicht gefunden!')
-    }*/
-    //await item.remove()
     const removed = await User.findOneAndUpdate({
         user: req.user.id,
         'inventory._id': req.params.id
@@ -281,6 +294,7 @@ module.exports = {
     setGeneral,
     addClass, 
     /*postTalent, */
+    toInventory,
     updateInventory,
     deleteItem,
     putTalent,
