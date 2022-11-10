@@ -10,9 +10,9 @@ const getItem = async (token) => {
 }
 
 
-const inventoryService = {
+const itemService = {
     getItem
 
 }
 
-export default inventoryService
+export default itemService

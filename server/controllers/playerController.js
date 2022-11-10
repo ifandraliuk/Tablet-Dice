@@ -15,7 +15,7 @@ const getPlayer = asyncHandler(async (req, res) => {
     const user = await User.findById(req.user.id)
     .populate({path: 'userclass', select:'name category description abilities advantages', model: 'Userclass'}, )
     .populate({path:'talents.talent',  model:'Talent', select:'category name dice'})
-    .populate({path:'inventory.item',  model:'Item', select:'_id name category dice genus'})
+    .populate({path:'inventory.item',  model:'Item', select:'_id name category dice bonuses genus'})
     //console.log(user.userclass.name)
     if(!user){
         res.status(500).json({message: 'Spieler nicht gefunden'})
@@ -237,7 +237,8 @@ const toInventory = asyncHandler(async (req, res)=>{
 // @route PUT /player/inventory
 // @access Private
 const updateInventory = asyncHandler(async (req, res)=>{
-    if(!req.body.amount || !req.body.item || !req.body.status){
+    let updated
+    if(!req.body.item){
         res.status(400)
         throw new Error('Bitte überprüfe deine Eingabe!')
     }
@@ -246,16 +247,42 @@ const updateInventory = asyncHandler(async (req, res)=>{
         res.status(400)
         throw new Error('Item nicht gefunden...')        
     }
-    const updated = await User.findOneAndUpdate({
-        user: req.user.id,
-        'inventory.item': item._id
-    },
-    {
-        $set: {
-            'inventory.$.amount': parseInt(req.body.amount),
-            'inventory.$.status': req.body.status,
-        }
-    }, {new: true}).populate({path:'inventory.item',  model:'Item', select:'_id name category dice'})
+    if(req.body.amount && req.body.status){
+        console.log("change both parameters")
+        updated = await User.findOneAndUpdate({
+            user: req.user.id,
+            'inventory.item': item._id
+        },
+        {
+            $set: {
+                'inventory.$.amount': parseInt(req.body.amount),
+                'inventory.$.status': req.body.status,
+            }
+        }, {new: true}).populate({path:'inventory.item',  model:'Item', select:'_id name category genus dice'})
+    } else if(req.body.amount){
+        console.log("change amount")
+        updated = await User.findOneAndUpdate({
+            user: req.user.id,
+            'inventory.item': item._id
+        },
+        {
+            $set: {
+                'inventory.$.amount': parseInt(req.body.amount),
+            }
+        }, {new: true}).populate({path:'inventory.item',  model:'Item', select:'_id name category genus dice'})       
+    } else {
+        console.log("change status")
+        updated = await User.findOneAndUpdate({
+            user: req.user.id,
+            'inventory.item': item._id
+        },
+        {
+            $set: {
+                'inventory.$.status': req.body.status,
+            }
+        }, {new: true}).populate({path:'inventory.item',  model:'Item', select:'_id name category genus dice'})      
+    }
+
     if(!updated){
         res.status(400).json({error: "Item ist noch nicht hinzugefügt"})
     }

@@ -1,8 +1,8 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit'
-import inventoryService from './inventoryService'
+import itemService from './itemService'
 
 const initialState = {
-    inventory: [],
+    items: [],
     isError: false, 
     isSuccess: false,
     isLoading: false,
@@ -13,7 +13,7 @@ const initialState = {
 // Get talents 
 export const getItem = createAsyncThunk('items/getAll', async(_, thunkAPI)=>{
     try {
-        return await inventoryService.getItem()
+        return await itemService.getItem()
     } catch (error) {
         const msg = 
         (error.response && 
@@ -27,8 +27,8 @@ export const getItem = createAsyncThunk('items/getAll', async(_, thunkAPI)=>{
 })
 
 
-export const inventorySlice = createSlice({
-    name: 'inventory',
+export const itemSlice = createSlice({
+    name: 'items',
     initialState,
     reducers: {
         reset: (state) => initialState
@@ -41,7 +41,7 @@ export const inventorySlice = createSlice({
         .addCase(getItem.fulfilled, (state, action)=> {
             state.isLoading = false
             state.isSuccess = true
-            state.inventory = action.payload
+            state.items = action.payload
         })
         .addCase(getItem.rejected, (state, action)=> {
             state.isLoading = false
@@ -51,5 +51,5 @@ export const inventorySlice = createSlice({
     }
 })
 
-export const {reset} = inventorySlice.actions
-export default inventorySlice.reducer
+export const {reset} = itemSlice.actions
+export default itemSlice.reducer
