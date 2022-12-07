@@ -15,14 +15,89 @@ const getPlayer = asyncHandler(async (req, res) => {
     const user = await User.findById(req.user.id)
     .populate({path: 'userclass', select:'name category description abilities advantages', model: 'Userclass'}, )
     .populate({path:'talents.talent',  model:'Talent', select:'category name dice'})
-    .populate({path:'inventory.item',  model:'Item', select:'_id name category dice bonuses genus'})
+    .populate({path:'inventory.item',  model:'Item', select:'_id name category dice value rarity type price weight bonuses genus'})
     //console.log(user.userclass.name)
     if(!user){
         res.status(500).json({message: 'Spieler nicht gefunden'})
     }
+
     res.status(200).json(user)
 })
 
+// @desc level up a character
+// @route PUT /player/levelup
+// @access Private
+
+const levelUp = asyncHandler(async (req, res)=>{
+    const user = await User.findById(req.user.id)
+    if(!user){
+        res.status(500).json({message: 'Spieler nicht gefunden'})
+    }
+    user.level = user.level + 1
+    if(user.level % 5 === 0){
+        user.pointsLeft = user.pointsLeft + 1
+    }
+    const doc = await user.save()
+    if(!doc){
+        res.status(400).json({message: 'Levelup misslungen'})
+    }
+    res.status(200).json(doc.level)
+})
+
+// @desc Add infos to a new character
+// @route POST /player/create
+// @access Private
+const createCharacter = asyncHandler(async (req, res) => {
+    console.log("uploading data to a new character")
+    const user = await User.findById(req.user.id)
+    if(!user){
+        res.status(500).json({message: 'Spieler nicht gefunden'})
+    }
+    // adding default level 1 && 70 attribute points 
+    console.log(req.body)
+    console.log(req.body.attributes)
+    user.level = 1
+    user.pointsLeft = 70
+    //adding userclass
+    if(!req.body.userclass){
+        res.status(400).json({message: 'Bitte wähle eine Spezialisation'})
+    }
+    const userclass = await Userclass.findOne({name: req.body.userclass})
+    if(!userclass){
+        res.status(500).json({message: 'Gewählte Spezialisation wurde nicht gefunden'})
+    }
+    user.userclass = userclass._id
+    // adding general info
+    if(!req.body.kind){
+        res.status(400).json({message: 'Bitte wähle die Specie deines Charakters aus'})
+    }
+    const gen = await General.create({
+        kind: req.body.kind,
+        age: req.body.age,
+        haircolor: req.body.haircolor,
+        sex: req.body.sex,
+        eyecolor: req.body.eyecolor,
+        origin: req.body.origin,
+        more: req.body.more,
+        haircut: req.body.haircut
+    }) 
+    if(!gen){
+        res.status(400).json({message: 'Die Werte aus dem Schritt 4 sind unvollständig'})
+    }
+    user.general = gen
+    // adding attributes
+    const attr = await Attribute.create(req.body.attributes)
+    if(!attr){
+        res.status(400).json({message: 'Die Werte aus dem Schritt 5 sind nicht korrekt. Vitalität eingegeben?'})
+    }
+    user.attributes = attr
+    const doc = await user.save()
+    if(!doc){
+        res.status(400).json({message: 'Charaktererstellung hat fehlgeschlagen'})
+    }
+    res.status(200).json(doc)
+ 
+})
 
 // @desc Set user attributes
 // @route GET /player/attributes
@@ -30,9 +105,9 @@ const getPlayer = asyncHandler(async (req, res) => {
 const setAttributes = asyncHandler( async (req, res)=>{
     console.log('creating new attribute for user')
     if(!req.user) {
-        res.status(400)
+        res.status(400).json({message: "Nicht autorisiert"})
         console.log("not authorized...")
-        throw new Error('Nicht autorizierd')  
+        throw new Error('Nicht autoriziert')  
     }
 
     const attr = await Attribute.create({
@@ -59,7 +134,6 @@ const setAttributes = asyncHandler( async (req, res)=>{
         }
     }
 })
-
 
 // @desc Set user general
 // @route GET /player/general
@@ -100,6 +174,7 @@ const setGeneral = asyncHandler( async (req, res) => {
     if(gen && usertoUpdate){
         console.log(usertoUpdate)
         usertoUpdate.general = gen
+        usertoUpdate.level = req.body.level
         const doc = await usertoUpdate.save()
         res.status(200).json(doc)
     } else {
@@ -113,6 +188,8 @@ const setGeneral = asyncHandler( async (req, res) => {
 // @route POST /player/uclass
 // @access Private
 const addClass = asyncHandler( async (req, res) => {
+    console.log(req.body)
+    console.log(req.body.name)
     const userclass = await Userclass.findOne({name: req.body.name})
     if (!userclass){
         res.status(400).json({message: "Die Klasse wurde noch nicht hinzugefügt"})
@@ -132,33 +209,29 @@ const addClass = asyncHandler( async (req, res) => {
     //res.status(200).json(toUpdate)
 })
 
-/* 
-const postTalent = asyncHandler(async (req, res)=>{
-    console.log(req.body)
-    if(!req.body.point || !req.body.name){
-        res.status(400)
-        throw new Error('Bitte überprüfe deine Eingabe!')
-    }
-    //find talent by name
-    const talent = await Talent.findOne({name: req.body.name})
-    if(talent){
-        const userTalent = await UserTalents.create({
-            talent: talent._id,
-            points: req.body.point,
-        })
-        if(userTalent){
-            const doc = await User.findByIdAndUpdate(req.user.id, {$push:{talents: userTalent}}, {new: true})
-            if(doc){
-                res.status(201).json(doc)
-            } else {
-                res.status(400)
-            }
-           
+const uploadPicture = asyncHandler(async (req, res)=>{
+    console.log("backend picture upload")
+    const image = req.files.img
+    //const filename = req.files[1]
+    console.log(image, image.name)
+    const path = './../client/public/user/' + image.name
+    image.mv(path, (error) => {
+        if (error) {
+          console.error(error)
+          res.writeHead(500, {
+            'Content-Type': 'application/json'
+          })
+          res.end(JSON.stringify({ status: 'error', message: error }))
+          return
         }
-    }
+    
+        res.writeHead(200, {
+          'Content-Type': 'application/json'
+        })
+        res.end(JSON.stringify({ status: 'success', path: '/user/' + image.name }))
+      })
 
 })
- */
 
 const putTalent = asyncHandler(async (req, res)=>{
     if(!req.body.point || !req.body.name){
@@ -237,56 +310,54 @@ const toInventory = asyncHandler(async (req, res)=>{
 // @route PUT /player/inventory
 // @access Private
 const updateInventory = asyncHandler(async (req, res)=>{
+    console.log(req.body.item)
+    console.log(typeof(req.user.id))
     let updated
     if(!req.body.item){
         res.status(400)
         throw new Error('Bitte überprüfe deine Eingabe!')
     }
-    const item = await Item.findOne({name: req.body.item})
-    if(!item){
-        res.status(400)
-        throw new Error('Item nicht gefunden...')        
-    }
     if(req.body.amount && req.body.status){
         console.log("change both parameters")
         updated = await User.findOneAndUpdate({
             user: req.user.id,
-            'inventory.item': item._id
+            'inventory._id': req.body.item
         },
         {
             $set: {
                 'inventory.$.amount': parseInt(req.body.amount),
                 'inventory.$.status': req.body.status,
             }
-        }, {new: true}).populate({path:'inventory.item',  model:'Item', select:'_id name category genus dice'})
+        }, {new: true}).populate({path:'inventory.item',  model:'Item', select:'_id name category dice value rarity type price weight bonuses genus'})
     } else if(req.body.amount){
         console.log("change amount")
         updated = await User.findOneAndUpdate({
             user: req.user.id,
-            'inventory.item': item._id
+            'inventory._id': req.body.item
         },
         {
             $set: {
                 'inventory.$.amount': parseInt(req.body.amount),
             }
-        }, {new: true}).populate({path:'inventory.item',  model:'Item', select:'_id name category genus dice'})       
-    } else {
+        }, {new: true}).populate({path:'inventory.item',  model:'Item', select:'_id name category dice value rarity type price weight bonuses genus'})
+    } else if(req.body.status){
         console.log("change status")
         updated = await User.findOneAndUpdate({
             user: req.user.id,
-            'inventory.item': item._id
+            'inventory._id': req.body.item
         },
         {
             $set: {
                 'inventory.$.status': req.body.status,
             }
-        }, {new: true}).populate({path:'inventory.item',  model:'Item', select:'_id name category genus dice'})      
+        }, {new: true}).populate({path:'inventory.item',  model:'Item', select:'_id name category dice value rarity type price weight bonuses genus'})
     }
-
     if(!updated){
-        res.status(400).json({error: "Item ist noch nicht hinzugefügt"})
+        res.status(400).json({error: "Das Update ist fehlgeschlagen"})
+    } else {
+        console.log("success")
+        res.status(200).json(updated.inventory)
     }
-    res.status(200).json(updated.inventory)
 })
 
 
@@ -314,8 +385,39 @@ const deleteItem =  asyncHandler(async (req, res) => {
     res.status(200).json({id:req.params.id})
 })
 
+const setEnchantment = asyncHandler(async (req, res)=>{
+    console.log(req.body)
+    console.log(req.user.id)
+    if(!req.body.id){ 
+        res.status(400).json({message: "nicht autorisiert für die Verzauberung"})
+        throw new Error('Nicht autorisuert!')
+    }
+    if(!req.body.id || !req.body.rarity || !req.body.bonuses){
+        res.status(400).json({message: "überprüfe deine Eingabe"})
+        throw new Error('überprüfe deine Eingabe')
+    }
+    const enchantment = {rarity: req.body.rarity, bonuses: req.body.bonuses}
+    const enchanted = await User.findOneAndUpdate({
+        user: req.user.id,
+        'inventory._id': req.body.id
+    },
+    {
+        $set: {
+            'inventory.$.enchantment': enchantment
+        }
+    }, {new: true}).populate({path:'inventory.item',  model:'Item', select:'_id name category price bonuses value weight rarity genus dice'})      
+    if(!enchanted){
+        res.status(400).json({message:"Verzaubern fehlgeschlagen"})
+        throw new Error('Verzaubern geht nicht!', req.body.id)
+    }
+    console.log(enchanted.inventory)
+    res.status(200).json(enchanted.inventory)
+})
+
 module.exports = {
     getPlayer, 
+    createCharacter,
+    levelUp,
     setAttributes, 
     getGeneral, 
     setGeneral,
@@ -324,5 +426,7 @@ module.exports = {
     toInventory,
     updateInventory,
     deleteItem,
+    setEnchantment,
     putTalent,
+    uploadPicture,
 }

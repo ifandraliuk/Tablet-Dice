@@ -2,8 +2,11 @@ import {createSlice, createAsyncThunk} from '@reduxjs/toolkit'
 import authService from './authService'
 // Get user from localStorage
 const user = JSON.parse(localStorage.getItem('user'))
+console.log(user)
+const registered = JSON.parse(localStorage.getItem('registered'))
 const initialState = {
     user: user ? user : null,
+    registered: registered ? registered : false,
     isError: false, 
     isSuccess: false,
     isLoading: false,
@@ -39,7 +42,7 @@ export const login = createAsyncThunk('auth/login', async(user, thunkAPI)=>{
     }
 })
 export const logout = createAsyncThunk('/auth/logout', async () =>{
-    await authService.logout()
+     await authService.logout()
 })
 
 export const authSlice = createSlice({
@@ -53,6 +56,10 @@ export const authSlice = createSlice({
             state.isSuccess = false
             state.message = ''
 
+        },
+        registationFullfilled: (state)=> {
+            state.registered = false
+            localStorage.removeItem("registered")
         }
     },
     extraReducers: (builder) => {
@@ -64,6 +71,7 @@ export const authSlice = createSlice({
             state.isLoading = false
             state.isSuccess = true
             state.user = action.payload
+            state.registered = true
         })
         .addCase(register.rejected, (state, action)=>{
             state.isLoading = false
@@ -91,5 +99,5 @@ export const authSlice = createSlice({
     }
 })
 
-export const {reset} = authSlice.actions
+export const {reset, registationFullfilled} = authSlice.actions
 export default authSlice.reducer

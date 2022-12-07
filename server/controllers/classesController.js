@@ -7,12 +7,23 @@ const { default: mongoose } = require('mongoose')
 // @route GET /classes/
 // @access Public
 const getClass = asyncHandler( async (req, res) => {
-    const userclasses = await UserClass.find({})
-    if(!userclasses){
-        res.status(400).json({message: "Keine Klassen gefunden"})
-        throw new Error("Falsch! Das Feld darf nicht leer sein")        
-    }
-    res.status(200).json(userclasses)
+    if(req.body.name){
+        const userclasses = await UserClass.findOne({name:req.body.name})
+        if(!userclasses){
+            res.status(400).json({message: "Die Klasse wurde nicht gefunden"})
+            throw new Error("Falsch! Das Feld darf nicht leer sein")        
+        }
+        res.status(200).json(userclasses)
+    } else {
+        const userclasses = await UserClass.find({})
+        if(!userclasses){
+            res.status(400).json({message: "Keine Klassen gefunden"})
+            throw new Error("Falsch! Das Feld darf nicht leer sein")        
+        }
+        res.status(200).json(userclasses)
+        }
+        
+    
 })
 
 

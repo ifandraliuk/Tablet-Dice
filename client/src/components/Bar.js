@@ -1,28 +1,23 @@
-import React, {useState, useEffect} from 'react'
+import React from 'react'
 import ProgressBar from 'react-bootstrap/ProgressBar';
+import {useSelector} from 'react-redux';
+import {germanAttr} from './ConstVariables'
 
 
-function Bar({name, max, curr}) {
-    const [percentage, setPercentage] = useState(100)
-    const variant = name === "vitality" ? "danger" 
-    : name === "stamina" ? "warning"
-    : name === "spirit" ? "info"
-    : "primary"
-    const label = name === "vitality" ? "Trefferpunkte" 
-    : name === "stamina" ? "Ausdauer"
-    : name === "spirit" ? "Spirituele Kraft"
-    : "Mana"
-    useEffect(()=> {
-          let val = curr/max*100
-          if(val <= 100 && val>=0){
-              setPercentage(val)
-          }
-      }, [curr])
+function Bar(props) {
+  const {player, bars} = useSelector((state)=>state.player) 
+  const {attributes} = player
+  const max = attributes ? attributes[props.category]*10 : 0
+  const curr = bars ? bars[props.category] : 0
+  const variant = props.category === "vitality" ? "danger" :
+  props.category === "stamina" ? "warning" :
+  props.category === "spirit" ? "info": "primary"
+
   return (
     <ProgressBar 
-    label={`${label}: ${curr} von ${max}`}
+    label={`${germanAttr[props.category]}: ${curr} von ${max}`}
     variant={variant} 
-    now={percentage}/>
+    now={curr/max*100} max={100}/>
   )
 }
 

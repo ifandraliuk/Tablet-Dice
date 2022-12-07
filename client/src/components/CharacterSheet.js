@@ -8,7 +8,7 @@ import ListGroup from 'react-bootstrap/ListGroup'
 import {useState, useEffect} from 'react'
 import Button from 'react-bootstrap/Button'
 
-
+//TO DELETE
 
 function CharacterSheet() {
     const MAX = 70

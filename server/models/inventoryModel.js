@@ -8,6 +8,14 @@ const inventorySchema = mongoose.Schema({
     amount: {
         type: Number,
     },
+    enchantment: {
+        rarity: {
+            type:String
+        },
+        bonuses: {
+            type:String
+        },
+    },
     status: {
         type: String, //Spieler, Begleiter, Ausgerüstet
     }

@@ -15,22 +15,22 @@ const generalSchema = mongoose.Schema(
         },
         sex: {
             type: String,
-            required: [true, 'das Geschlecht einbegben']
+            required: [true, 'das Geschlecht nicht einbegben']
         },
         eyecolor: {
             type: String,
-            required: [true, 'die Augenfarbe einbegben']
+            required: [true, 'die Augenfarbe nicht einbegben']
         },    
         origin: {
             type: String,
-            required: [true, 'den Herkunft einbegben']
+            required: [true, 'den Herkunft nicht einbegben']
         },  
         more: {
             type: String,
         },  
         haircut: {
             type: String,
-            required: [true, 'die Frisur einbegben']
+            required: [true, 'die Frisur nicht einbegben']
         },   
     }
 )

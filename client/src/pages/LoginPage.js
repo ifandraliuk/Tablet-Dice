@@ -2,32 +2,22 @@ import React, {useState, useEffect} from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Container from 'react-bootstrap/Container'
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import { useNavigate, Link } from 'react-router-dom';
-import {login, reset} from '../features/auth/AuthSlice'
+import { useNavigate, } from 'react-router-dom';
+import {login, register,  reset} from '../features/auth/AuthSlice'
 import {useSelector, useDispatch} from 'react-redux'
-import {toast} from 'react-toastify';
-
+import Alert from 'react-bootstrap/Alert';
+import { getPlayer} from '../features/player/playerSlice';
 function Login() {
     const [formData, setFormData] = useState({name:"", pwd:""})
     const {name, pwd} = formData
+    const [registering, setRegistered] = useState(false)
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const {user, isLoading, isError, isSuccess, msg} = useSelector((state)=>state.auth)
-    
-    //styles
-    const loginContainer = {
-       // backgroundColor: "red",
-        marginTop: 5,
-        padding: 10,
-        display: "grid",
-        alignItems: "center",
-
-    }
+    const {user,registered, isLoading, isError, isSuccess, message} = useSelector((state)=>state.auth)
     
     const handleSubmit = e => {
         e.preventDefault()
+        dispatch(reset())
         const userData = {
             name,
             pwd,
@@ -37,16 +27,21 @@ function Login() {
 
     useEffect(()=>{
         if(isError) {
-            toast.error(msg)
+            
+            console.log(message, isError)
         }
-        if(isSuccess || user) {
+        if(( user) && !registered) {
+            dispatch(getPlayer())
             navigate('/player')
-        } else {
+        } else if( user && registered){
+            navigate("/register")
+        }
+            else {
             navigate('/')
         }
         // Set everything to false
-        dispatch(reset())
-    }, [user, isError, isSuccess, msg, navigate, dispatch])
+
+    }, [user,registered,  isError, isSuccess, message, navigate, dispatch])
 
     const onChange = e => {
         setFormData((prev) =>({
@@ -54,28 +49,43 @@ function Login() {
             [e.target.name]: e.target.value
         }))
     }
+
+    const handleRegister = e => {
+        dispatch(reset())
+        const userData = {
+            name,
+            pwd,
+        }
+        dispatch(register(userData))
+        if(isSuccess){
+            setRegistered(true)
+           
+        }
+    }
   return (
-    
-    <Container className="col-md-12 col-sm-12 col-lg-5 rounded mt-5 d-flex justify-content-center align-items-center bg-light">
+   
+    <div style={{backgroundImage:"url(/dragonlangs-landscape.svg)", backgroundSize:"cover", height: "100vh",
+}}>
+        <div style={{backgroundColor:"rgba(0, 0, 0, 0.6)", height: "100vh"}}> 
+    <Container style={{color:"white"}} className="col-md-12 col-sm-12 col-lg-5 d-flex align-items-center h-100 g-0">
         {/* style={loginContainer}*/}
-        <Row>
-            <Col>
-            <h4>Willkommen in Dragonlands!</h4>
-                <Form className="">
-                    <Form.Group className=''controlId='formName'>
-                        <Form.Label>Gib deinen Namen ein</Form.Label>
-                        <Form.Control name="name" type="text" placeholder='...' onChange={onChange} value={name}></Form.Control>
+            <Container className="justify-content-center border border-2 rounded">
+            <h2 className='text-center pt-5  border-bottom'><strong>Willkommen in den Dragonlands!</strong></h2>
+                <Form className="p-5">
+                    <Form.Group className='pb-2'controlId='formName'>
+                        <Form.Control name="name" type="text" placeholder='Name deines Charakters' onChange={onChange} value={name}></Form.Control>
                     </Form.Group>
                     <Form.Group className=''controlId='formPassword'>
-                        <Form.Label>Gib dein Passwort ein</Form.Label>
-                        <Form.Control name="pwd" type="password" placeholder='...' onChange={onChange} value={pwd}></Form.Control>
+                        <Form.Control name="pwd" type="password" placeholder='Passwort' onChange={onChange} value={pwd}></Form.Control>
                     </Form.Group>
+                    {isError && <Alert variant="danger">{message}</Alert>}
                     <Button  variant='dark mt-2 col-12' type="submit" onClick={handleSubmit}>Einloggen</Button>
-                    <Button as={Link} to="/register" variant='outline-dark mt-2 col-12'>Neuen Charakter erstellen</Button>
+                    <Button variant='outline-light mt-2 col-12' onClick={handleRegister}>Neuen Charakter erstellen</Button>
                 </Form>
-            </Col>
-        </Row>
+            </Container>
 </Container>
+</div>
+</div>
  )
 }
 

@@ -11,6 +11,36 @@ const getPlayer = async (token) => {
     }
     console.log('frontend request to get player info')
     const response = await axios.get(API_URL, config)
+    const localVit = JSON.parse(localStorage.getItem('vitality'))
+    const localSt = JSON.parse(localStorage.getItem('stamina'))
+    const localM = JSON.parse(localStorage.getItem('mana'))
+    const localS = JSON.parse(localStorage.getItem('spirit'))
+    if(!localVit){
+        localStorage.setItem("vitality", parseInt(response.data.attributes?.vitality*10))
+    }
+    if(!localSt){
+        localStorage.setItem("stamina", parseInt(response.data.attributes?.stamina*10))
+    }
+    if(!localM && response.data.attributes?.mana>0){
+        localStorage.setItem("mana", parseInt(response.data.attributes?.mana*10))
+    }
+    if(!localS && response.data.attributes?.spirit>0){
+        console.log("adding spirit")
+        localStorage.setItem("spirit", parseInt(response.data.attributes?.spirit*10))
+    }
+    return response.data
+}
+
+const levelUp = async (token) => {
+    console.log("frontend - create character")
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+
+    const response = await axios.put(API_URL + 'levelup', config )
+    console.log(response, response.data)
     return response.data
 }
 
@@ -27,6 +57,7 @@ const createAttributes = async (attributesData, token) => {
     console.log(response, response.data)
     return response.data
 }
+
 
 // Create general info
 const createGeneral = async (generalData, token) => {
@@ -104,8 +135,23 @@ const deleteItem = async (id, token) => {
     return response.data
 }
 
+
+const setEnchantment = async (enchantmentData, token) => {
+    console.log('frontend request to add an enchantment to item in users inventory')
+    console.log(token)
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+
+    const response = await axios.put(API_URL + 'enchantment', enchantmentData, config )
+    return response.data
+}
+
+
 const playerService = {
-    getPlayer, createAttributes, createGeneral, addClass, putTalent, toInventory, updateInventory, deleteItem,
+    getPlayer, levelUp, createAttributes, createGeneral, addClass, putTalent, toInventory, updateInventory, deleteItem, setEnchantment, 
 
 }
 

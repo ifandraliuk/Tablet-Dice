@@ -10,19 +10,19 @@ const { Types } = require('mongoose')
 // @route POST /users/
 // @access Public
 const registerUser =  asyncHandler( async (req, res) => {
-    const {name, pwd, check} = req.body
-    console.log(name, pwd, check)
-    if(!name || !pwd || !check){
-        res.status(400)
+    const {name, pwd} = req.body
+    console.log(name, pwd)
+    if(!name || !pwd){
+        res.status(400).json({message:'Bitte sowohl den Namen als auch das Passwort eingeben'})
         throw new Error('Bitte sowohl den Namen als auch zweimal das Passwort eingeben')
-    } else if (pwd !== check){
+    } else if (pwd !== pwd){
         res.status(400)
         throw new Error('Bitte überprüfe deine Passwortseingabe!')
     }
     //check if User already exist (by name)
     const findUser = await User.findOne({name})
     if(findUser){
-        res.status(400)
+        res.status(400).json({message:"Der Nutzer mit diesem Namen wurde  bereits erstellt"})
         throw new Error('Bitte einen anderen Namen wählen!')
     }
     // Hash pwd
@@ -43,7 +43,7 @@ const registerUser =  asyncHandler( async (req, res) => {
             token: generateToken(user._id)
         })
     } else {
-        res.status(400)
+        res.status(400).json({message: 'Bitte überprüfe deine Passwortseingabe!'})
         throw new Error('Bitte überprüfe deine Passwortseingabe!')
     }
 })
@@ -65,7 +65,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
         }) 
     }else {
-        res.status(400)
+        res.status(400).json({message:'Falsche Eingabe!'})
         throw new Error('Falsche Eingabe!')
         }
     

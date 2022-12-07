@@ -9,6 +9,7 @@ const register = async (userData) => {
     //axios storage data in it, check if not null
     if(response.data) {
         localStorage.setItem('user', JSON.stringify(response.data))
+        localStorage.setItem('registered', JSON.stringify(true))
     }
 
     return response.data
@@ -20,13 +21,16 @@ const login = async (userData) => {
     //axios storage data in it, check if not null
     if(response.data) {
         localStorage.setItem('user', JSON.stringify(response.data))
+        localStorage.removeItem('registered')
     }
 
     return response.data
 }
 
 const logout = () => {
-    localStorage.removeItem('user')
+    localStorage.removeItem("user")
+    localStorage.clear()
+    
 }
 
 const authService = {

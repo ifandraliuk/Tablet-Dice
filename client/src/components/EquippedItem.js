@@ -1,31 +1,51 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import Button from 'react-bootstrap/Button'
 import Figure from 'react-bootstrap/Figure';
-import Collapse from 'react-bootstrap/Collapse';
+import {useSelector, useDispatch} from 'react-redux';
+import Image from 'react-bootstrap/Image';
 import ListGroup from 'react-bootstrap/ListGroup';
-function EquippedItem({equipment}) {
-    const [toExpand, setExpand] = useState(false)
-    console.log(equipment)
-  return (
-    <>
-    {equipment?.name ? 
-    (
-    <>
-        <Button  aria-controls={`${equipment.genus}-info`} aria-expanded={toExpand} variant="light" onClick={()=>setExpand(toExpand => !toExpand)}>
-        <Figure ><Figure.Image className='mb-0' src={`/icons/${equipment.genus}xhdpi.png`}/></Figure>
-        </Button>
-        <Collapse in={toExpand}>
-            <ListGroup id={`${equipment.genus}-info`}>
-            <ListGroup.Item>{equipment.name}</ListGroup.Item>
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Popover from 'react-bootstrap/Popover';
+function EquippedItem(props) {
+  const {player, equipped, } = useSelector((state)=>state.player)
+  if(equipped && player){
+    const i = player &&  equipped?.findIndex(el=>el.category===props.category)
+    const eqId = equipped[i]?.equipment
+    const id = player?.inventory?.findIndex(el=>el._id===eqId)
+    //console.log(player?.inventory[player?.inventory.findIndex(el=>el._id===equipped[id?.equipment])])
+    if(id>=0){
+      const equipment = player?.inventory[id]
+      const {item, enchantment} = equipment
+      const place = ["Kopf", "Rücken", "Brust", "Haupthand", "Beine", "Füße"].includes(equipment?.item.genus) ? "left" : "right"
+      const fullInfo = (
+        equipment &&
+        <Popover id="full">
+          <Popover.Header bg="success">{item.name}</Popover.Header>
+          <Popover.Body>
+            <ListGroup>
+              {equipment.bonuses && <ListGroup.Item>{item?.bonuses && `Boni: ${item.bonuses}`}</ListGroup.Item>}
+              {enchantment?.bonuses && <ListGroup.Item>{`Verzauberung:  ${enchantment.bonuses}`}</ListGroup.Item>}
+              {equipment.dice &&<ListGroup.Item>{item?.dice &&`Widerstand: ${item.dice}`}</ListGroup.Item>}
+              {item.dice && <ListGroup.Item>{`${item.category === "Waffe" ? "Schaden" : "Widerstand"}: ${item.dice}`}</ListGroup.Item> }
+              <ListGroup.Item>{item?.value  &&`Rütungswert: ${item.value}`}</ListGroup.Item>
+              <ListGroup.Item>{item?.weight &&`Gewicht: ${item.weight}`}</ListGroup.Item>
             </ListGroup>
-        </Collapse>
+          </Popover.Body>
+        </Popover>
+      )
+      return (
+        <>
+    <OverlayTrigger trigger="click" placement={place} overlay={fullInfo}>
+        <Button variant="light" >
+          <Image className='mb-0' src={`/icons/${enchantment?.rarity ? enchantment.rarity : item.rarity}/${item.genus}xhdpi.png`}></Image>
+        </Button>
+    </OverlayTrigger>
     </>
-    ):(<><Figure><Figure.Image  className='mb-0' src="/icons/undefinedxhdpi.png"></Figure.Image></Figure></>)}
+    )
+      
+    } else return <Figure><Figure.Image src={`/icons/Undefinedxhdpi.png`}/></Figure>
+  } else return (<h6>is Loading..</h6>)
 
-
-    </>
-    
-  )
 }
 
 export default EquippedItem
