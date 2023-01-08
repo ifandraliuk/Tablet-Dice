@@ -30,6 +30,10 @@ function Attributes() {
       console.log(`is valid ${e.target.value}`)
     }else {
       console.log(`is not valid ${e.target.value}`)
+      const name = e.target.name
+      const value = 0
+      console.log(name, value)
+      dispatch(setAttr({name, value}))
     }
   }
 
@@ -41,7 +45,7 @@ function Attributes() {
             keys.map((key)=>(
               <Form.Group controlId={key} key={key}>
                 <Form.Label>{allAttributes[key]}</Form.Label>
-                <Form.Control type="number" name={key} onChange={onChange}></Form.Control>
+                <Form.Control type="number" name={key} onChange={onChange} defaultValue={0}></Form.Control>
               </Form.Group>
             ))
           }       

@@ -8,14 +8,16 @@ const UserTalents = require('../models/userTalentsModel')
 const Item = require('../models/itemsModel')
 const Inventory = require('../models/inventoryModel')
 const mongoose = require('mongoose')
+
+
 // @desc Get user data
 // @route GET /users/player
 // @access Private
 const getPlayer = asyncHandler(async (req, res) => {
     const user = await User.findById(req.user.id)
     .populate({path: 'userclass', select:'name category description abilities advantages', model: 'Userclass'}, )
-    .populate({path:'talents.talent',  model:'Talent', select:'category name dice'})
-    .populate({path:'inventory.item',  model:'Item', select:'_id name category dice value rarity type price weight bonuses genus'})
+    .populate({path:'talents.talent',  model:'Talent', select:'_id category name dice'})
+    .populate({path:'inventory.item',  model:'Item', select:'_id name category dice value rarity type price weight bonuses genus material'})
     //console.log(user.userclass.name)
     if(!user){
         res.status(500).json({message: 'Spieler nicht gefunden'})
@@ -25,27 +27,33 @@ const getPlayer = asyncHandler(async (req, res) => {
 })
 
 // @desc level up a character
-// @route PUT /player/levelup
+// @route PUT /player/updateLevel
 // @access Private
 
-const levelUp = asyncHandler(async (req, res)=>{
+const updateLevel = asyncHandler(async (req, res)=>{
     const user = await User.findById(req.user.id)
+    if(user){
+        console.log("user found!")
+    }
+    console.log("level up backend")
     if(!user){
         res.status(500).json({message: 'Spieler nicht gefunden'})
     }
+    console.log(user.level)
     user.level = user.level + 1
     if(user.level % 5 === 0){
+        console.log("1 Attributespunkt freigeschaltet!")
         user.pointsLeft = user.pointsLeft + 1
     }
     const doc = await user.save()
     if(!doc){
         res.status(400).json({message: 'Levelup misslungen'})
     }
-    res.status(200).json(doc.level)
+    res.status(200).json({level: doc.level, pointsLeft: doc.pointsLeft})
 })
 
 // @desc Add infos to a new character
-// @route POST /player/create
+// @route PUT /player/create
 // @access Private
 const createCharacter = asyncHandler(async (req, res) => {
     console.log("uploading data to a new character")
@@ -58,6 +66,7 @@ const createCharacter = asyncHandler(async (req, res) => {
     console.log(req.body.attributes)
     user.level = 1
     user.pointsLeft = 70
+    user.money = [0,0,0]
     //adding userclass
     if(!req.body.userclass){
         res.status(400).json({message: 'Bitte wähle eine Spezialisation'})
@@ -99,114 +108,44 @@ const createCharacter = asyncHandler(async (req, res) => {
  
 })
 
-// @desc Set user attributes
-// @route GET /player/attributes
+// @desc update money balance
+// @route PUT /player/balance
 // @access Private
-const setAttributes = asyncHandler( async (req, res)=>{
-    console.log('creating new attribute for user')
-    if(!req.user) {
-        res.status(400).json({message: "Nicht autorisiert"})
-        console.log("not authorized...")
-        throw new Error('Nicht autoriziert')  
-    }
-
-    const attr = await Attribute.create({
-        strength: req.body.strength,
-        dexterity: req.body.dexterity,
-        intelligent: req.body.intelligent,
-        vitality: req.body.vitality,    
-        stamina: req.body.stamina,  
-        charisma: req.body.charisma,  
-        mana: req.body.mana,
-        spirit: req.body.spirit,
-    })
-    console.log(attr)
-    if(attr){
-        const userToUpdate = await User.findById(req.user.id)
-        if(userToUpdate){
-            userToUpdate.attributes = attr
-            const doc = await userToUpdate.save()
-            console.log("backend-attribuets were added to user")
-            res.status(200).json(doc)
-        } else {
-            res.status(400)
-            throw new Error('Impossible to add info to user')  
-        }
-    }
-})
-
-// @desc Set user general
-// @route GET /player/general
-// @access Private
-const getGeneral = asyncHandler( async (req, res) => {
+const updateBalance = asyncHandler(async (req,res)=> {
     const user = await User.findById(req.user.id)
-    if(!user){
-        res.status(400)
-        throw new Error("User not found")        
-    }
-    if(user.general){
-        console.log('general info already added')
-        res.status(200).json(user.general)
-    }  else {
-        res.status(200).json({age:0, haircolor:''})
-    }    
-})
-
-// @desc Set user general info
-// @route GET /player/general
-// @access Private
-const setGeneral = asyncHandler( async (req, res) => {
-     if(!req.body.age){
-        res.status(400)
-        throw new Error("Falsch! Das Feld darf nicht leer sein")
-    }
-    const gen = await General.create({
-        kind: req.body.kind,
-        age: req.body.age,
-        haircolor: req.body.haircolor,
-        sex: req.body.sex,
-        eyecolor: req.body.eyecolor,
-        origin: req.body.origin,
-        more: req.body.more,
-        haircut: req.body.haircut
-    }) 
-    const usertoUpdate = await User.findById(req.user.id)
-    if(gen && usertoUpdate){
-        console.log(usertoUpdate)
-        usertoUpdate.general = gen
-        usertoUpdate.level = req.body.level
-        const doc = await usertoUpdate.save()
-        res.status(200).json(doc)
-    } else {
-        console.log('error by creating collections')
-        res.status(400)
-        throw new Error("Falsch! Das Feld darf nicht leer sein")
-    }    
-})
-
-// @desc Add Class to user
-// @route POST /player/uclass
-// @access Private
-const addClass = asyncHandler( async (req, res) => {
+    if(!user)[
+        res.status(400).json({message:"Nutzer nicht gefunden"})
+    ]
     console.log(req.body)
-    console.log(req.body.name)
-    const userclass = await Userclass.findOne({name: req.body.name})
-    if (!userclass){
-        res.status(400).json({message: "Die Klasse wurde noch nicht hinzugefügt"})
-        throw new Error("Die Klasse wurde noch nicht hinzugefügt")
+    user.money = req.body
+    const doc = await user.save()
+    if(!doc){
+        res.status(400).json({message: 'Dein Geldbalance wurde nicht geändert'})
     }
+    res.status(200).json(doc.money)
+})
 
-     if(!req.user){
-        res.status(401).json({message: "Nicht berechtigt"})
-    }
 
-    const user = await User.findByIdAndUpdate(req.user.id, {userclass: userclass._id}, {new:true})
-    if(!user){
-        res.status(401).json({message: "Update nicht erfolgreich"})
+// @desc update users attribute
+// @route PUT player/attributes/:attr
+// @access Private
+const updateAttribute = asyncHandler(async (req,res)=>{
+    const user = await User.findById(req.user.id)
+    if(!user)[
+        res.status(400).json({message:"Nutzer nicht gefunden"})
+    ]
+    if(user.attributes && user.attributes[req.params.attr]){
+       const val =  user.attributes[req.params.attr] 
+       console.log("Old value: ",val)
+       user.attributes[req.params.attr] = val + 1
+    
+       const doc = await user.save()
+       console.log("updating attribute ", req.params.attr)
+       if(!doc){
+        res.status(400).json({message: "Update fehlgesclagen"})
+       }
+       res.status(200).json({attr: req.params.attr, value: doc.attributes[req.params.attr]})
     }
-    res.status(200).json(user)
-    //const toUpdate = await Talent.findByIdAndUpdate(req.params.id, req.body, {new: true,})
-    //res.status(200).json(toUpdate)
 })
 
 const uploadPicture = asyncHandler(async (req, res)=>{
@@ -233,7 +172,8 @@ const uploadPicture = asyncHandler(async (req, res)=>{
 
 })
 
-const putTalent = asyncHandler(async (req, res)=>{
+const addTalent = asyncHandler(async (req, res)=> {
+    console.log(req.body.point, req.body.name)
     if(!req.body.point || !req.body.name){
         res.status(400)
         throw new Error('Bitte überprüfe deine Eingabe!')
@@ -242,36 +182,97 @@ const putTalent = asyncHandler(async (req, res)=>{
     if(!talent){
         res.status(400)
         throw new Error('Talent nicht gefunden...')        
+    }    
+    console.log("Neues talent:", req.body.name)
+    const userTalent = await UserTalents.create({
+        talent: talent._id,
+        points: req.body.point,
+    })
+    const utalent = await UserTalents.findOneAndUpdate({_id:mongoose.Types.ObjectId()}, {
+        talent: talent._id,
+        points:req.body.point
+    }, {
+        new: true,
+        upsert: true,
+        runValidators: true,
+        setDefaultsOnInsert: true,
+        populate: {path:'talent',  model:'Talent', select:'_id category name dice'}
+    })
+    console.log(utalent)
+    if(!utalent){
+        res.status(400)
+        throw new Error('Talent konnte nicht erstellt werden...') 
+    }
+    const created = await User.findByIdAndUpdate(req.user.id, {$push:{talents: utalent}}, {new: true})
+    if(!created){
+        res.status(400)
+        throw new Error('Talent konnte nicht erstellt werden...') 
+    }
+    console.log("Talent wurde erstellt und hinzgefügt")
+    res.status(200).json(utalent)
+})
+
+
+const putTalent = asyncHandler(async (req, res)=>{
+    console.log(req.body.point, req.body.id)
+    if(!req.body.point || !req.body.id){
+        res.status(400)
+        throw new Error('Bitte überprüfe deine Eingabe!')
+    }
+    //const talent = await Talent.findById(req.body.id)
+    const talent = await UserTalents.findByIdAndUpdate(req.body.id, {points: req.body.point}, {new:true}).populate({path:'talent',  model:'Talent', select:'_id category name dice'})
+    const user = await User.findById(req.user.id)
+    console.log(talent)
+    if(!talent){
+        res.status(500)
+        throw new Error('Talent nicht gefunden...')        
     }
     const updated = await User.findOneAndUpdate({
         user: req.user.id,
-        'talents.talent': talent._id
+        //'talents.talent': talent._id
+        'talents._id': talent._id
     },
     {
         $set: {
-            'talents.$.points': parseInt(req.body.point)
+            'talents.$': talent
+        }
+    }, {new: true}).populate({path:'talents.talent',  model:'Talent', select:'_id category name dice'}) 
+    if(!updated){
+        res.status(400).json({message:"Es war unmöglich, diesen Talent zu updaten"})
+    }
+    res.status(200).json(talent)
+})
+
+// @desc Remove a talent from users inventory
+// @route DELETE /player/talents/:id
+// @access Private
+const removeTalent = asyncHandler(async (req, res)=>{
+
+    if(!req.params.id){
+        res.status(400)
+        throw new Error('Bitte überprüfe deine Eingabe!')
+    }
+    const talent = await UserTalents.findById(req.params.id)
+    console.log(talent)
+    await talent.remove()
+    const u = await User.findById(req.user.id)
+    const removed = await User.findByIdAndUpdate({
+        _id: u._id,
+        'talents._id': req.params.id
+    },
+    {
+        $pull: {
+            'talents': {_id:req.params.id}
         }
     }, {new: true})
-    if(!updated){
-        const userTalent = await UserTalents.create({
-            talent: talent._id,
-            points: req.body.point,
-        })
-        if(!userTalent){
-            res.status(400)
-            throw new Error('Talent konnte nicht erstellt werden...') 
-        }
-        const created = await User.findByIdAndUpdate(req.user.id, {$push:{talents: userTalent}}, {new: true}) 
-        if(!created){
-            res.status(400)
-            throw new Error('Talent konnte nicht erstellt werden...') 
-        }
-        console.log("Talent wurde erstellt und hinzgefügt")
-    } else {
-        console.log("Talent was updated")
+    
+    if(!removed){
+        res.status(400).json({message:"Das Löschen hat nicht geklappt!"})
+        throw new Error('Talent konnte nicht erstellt werden...') 
     }
-    res.status(200)
+    res.status(200).json({id: req.params.id})
 })
+
 
 // @desc Add item to users inventory
 // @route POST /player/inventory
@@ -385,6 +386,7 @@ const deleteItem =  asyncHandler(async (req, res) => {
     res.status(200).json({id:req.params.id})
 })
 
+
 const setEnchantment = asyncHandler(async (req, res)=>{
     console.log(req.body)
     console.log(req.user.id)
@@ -417,16 +419,15 @@ const setEnchantment = asyncHandler(async (req, res)=>{
 module.exports = {
     getPlayer, 
     createCharacter,
-    levelUp,
-    setAttributes, 
-    getGeneral, 
-    setGeneral,
-    addClass, 
-    /*postTalent, */
+    updateLevel,
+    updateAttribute,
+    updateBalance,
     toInventory,
     updateInventory,
     deleteItem,
     setEnchantment,
+    addTalent,
     putTalent,
+    removeTalent,
     uploadPicture,
 }

@@ -4,6 +4,7 @@ import playerReducer from '../features/player/playerSlice'
 import talentReducer from '../features/talent/talentSlice'
 import itemReducer from '../features/item/itemSlice'
 import creationReducer from '../features/creation/creationSlice';
+import diaryReducer from '../features/diary/diarySlice';
 export const store = configureStore({
     reducer: {
         creation: creationReducer,
@@ -11,5 +12,6 @@ export const store = configureStore({
         player: playerReducer,
         talents: talentReducer,
         items: itemReducer,
+        diaries: diaryReducer,
     },
 })

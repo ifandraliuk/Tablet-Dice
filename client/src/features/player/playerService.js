@@ -10,11 +10,13 @@ const getPlayer = async (token) => {
         }
     }
     console.log('frontend request to get player info')
-    const response = await axios.get(API_URL, config)
+    console.log(config)
     const localVit = JSON.parse(localStorage.getItem('vitality'))
     const localSt = JSON.parse(localStorage.getItem('stamina'))
     const localM = JSON.parse(localStorage.getItem('mana'))
     const localS = JSON.parse(localStorage.getItem('spirit'))
+    
+    const response = await axios.get(API_URL, config)
     if(!localVit){
         localStorage.setItem("vitality", parseInt(response.data.attributes?.vitality*10))
     }
@@ -28,65 +30,64 @@ const getPlayer = async (token) => {
         console.log("adding spirit")
         localStorage.setItem("spirit", parseInt(response.data.attributes?.spirit*10))
     }
+    
     return response.data
 }
 
-const levelUp = async (token) => {
-    console.log("frontend - create character")
+const updateLevel = async (token) => {
+    console.log("frontend - level up")
     const config = {
         headers: {
             Authorization: `Bearer ${token}`
         }
     }
-
-    const response = await axios.put(API_URL + 'levelup', config )
+    console.log(config)
+    const response = await axios.put(API_URL + 'levelup',null, config)
     console.log(response, response.data)
     return response.data
 }
-
-// Create attributes
-const createAttributes = async (attributesData, token) => {
-    console.log("frontend - create attribute")
+// put talent to user
+const updateAttribute = async (attributeData, token) => {
+    console.log('frontend request to put a talent to user')
+    console.log(attributeData)
     const config = {
         headers: {
             Authorization: `Bearer ${token}`
         }
     }
 
-    const response = await axios.post(API_URL + 'attributes', attributesData, config )
-    console.log(response, response.data)
+    const response = await axios.put(API_URL + 'attributes/' + attributeData, null, config )
     return response.data
 }
 
-
-// Create general info
-const createGeneral = async (generalData, token) => {
-    console.log("frontend - create general info for user")
+// put talent to user
+const addTalent = async (talentData, token) => {
+    console.log('frontend request to put a talent to user')
     const config = {
         headers: {
             Authorization: `Bearer ${token}`
         }
     }
 
-    const response = await axios.post(API_URL + 'general', generalData, config )
+    const response = await axios.post(API_URL + 'talents', talentData, config )
     return response.data
 }
-
-// Post class to user
-const addClass = async (classData, token) => {
-    console.log('frontend request to post a class to user')
+// put talent to user
+const removeTalent = async (talentData, token) => {
+    console.log('frontend request to put a talent to user')
     const config = {
         headers: {
             Authorization: `Bearer ${token}`
         }
     }
 
-    const response = await axios.post(API_URL + 'uclass', classData, config )
+    const response = await axios.delete(API_URL + 'talents/'+ talentData, config )
     return response.data
 }
 
-// Update class to user
-const putTalent = async (talentData, token) => {
+
+// put talent to user
+const updateTalent = async (talentData, token) => {
     console.log('frontend request to put a talent to user')
     const config = {
         headers: {
@@ -97,7 +98,7 @@ const putTalent = async (talentData, token) => {
     const response = await axios.put(API_URL + 'talents', talentData, config )
     return response.data
 }
-// Put item to inventory class to user
+// Put item from items db to users inventory 
 const toInventory = async (itemData, token) => {
     console.log('frontend request to post an item to users inventory')
     const config = {
@@ -110,7 +111,7 @@ const toInventory = async (itemData, token) => {
     return response.data
 }
 
-// Put item to inventory class to user
+// update item in users inventory
 const updateInventory = async (inventoryData, token) => {
     console.log('frontend request to update an item to users inventory')
     const config = {
@@ -122,7 +123,21 @@ const updateInventory = async (inventoryData, token) => {
     const response = await axios.put(API_URL + 'inventory', inventoryData, config )
     return response.data
 }
-// Put item to inventory class to user
+
+// update money balance
+const newBalance = async (moneyData, token) => {
+    console.log('frontend request to update money')
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+
+    const response = await axios.put(API_URL + 'balance', moneyData, config )
+    return response.data
+}
+
+// delete item from inventory
 const deleteItem = async (id, token) => {
     console.log('frontend request to delete an item to users inventory')
     const config = {
@@ -151,7 +166,7 @@ const setEnchantment = async (enchantmentData, token) => {
 
 
 const playerService = {
-    getPlayer, levelUp, createAttributes, createGeneral, addClass, putTalent, toInventory, updateInventory, deleteItem, setEnchantment, 
+    getPlayer, updateLevel, newBalance, updateAttribute,addTalent,removeTalent, updateTalent, toInventory, updateInventory, deleteItem, setEnchantment, 
 
 }
 

@@ -14,6 +14,7 @@ function InfoListComponent(props) {
     {props.item.dice && <ListGroup.Item>{`${props.item.category === "Waffe" ? "Schaden" : "Widerstand"}: ${props.item.dice}`}</ListGroup.Item> }
     <ListGroup.Item>{`${props.item.category === "Waffe" ?  "Reichweite" : "Rütungswert"}: ${props.item.value}`}</ListGroup.Item>
     <ListGroup.Item>{`Gewicht: ${props.item.weight}`}</ListGroup.Item>
+    <ListGroup.Item>{`Material: ${props.item.material}`}</ListGroup.Item>
   </ListGroup>
   )
 }

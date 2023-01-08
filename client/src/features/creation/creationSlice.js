@@ -90,10 +90,13 @@ export const creationSlice = createSlice({
         },
         countTotal: (state)=>{
             const points = Object.values(state.attributes)
+            console.log(points)
             let sum = points.reduce(function(a, b){
                 return parseInt(a) + parseInt(b);
               });
+              console.log(sum)
               state.attrTotal = 70 - sum
+              console.log("70 - sum=",sum, state.attrTotal)
         }
     },
     extraReducers: (builder) => {

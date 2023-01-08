@@ -9,6 +9,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import {decreaseBar} from '../features/player/playerSlice'
 import {useSelector, useDispatch} from 'react-redux';
+import AbilityCard from './AbilityCard';
 
 
 
@@ -25,31 +26,30 @@ function ClassList() {
   const dispatch = useDispatch()
 
   const useAbility = e => {
-    const abilityIndex = e.target.name
-    const category = abilities[abilityIndex]?.type
-    const value = abilities[abilityIndex]?.price
+    console.log("I was called")
+    console.log(e.target.name)
+    const ability = abilities?.find(el=>el._id===e.target.name)
+    console.log(ability)
+    //const abilityIndex = e.target.name
+    const category =ability.type
+    const value = ability.price
     dispatch(decreaseBar({category,value}))
   }
   return (
-    <Container>
+    <Container style={{color:"black"}}>
         <Tabs justify>
           {Object.keys(counts).map((el)=>(
             <Tab eventKey={el} title={el} key={el}>
-              <Row className="mt-3 mb-2">
+              <div  className=" mt-3 mb-2 ">
+                <div className="row">
                 {Object.keys(abilities).map((ind)=>{                
                   return abilities[ind].specialization === el && (            
-                <Col className={counts[el] > 3 ? 'col-md-3 col-12': 'col-md-4 col-12'} key={abilities[ind].name}>
-                  <Card className='h-100' >
-                    <Card.Header as="h6">{abilities[ind].name}</Card.Header>
-                    <Card.Body className="d-flex-column">
-                      <Row className="border-bottom p-2">{abilities[ind].description}</Row>
-                      <Row className=""><Col><FontAwesomeIcon icon={faHandFist} /> {`${abilities[ind].price} ${abilities[ind].type}`}</Col><Col></Col></Row>
-                      <Row className="justify-content-end"><Button size="sm" variant="outline-dark" name={ind} onClick={useAbility}>Verwenden</Button></Row>
-                    </Card.Body>    
-                  </Card>
-                </Col>
+                <div className={counts[el] > 3 ? 'col col-md-3 col-12': 'col-md-4 col-12'} key={abilities[ind].name}>
+                  <AbilityCard key={abilities[ind]._id} ability={abilities[ind]} userclass={player?.userclass?._id} useAbility={useAbility}/>
+                </div>
                 )})}
-            </Row>
+            </div>
+            </div>
             </Tab>
           ))}        
         </Tabs>

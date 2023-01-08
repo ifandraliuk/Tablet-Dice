@@ -6,6 +6,7 @@ console.log(user)
 const registered = JSON.parse(localStorage.getItem('registered'))
 const initialState = {
     user: user ? user : null,
+    loggedIn: false,
     registered: registered ? registered : false,
     isError: false, 
     isSuccess: false,
@@ -86,15 +87,18 @@ export const authSlice = createSlice({
             state.isLoading = false
             state.isSuccess = true
             state.user = action.payload
+            state.loggedIn = true
         })
         .addCase(login.rejected, (state, action)=>{
             state.isLoading = false
             state.isError = true
             state.message = action.payload
             state.user = null
+            state.loggedIn = false
         })
         .addCase(logout.fulfilled, (state)=>{
             state.user = null
+            state.loggedIn = false
         })
     }
 })

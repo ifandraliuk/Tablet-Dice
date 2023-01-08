@@ -6,7 +6,6 @@ const stamina = JSON.parse(localStorage.getItem('stamina'))
 const mana = JSON.parse(localStorage.getItem('mana'))
 const spirit = JSON.parse(localStorage.getItem('spirit'))
 const equippedItems = JSON.parse(localStorage.getItem('equippedItems'))
-console.log("spirit local", spirit)
 console.log("vitality local", vitality)
 const initialState = {
     player: [],
@@ -16,7 +15,7 @@ const initialState = {
        mana: mana ? mana : 0, 
        spirit: spirit ? spirit : 0,
     },
-    
+    playerDataLoaded: false,
     equipped: equippedItems ? equippedItems : [],
     armor: 0,
     bonis: [],
@@ -46,11 +45,12 @@ export const getPlayer = createAsyncThunk('player/get', async(_, thunkAPI)=>{
     }
 })
 
-// Create new character
-export const levelUp = createAsyncThunk('player/levelup/put', async(_, thunkAPI)=>{
+// update level up
+export const updateLevel = createAsyncThunk('player/levelup/putAll', async(_, thunkAPI)=>{
     try {
         const token = thunkAPI.getState().auth.user.token
-        return await playerService.levelUp(token)
+        console.log(token)
+        return await playerService.updateLevel(token)
     } catch (error) {
         const msg = 
         (error.response && 
@@ -63,47 +63,12 @@ export const levelUp = createAsyncThunk('player/levelup/put', async(_, thunkAPI)
     }
 })
 
-// Post user attributes 
-export const createAttributes = createAsyncThunk('player/attributes/create', async(attributesData, thunkAPI)=> {
-    try {
-        const token = thunkAPI.getState().auth.user.token
-        console.log('frontend - player/attributes/create add attributes to user')
-        console.log(token, attributesData)
-        return await playerService.createAttributes(attributesData, token)
-    } catch (error) {
-        const msg = 
-        (error.response && 
-            error.response.data && 
-            error.response.data.message) || 
-            error.message || 
-            error.toString()
-            console.log((error.message))
-        return thunkAPI.rejectWithValue(msg)
-    }
-})
-
-//Create general info
-export const createGeneral = createAsyncThunk('player/general/create', async(generalData, thunkAPI)=> {
-    try {
-        const token = thunkAPI.getState().auth.user.token
-        console.log('frontend - player/general/create add general info to user')
-        return await playerService.createGeneral(generalData, token)
-    } catch (error) {
-        const msg = 
-        (error.response && 
-            error.response.data && 
-            error.response.data.message) || 
-            error.message || 
-            error.toString()
-        return thunkAPI.rejectWithValue(msg)
-    }
-})
-
 // Posting a class to user
-export const addClass = createAsyncThunk('player/classes/create', async(classData, thunkAPI)=>{
+export const updateAttribute = createAsyncThunk('player/attributes/putAll', async(attributeData, thunkAPI)=>{
     try {
         const token = thunkAPI.getState().auth.user.token
-        return await playerService.addClass(classData, token)        
+        console.log(token, attributeData)
+        return await playerService.updateAttribute(attributeData, token)        
     } catch (error) {
         const msg = 
         (error.response && 
@@ -114,11 +79,26 @@ export const addClass = createAsyncThunk('player/classes/create', async(classDat
         return thunkAPI.rejectWithValue(msg)        
     }
 })
-// Posting a class to user
-export const putTalent = createAsyncThunk('player/talents/putAll', async(talentData, thunkAPI)=>{
+// Posting a talent to user
+export const addTalent = createAsyncThunk('player/talents/post', async(talentData, thunkAPI)=>{
     try {
         const token = thunkAPI.getState().auth.user.token
-        return await playerService.putTalent(talentData, token)        
+        return await playerService.addTalent(talentData, token)        
+    } catch (error) {
+        const msg = 
+        (error.response && 
+            error.response.data && 
+            error.response.data.message) || 
+            error.message || 
+            error.toString()
+        return thunkAPI.rejectWithValue(msg)        
+    }
+})
+// Posting a talent to user
+export const removeTalent = createAsyncThunk('player/talents/delete', async(talentData, thunkAPI)=>{
+    try {
+        const token = thunkAPI.getState().auth.user.token
+        return await playerService.removeTalent(talentData, token)        
     } catch (error) {
         const msg = 
         (error.response && 
@@ -130,7 +110,41 @@ export const putTalent = createAsyncThunk('player/talents/putAll', async(talentD
     }
 })
 
-export const toInventory = createAsyncThunk('player/inventory/post', async(itemData, thunkAPI)=>{
+
+
+// Updating users talent
+export const updateTalent = createAsyncThunk('player/talents/putAll', async(talentData, thunkAPI)=>{
+    try {
+        const token = thunkAPI.getState().auth.user.token
+        return await playerService.updateTalent(talentData, token)        
+    } catch (error) {
+        const msg = 
+        (error.response && 
+            error.response.data && 
+            error.response.data.message) || 
+            error.message || 
+            error.toString()
+        return thunkAPI.rejectWithValue(msg)        
+    }
+})
+
+// Posting a class to user
+export const newBalance = createAsyncThunk('player/balance/putAll', async(moneyData, thunkAPI)=>{
+    try {
+        const token = thunkAPI.getState().auth.user.token
+        return await playerService.newBalance(moneyData, token)        
+    } catch (error) {
+        const msg = 
+        (error.response && 
+            error.response.data && 
+            error.response.data.message) || 
+            error.message || 
+            error.toString()
+        return thunkAPI.rejectWithValue(msg)        
+    }
+})
+
+export const toInventory = createAsyncThunk('player/inventory/postAll', async(itemData, thunkAPI)=>{
     try {
         const token = thunkAPI.getState().auth.user.token
         return await playerService.toInventory(itemData, token)        
@@ -194,18 +208,26 @@ export const playerSlice = createSlice({
     initialState,
     reducers: {
         reset: (state) => initialState,
+        playerLoaded: (state, {payload})=>{
+            console.log("reducer: player data was loaded? ", payload)
+            state.playerDataLoaded = payload.value
+            console.log(state.playerDataLoaded)
+        },
         increaseBar: (state, {payload})=>{
             const newValue = parseInt(state.bars[payload.category] + payload.value)
-            localStorage.setItem(payload.category, newValue)
-            state.bars[payload.category] = newValue
-            console.log(state.bars[payload.category])
+            if(newValue <= state.player?.attributes[payload.category]*10){
+                localStorage.setItem(payload.category, newValue)
+                state.bars[payload.category] = newValue
+                console.log(state.bars[payload.category], localStorage)
+            }
+
         },
         decreaseBar: (state, {payload})=>{
             const newValue = parseInt(state.bars[payload.category] - payload.value)
             if(newValue >= 0 && newValue<=state.player?.attributes[payload.category]*10){
                 localStorage.setItem(payload.category, newValue)
                 state.bars[payload.category] = newValue
-                console.log(state.bars[payload.category])
+                console.log(state.bars[payload.category], localStorage)
             }
 
         },
@@ -231,22 +253,27 @@ export const playerSlice = createSlice({
         filterEquipment: (state)=> {  
             state.equipmentError = {variant:"", msg:""}
                 //console.log("already created")
+                //LENGTH IS NOT GOOD FOR JUDGING 
+                const localEquipment = JSON.parse(localStorage.getItem("equippedItems"))
                 const equippedInventory = state.player.inventory?.filter(el=>el.status==="Ausgerüstet").length
-                const equippedCashed = state.equipped?.filter(el=>el.equipment).length
+                const equippedCashed = state.equipped?.filter(el=>localEquipment?.includes(el.equipment)).length
+                console.log(equippedCashed)
             if(equippedInventory === equippedCashed){
+                console.log("casche: ", equippedCashed)
             } else {
                 console.log("no casched equipment found")
-                const filtered = state.player.inventory?.filter(el=>el.status==="Ausgerüstet")
-                state.equipped = [
-                    {category: "Kopf", equipment: filtered[filtered.findIndex(el=>el.item.genus==="Kopf")]?._id},
-                    {category: "Beine", equipment: filtered[filtered.findIndex(el=>el.item.genus==="Beine")]?._id},
-                    {category: "Hals", equipment: filtered[filtered.findIndex(el=>el.item.genus==="Hals")]?._id}, 
-                    {category: "Rücken", equipment: filtered[filtered.findIndex(el=>el.item.genus==="Rücken")]?._id},
-                    {category: "Brust", equipment: filtered[filtered.findIndex(el=>el.item.genus==="Brust")]?._id},
-                    {category: "Füße", equipment: filtered[filtered.findIndex(el=>el.item.genus==="Füße")]?._id},    
-                    {category: "Arme", equipment: filtered[filtered.findIndex(el=>el.item.genus==="Arme")]?._id},
-                    {category: "Hüfte", equipment: filtered[filtered.findIndex(el=>el.item.genus==="Hüfte")]?._id},
-                    {category: "Finger", equipment: filtered[filtered.findIndex(el=>el.item.genus==="Finger")]?._id},    
+                const filtered = state.player?.inventory?.filter(el=>el.status==="Ausgerüstet")
+                console.log(filtered)
+              state.equipped = [
+                    {category: "Kopf", equipment: filtered[filtered?.findIndex(el=>el.item.genus==="Kopf")]?._id},
+                    {category: "Beine", equipment: filtered[filtered?.findIndex(el=>el.item.genus==="Beine")]?._id},
+                    {category: "Hals", equipment: filtered[filtered?.findIndex(el=>el.item.genus==="Hals")]?._id}, 
+                    {category: "Rücken", equipment: filtered[filtered?.findIndex(el=>el.item.genus==="Rücken")]?._id},
+                    {category: "Brust", equipment: filtered[filtered?.findIndex(el=>el.item.genus==="Brust")]?._id},
+                    {category: "Füße", equipment: filtered[filtered?.findIndex(el=>el.item.genus==="Füße")]?._id},    
+                    {category: "Arme", equipment: filtered[filtered?.findIndex(el=>el.item.genus==="Arme")]?._id},
+                    {category: "Hüfte", equipment: filtered[filtered?.findIndex(el=>el.item.genus==="Hüfte")]?._id},
+                    {category: "Finger", equipment: filtered[filtered?.findIndex(el=>el.item.genus==="Finger")]?._id},    
                 ]
                 let weapons = []
                 let shield = []
@@ -313,20 +340,24 @@ export const playerSlice = createSlice({
         },
         getArmor: (state) => {
             let armor = 0
+            console.log("get armor reducer")
+            
             if(state.equipped && state.player.inventory){
                 state.equipped?.forEach(element=>{
                     const item = state.player?.inventory.find(el=> element.equipment=== el._id)?.item
+                    console.log(item)
                     if(item && item.category.toString()==="Rüstung"){
                         armor += item.value
          
                     }
                 })
-                    state.armor = armor
+                state.armor = armor
             }          
 
         },
         getBonis: (state)=>{
             let bonis = []
+            console.log("getting bonis")
             if(state.equipped && state.player.inventory){
                 state.equipped?.forEach(element=>{
                     const el = state.player?.inventory.find(el=> element.equipment=== el._id)
@@ -356,8 +387,8 @@ export const playerSlice = createSlice({
             state.bars = {
                 vitality: vitality>0 ? vitality : state.player?.attributes.vitality * 10,
                 stamina: stamina>0 ? stamina : state.player?.attributes.stamina * 10,
-                mana: mana>0 ? mana : state.player?.attributes.mana * 10,
-                spirit: spirit>0 ? spirit : state.player?.attributes.spirit * 10,
+                mana: mana>0 ? mana : state.player?.attributes?.mana * 10,
+                spirit: spirit>0 ? spirit : state.player?.attributes?.spirit * 10,
             }
         })
         .addCase(getPlayer.rejected, (state, action)=> {
@@ -365,53 +396,52 @@ export const playerSlice = createSlice({
             state.isError = true
             state.message= action.payload
         })
-        .addCase(levelUp.pending, (state)=>{
+        .addCase(updateLevel.pending, (state)=>{
             state.isLoading = true
+            state.isError = false
+            state.isSuccess = false
         })
-        .addCase(levelUp.fulfilled, (state, action)=> {
+        .addCase(updateLevel.fulfilled, (state, action)=> {
             state.isLoading = false
             state.isSuccess = true
-            state.player.level = action.payload
+            state.player.level = action.payload.level
+            state.player.pointsLeft = action.payload.pointsLeft
         })
-        .addCase(levelUp.rejected, (state, action)=> {
+        .addCase(updateLevel.rejected, (state, action)=> {
+            state.isLoading = false
+            state.isError = true
+            state.isSuccess = false
+            state.message= action.payload
+        })
+        .addCase(updateAttribute.pending, (state)=>{
+            state.isLoading = true
+            state.isError = false
+            state.isSuccess = false
+        })
+        .addCase(updateAttribute.fulfilled, (state, action)=> {
+            state.isLoading = false
+            state.isSuccess = true
+            state.isError = false
+            console.log(action.payload)
+            state.player.attributes[action.payload.attr] = action.payload.value
+        })
+        .addCase(updateAttribute.rejected, (state, action)=> {
             state.isLoading = false
             state.isError = true
             state.message= action.payload
         })
-        .addCase(createAttributes.pending, (state)=>{
+        .addCase(newBalance.pending, (state)=>{
             state.isLoading = true
+            state.isError = false
+            state.isSuccess = false
         })
-        .addCase(createAttributes.fulfilled, (state, action)=> {
+        .addCase(newBalance.fulfilled, (state, action)=> {
             state.isLoading = false
             state.isSuccess = true
-            //state.player.attributes = action.payload
+            state.isError = false
+            state.player.money = action.payload
         })
-        .addCase(createAttributes.rejected, (state, action)=> {
-            state.isLoading = false
-            state.isError = true
-            state.message= action.payload
-        })
-        .addCase(createGeneral.pending, (state)=>{
-            state.isLoading = true
-        })
-        .addCase(createGeneral.fulfilled, (state, action)=> {
-            state.isLoading = false
-            state.isSuccess = true
-           // state.general = action.payload
-        })
-        .addCase(createGeneral.rejected, (state, action)=> {
-            state.isLoading = false
-            state.isError = true
-            state.message = action.payload
-        })
-        .addCase(addClass.pending, (state)=>{
-            state.isLoading = true
-        })
-        .addCase(addClass.fulfilled, (state, action)=> {
-            state.isLoading = false
-            state.isSuccess = true
-        })
-        .addCase(addClass.rejected, (state, action)=> {
+        .addCase(newBalance.rejected, (state, action)=> {
             state.isLoading = false
             state.isError = true
             state.message = action.payload
@@ -455,16 +485,58 @@ export const playerSlice = createSlice({
             state.isError = true
             state.message = action.payload
         }) 
-        .addCase(putTalent.pending, (state)=>{
+        .addCase(addTalent.pending, (state)=>{
             state.isLoading = true
+            state.isSuccess = false
+            state.isError = false
         })
-        .addCase(putTalent.fulfilled, (state, action)=> {
+        .addCase(addTalent.fulfilled, (state, action)=> {
             state.isLoading = false
             state.isSuccess = true
+            //state.player.talents = action.payload
+            state.player.talents.push(action.payload)
+            state.isError = false
         })
-        .addCase(putTalent.rejected, (state, action)=> {
+        .addCase(addTalent.rejected, (state, action)=> {
             state.isLoading = false
             state.isError = true
+            state.isSuccess = false
+            state.message = action.payload
+        })
+        .addCase(removeTalent.pending, (state)=>{
+            state.isLoading = true
+            state.isSuccess = false
+            state.isError = false
+        })
+        .addCase(removeTalent.fulfilled, (state, action)=> {
+            state.isLoading = false
+            state.isSuccess = true
+            state.player.talents = state.player.talents.filter((item)=>item._id !== action.payload.id)
+        })
+        .addCase(removeTalent.rejected, (state, action)=> {
+            state.isLoading = false
+            state.isError = true
+            state.message = action.payload
+        }) 
+        .addCase(updateTalent.pending, (state)=> {
+            state.isLoading = true
+            state.isError = false
+            state.isSuccess = false
+        })
+        .addCase(updateTalent.fulfilled, (state, action)=> {
+            state.isLoading = false
+            state.isSuccess = true
+            //state.player.talents=action.payload
+            console.log(action.payload)
+            state.player.talents =  state.player.talents.map((t)=>(
+                t._id === action.payload._id ? action.payload : t
+            ))
+            state.isError = false
+        })
+        .addCase(updateTalent.rejected, (state, action)=> {
+            state.isLoading = false
+            state.isError = true
+            state.isSuccess = false
             state.message = action.payload
         })
         .addCase(setEnchantment.pending, (state)=>{
@@ -483,5 +555,5 @@ export const playerSlice = createSlice({
     }
 })
 
-export const {reset, increaseBar, decreaseBar, resetBars, filterEquipment, getArmor, getBonis} = playerSlice.actions
+export const {reset, playerLoaded, increaseBar, decreaseBar, resetBars, filterEquipment, getArmor, getBonis} = playerSlice.actions
 export default playerSlice.reducer

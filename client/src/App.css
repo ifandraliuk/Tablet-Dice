@@ -3,3 +3,33 @@
 body {
     font-family: 'MedievalSharp';font-size: 20px;
 }
+
+.Algor:hover{
+    background-color: #cc4749;
+}
+.Beltamor:hover{
+    background-color: #308fe8;
+}
+.Ethelion:hover{
+    background-color: #2B9348;
+}
+
+.Medorien:hover{
+    background-color: #cb6327;
+    
+}
+.Thamor:hover{
+    background-color: #54318C;
+    
+}
+
+.Welles:hover{
+    background-color: #ead21c;
+    
+}
+
+
+.Thornheim:hover{
+    background-color: #95ecff;
+    color: black;
+}

@@ -2,8 +2,6 @@ import React from 'react'
 import {useSelector} from 'react-redux';
 import EquippedItem from '../components/EquippedItem';
 import Alert from 'react-bootstrap/Alert';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image'
 function EquipmentComponent() {
   const {player, isLoading,  equipmentError, armor} = useSelector((state)=>state.player)
@@ -13,22 +11,22 @@ function EquipmentComponent() {
     }
   return (
     <>
-      <Row className=" justify-content-center" style={{color:"black"}}>{`Rüstwert: ${armor}`}</Row>
-      <Row>{equipmentError && <Alert variant={equipmentError.variant}>{equipmentError.msg}</Alert>}</Row>
-        <Row className=" justify-content-center m-3">
-          <Col className="col-3 w-auto h-auto">
+      <div className="row justify-content-center" style={{color:"white"}}>{`Rüstwert: ${armor}`}</div>
+      <div>{equipmentError && <Alert variant={equipmentError.variant}>{equipmentError.msg}</Alert>}</div>
+        <div className="row justify-content-center m-3">
+          <div className="col col-3 col-sm-6 w-auto h-auto">
             {["Kopf", "Rücken", "Brust", "Haupthand", "Beine", "Füße"].map((name)=>(
-              <Row className="pb-5" key={name}><EquippedItem category={name}/></Row>
+              <div className="row pb-5" key={name}><EquippedItem category={name}/></div>
             ))}
-          </Col>
-          <Col className="col-6 w-auto h-auto  align-self-start"><Image src={`/classes_img/${player?.userclass?.name}xxhdpi.png`}></Image></Col>
-          <Col className="col-3  w-auto">
+          </div>
+          <div className="col col-lg-6 col-sm-12 w-auto h-auto  align-self-start"><Image src={`/classes_img/${player?.userclass?.name}xxhdpi.png`}></Image></div>
+          <div className="col col-3 col-sm-6  w-auto">
            
           {["Hals", "Arme", "Hüfte", "Nebenhand", "Finger", "Verbrauch"].map((name)=>(
-              <Row className="pb-5" key={name}><EquippedItem category={name}/></Row>
+              <div className="row pb-5" key={name}><EquippedItem category={name}/></div>
             ))} 
-          </Col>
-        </Row>
+          </div>
+        </div>
           </>
   )
 }

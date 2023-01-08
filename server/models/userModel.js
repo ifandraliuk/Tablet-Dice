@@ -12,6 +12,9 @@ const userSchema = mongoose.Schema({
     level: {
         type: Number,
     },
+    money: {
+        type:[Number],
+    },
     pointsLeft: {
         type: Number,
     }, 

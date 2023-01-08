@@ -12,13 +12,10 @@ const protect = asyncHandler( async (req, res, next)=>{
         try {
             // Get token from header Bearer token
             token = req.headers.authorization.split(' ')[1]
-
             // Verify token
             const decoded = jwt.verify(token, process.env.JWT_SECRET)
-
             // Get user from the token
             req.user = await User.findById(decoded.id).select('-pwd')
-
             next()
         } catch(error) {
             res.status(401).json({message:'Nicht autorisiert!'})
@@ -27,8 +24,9 @@ const protect = asyncHandler( async (req, res, next)=>{
         }
     } 
     if (!token) {
+        console.log("token nicht gefunden")
         res.status(401).json({message:'Token nicht gefunden'})
-        throw new Error({message:'Nicht autorisiert!'})
+        throw new Error('Nicht autorisiert!')
     }
 })
 

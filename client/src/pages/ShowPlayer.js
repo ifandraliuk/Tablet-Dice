@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faVenus, faMars, faAnglesUp} from '@fortawesome/free-solid-svg-icons'
-import { Container, Spinner, Row, Col } from 'react-bootstrap';
+import { faVenus, faMars, faAnglesUp, faLevelUp} from '@fortawesome/free-solid-svg-icons'
+import { Container, Spinner, Row, Col, ListGroup } from 'react-bootstrap';
 import Image from 'react-bootstrap/Image'
 import Button from 'react-bootstrap/Button'
 import Figure from 'react-bootstrap/Figure'
@@ -14,11 +14,12 @@ import {logout, reset} from '../features/auth/AuthSlice'
 import ClassList from '../components/ClassList';
 import TalentsList from '../components/TalentsList';
 import BarListComponent from '../components/BarListComponent';
-import { filterEquipment } from '../features/player/playerSlice';
+import { filterEquipment, getBonis, getPlayer, updateLevel} from '../features/player/playerSlice';
+
 import EquippedItem from '../components/EquippedItem';
 function ShowPlayer() {
   const {user, registered, isLoading, isError, message} = useSelector((state)=>state.auth)
-  const {player, equipped} = useSelector((state)=>state.player)
+  const {player, equipped, bonis} = useSelector((state)=>state.player)
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const originName = player?.general?.origin.split(" ")
@@ -27,36 +28,49 @@ function ShowPlayer() {
       console.log("not user")
       navigate("/")
     }
+    if(!player){
+      dispatch(getPlayer())
+    }
     if(registered){
       navigate("/register")
     }
     if(isError){
       console.log(message)
-      dispatch(logout())
+      if(!player || !user){
+        dispatch(logout())
+      }
+      
     }
     if(!equipped){
       dispatch(filterEquipment())
     }
-    //dispatch(getPlayer())
      return () => {
+      console.log("reset")
       dispatch(reset())
     } 
   }, [user, player.isError, navigate, isError, dispatch, message])
 
+  const newLevel = () => {
+    dispatch(updateLevel())
+   
+  }
   if(isLoading || player.isLoading) {
     return <Spinner animation="border"/>
   }
 
   return (
-    <Container className="g-5" fluid>
+    <div  style={{backgroundImage:"url(/wood.jpg)", backgroundSize:"cover", height: "100vh",
+  }}>
+      
       <NavbarComp />
+      <Container fluid className='g-5'>
       <Row className="m-1" >
         <Col className="col-md-3 col-12">
           <Row>
             <Col><Image fluid src={`/user/${user?.name}.jpeg`}></Image></Col>
             <Col className="col-4">
               <Figure><Figure.Image src={`/origin/${originName && originName[originName.length-1]}ldpi.png`}/></Figure>
-              <Row className="ms-2 border-bottom border-top">
+              <Row className="ms-2 border-bottom border-top justify-content-center">
                 <h4>{originName && originName[originName.length-1]}</h4></Row>
                 <Row>
                 <EquippedItem category="Haupthand"/>
@@ -64,7 +78,7 @@ function ShowPlayer() {
                 <Row><EquippedItem category="Nebenhand"/></Row>
               </Col>
               <Row className="ms-2 border-bottom">
-                <Col className="col-3"><h4>Stufe: {player?.level}</h4></Col><Col><Button><FontAwesomeIcon icon={faAnglesUp} /></Button></Col></Row>
+                <Col className="col-3"><h4>Stufe: {player?.level}</h4></Col><Col><Button variant="dark" onClick={newLevel}><FontAwesomeIcon icon={faLevelUp} /></Button></Col></Row>
               <Row className="ms-2 border-bottom"><h4>Klasse: {player?.userclass?.name}</h4></Row>
               <Row className="ms-2 border-bottom"><h4>Species: {player?.general?.kind}{" "}{player?.general?.sex === "männlich"? (<FontAwesomeIcon icon={faMars} />):(<FontAwesomeIcon icon={faVenus} />)}</h4></Row>
           </Row>
@@ -80,19 +94,17 @@ function ShowPlayer() {
       <Col xxl={3}>{player && player.attributes ? (<AttributesFull/>): (<Spinner animation="border"/>) }</Col>
      {player.talents &&  <Col><TalentsList props={player.talents}/></Col>}
       </Row>
-    <Row className="m-2">
-      <Col className="bg-light">Waffen</Col>
-      <Col>Talente</Col>
-    </Row>
-    <Row className="m-2">
-      <Col>Ausgerüstete Gegenstände</Col>
-      <Col>Inventar</Col>
-    </Row>
+      <Row><Col className="col-sm-12 col-md-6">Aktive Bonis
+      <ListGroup>
+        {bonis?.map((boni)=>{
+          <ListGroup.Item>{boni}</ListGroup.Item>
+        })}
+      </ListGroup>
+        </Col></Row>
     <Row>{player && player.general ? (<GeneralFull general={player.general}/>
-    
     ) : (<Spinner animation="border"/>)}</Row>
-   
-  </Container>
+   </Container>
+   </div>
   )
 }
 

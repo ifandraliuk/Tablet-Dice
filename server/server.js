@@ -28,6 +28,9 @@ app.use('/items', require('./routes/itemsRoutes'))
 // Attributes (dexterity, vitality)
 app.use('/attributes', require('./routes/attributeRoutes'))
 
+// Diary
+app.use('/diary', require('./routes/diaryRoutes'))
+
 //Bestiarium 
 app.use('/creatures', require('./routes/bestiariumRoutes'))
 

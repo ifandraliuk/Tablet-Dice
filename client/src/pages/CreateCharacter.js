@@ -11,7 +11,7 @@ import {races, racesList, classList, classDescription, originList, countries} fr
 import {useSelector, useDispatch} from 'react-redux';
 import {setInfo, getClass, uploadPicture, createCharacter} from '../features/creation/creationSlice'
 import {registationFullfilled} from '../features/auth/AuthSlice'
-import {addClass, createGeneral,createAttributes, reset, getPlayer} from '../features/player/playerSlice'
+import { getPlayer} from '../features/player/playerSlice'
 import { useNavigate } from 'react-router-dom';
 import Attributes from '../components/Attributes';
 
@@ -59,7 +59,7 @@ function CreateCharacter() {
     const onSubmit = e => {
         e.preventDefault()
         const formData = new FormData()
-        formData.append("img",image, `${user.name}.jpeg`)
+        formData.append("img",image, `${user._id}.jpeg`)
         const fullInfo = {
             //fullinfo
             age: data.age,
@@ -139,7 +139,7 @@ function CreateCharacter() {
                                     <h4>Fertigkeiten</h4>
                                         {classes?.find(el=>el.name===userclass)?.abilities.map((ability)=>(
 
-                                            <Container key={ability.name}><h5>{ability.name}</h5></Container>
+                                            <Container key={ability._id}><h5>{ability.name}</h5></Container>
                                         ))}
                                     </Row>
                                 </Col>
@@ -172,13 +172,13 @@ function CreateCharacter() {
                     <Col className="col-6">
                     <Form.Group>
                     <Form.Label>Alter</Form.Label>
-                    <Form.Control type="number" name="age" onChange={onChange}></Form.Control>
+                    <Form.Control type="number" name="age" onChange={onChange} required></Form.Control>
                     </Form.Group>
                     </Col>
                     <Col>
                     <Form.Group>
                         <Form.Label>Augenfarbe</Form.Label>
-                        <Form.Control type="text" name="eyecolor" onChange={onChange}></Form.Control>
+                        <Form.Control type="text" name="eyecolor" onChange={onChange} required></Form.Control>
                     </Form.Group>
                     </Col>
                 </Row>
@@ -186,7 +186,7 @@ function CreateCharacter() {
                     <Col className="col-6">
                         <Form.Group>
                             <Form.Label>Frisur</Form.Label>
-                            <Form.Control type="text" name="haircut"  onChange={onChange}></Form.Control>
+                            <Form.Control type="text" name="haircut"  onChange={onChange} required></Form.Control>
                         </Form.Group>
                     </Col>
                     <Col className="col-6">
@@ -215,7 +215,7 @@ function CreateCharacter() {
                 <Row  className="m-2"><h5>Als du dich auf den Weg machst, um dein Abenteuer zu beginnen, denkst du dir, dass du bestens vorbereitet bist, denn deine Talente sind? (5/5)</h5></Row>
             <Attributes/>
             </Container>
-            {/*attrTotal===0 && data.userclass.length>0 && data.origin.length>0 && data.kind.length>0 && */ <Container className="mt-2 mb-3" ><Button type="submit" onClick={onSubmit}>Charakter erstellen</Button></Container>}
+            {attrTotal===0 && data.userclass.length>0 && data.origin.length>0 && data.kind.length>0 && <Container className="mt-2 mb-3" ><Button type="submit" onClick={onSubmit}>Charakter erstellen</Button></Container>}
             </Form>
         </div>
     </div>

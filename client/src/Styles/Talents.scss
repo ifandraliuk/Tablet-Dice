@@ -1,0 +1,34 @@
+@import './Variables.scss';
+$bs-table-bg: #577590;
+$hoverWelles: #8B2635;
+.table {
+    background-color: #212529;
+    color: #fff;
+    text-align: center;
+    border-bottom: #fff;
+    
+    .Nahkampf{
+        background-color: $categoryRed;   
+    }
+    .Fernkampf {
+        background-color: $categoryOrange;
+    }
+    .Natur {
+        background-color: $categoryGreen;
+    }
+    .Wissen {
+        background-color: $categoryJungle;
+    }    
+    .Handwerk {
+        background-color: $categoryYellowOrange;
+    }
+    .Heimlichkeit {
+        background-color: $categoryBlue;
+    }
+    .Gesellschaft {
+        background-color: $categoryYellow;
+    }
+    .category {
+        text-transform: uppercase;
+    }
+}

@@ -1,0 +1,141 @@
+@import './Variables.scss';
+
+.dark-bg {
+    background-color: $darkBlack;
+    height: 100vh;
+    overflow: auto;
+}
+.bg {
+    overflow: auto;
+    background-attachment: fixed;
+    height: 100vh;
+    background-repeat: no-repeat;
+
+}
+.button-group button:first-child{
+    border: 2px solid;
+    border-color: azure;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-right:none;
+}
+
+.button-group button:last-child{
+    border: 2px solid;
+    border-color: azure;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+.btn-save{
+    background-color: $infoBlack;
+    padding: 2px 10px;
+    border: 2px solid;
+    border-color: azure;
+}
+.btn-save:hover:enabled{
+    background-color: $categoryJungle;
+}
+
+.btn-edit{
+    background-color: $infoBlack;
+    padding: 2px 10px;
+    border: 2px solid;
+    border-color: azure;
+}
+.btn-edit:hover{
+    background-color: $categoryOrange;
+}
+ .btn-remove{
+    background-color: $infoBlack;
+    padding: 2px 10px;
+    border: 2px solid;
+    border-color: azure;
+
+  }
+.btn-remove:hover:enabled{
+    background-color: $categoryRed;
+}
+button {
+    border: none;
+    background-color: $infoBlack;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 5px;
+    padding: 10px 15px ;
+    
+}
+
+button:disabled{
+    background-color: $infoBlack;
+    opacity: 50%;
+}
+
+
+textarea{
+    background-color: $infoBlack;
+    border-top-right-radius: 10px;
+    border:none;
+    color:azure;
+    text-align: left;
+    width: 100%;
+    resize: vertical;
+    min-height:100px;
+    padding:1.1em;
+}
+textarea:focus{
+    outline: none;
+}
+
+input {
+    background-color: $infoBlack;
+    color: #fff;
+    text-align: center;
+}
+
+table {
+    background-color: $infoBlack;
+    color: #fff;
+    text-align: center;
+    border-bottom: #fff;
+  }
+h1 {
+    text-transform: uppercase;
+    color: azure;
+    font-size: 40px;
+    letter-spacing: 7px;
+}
+h2{
+    text-transform: uppercase;
+    color: azure;
+    font-size: 30px;
+    letter-spacing: 7px;
+}
+h3{
+    text-transform: uppercase;
+    color: azure;
+    font-size: 25px;
+    letter-spacing: 7px;
+}
+h5 {
+    text-transform: uppercase;
+    color: azure;
+    font-size: 18px;
+    letter-spacing: 7px;
+}
+
+.Welles-bg {
+    background-image:url(~/public/Welles.svg)
+}
+.Algor-bg {
+    background-image:url(~/public/Algor.svg)
+}
+.Ethelion-bg {
+    background-image:url(~/public/Ethelion.svg)
+}
+
+.Beltamor-bg {
+    background-image:url(~/public/Beltamor.svg)
+}

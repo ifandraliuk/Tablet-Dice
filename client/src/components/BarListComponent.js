@@ -38,11 +38,13 @@ function BarListComponent() {
         dispatch(resetBars())
     }
   return (
-    <Container>
-    <Form >
-    <Form.Label as="h6">Werteeingabe</Form.Label>
+    <Container className='mt-2'>
+      {bar.map((name, i)=>(
+        attributes && attributes[name]>0 && <Bar category={name} key={name}/>
+      ))}
+    <Form className='mt-2'>
       <Row className="mb-2">
-        <Col>
+        <Col className="col-auto pe-0">
           <Form.Group>
           <Form.Select className="text-capitalize" value={damage.type} name="type"  onChange={onChange}>
             {bar.map((name)=>(
@@ -51,7 +53,7 @@ function BarListComponent() {
             </Form.Select>
           </Form.Group>
           </Col>
-        <Col>
+        <Col className="col-auto">
           <Form.Control type="number" value={damage.val} name="val" onChange={onChange}></Form.Control>
         </Col>
         <Col>
@@ -63,9 +65,7 @@ function BarListComponent() {
         </Col>
       </Row>
     </Form>
-      {bar.map((name, i)=>(
-        attributes && attributes[name]>0 && <Bar category={name} key={name}/>
-      ))}
+
     </Container>
   )
 }

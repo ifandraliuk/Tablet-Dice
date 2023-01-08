@@ -1,0 +1,30 @@
+.table {
+  background-color: #212529;
+  color: #fff;
+  text-align: center;
+  border-bottom: #fff;
+}
+.table .Nahkampf {
+  background-color: #f94144;
+}
+.table .Fernkampf {
+  background-color: #f3722c;
+}
+.table .Natur {
+  background-color: #90be6d;
+}
+.table .Wissen {
+  background-color: #43aa8b;
+}
+.table .Handwerk {
+  background-color: #f8961e;
+}
+.table .Heimlichkeit {
+  background-color: #577590;
+}
+.table .Gesellschaft {
+  background-color: #f9c74f;
+}
+.table .category {
+  text-transform: uppercase;
+}/*# sourceMappingURL=Talents.css.map */

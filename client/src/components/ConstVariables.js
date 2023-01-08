@@ -1,3 +1,6 @@
+
+
+/// CREATE CHARACTER
 const racesList = ["Elb","Draconid", "Zwerg", "Gnom", "Ork", "Kobold", "Mensch", "Halbling"]
     const races = {
         Elb: {
@@ -57,12 +60,19 @@ const racesList = ["Elb","Draconid", "Zwerg", "Gnom", "Ork", "Kobold", "Mensch",
             }
         }
     }
-    const classList = ["Assassine", "Magier", "Kleriker"]
+    const classList = ["Assassine", "Magier", "Kleriker", "Schildwache", "Waldläufer", "Waffenmeister", "Druide", "Monk"]
     const classDescription = {
-        Assassine: "Assassinen sind geschickte Kämpfer (können zwei Einhandwaffen führen) und absolut tödlich aus dem Hinterhalt. Sie können es vermeiden gesehen zu werden (steigern Heimlichkeitstalente x2) und wissen, wie man auf vielfältige Weise Feinde zu Fall bringt.",
+        Assassine: "Assassinen sind geschickte Kämpfer (können zwei Einhandwaffen führen) und absolut tödlich aus dem Hinterhalt. Sie können es vermeiden, gesehen zu werden (steigern Heimlichkeitstalente x2) und wissen, wie man auf vielfältige Weise Feinde zu Fall bringt.",
         Magier: "Magier besitzen das magische Talent (zusätzliches Attribut Mana, können einen Zauberstab führen), ohne das es nicht möglich ist Zauber zu wirken. So sind sie in der Lage die arkanen Künste zu erlernen und zu studieren, die bekanntesten Fachgebiete sind die Feuermagie, die Eismagie, die Blitzmagie und die Arkanmagie. Außerdem sind Magier äußerst gebildet (steigern Wissenstalente x2) und gut vertraut mit sozialen Gefügen (steigern Gesellschaftstalente x2).",
         Kleriker:"Kleriker der Kirche des Lichts glauben an das ewige Fortbestehen des Lichts, aus dem sie ihre Kraft ziehen (zusätzliches Attribut Spirituelle Kraft). Mit dieser Kraft schützen sie ihre Mitstreiter und bekämpfen die Dunkelheit. Dabei verbreiten sie ihren Glauben (steigern Gesellschaftstalente x2) und können ihre Verbündeten segnen (diese können dann einmalig einen Wurf wiederholen).",
+        Schildwache: "Schildwachen sind dafür ausgebildet worden in schweren Rüstungen zu kämpfen (kein GSK-Malus bei Plattenrüstungen) und viel auszuhalten. Zudem sind sie geschickt im Einsatz ihres Schildes und können dabei sogar noch eine Zweihandwaffe führen. So werden sie für Angreifer zur unüberwindbaren Festung.",
+        Waffenmeister: "Waffenmeister sind sehr begabt im Umgang mit allen Arten von Nahkampfwaffen (steigern Nahkampfwaffen x2), ihr Talent geht sogar so weit, dass sie in der Lage sind, zwei Einhandwaffen gleichzeitig zu führen. Sie beherrschen verheerende Nahkampfangriffe und motivieren ihre Mitstreiter",
+        Druide: "Druiden besitzen das magische Talent (zusätzliches Attribut Mana, können einen Zauberstab führen), das es ihnen ermöglicht sich in verschiedenste Formen zu verwandeln. Um diese Formen zu erlernen, erfordert es ein tiefes Verständnis für die Natur (steigern Naturtalente x2 und Wissenstalente x2). Verschiedene Formen bieten unterschiedliche Stärken, Druiden sind daher sehr flexibel und können so ihre Feinde auskontern.",
+        Monk: "Die Mönche des Shao-Glaubens sind wahre Meister der Selbstbeherrschung (kann missglückte Würfe einmal wiederholen) und können die überall wirkenden entgegengesetzten Kräfte des Universums spüren und nutzen (zusätzliches Attribut Spirituelle Kraft). Sie glauben an das Gleichgewicht in allem, was existiert und können durch ihre Konzentration sowohl Verbündeten helfen als auch erstaunliche Kräfte entfesseln. Ihre Meditation macht sie besonders weise (steigern Gesellschaftsfertigkeiten x2).",
     }
+
+
+    
     const originList = ["Königreich Welles", "Freies Land Thamor",  "Königreich Beltamor", "Kaiserreich Medorien", "Königreich Algor", "Wikingerreich Thornheim", "Königreich Ethelion"]
     const countries = {
         "Königreich Welles": {
@@ -94,6 +104,10 @@ const racesList = ["Elb","Draconid", "Zwerg", "Gnom", "Ork", "Kobold", "Mensch",
             img:"Ethelion"
         },
     }
+
+
+
+    /// DASHBOARD
     const germanAttr = {
         vitality: "Vitalität",
         stamina: "Stamina",
@@ -101,15 +115,69 @@ const racesList = ["Elb","Draconid", "Zwerg", "Gnom", "Ork", "Kobold", "Mensch",
         spirit: "Spirituelle Kraft"
     }
     const allAttributes = {
-        vitality: "Vitalität",
-        stamina: "Stamina",
-        mana: "Mana",
-        spirit: "Spirituelle Kraft",
         strength:"Stärke",
         dexterity: "Geschicklichkeit",
+        intelligent: "Intelligenz",
         charisma: "Charisma",
-
+        vitality: "Vitalität",
+        stamina: "Ausdauer",
+        mana: "Mana",
+        spirit: "Spirituelle Kraft",
     }
+
+
+    /// INVENTORY
+    const itemNames = {
+        category : {
+            Waffe: "weapon",
+            Rüstung: "armor",
+            Ressource: "ressource"
+        },
+        genus: {
+            Brust: "chest",
+            Beine: "legs",
+            Kopf: "head", 
+            Arme: "arms",
+            Füße: "feet",
+            Hüfte: "hip",
+            Schild: "shield",
+            Rücken: "back",
+            Hals: "neck",
+            Finger: "finger",
+            /// waffe
+            Schwert: "sword",
+            Axt: "axe",
+            Stritkolben: "mace",
+            Dolch: "dagger",
+            Wurfwaffe: "throwable",
+            Speer: "spear",
+            Stab: "staff",
+            Zauberstab: "wand",
+            Bogen: "bow",
+            Armbrust: "crossbow",
+            Schusswaffe: "firearm",
+            Ausrüstung: "equippable",
+            Werkzeug: "tool",
+            // ressource
+            Holz: "wood",
+            Gestein: "mineral",
+            Nahrung: "food",
+            Pflanzen: "plant",
+            Organisch: "organical",
+            Sonstige: "other",
+        },
+        rarity: {
+            gewöhnlich: "common",
+            magisch: "magical",
+            selten: "rare",
+            episch: "epic",
+            legendär: "legendary",
+            einzigartig: "unique"
+        }
+    }
+
+    /// DIARY 
+    const diaryCategories = ["Personen", "Orte", "Wissen", "Erlebtes", "Aktiv", "Abgeschlossen", "Sonstiges"]
 export  {races,
      racesList,
     classList,
@@ -118,4 +186,6 @@ export  {races,
     countries,
     germanAttr,
     allAttributes,
+    itemNames,
+    diaryCategories
 }
