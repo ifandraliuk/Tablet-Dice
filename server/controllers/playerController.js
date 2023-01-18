@@ -17,7 +17,7 @@ const getPlayer = asyncHandler(async (req, res) => {
     const user = await User.findById(req.user.id)
     .populate({path: 'userclass', select:'name category description abilities advantages', model: 'Userclass'}, )
     .populate({path:'talents.talent',  model:'Talent', select:'_id category name dice'})
-    .populate({path:'inventory.item',  model:'Item', select:'_id name category dice value rarity type price weight bonuses genus material'})
+    .populate({path:'inventory.item',  model:'Item', select:'_id name category dice value rarity type price weight bonuses genus material set'})
     //console.log(user.userclass.name)
     if(!user){
         res.status(500).json({message: 'Spieler nicht gefunden'})

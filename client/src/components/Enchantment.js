@@ -100,7 +100,7 @@ function Enchantment(props) {
       )}
       <Form.Group>
         <Form.Label>Bonus</Form.Label>
-      <Form.Control type="String" id="bonus" placeholder="Charisma +5" value={bonus} onChange={handleChange}></Form.Control>
+      <Form.Control type="String" id="bonus" placeholder="+5 Charisma" value={bonus} onChange={handleChange}></Form.Control>
       <Form.Text>Füge gewünschtes Boni ein</Form.Text>
       </Form.Group>
     <Button className={requirement?.gems.length>0 && requirement?.tools.length>0 && bonus.length>0 ? "":"disabled"}  variant="warning" onClick={handleSubmit}>Verzaubern</Button>

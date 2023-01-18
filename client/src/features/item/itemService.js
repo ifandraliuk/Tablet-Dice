@@ -10,9 +10,9 @@ const getItem = async (token) => {
 }
 
 
+
 const itemService = {
     getItem
-
 }
 
 export default itemService

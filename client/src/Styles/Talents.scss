@@ -1,34 +1,46 @@
 @import './Variables.scss';
-$bs-table-bg: #577590;
-$hoverWelles: #8B2635;
-.table {
-    background-color: #212529;
-    color: #fff;
-    text-align: center;
-    border-bottom: #fff;
-    
-    .Nahkampf{
-        background-color: $categoryRed;   
+
+.Talents{
+    .table {
+        background-color: $infoBlack;
+        color: #fff;
+        text-align: center;
+        border-bottom: #fff;
+        
+        .Nahkampf{
+            background-color: $categoryRed;   
+        }
+        .Fernkampf {
+            background-color: $categoryOrange;
+        }
+        .Natur {
+            background-color: $categoryGreen;
+        }
+        .Wissen {
+            background-color: $categoryJungle;
+        }    
+        .Handwerk {
+            background-color: $categoryYellowOrange;
+        }
+        .Heimlichkeit {
+            background-color: $categoryBlue;
+        }
+        .Gesellschaft {
+            background-color: $categoryYellow;
+        }
+        .category {
+            text-transform: uppercase;
+        }
     }
-    .Fernkampf {
-        background-color: $categoryOrange;
+
+    .sort-btn{
+        margin-left:2px;
+        padding:0;
     }
-    .Natur {
-        background-color: $categoryGreen;
+    .sort-btn:focus{
+        color: $categoryGreen;
+        border: none;
     }
-    .Wissen {
-        background-color: $categoryJungle;
-    }    
-    .Handwerk {
-        background-color: $categoryYellowOrange;
-    }
-    .Heimlichkeit {
-        background-color: $categoryBlue;
-    }
-    .Gesellschaft {
-        background-color: $categoryYellow;
-    }
-    .category {
-        text-transform: uppercase;
-    }
+
 }
+

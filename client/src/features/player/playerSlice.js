@@ -1,12 +1,12 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit'
 import playerService from './playerService'
-
+import { boniList } from '../../components/ConstVariables'
 const vitality = JSON.parse(localStorage.getItem('vitality'))
 const stamina = JSON.parse(localStorage.getItem('stamina'))
 const mana = JSON.parse(localStorage.getItem('mana'))
 const spirit = JSON.parse(localStorage.getItem('spirit'))
+const loadCapacity = JSON.parse(localStorage.getItem('loadCapacity')) // strength * strength multiplier -> important for carying things
 const equippedItems = JSON.parse(localStorage.getItem('equippedItems'))
-console.log("vitality local", vitality)
 const initialState = {
     player: [],
     bars:{
@@ -19,6 +19,9 @@ const initialState = {
     equipped: equippedItems ? equippedItems : [],
     armor: 0,
     bonis: [],
+    setboni: "",
+    weight: 0,
+    loadCapacity : loadCapacity ? loadCapacity : 0,
     equipmentError: {variant:"", msg:""},
     isError: false, 
     isSuccess: false,
@@ -209,9 +212,9 @@ export const playerSlice = createSlice({
     reducers: {
         reset: (state) => initialState,
         playerLoaded: (state, {payload})=>{
-            console.log("reducer: player data was loaded? ", payload)
+            //console.log("reducer: player data was loaded? ", payload)
             state.playerDataLoaded = payload.value
-            console.log(state.playerDataLoaded)
+            //console.log(state.playerDataLoaded)
         },
         increaseBar: (state, {payload})=>{
             const newValue = parseInt(state.bars[payload.category] + payload.value)
@@ -220,7 +223,38 @@ export const playerSlice = createSlice({
                 state.bars[payload.category] = newValue
                 console.log(state.bars[payload.category], localStorage)
             }
+        },
+        sortedTalents: (state, {payload}) => {
+            if(payload.sortKey === "points"){
+                if(payload.reverse){
+                    //sort in ascending way
+                    state.player?.talents?.sort((a, b)=>{
+                        return b[payload.sortKey] - a[payload.sortKey]
+                    })
+                } else {
+                    state.player?.talents?.sort((a, b)=>{
+                        return a[payload.sortKey] - b[payload.sortKey]
+                    })                
+                }
+            } else {
+                if(payload.reverse){
+                    //sort in ascending way
+                    state.player?.talents?.sort((a, b)=>{
+                        return b.talent[payload.sortKey] > a.talent[payload.sortKey] ? 1 : -1
+                    })
+                } else {
+                    state.player?.talents?.sort((a,b)=>{
+                        return a.talent[payload.sortKey] > b.talent[payload.sortKey] ? 1 : -1
+                    })                
+                }                
+            }
 
+        },
+        sortValueIncrease: (state)=>{
+            state.player?.talents.sort((a,b)=>a.points-b.points)
+        },
+        sortValueDecreese: (state)=>{
+            state.player?.talents.sort((a,b)=>b.points-a.points)
         },
         decreaseBar: (state, {payload})=>{
             const newValue = parseInt(state.bars[payload.category] - payload.value)
@@ -257,13 +291,13 @@ export const playerSlice = createSlice({
                 const localEquipment = JSON.parse(localStorage.getItem("equippedItems"))
                 const equippedInventory = state.player.inventory?.filter(el=>el.status==="Ausgerüstet").length
                 const equippedCashed = state.equipped?.filter(el=>localEquipment?.includes(el.equipment)).length
-                console.log(equippedCashed)
+               // console.log(equippedCashed)
             if(equippedInventory === equippedCashed){
                 console.log("casche: ", equippedCashed)
             } else {
-                console.log("no casched equipment found")
+                //console.log("no casched equipment found")
                 const filtered = state.player?.inventory?.filter(el=>el.status==="Ausgerüstet")
-                console.log(filtered)
+                //console.log(filtered)
               state.equipped = [
                     {category: "Kopf", equipment: filtered[filtered?.findIndex(el=>el.item.genus==="Kopf")]?._id},
                     {category: "Beine", equipment: filtered[filtered?.findIndex(el=>el.item.genus==="Beine")]?._id},
@@ -340,12 +374,12 @@ export const playerSlice = createSlice({
         },
         getArmor: (state) => {
             let armor = 0
-            console.log("get armor reducer")
+            //console.log("get armor reducer")
             
             if(state.equipped && state.player.inventory){
                 state.equipped?.forEach(element=>{
                     const item = state.player?.inventory.find(el=> element.equipment=== el._id)?.item
-                    console.log(item)
+                    //console.log(item)
                     if(item && item.category.toString()==="Rüstung"){
                         armor += item.value
          
@@ -357,7 +391,11 @@ export const playerSlice = createSlice({
         },
         getBonis: (state)=>{
             let bonis = []
-            console.log("getting bonis")
+            let setnames = []
+            let counter = []
+            let flag = false
+            let setActive=""
+            //console.log("getting bonis")
             if(state.equipped && state.player.inventory){
                 state.equipped?.forEach(element=>{
                     const el = state.player?.inventory.find(el=> element.equipment=== el._id)
@@ -369,9 +407,51 @@ export const playerSlice = createSlice({
                 
                             bonis.push(el.enchantment.bonuses)
                         }
+                        if(el.item?.set){
+                            if(setnames.includes(el.item?.set)){
+                                //console.log("new component of the set found")
+                                const setId = setnames.findIndex(setname=>setname===el.item?.set)
+                                //console.log(setId)
+                                if(setId>=0 && counter[setId]){
+                                    counter[setId] = counter[setId] + 1
+                                }
+                            } else {
+                                //console.log("found set: ", el.item.set)
+                                setnames.push(el.item.set)
+                                counter.push(1)
+                            }
+                            //console.log(setnames, counter)
+                        }
+
                     }
                 })
+                //check if the set is completed - 6 items are equipped
+                counter.forEach((count, i)=>{
+                    if(count===6){
+                        //console.log("set is completed...activate setboni")
+                        flag=true
+                        setActive = setnames[i]
+                    }
+                })
+                if(flag){
+                    state.setboni=boniList[setActive]
+
+                } else {
+                    state.setboni = ""
+                    setActive=""
+                }
                 state.bonis = bonis
+            }
+        },
+        getWeight: (state)=>{
+            let newWeight = 0
+            if(state.player.inventory && state.player?.inventory?.length>0){
+                state.player.inventory.forEach(el=>{
+                    //console.log(`${el.item.name}: ${el.item.weight} * ${el.amount} = ${el.item.weight * el.amount}`)
+                    newWeight = newWeight + el.item.weight * el.amount
+                })
+                state.weight = Number((newWeight).toFixed(1))
+                //console.log(Number((newWeight).toFixed(1)))
             }
         }
     },
@@ -422,7 +502,6 @@ export const playerSlice = createSlice({
             state.isLoading = false
             state.isSuccess = true
             state.isError = false
-            console.log(action.payload)
             state.player.attributes[action.payload.attr] = action.payload.value
         })
         .addCase(updateAttribute.rejected, (state, action)=> {
@@ -555,5 +634,5 @@ export const playerSlice = createSlice({
     }
 })
 
-export const {reset, playerLoaded, increaseBar, decreaseBar, resetBars, filterEquipment, getArmor, getBonis} = playerSlice.actions
+export const {reset, playerLoaded, sortedTalents, sortValueIncrease, sortValueDecreese, increaseBar, decreaseBar, resetBars, filterEquipment, getArmor, getBonis, getWeight} = playerSlice.actions
 export default playerSlice.reducer

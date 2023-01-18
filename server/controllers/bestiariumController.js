@@ -46,7 +46,7 @@ const setCreature = asyncHandler( async (req, res) => {
 })
 
 const getCreature = asyncHandler( async (req, res) => {
-    const creatures = await Bestiaruim.find()
+    const creatures = await Bestiaruim.find().populate({path: 'habitat', select:'name', model: 'Habitat'})
     res.status(200).json(creatures)
 })
 

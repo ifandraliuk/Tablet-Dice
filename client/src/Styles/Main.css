@@ -132,6 +132,11 @@ h5 {
   letter-spacing: 7px;
 }
 
+ul {
+  color: azure;
+  background-color: #212529;
+}
+
 .Welles-bg {
   background-image: url(~/public/Welles.svg);
 }
@@ -146,4 +151,8 @@ h5 {
 
 .Beltamor-bg {
   background-image: url(~/public/Beltamor.svg);
+}
+
+.Medorien-bg {
+  background-image: url(~/public/Medorien.svg);
 }/*# sourceMappingURL=Main.css.map */

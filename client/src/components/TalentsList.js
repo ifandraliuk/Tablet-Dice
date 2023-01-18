@@ -1,22 +1,30 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState, useCallback, useEffect } from 'react'
 import "../Styles/Talents.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faPenToSquare, faTrash, faFloppyDisk, faArrowRight} from '@fortawesome/free-solid-svg-icons'
+import {faPenToSquare, faTrash, faFloppyDisk, faArrowRight, faSortUp, faSortDown} from '@fortawesome/free-solid-svg-icons'
 import {useDispatch, useSelector} from 'react-redux'
-import { updateTalent, removeTalent } from '../features/player/playerSlice';
+import { updateTalent, removeTalent, sortValueIncrease, sortedTalents} from '../features/player/playerSlice';
+
 
 function TalentsList({props}) {
-  console.log("im active")
   const {player} = useSelector((state)=>state.player)
   const dispatch = useDispatch()
   const origin = player?.general?.origin.split(" ")
   const originName = origin && origin[origin.length-1]
   const [edit, toEdit] = useState(false)
   const [update, toUpdate] = useState([])
+  const SortOrder = "ascn" | "descn"
+  const [sortKey, setSortKey] = useState("")
+  const [sortReverse, setSortReverse] = useState(true)
+  const talentHeaders = [
+    {name: "name", label:"Name"},
+    {name: "category", label:"Kategorie"},
+    {name: "dice", label:"Würfel"},
+    {name: "points", label:"Werte"},
+  ]
   const handleEdit = () => {
     toEdit(edit=>!edit)
   }
-
   const handleChange = (e) => {
     console.log(e.target.value, e.target.name)
     const name = e.target.name
@@ -55,7 +63,25 @@ function TalentsList({props}) {
     toUpdate([])
   }
 
-
+  const sort = (e) => {
+   setSortKey(e.currentTarget.name)
+   console.log(sortKey===e.currentTarget.name)
+   if(sortKey === e.currentTarget.name){
+      setSortReverse(sortReverse=>!sortReverse)
+   }
+   
+   //sortedCallback()
+   console.log(sortKey, sortReverse)
+  }
+  useEffect(()=>{
+    console.log("useffect")
+    dispatch(sortedTalents({sortKey: sortKey, reverse:sortReverse}))
+  }, [dispatch, sortKey, sortReverse])
+    
+const sortedCallback = ()=>{
+    console.log("callback")
+    dispatch(sortedTalents({sortKey: sortKey, reverse:sortReverse}))
+  }
   return (
     <Fragment>
       {player?.talents?.length>0 ? 
@@ -68,10 +94,9 @@ function TalentsList({props}) {
             <table className="table">
               <thead>
                 <tr>
-                  <th>Name</th>
-                  <th>Kategorie</th>
-                  <th>Würfel</th>
-                  <th>Werte</th>
+                  {talentHeaders.map((header)=>(
+                    <th>{header.label}  <button className="sort-btn" name={header.name} onClick={sort}>{sortKey===header.name && sortReverse ? <FontAwesomeIcon icon={faSortDown}/> : <FontAwesomeIcon icon={faSortUp}/> }</button> </th>
+                  ))}
                   <th>X</th>
                 </tr>
               </thead>

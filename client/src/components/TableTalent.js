@@ -1,13 +1,10 @@
-import React, { useState}  from 'react'
-import {useSelector, useDispatch} from 'react-redux';
-import Form from 'react-bootstrap/Form';
+import React  from 'react'
+import {useSelector} from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 function TableTalent(props) {
     const {player} = useSelector((state)=>state.player)
-    const {talent, isLoading, isError, message} = useSelector((state)=>state.talents)
-    const [addTalent, setAdd] = useState([])
-    const dispatch = useDispatch()
+    const {talent} = useSelector((state)=>state.talents)
     const origin = player?.general?.origin.split(" ")
     const originName = origin && origin[origin.length-1]
   return (

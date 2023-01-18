@@ -1,0 +1,30 @@
+
+@import './Variables.scss';
+
+.inventory-page{
+    #weight-progressbar{
+        width:50px;
+        background-color: $infoBlack;
+        height:300px;
+        position:relative;
+        overflow: hidden;
+    }
+    #curr-weight {
+        width: 50px;
+        height: 0px;
+        background-color: $categoryGreen;
+        text-align: center;
+        color: white;
+        position:absolute;
+        bottom:0px;      
+        left:0px;
+    }
+    #searchbar{
+        height: 50px;
+        border:none;
+        margin-right: 2px;
+    }
+}
+button:focus{
+    border: 1px solid
+}

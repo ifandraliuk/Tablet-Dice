@@ -147,7 +147,7 @@ const racesList = ["Elb","Draconid", "Zwerg", "Gnom", "Ork", "Kobold", "Mensch",
             /// waffe
             Schwert: "sword",
             Axt: "axe",
-            Stritkolben: "mace",
+            Streitkolben: "mace",
             Dolch: "dagger",
             Wurfwaffe: "throwable",
             Speer: "spear",
@@ -176,6 +176,31 @@ const racesList = ["Elb","Draconid", "Zwerg", "Gnom", "Ork", "Kobold", "Mensch",
         }
     }
 
+    // Setbonis
+    const boniList = {
+        "Anwärterrüstung der Diebesgilde":"Diebesglück: Würfe auf Heimlichkeitsfertigkeiten können einmal wiederholt werden",
+        "Rüstung der Diebesgilde":"Diebesglück: Würfe auf Heimlichkeitsfertigkeiten können zweimal wiederholt werden, +Federfall",
+        "Meisterrrüstung der Diebesgilde":"Diebesglück: Würfe auf Heimlichkeitsfertigkeiten können dreimal wiederholt werden, +Federfall, +Wasserlauf",
+        "Studentenrobe der Magierakademie":"Arkaner Schutz: bei Angriffen mit Elementarschaden, kann eine INT Probe absolviert werden um den Schaden zu halbieren (ebenso Effekte)",
+        "Meisterrobe der Magierakademie":"Arkaner Schutz: bei Angriffen mit Elementarschaden, kann eine INT Probe absolviert werden um den Schaden zu negieren (ebenso Effekte)",
+        "Großmeisterrobe der Magierakademie":"Arkaner Schutz: Immunität gegen Elemente, bei Angriffen mit Elementarschaden, kann eine INT Probe absolviert werden um den Schaden zu reflektieren (ebenso Effekte)",
+        "Akolythengewand der Dämonologie":"Dämonenschutz: 50 TP die vor den eigenen TP angegriffen werden, erneuert sich täglich",
+        "Adeptengewand der Dämonologie":"Dämonenschutz: 100 TP die vor den eigenen TP angegriffen werden, erneuert sich täglich",
+        "Hexenmeistergewand der Dämonologie":"Dämonenschutz: 200 TP die vor den eigenen TP angegriffen werden, erneuert sich täglich",
+        "Anwärter-Rüstung der Kriegergilde":"Des Kriegers Stärke: der Träger kann immer eine der drei Proben durch eine STR-Probe ersetzen",
+        "Rüstung der Kriegergilde":"Des Kriegers Zorn: jeder im Kampf getötete Gegner gibt dem Krieger einen W12 Schadenswürfel für den Rest des Kampfes",
+        "Ruhm des Kriegers":"Des Kriegers Ruhm: die Attacken des Trägers können nicht mehr pariert werden, + Zorn mit W20 Schadenswürfel",
+        "Rekrutenrüstung von Beltamor":"Für den König!: +5 Vorteil auf die Initiative, nach dem Kampf kann 1 W20 TP regeneriert werden",
+        "Soldatenrüstung von Beltamor":"Für den König!: +10 Vorteil auf die Initiative, nach dem Kampf können 2 W20 TP regeneriert werden",
+        "Ritterrüstung von Beltamor":"Für den König!: +15 Vorteil auf die Initiative, nach dem Kampf können 3 W20 TP regeneriert werden",
+        "Rüstung des Abenteurers": "Abenteuerlust: Bei Würfen auf Spurenlesen/Überleben/ Orientieren muss nur eine der drei Proben gewürfelt werden",
+        "Rüstung des Unerschrockenen":"Unerschrockenheit: Immunität gegen Furchteffekte, aggressive Kreaturen greifen aus Respekt nicht direkt an",
+        "Legende der Abenteurer":"Legende des Drachen: an der Rüstung sind Gleitelemente an Armen und Beinen befestigt, die dem Träger das Gleiten ermöglichen",
+        "Wache von Algor":"Standhaft: Bei Umwerfen kann eine STR Probe gewürfelt werden um den Effekt zu verhindern",
+        "Gardist von Algor": "Standhaft: Bei Umwerfen oder Betäubung kann eine STR Probe gewürfelt werden um den Effekt zu verhindern",
+        "Wächter von Algor":"Standhaft: Immunität gegen Umwerfen oder Betäubung, es kann eine STR Probe gewürfelt werden um den Effekt zu reflektieren",
+    }
+
     /// DIARY 
     const diaryCategories = ["Personen", "Orte", "Wissen", "Erlebtes", "Aktiv", "Abgeschlossen", "Sonstiges"]
 export  {races,
@@ -187,5 +212,6 @@ export  {races,
     germanAttr,
     allAttributes,
     itemNames,
-    diaryCategories
+    diaryCategories,
+    boniList
 }

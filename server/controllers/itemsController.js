@@ -57,10 +57,20 @@ const updateItem = asyncHandler(async (req, res)=>{
     }
     res.status(200).json(updated)
 })
+const findItem = asyncHandler( async (req, res) => {
+    if(!req.body.name){
+        res.status(400).json({message:"Nicht gefunden"})
+        throw new Error("Falsch! Das Feld darf nicht leer sein")
+    } else {
+        const items = await Item.find({name:req.body.name})
+        res.status(200).json(items)
+    }
+})
 const getItem = asyncHandler( async (req, res) => {
     const items = await Item.find()
     res.status(200).json(items)
+    
 })
 
 
-module.exports = { setItem, getItem, updateItem}
+module.exports = { setItem, getItem, findItem, updateItem}

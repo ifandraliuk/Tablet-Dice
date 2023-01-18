@@ -125,7 +125,10 @@ h5 {
     font-size: 18px;
     letter-spacing: 7px;
 }
-
+ul{
+    color: azure;
+    background-color: $infoBlack;
+  }
 .Welles-bg {
     background-image:url(~/public/Welles.svg)
 }
@@ -138,4 +141,7 @@ h5 {
 
 .Beltamor-bg {
     background-image:url(~/public/Beltamor.svg)
+}
+.Medorien-bg {
+    background-image:url(~/public/Medorien.svg)
 }

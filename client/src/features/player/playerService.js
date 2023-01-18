@@ -15,6 +15,7 @@ const getPlayer = async (token) => {
     const localSt = JSON.parse(localStorage.getItem('stamina'))
     const localM = JSON.parse(localStorage.getItem('mana'))
     const localS = JSON.parse(localStorage.getItem('spirit'))
+    const loadCapacity = JSON.parse(localStorage.getItem('loadCapacity'))
     
     const response = await axios.get(API_URL, config)
     if(!localVit){
@@ -30,7 +31,13 @@ const getPlayer = async (token) => {
         console.log("adding spirit")
         localStorage.setItem("spirit", parseInt(response.data.attributes?.spirit*10))
     }
-    
+    if(!loadCapacity){
+        const strength = parseInt(response.data.attributes?.strength)
+        console.log(strength)
+        const multiplier = strength>=1 && strength <=5 ? 1 : strength>=6 && strength <=10 ? 2 : strength>=11 && strength <=15 ? 3 : strength>=16 && strength <=20 ? 4 : 0
+        console.log(multiplier)
+        localStorage.setItem("loadCapacity", parseInt(strength*multiplier))
+    }
     return response.data
 }
 

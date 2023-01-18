@@ -1,7 +1,7 @@
 import React from 'react'
 import  '../App.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faHouse, faDiceD20, faPadlet, faHome, faBoxOpen, faBookJournalWhills} from '@fortawesome/free-solid-svg-icons'
+import {faHouse, faDiceD20, faPadlet, faHome, faBoxOpen, faBookJournalWhills, faPaw} from '@fortawesome/free-solid-svg-icons'
 import { Container, Button } from 'react-bootstrap'
 import {Link,} from 'react-router-dom'
 import Nav from 'react-bootstrap/Nav';
@@ -30,14 +30,14 @@ function NavbarComp() {
             <Navbar.Collapse id="responsive-navbar-nav">
               <Nav className="me-auto">
                 <Nav.Link as={Link} to="/"><FontAwesomeIcon icon={faHome} /> </Nav.Link>
-                <Nav.Link as={Link} to="/diary"><FontAwesomeIcon icon={faBookJournalWhills} />Tagebuch</Nav.Link>
+                <Nav.Link as={Link} to="/diary"><FontAwesomeIcon icon={faBookJournalWhills} /> Tagebuch</Nav.Link>
                 <Nav.Link as={Link} to="/inventory"><FontAwesomeIcon icon={faBoxOpen} /> Inventar</Nav.Link>
                 <Nav.Link as={Link} to="/talents"><FontAwesomeIcon icon={faDiceD20} /> Talente</Nav.Link>
-                
+                <Nav.Link as={Link} to="/bestiaria"><FontAwesomeIcon icon={faPaw} /> Bestiarium</Nav.Link>
               </Nav>
               <Nav>
               <Nav.Link>Datenbank</Nav.Link>
-              <Nav.Link as={Link} to ="/enemies">Gegner</Nav.Link>
+              {/*<Nav.Link as={Link} to ="/enemies">Gegner</Nav.Link>*/}
               {user? (<Button as={Link} to="/" variant="outline-light" onClick= {onLogout}>Ausloggen</Button>):<></>}
               </Nav>
             </Navbar.Collapse>

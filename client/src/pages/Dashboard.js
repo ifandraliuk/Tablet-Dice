@@ -18,11 +18,11 @@ import {updateLevel, getArmor} from '../features/player/playerSlice';
 
 function Dashboard() {
   const {user} = useSelector((state)=>state.auth)
-  const {player, armor, bonis} = useSelector((state)=>state.player)
+  const {player, armor, bonis, setboni} = useSelector((state)=>state.player)
   const dispatch = useDispatch()  
   const origin = player?.general?.origin.split(" ")
   const originName = origin && origin[origin.length-1]
-  
+  console.log(originName)
   const newLevel = () => {
     dispatch(updateLevel())
   }
@@ -42,14 +42,31 @@ function Dashboard() {
                     <div className='col-2 mt-3'>
                         <div className="row"><EquippedItem category="Haupthand"/></div>
                         <div className='row mt-2'><EquippedItem category="Nebenhand"/></div>
-                        <div>{`Rüstung: ${armor}`}</div>
+                        <div className="row">
+                    <div className='col'>
+                    {player?.talents?.findIndex(el=>el.talent?.category==="Nahkampf")>=0?
+                    (<div>
+                      <h5>Proben</h5>
+                      {player.talents.map((el)=>{
+  
+                        const category = el.talent.category
+                        if(category==="Nahkampf" || category==="Fernkampf"){
+                          return (
+                            <div key={el._id}>{`${el.talent.name}: ${el.talent.dice}`}</div>
+                          )
+                        }
+                      })}
+                    </div>):<div>keine</div>}
+                  </div>
+                </div>
+                        <div><h5>{`Rüstung: ${armor}`}</h5></div>
                     </div>
                 </div>
                 <div className='row'><h1>{user?.name}</h1></div >
                 <div className='row'><h2>{player.userclass?.name}</h2></div >
                 <div className="row">
-                  <div className='col-auto border pt-3'><h3>Stufe: {player?.level}</h3></div>
-                  <div  className='col-auto  border'><Button variant="dark" onClick={newLevel}><FontAwesomeIcon icon={faLevelUp} /></Button></div>
+                  <div className='col-auto border pt-2'><h3>Stufe: {player?.level}</h3></div>
+                  <div  className='col-auto  border'><button onClick={newLevel}><FontAwesomeIcon icon={faLevelUp} /></button></div>
                 </div>
                 <div className='col-7 mt-3'>
                   <Figure><Figure.Image src={`/origin/${originName}ldpi.png`}/></Figure>
@@ -62,15 +79,25 @@ function Dashboard() {
                       {player && player.attributes ? (<AttributeList/>): (<Spinner animation="border"/>) }
                    </div>
                 </div>
+
                 <BarListComponent/>
                 {player && player.userclass ? (<ClassList/>) : (<Spinner animation="border"/>)}
               </div>
           <div className="row">
-              <h3>Aktive Bonis</h3>
-              {bonis?.length===0 ? <p>Hast noch keine...</p>:
-              bonis.map((boni, ind)=>(
-                <h5 key={ind}>{boni}</h5>
-              ))}
+              
+              <div className="col-7">
+              <h3>Aktive Boni</h3>
+                {bonis?.length===0 ? <p>Hast noch keine...</p>:
+                bonis.map((boni, ind)=>(
+                  <h5 key={ind}>{boni}</h5>
+                ))}
+              </div>
+                {setboni?.length>0 && <div className='col-5'>
+                  <h3>Set bonus</h3>
+                  <h5>{setboni}</h5>
+                </div>
+                }
+              
           </div>
             </div>
           </div>

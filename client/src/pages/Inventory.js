@@ -1,16 +1,17 @@
 import React, { useEffect, useCallback, useState} from 'react'
+import "../Styles/Inventory.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faPenToSquare, faFloppyDisk, faPaw, faPlus, faSuitcase, faPerson, faHandSparkles, faCoins, faCircleInfo} from '@fortawesome/free-solid-svg-icons'
+import {faPenToSquare, faFloppyDisk, faPaw, faPlus, faRefresh,faSearch, faShield, faSuitcase, faHammer, faSeedling, faPerson, faHandSparkles, faCoins, faCircleInfo} from '@fortawesome/free-solid-svg-icons'
 import NavbarComp from '../components/Navbar';
 import {useSelector, useDispatch} from 'react-redux';
-import { getItem, reset } from '../features/item/itemSlice';
+import { getItem, reset, search, getGenuses } from '../features/item/itemSlice';
 import Alert from 'react-bootstrap/Alert';
 import { useNavigate } from 'react-router-dom';
 import { Button, ButtonGroup,  Spinner } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
-import { filterEquipment, getArmor, newBalance, toInventory, updateInventory, deleteItem } from '../features/player/playerSlice';
+import { filterEquipment, getWeight, newBalance, toInventory,  updateInventory, deleteItem } from '../features/player/playerSlice';
 import CloseButton from 'react-bootstrap/CloseButton';
 import Image from 'react-bootstrap/Image'
 import EquipmentComponent from '../components/EquipmentComponent';
@@ -19,46 +20,66 @@ import InfoListComponent from '../components/InfoListComponent';
 import {itemNames} from '../components/ConstVariables';
 
 function InventoryPage() {
-  const {items, isLoading, isError, message} = useSelector((state)=>state.items)
-  const {player, equipped} = useSelector((state)=>state.player)
-  console.log(equipped)
+  const {items, isLoading, loaded, armorGenuses, weaponGenuses, ressourceGenuses, isError, message} = useSelector((state)=>state.items)
+  const {player, weight, loadCapacity} = useSelector((state)=>state.player)
   const {user} = useSelector((state)=>state.auth)
   const [modify, setModify] = useState(false) // activate enchantment
   const [selected, setSelected] = useState({state: false, item:""}) // show additional info in the inventory
   const {genus, rarity} = itemNames
   const [toUpdate, setUpdate] = useState([])
-  const [newMoney, updateMoney] = useState([0,0,0])
+  const [newMoney, updateMoney] = useState(player?.money)
   const [isLoad, setLoad] = useState(false)
+  const [searchName, setSearch] = useState("")
   const [edit, activeEdit] = useState(false)
   const [detailsId, setId] = useState(-1)
+  const [iFilter, setInventoryFilter] = useState("")
   const origin = player?.general?.origin.split(" ")
   const originName = origin && origin[origin.length-1]
-  let categories = []
-  let genuses = []
-  items.map((item) => {
-    return !categories.includes(item.category) && categories.push(item.category)})  
-  items.map((item) => {
-      return !genuses.includes(item.genuses) && genuses.push(item.genuses)})  
-  const [filter, setFilter] = useState({category: categories, genus: genuses})
+  const [filter, setFilter] = useState("Brust")
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  
+const weightBarCallback = useCallback(()=>{
+  console.log("callback - weight changed: ", weight)
+  move(weight)
+}, [weight])
 
   const filteredCallback = useCallback(()=>{
     dispatch(filterEquipment())
   }, [dispatch])
 
-  const armorCallback = useCallback(()=>{
-    dispatch(getArmor())
+  const weightCallback = useCallback(()=>{
+    console.log("weightCallback")
+    dispatch(getWeight())
+    move(weight)
   }, [dispatch])
 
-
- useEffect(()=>{
-    console.log("useffect render")
-    if(player.inventory){
-      filteredCallback()
+  const onClickFilter = e => {
+    e.preventDefault()
+    const filterName = e.currentTarget.name
+    console.log(filterName)
+    if(filterName === "all"){
+      setInventoryFilter("")
+    } else {
+      setInventoryFilter(filterName)
     }
-
+  }
+ useEffect(()=>{
+    if(player.inventory){
+      console.log("filter useeffect")
+      filteredCallback()
+      weightCallback()
+    }
   },[filteredCallback, player.inventory])
+
+  useEffect(()=>{
+    weightBarCallback()
+  }, [weight])
+
+  useEffect(()=>{
+    console.log("useffect")
+    dispatch(getWeight())
+  },[dispatch, weight, modify])
   useEffect(()=> {
     if(!user) {
       navigate("/")
@@ -68,22 +89,16 @@ function InventoryPage() {
     }
     if(isLoad){
       dispatch(getItem())
+      dispatch(getGenuses())
+      
     } else dispatch(reset() )
 
-  }, [user, isLoad, message, isError, navigate, dispatch])
+  }, [user, isLoad, items.length, message, isError, navigate, dispatch])
   // Dismount general info
   const clear = () => {
-    setFilter({category: categories, genus: genuses})
+    setFilter("")
   }
-  const filterGenuses = (category) => {
-    let out = []
-    if(filter.category.length < categories.length){
-    items?.map((item)=>{
-      return !out.includes(item.genus) && category.includes(item.category) && out.push(item.genus)
-    })
-  }
-    return out
-  }
+
   const getDetails = e => {
     setId(parseInt(e.currentTarget.name))
   }
@@ -91,7 +106,6 @@ function InventoryPage() {
   const addItem = e => {
     let id = e.currentTarget.name
     dispatch(toInventory({item: items[id].name, amount: 1, status: user.name}))
-    //dispatch(getPlayer())
   }
   const toDelete = e => {
     let id = e.target.name
@@ -102,15 +116,18 @@ function InventoryPage() {
 
   const handleEdit = e => {
     activeEdit(edit => !edit)
+    updateMoney(player?.money)
+    console.log(newMoney)
   }
   const handleSave = e => {
     e.preventDefault()
     console.log(toUpdate)
-    if(toUpdate){
+    if(toUpdate?.length>0){
       toUpdate.forEach((item)=>dispatch(updateInventory(item)))
     }
-    if(newMoney[0]!==0 || newMoney[1]!==0 || newMoney[2]!==0){
-      console.log("update money")
+    console.log(newMoney, player.money)
+    if(newMoney[0]!==player?.money[0] || newMoney[1]!==player?.money[1] || newMoney[2]!==player?.money[2]){
+      //console.log("update money")
       dispatch(newBalance(newMoney))
     }
     if(!player.isError)
@@ -173,19 +190,78 @@ function InventoryPage() {
   const moneyChange = e => {
     console.log(e.target.id, e.target.value)  
     const id = parseInt(e.target.id)
-    const value = e.target.value
-    updateMoney(newMoney.map((currency, i)=>(
+    const value = parseInt(e.target.value)
+    updateMoney(newMoney?.map((currency, i)=>(
       i === id ? value : currency
     )))
+    console.log(newMoney)
+  }
+  const move = (weight) =>{
+    var elem = document.getElementById("curr-weight");   
+    var height = 0;
+    const currPercentage = weight / (loadCapacity/100)
+    console.log(currPercentage)
+    var id = setInterval(frame, 100);
+    function frame() {
+      if (height >= currPercentage) {
+        clearInterval(id);
+      } else {
+        height++; 
+        elem.style.height = height + '%'; 
+        //elem.innerHTML = height * 1  + '%';
+        elem.innerHTML = `${weight} <br>/<br>${loadCapacity}`
+        if(height>=75 && height<90){
+          elem.style.backgroundColor = '#f3722c'
+        } else if(height>=90 && height<100){
+            elem.style.backgroundColor = '#f3722c'
+        } else if(height===100){
+          elem.style.backgroundColor = '#f94144'
+        } else {
+          elem.style.backgroundColor = '#90be6d'
+        }
+      }
+    }    
+    
   }
 
+
+  const handleSearch = e => {
+    console.log(e.target.value)
+    //setSearch(e.target.value)
+  }
+  const onClickSearch = e => {
+    const searchbar = document.getElementById("searchbar")
+    if(searchbar.value.length>0){
+      setSearch(searchbar.value)
+    }
+  }
+
+  const clearSearch = () => {
+    document.getElementById("Brust").focus()
+    document.getElementById("searchbar").value = ""
+    setFilter("Brust")
+    setSearch("")
+  }
   return (
     <div className="dark-bg">
       <div className={`bg ${originName}-bg`}>
     <NavbarComp/>
-    <div  className="container-fluid g-5">
-    <div className="row mt-3">
-      <div className="col-lg-6 col-md-12 col-sm-12  h-auto">
+    <div  className="container-fluid g-5 inventory-page">
+    <div className="row mt-3 ">
+    <div className="col-lg-auto col-md-12 col-sm-12 h-auto">
+      <div className="row mt-5"><button name={user.name} onClick={onClickFilter}><FontAwesomeIcon icon={faSuitcase}/></button></div>
+      <div className="row"><button name="Ausgerüstet" onClick={onClickFilter}><FontAwesomeIcon icon={faPerson}/></button></div>
+      <div className="row"><button name="Rüstung" onClick={onClickFilter}><FontAwesomeIcon icon={faShield}/></button></div>
+      <div className="row"><button name="Waffe" onClick={onClickFilter}><FontAwesomeIcon icon={faHammer}/></button></div>
+      <div className="row"><button name="Ressource" onClick={onClickFilter}><FontAwesomeIcon icon={faSeedling}/></button></div>
+      <div className="row"><button name="all" onClick={onClickFilter}><FontAwesomeIcon icon={faRefresh}/></button></div>
+      <div className="row">
+        <div id='weight-progressbar'>
+            <div id='curr-weight' style={{height:"0px", backgroundColor: "#90be6d"}}>0</div>
+        </div>
+      </div>
+    </div>
+      <div className="col-lg-5 col-md-12 col-sm-12  h-auto">
       {player?.inventory && player.inventory.length === 0 ?
        (
         <Card>
@@ -217,7 +293,11 @@ function InventoryPage() {
             {player?.inventory && player.inventory.map((invElement)=>{
               const r = invElement.enchantment? rarity[invElement.enchantment.rarity] : rarity[invElement.item.rarity]
               const g = genus && genus[invElement.item.genus]
-              return r && g && (
+              const filterCheck = iFilter?.length > 0 && invElement.status === iFilter ? true : iFilter === "" ? true : false
+              const categoryCheck = iFilter === "Rüstung" && iFilter === invElement.item.category ? true : iFilter==="Waffe" && iFilter === invElement.item.category ? true :
+              iFilter === "Ressource" && iFilter === invElement.item.category ? true : false
+              const showElement = filterCheck || categoryCheck
+              return r && g && showElement && (
                   <tr key={invElement._id} name={invElement._id} onClick={itemSelected}>
                   
                    <td className='pb-0'><Image name={invElement.item.name} src={`/icons/${r}/${g}xhdpi.png`} onClick={itemSelected}></Image></td>
@@ -278,75 +358,87 @@ function InventoryPage() {
        )
         }
       </div>
-      <div className="col-lg-6 col-md-12 col-sm-12  h-auto" >
+      <div className="col-lg-5 col-md-12 col-sm-12  h-auto" >
        <EquipmentComponent/>
       </div>
     </div>
     <Button className={edit? "disabled mb-2":"mb-2"} variant="dark" onClick={showItems} >{isLoad ? "Schließen": "Item hinzufügen"}</Button>
-    {isLoad &&
-    <>
-    <div className="row">
-      <div className="col-lg-8 col-sm-12 col-md-12"> 
-      <ButtonGroup>
-      {categories.map((category)=>(  
-        <Button key={category} type="radio" variant="dark" name={category} onClick={e=>{setFilter({...filter, category: [e.target.name]})}}>{category}</Button>
-      ))} 
-      <Button variant="outline-secondary" type="reset" onClick={clear}>Löschen</Button> 
-    </ButtonGroup>
-    <ButtonGroup >
-    {filterGenuses(filter.category).map((genus)=>{
-        return(
-        <Button key={genus} variant="secondary" name={genus} onClick={e=>{setFilter({...filter, genus: [e.target.name]})}}>{genus}</Button>
-      )})}
-    </ButtonGroup>
+    {
+      loaded? (
+        <div className="row">
+            <div className="col-12">  
+              <input id="searchbar" name="search" type="text"  defaultValue="" onChange={handleSearch}/>
+              <button className={originName} onClick={onClickSearch}><FontAwesomeIcon icon={faSearch} /></button>
+              <button className={originName} onClick={clearSearch}><FontAwesomeIcon icon={faRefresh} /></button>
+             </div>
+            <div className="col-12">
+              <FontAwesomeIcon icon={faShield}/>
+              {armorGenuses?.map((type)=>(
+                <button key={type} className={originName} id={type} onClick={(e)=>setFilter(e.target.id)}>{type}</button>
+              ))}
+              </div>
+              <div className="col-12">
+                <FontAwesomeIcon icon={faHammer}/>
+                {weaponGenuses?.map((type)=>(
+                <button  key={type} className={originName} id={type} onClick={(e)=>setFilter(e.target.id)}>{type}</button>
+              ))}
+              </div>
+              <div className="col-12">
+                <FontAwesomeIcon icon={faSeedling}/>
+                {ressourceGenuses?.map((type)=>(
+                <button key={type} className={originName} id={type} onClick={(e)=>setFilter(e.target.id)}>{type}</button>
+              ))}
+              </div>
+              {loaded && <div className="col-lg-4 col-sm-12">
+                <table className="w-100" style={{textAlign:"left"}}>
+                    <thead>
+                      <tr >
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Typ</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {items?.map((item, ind)=>{
+                        const r = rarity[item.rarity]
+                        const g = genus && genus[item.genus]
+                        const itemGenus = item.genus
+                        const filterCheck = filter?.length > 0 && itemGenus === filter && searchName.length===0 ? true : false
+                        const searchCheck = searchName?.length>0 && item.name.includes(searchName) ? true : false               
+                        const showElement = filterCheck || searchCheck
+                        if(showElement){
+                          return(
+                            <tr key={item._id}>
+                              <td className='pb-0'><Image name={item._id} src={`/icons/${r}/${g}xhdpi.png`} onClick={itemSelected}></Image></td>
+                              <td >{item.name}</td>
+                              <td>{item.type}</td>
+                            <td>
+                              <ButtonGroup>
+                                <Button variant="outline-secondary" name = {ind} onClick = {getDetails}><FontAwesomeIcon icon={faCircleInfo} /></Button>
+                                <Button variant="outline-success" name = {ind} onClick = {addItem}><FontAwesomeIcon icon={faPlus} /></Button>
+                              </ButtonGroup>
+                            </td>
+                          </tr>  
+                          )
+                        } 
+                      })}
+                    </tbody>
+                  </table>
+              </div>}
+              <div className="col-3">
+        {items[detailsId] && detailsId >= 0 && 
+
+          <InfoListComponent item={items[detailsId]} style={{position:"fixed"}}/>
+        
+      }   
       </div>
-    </div>
-    <Form>
-      <div className='row'> 
-        <div className="col-lg-4 col-md-12 col-sm-12"> 
-          <table className="w-100">
-          <thead>
-            <tr >
-              <th>Name</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {items?.map((item,ind)=>(
-              /*if (selected.genus.includes(items[ind].genus) && selected.category.includes(items[ind].category)){*/
-                (filter.genus.includes(item.genus)  ) && 
-                  <tr key={item._id}>
-                    <td>{item.name}</td>
-                    <td>
-                      <ButtonGroup>
-                        <Button variant="outline-secondary" name = {ind} onClick = {getDetails}><FontAwesomeIcon icon={faCircleInfo} /></Button>
-                        <Button variant="outline-success" name = {ind} onClick = {addItem}><FontAwesomeIcon icon={faPlus} /></Button>
-                      </ButtonGroup>
-                    </td>
-                  </tr>  
-            ))}
-          </tbody>
-        </table>
         </div>
-        <div className="col">
-          {items[detailsId] && detailsId >= 0 ? (
-            <Card style={{ width: '18rem' }} >
-            <Card.Header>{items[detailsId].name}</Card.Header>
-            <InfoListComponent item={items[detailsId]}/>
-          </Card>
-          ) : (<Card style={{ width: '18rem' }}>
-            <Card.Header>Erweitert</Card.Header>
-            <ListGroup variant="flush">
-            <ListGroup.Item>...</ListGroup.Item>
-            </ListGroup>
-          </Card>)
-          
-        }   
-        </div>
+      ) : (
+        <div className="row">
         
       </div>
-    </Form>
-    </> 
+      )
     }
     </div>
     </div>

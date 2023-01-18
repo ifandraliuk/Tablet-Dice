@@ -14,12 +14,12 @@ function EquipmentComponent() {
       <div className="row justify-content-center" style={{color:"white"}}>{`Rüstwert: ${armor}`}</div>
       <div>{equipmentError && <Alert variant={equipmentError.variant}>{equipmentError.msg}</Alert>}</div>
         <div className="row justify-content-center m-3">
-          <div className="col col-3 col-sm-6 w-auto h-auto">
+          <div className="col col-3 col-md-3 col-sm-6 w-auto h-auto me-2">
             {["Kopf", "Rücken", "Brust", "Haupthand", "Beine", "Füße"].map((name)=>(
               <div className="row pb-5" key={name}><EquippedItem category={name}/></div>
             ))}
           </div>
-          <div className="col col-lg-6 col-sm-12 w-auto h-auto  align-self-start"><Image src={`/classes_img/${player?.userclass?.name}xxhdpi.png`}></Image></div>
+          <div className="col col-md-3 col-lg-6 col-sm-12 w-auto h-auto order-md-last  align-self-start"><Image src={`/classes_img/${player?.userclass?.name}xxhdpi.png`}></Image></div>
           <div className="col col-3 col-sm-6  w-auto">
            
           {["Hals", "Arme", "Hüfte", "Nebenhand", "Finger", "Verbrauch"].map((name)=>(

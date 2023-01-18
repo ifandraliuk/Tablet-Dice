@@ -129,7 +129,7 @@ function Talents() {
           {player?.talents ? <AttributeList/>:<Spinner animation='border'/>}
           {player.talents ? (
             <TalentsList props={player.talents}/>
-          ) : (<>Du hast noch keine Talente...</>)}
+          ) : (<h5>Du hast noch keine Talente...</h5>)}
         </div>
         </div>
         <div className="row">

@@ -1,0 +1,26 @@
+.inventory-page #weight-progressbar {
+  width: 50px;
+  background-color: #212529;
+  height: 300px;
+  position: relative;
+  overflow: hidden;
+}
+.inventory-page #curr-weight {
+  width: 50px;
+  height: 0px;
+  background-color: #90be6d;
+  text-align: center;
+  color: white;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+}
+.inventory-page #searchbar {
+  height: 50px;
+  border: none;
+  margin-right: 2px;
+}
+
+button:focus {
+  border: 1px solid;
+}/*# sourceMappingURL=Inventory.css.map */
