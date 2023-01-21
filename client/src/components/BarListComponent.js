@@ -2,9 +2,7 @@ import React, {useState} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faMinus, faRefresh} from '@fortawesome/free-solid-svg-icons'
 import Container from 'react-bootstrap/Container'
-import ButtonGroup from 'react-bootstrap/ButtonGroup'
-import Button from 'react-bootstrap/Button'
-import Form from 'react-bootstrap/Form'
+
 import Bar from './Bar';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -42,29 +40,29 @@ function BarListComponent() {
       {bar.map((name, i)=>(
         attributes && attributes[name]>0 && <Bar category={name} key={name}/>
       ))}
-    <Form className='mt-2'>
+   
       <Row className="mb-2">
         <Col className="col-auto pe-0">
-          <Form.Group>
-          <Form.Select className="text-capitalize" value={damage.type} name="type"  onChange={onChange}>
+        
+          <select className="text-capitalize" value={damage.type} name="type"  onChange={onChange}>
             {bar.map((name)=>(
               attributes && attributes[name]>0 && <option id={name} key={name}>{germanAttr[name]}</option>
             ))}
-            </Form.Select>
-          </Form.Group>
+            </select>
+
           </Col>
         <Col className="col-auto">
-          <Form.Control type="number" value={damage.val} name="val" onChange={onChange}></Form.Control>
+          <input type="number" value={damage.val} name="val" onChange={onChange}></input>
         </Col>
         <Col>
-          <ButtonGroup>
-            <Button id="increase" variant="secondary"  onClick={add}><FontAwesomeIcon icon={faPlus}/></Button>
-            <Button id="decrease" variant="secondary" onClick={subtract}><FontAwesomeIcon icon={faMinus}/></Button>
-            <Button variant="outline-secondary" type="reset" onClick={onReset}><FontAwesomeIcon icon={faRefresh}/></Button>
-          </ButtonGroup>
+          <div className='button-group'>
+            <button id="increase" className='btn-save' onClick={add}><FontAwesomeIcon icon={faPlus}/></button>
+            <button id="decrease"  className='btn-edit' onClick={subtract}><FontAwesomeIcon icon={faMinus}/></button>
+            <button className='btn-remove' onClick={onReset}><FontAwesomeIcon icon={faRefresh}/></button>
+          </div>
         </Col>
       </Row>
-    </Form>
+
 
     </Container>
   )

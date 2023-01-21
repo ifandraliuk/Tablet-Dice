@@ -83,7 +83,7 @@ const sortedCallback = ()=>{
     dispatch(sortedTalents({sortKey: sortKey, reverse:sortReverse}))
   }
   return (
-    <Fragment>
+    <div>
       {player?.talents?.length>0 ? 
     (<>
             <div><h3>Erlernte Talente</h3></div>
@@ -95,7 +95,7 @@ const sortedCallback = ()=>{
               <thead>
                 <tr>
                   {talentHeaders.map((header)=>(
-                    <th>{header.label}  <button className="sort-btn" name={header.name} onClick={sort}>{sortKey===header.name && sortReverse ? <FontAwesomeIcon icon={faSortDown}/> : <FontAwesomeIcon icon={faSortUp}/> }</button> </th>
+                    <th key={header.name}>{header.label}  <button className="sort-btn" name={header.name} onClick={sort}>{sortKey===header.name && sortReverse ? <FontAwesomeIcon icon={faSortDown}/> : <FontAwesomeIcon icon={faSortUp}/> }</button> </th>
                   ))}
                   <th>X</th>
                 </tr>
@@ -122,7 +122,7 @@ const sortedCallback = ()=>{
     </>)
     }
 
-    </Fragment>
+    </div>
   )
 }
 

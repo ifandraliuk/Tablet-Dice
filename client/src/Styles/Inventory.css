@@ -20,7 +20,10 @@
   border: none;
   margin-right: 2px;
 }
-
-button:focus {
-  border: 1px solid;
+.inventory-page .img-class {
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: center;
+     object-position: center;
 }/*# sourceMappingURL=Inventory.css.map */

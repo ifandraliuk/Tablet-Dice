@@ -7,6 +7,7 @@ const mana = JSON.parse(localStorage.getItem('mana'))
 const spirit = JSON.parse(localStorage.getItem('spirit'))
 const loadCapacity = JSON.parse(localStorage.getItem('loadCapacity')) // strength * strength multiplier -> important for carying things
 const equippedItems = JSON.parse(localStorage.getItem('equippedItems'))
+console.log(vitality)
 const initialState = {
     player: [],
     bars:{
@@ -464,11 +465,16 @@ export const playerSlice = createSlice({
             state.isLoading = false
             state.isSuccess = true
             state.player = action.payload
+            console.log(localStorage, vitality)
+           const v = JSON.parse(localStorage.getItem('vitality'))
+           const st = JSON.parse(localStorage.getItem('stamina'))
+           const m = JSON.parse(localStorage.getItem('mana'))
+           const sp = JSON.parse(localStorage.getItem('spirit'))
             state.bars = {
-                vitality: vitality>0 ? vitality : state.player?.attributes.vitality * 10,
-                stamina: stamina>0 ? stamina : state.player?.attributes.stamina * 10,
-                mana: mana>0 ? mana : state.player?.attributes?.mana * 10,
-                spirit: spirit>0 ? spirit : state.player?.attributes?.spirit * 10,
+                vitality: v>0 ? v : state.player?.attributes.vitality * 10,
+                stamina: st>0 ? st : state.player?.attributes.stamina * 10,
+                mana: m>0 ? m : state.player?.attributes?.mana * 10,
+                spirit: sp>0 ? sp : state.player?.attributes?.spirit * 10,
             }
         })
         .addCase(getPlayer.rejected, (state, action)=> {

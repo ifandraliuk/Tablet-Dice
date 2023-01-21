@@ -12,6 +12,8 @@ import { Spinner } from 'react-bootstrap'
 
 function Diary() {
   const {diary, userList} = useSelector((state)=>state.diaries)
+  console.log("diary page")
+  console.log(localStorage)
   const {player} = useSelector((state)=>state.player)
   const {user} = useSelector((state)=>state.auth)
   const [shareActive, setShare] = useState(false)

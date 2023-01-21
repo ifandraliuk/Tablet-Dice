@@ -4,30 +4,6 @@
   text-align: center;
   border-bottom: #fff;
 }
-.Talents .table .Nahkampf {
-  background-color: #f94144;
-}
-.Talents .table .Fernkampf {
-  background-color: #f3722c;
-}
-.Talents .table .Natur {
-  background-color: #90be6d;
-}
-.Talents .table .Wissen {
-  background-color: #43aa8b;
-}
-.Talents .table .Handwerk {
-  background-color: #f8961e;
-}
-.Talents .table .Heimlichkeit {
-  background-color: #577590;
-}
-.Talents .table .Gesellschaft {
-  background-color: #f9c74f;
-}
-.Talents .table .category {
-  text-transform: uppercase;
-}
 .Talents .sort-btn {
   margin-left: 2px;
   padding: 0;
@@ -35,4 +11,28 @@
 .Talents .sort-btn:focus {
   color: #90be6d;
   border: none;
+}
+.Talents .Nahkampf {
+  background-color: #f94144;
+}
+.Talents .Fernkampf {
+  background-color: #f3722c;
+}
+.Talents .Natur {
+  background-color: #90be6d;
+}
+.Talents .Wissen {
+  background-color: #43aa8b;
+}
+.Talents .Handwerk {
+  background-color: #f8961e;
+}
+.Talents .Heimlichkeit {
+  background-color: #577590;
+}
+.Talents .Gesellschaft {
+  background-color: #f9c74f;
+}
+.Talents .category {
+  text-transform: uppercase;
 }/*# sourceMappingURL=Talents.css.map */

@@ -1,24 +1,24 @@
 import React, {useEffect, useState} from 'react'
 import "../Styles/Talents.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faFloppyDisk,} from '@fortawesome/free-solid-svg-icons'
+import {faFloppyDisk,faKhanda, faHammer, faHurricane, faMask, faBook, faTree, faUserGroup, faRefresh} from '@fortawesome/free-solid-svg-icons'
 import NavbarComp from '../components/Navbar'
 import { Image, Container, Spinner, } from 'react-bootstrap'
 import {useSelector, useDispatch} from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getTalent, reset } from '../features/talent/talentSlice';
 import { addTalent } from '../features/player/playerSlice';
-import Form from 'react-bootstrap/Form';
 import TalentsList from '../components/TalentsList';
 import { races } from '../components/ConstVariables'
 import TableTalent from '../components/TableTalent'
 import AttributeList from '../components/AttributeList'
-
+import ScrollUpButton from '../components/ScrollUpButton'
 
 function Talents() {
   const {user} = useSelector((state)=>state.auth)
   const {player} = useSelector((state)=>state.player)
   const {talent, isLoading, isError, message} = useSelector((state)=>state.talents)
+  const [filter, setFilter] = useState("")
   const origin = player?.general?.origin.split(" ")
   const originName = origin && origin[origin.length-1]
   const [newTalents, setNewTalent] = useState([])
@@ -26,15 +26,29 @@ function Talents() {
   const dispatch = useDispatch()
   const categories = []
   const els = {}
+  const icons = 
+  {
+    Nahkampf: faKhanda,
+    Fernkampf: faHurricane,
+    Handwerk: faHammer,
+    Gesellschaft: faUserGroup,
+    Natur: faTree,
+    Wissen: faBook,
+    Heimlichkeit: faMask,
+  }
   const kindAdvantage = races[player?.general?.kind]?.ability
   //find all categories from dB
   Object.keys(talent).map((ind) => {
     return categories.push(talent[ind].category)})  
   // count amount of els in each category
   categories.forEach(function (x) { els[x] = (els[x] || 0) + 1; }); 
-  const sorted = Object.fromEntries(
+
+ /*  
+ const sorted = Object.fromEntries(
     Object.entries(els).sort(([,a],[,b]) => parseInt(b)-parseInt(a))
 );
+*/
+
   useEffect(()=> {
     if(!user) {
       navigate("/")
@@ -105,18 +119,19 @@ function Talents() {
   if(isLoading){
     return <Spinner animation="border"/>
   }
+
   return (
-    <div style={{backgroundColor:"#161614",  }} className="Talents">
+    <div style={{backgroundColor:"#161614", overflow:"auto"}} className="Talents">
        <div style={{backgroundImage:`url(/${originName}.svg)`, overflow:"auto", backgroundAttachment:"fixed", height:"100vh", backgroundRepeat:"no-repeat"}}>
         <NavbarComp/>
-        <Container fluid  style={{color:"white"}}>
+        <div className="container-fluid" style={{color:"white"}}>
           
         <div className="row">
-          <div className='col-lg-3 col-md-12 me-3'>
+          <div className='col-lg-3 col-md-12 '>
               <div style={{backgroundColor:"white"}} className="p-2 col-lg-7 col-md-2 mb-2 ms-1 me-1 border">
                   <Image fluid src={`/user/${user?._id}.jpeg`}></Image>
               </div>
-            <div className="col-lg-9 col-md-10 border">            
+            <div className="col-lg-9 col-md-10">            
               <h3>{player?.userclass?.name}</h3>
               <p>{player?.userclass?.advantages}</p>
               <h3>{player?.general?.kind}</h3>
@@ -125,34 +140,33 @@ function Talents() {
             </div>
 
           </div>
-          <div className="col-lg-8 col-md-12">
+          <div className="col-lg-7 col-md-12">
           {player?.talents ? <AttributeList/>:<Spinner animation='border'/>}
           {player.talents ? (
             <TalentsList props={player.talents}/>
           ) : (<h5>Du hast noch keine Talente...</h5>)}
-        </div>
-        </div>
-        <div className="row">
-          <div className='col-lg-3'></div>
-          <div className="col-lg-8">
-          
             <h5>Alle Talente</h5>
-                    <button className="btn-save" onClick={handleSubmit}><FontAwesomeIcon icon={faFloppyDisk}/></button>
-                <Form>
-                                 
-                    {Object.keys(sorted).map((el, ind)=>{
-                      return (
-                          <div className="col-12 border" key={ind}>
-                          <TableTalent handleChange={handleChange} handleClick={handleClick} el={el}/>
-                       </div>
-                    )})}
-                
-              </Form>
-              
+            <button className="btn-save" onClick={handleSubmit}><FontAwesomeIcon icon={faFloppyDisk}/></button>
+            <div className="col-12">
+              {Object.keys(icons).map((name)=>(
+                <button key={name} className={name} name={name} onClick={e=>setFilter(e.currentTarget.name)}><FontAwesomeIcon icon={icons[name]}/></button> 
+              ))}
+              <button name="clear" onClick={e=>setFilter("")}><FontAwesomeIcon icon={faRefresh}/></button> 
             </div>
-        </div>
+            <form>
+              {filter.length===0 ? Object.keys(els).map((el, ind)=>{
+                return (
+                  <div className="col-12" key={ind}>
+                    <TableTalent handleChange={handleChange} handleClick={handleClick} el={el} icons={icons}/>
+                   </div>
+              )}) : <TableTalent  handleChange={handleChange} handleClick={handleClick} el={filter} icons={icons}/>}
+                
+            </form>
+         </div>
+         {true && <div className="col-lg-auto"><ScrollUpButton  /></div>}
+      </div>
 
-        </Container>
+        </div>
         </div>
         </div>
   )

@@ -26,7 +26,7 @@ function Bestiaria() {
   return (
     <div className="dark-bg">
       <NavbarComp/>
-      <div className="container-fluid bestiaria">
+      <div className="container bestiaria">
         {bestiaria?.map((creature)=>{
           const habitat = creature?.habitat
           return (

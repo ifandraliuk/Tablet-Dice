@@ -6,31 +6,6 @@
         color: #fff;
         text-align: center;
         border-bottom: #fff;
-        
-        .Nahkampf{
-            background-color: $categoryRed;   
-        }
-        .Fernkampf {
-            background-color: $categoryOrange;
-        }
-        .Natur {
-            background-color: $categoryGreen;
-        }
-        .Wissen {
-            background-color: $categoryJungle;
-        }    
-        .Handwerk {
-            background-color: $categoryYellowOrange;
-        }
-        .Heimlichkeit {
-            background-color: $categoryBlue;
-        }
-        .Gesellschaft {
-            background-color: $categoryYellow;
-        }
-        .category {
-            text-transform: uppercase;
-        }
     }
 
     .sort-btn{
@@ -41,6 +16,29 @@
         color: $categoryGreen;
         border: none;
     }
-
+    .Nahkampf{
+        background-color: $categoryRed;   
+    }
+    .Fernkampf {
+        background-color: $categoryOrange;
+    }
+    .Natur {
+        background-color: $categoryGreen;
+    }
+    .Wissen {
+        background-color: $categoryJungle;
+    }    
+    .Handwerk {
+        background-color: $categoryYellowOrange;
+    }
+    .Heimlichkeit {
+        background-color: $categoryBlue;
+    }
+    .Gesellschaft {
+        background-color: $categoryYellow;
+    }
+    .category {
+        text-transform: uppercase;
+    }
 }
 

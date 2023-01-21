@@ -12,6 +12,8 @@ const getPlayer = async (token) => {
     console.log('frontend request to get player info')
     console.log(config)
     const localVit = JSON.parse(localStorage.getItem('vitality'))
+    console.log("get player service check: vitality")
+    console.log(localVit)
     const localSt = JSON.parse(localStorage.getItem('stamina'))
     const localM = JSON.parse(localStorage.getItem('mana'))
     const localS = JSON.parse(localStorage.getItem('spirit'))

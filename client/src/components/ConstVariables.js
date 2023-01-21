@@ -110,7 +110,7 @@ const racesList = ["Elb","Draconid", "Zwerg", "Gnom", "Ork", "Kobold", "Mensch",
     /// DASHBOARD
     const germanAttr = {
         vitality: "Vitalität",
-        stamina: "Stamina",
+        stamina: "Ausdauer",
         mana: "Mana",
         spirit: "Spirituelle Kraft"
     }

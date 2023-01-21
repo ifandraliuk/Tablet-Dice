@@ -1,5 +1,8 @@
 @import './Variables.scss';
-
+body { 
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
 .dark-bg {
     background-color: $darkBlack;
     height: 100vh;
@@ -25,6 +28,13 @@
     border-color: azure;
     border-top-right-radius: 6px;
     border-bottom-right-radius: 6px;
+}
+
+.btn-up {
+    position: fixed;
+    bottom: 0;
+    width: 3em;
+    height: 3em;
 }
 
 .btn-save{
@@ -67,12 +77,23 @@ button {
     padding: 10px 15px ;
     
 }
-
+button:focus{
+    border: 1px solid
+    }
+    
 button:disabled{
     background-color: $infoBlack;
     opacity: 50%;
 }
+.items-btn {
+    background-color: white;
+    border-radius: 15%;
+    min-width: 70px;
 
+}
+.items-btn:hover{
+    background-color: rgb(219, 219, 219);
+}
 
 textarea{
     background-color: $infoBlack;
@@ -128,7 +149,15 @@ h5 {
 ul{
     color: azure;
     background-color: $infoBlack;
-  }
+}
+
+select{
+    background-color: $infoBlack;
+    padding: 2px 4px;
+    color: azure;
+    border:none;
+}
+
 .Welles-bg {
     background-image:url(~/public/Welles.svg)
 }

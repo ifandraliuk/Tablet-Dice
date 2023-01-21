@@ -1,17 +1,20 @@
 import React  from 'react'
 import {useSelector} from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 function TableTalent(props) {
     const {player} = useSelector((state)=>state.player)
     const {talent} = useSelector((state)=>state.talents)
     const origin = player?.general?.origin.split(" ")
     const originName = origin && origin[origin.length-1]
+
+  
   return (
         <table className="table h-100">
     <thead>
       <tr>
-        <th className={`${props.el} category`} >{`${props.el}`}</th>
+        <th className={`${props.el} category`} ><FontAwesomeIcon icon={props.icons[props.el]}/>{` ${props.el}`}</th>
         <th>Würfel</th>
         <th>Werte</th>
         <th>+</th>

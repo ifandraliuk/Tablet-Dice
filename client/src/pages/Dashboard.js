@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback } from 'react'
 import { Container } from 'react-bootstrap'
-
+import "../Styles/Dashboard.css"
 import NavbarComp from '../components/Navbar'
 import {useSelector, useDispatch} from 'react-redux';
 import Image from 'react-bootstrap/Image'
@@ -13,7 +13,6 @@ import ClassList from '../components/ClassList'
 import AttributeList from '../components/AttributeList'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLevelUp} from '@fortawesome/free-solid-svg-icons'
-import Button from 'react-bootstrap/Button'
 import {updateLevel, getArmor} from '../features/player/playerSlice';
 
 function Dashboard() {
@@ -29,18 +28,18 @@ function Dashboard() {
 
 
   return (
-    <div className="dark-bg">
+    <div className="dark-bg dashboard-page">
       <div className={`bg ${originName}-bg`}>
           <NavbarComp/>
           <Container fluid style={{color:"white"}}>
           <div className="row">   
-              <div className='col-lg-3 height-auto'>
+              <div className='col-lg-3 h-auto'>
                 <div className="row">
-                    <div style={{backgroundColor:"white"}} className="p-2 col-7 mb-2 ms-1 me-1">
-                        <Image fluid src={`/user/${user?._id}.jpeg`}></Image>
+                    <div className="p-2 col-lg-7 col-md-7">
+                        <img className="user-img " src={`/user/${user?._id}.jpeg`}></img>
                     </div>
-                    <div className='col-2 mt-3'>
-                        <div className="row"><EquippedItem category="Haupthand"/></div>
+                    <div className='col-lg-2 col-md-3 mt-3'>
+                        <div className="row border"><EquippedItem category="Haupthand"/></div>
                         <div className='row mt-2'><EquippedItem category="Nebenhand"/></div>
                         <div className="row">
                     <div className='col'>
@@ -66,7 +65,7 @@ function Dashboard() {
                 <div className='row'><h2>{player.userclass?.name}</h2></div >
                 <div className="row">
                   <div className='col-auto border pt-2'><h3>Stufe: {player?.level}</h3></div>
-                  <div  className='col-auto  border'><button onClick={newLevel}><FontAwesomeIcon icon={faLevelUp} /></button></div>
+                  <div  className='col-auto  border'><button className={originName} onClick={newLevel}><FontAwesomeIcon icon={faLevelUp} /></button></div>
                 </div>
                 <div className='col-7 mt-3'>
                   <Figure><Figure.Image src={`/origin/${originName}ldpi.png`}/></Figure>
@@ -75,7 +74,7 @@ function Dashboard() {
               <div className="col ms-6">
                 <div className='row border-bottom border-2 m-1'>
                   <div className="row">
-                    <div className="col" >
+                    <div className="col-lg-12 col-md-12" >
                       {player && player.attributes ? (<AttributeList/>): (<Spinner animation="border"/>) }
                    </div>
                 </div>

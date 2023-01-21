@@ -1,18 +1,16 @@
 import React, { useEffect, useCallback, useState} from 'react'
 import "../Styles/Inventory.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faPenToSquare, faFloppyDisk, faPaw, faPlus, faRefresh,faSearch, faShield, faSuitcase, faHammer, faSeedling, faPerson, faHandSparkles, faCoins, faCircleInfo} from '@fortawesome/free-solid-svg-icons'
+import {faPenToSquare, faFloppyDisk, faPaw, faPlus, faRefresh,faSearch, faShield, faSuitcase, faHammer, faSeedling, faPerson, faHandSparkles, faCoins, faCircleInfo, faTrash} from '@fortawesome/free-solid-svg-icons'
 import NavbarComp from '../components/Navbar';
 import {useSelector, useDispatch} from 'react-redux';
 import { getItem, reset, search, getGenuses } from '../features/item/itemSlice';
 import Alert from 'react-bootstrap/Alert';
 import { useNavigate } from 'react-router-dom';
 import { Button, ButtonGroup,  Spinner } from 'react-bootstrap';
-import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { filterEquipment, getWeight, newBalance, toInventory,  updateInventory, deleteItem } from '../features/player/playerSlice';
-import CloseButton from 'react-bootstrap/CloseButton';
 import Image from 'react-bootstrap/Image'
 import EquipmentComponent from '../components/EquipmentComponent';
 import Enchantment from '../components/Enchantment'
@@ -108,7 +106,7 @@ const weightBarCallback = useCallback(()=>{
     dispatch(toInventory({item: items[id].name, amount: 1, status: user.name}))
   }
   const toDelete = e => {
-    let id = e.target.name
+    let id = e.currentTarget.name
     //dispatch(deleteItem(player.inventory[id]._id))
     dispatch(deleteItem(id))
     //dispatch(getPlayer())
@@ -272,7 +270,7 @@ const weightBarCallback = useCallback(()=>{
       </Card>
        ) : 
        (
-        <Form >
+        <div >
           <ButtonGroup>
             <Button variant={edit? "info": "dark"} className={modify? "disabled": ""} onClick={handleEdit}><FontAwesomeIcon icon={faPenToSquare} /></Button>
             <Button variant={modify? "info": "secondary"} style={{hoverOverlay:"#8685EF"}} className={edit? "disabled": ""} onClick={handleModify}><FontAwesomeIcon icon={faHandSparkles} /></Button>
@@ -313,20 +311,20 @@ const weightBarCallback = useCallback(()=>{
                     ) 
                     }
                     </td>
-                    {edit ? (<td><Form.Control id="amount" name={invElement._id} type="number" onChange={handleChange} defaultValue={invElement.amount}></Form.Control></td>)
+                    {edit ? (<td><input id="amount" name={invElement._id} type="number" onChange={handleChange} defaultValue={invElement.amount}/></td>)
                           : <td>{invElement.amount}</td>}
                     {edit ? 
                           (
                           <td>
-                            <Form.Select id="status" name={invElement._id} defaultValue={invElement.status} onChange={handleChange}>
+                            <select id="status" name={invElement._id} defaultValue={invElement.status} onChange={handleChange}>
                               <option>{user.name}</option>
                               <option>Ausgerüstet</option>
                               <option>Begleiter</option>
-                            </Form.Select>
+                            </select>
                           </td>
                           ):
                           (<td>{invElement.status === user.name ? <FontAwesomeIcon icon={faSuitcase} />: invElement.status === "Ausgerüstet" ? <FontAwesomeIcon icon={faPerson}/>: <FontAwesomeIcon icon={faPaw}/>}</td>)}
-                    <td><CloseButton name={invElement._id} onClick={toDelete}/></td>
+                    <td><button className="btn-remove" name={invElement._id} onClick={toDelete}><FontAwesomeIcon icon={faTrash}/></button></td>
                   </tr>
               )}
               
@@ -337,12 +335,12 @@ const weightBarCallback = useCallback(()=>{
           {edit? (<div  className="col col-auto border border-2">
                     <div className="row p-2">
                       <div className="col col-2 p-0">
-                        <Form.Control id="0" name="gold" type="number" onChange={moneyChange} defaultValue={player?.money[0]}></Form.Control>
+                        <input id="0" name="gold" type="number" onChange={moneyChange} defaultValue={player?.money[0]}/>
                       </div>
                       <div className="col" style={{color:"#FF9D00"}}>Gold</div>
-                      <div className="col col-2 p-0"><Form.Control id="1" name="gold" type="number" onChange={moneyChange} defaultValue={player?.money[1]}></Form.Control></div>
+                      <div className="col col-2 p-0"><input id="1" name="gold" type="number" onChange={moneyChange} defaultValue={player?.money[1]}/></div>
                       <div  className="col" style={{color:"grey"}}>Silber</div>
-                      <div className="col col-2 p-0"><Form.Control id="2" name="gold" type="number" onChange={moneyChange} defaultValue={player?.money[2]}></Form.Control></div>
+                      <div className="col col-2 p-0"><input id="2" name="gold" type="number" onChange={moneyChange} defaultValue={player?.money[2]}/></div>
                       <div  className="col" style={{color:"#B34219"}}>Kupfer</div>
                     </div>
           </div>) :
@@ -354,7 +352,7 @@ const weightBarCallback = useCallback(()=>{
               <div className="col-auto p-0" style={{color:"#B34219"}}>{`, ${player?.money ? player.money[2] : 0} Kupfer`}</div>
              </div></div>)}
         </div>
-        </Form>
+        </div>
        )
         }
       </div>
@@ -429,7 +427,7 @@ const weightBarCallback = useCallback(()=>{
               <div className="col-3">
         {items[detailsId] && detailsId >= 0 && 
 
-          <InfoListComponent item={items[detailsId]} style={{position:"fixed"}}/>
+          <InfoListComponent item={items[detailsId]}/>
         
       }   
       </div>

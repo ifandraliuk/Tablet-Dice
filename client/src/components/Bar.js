@@ -6,6 +6,7 @@ import {germanAttr} from './ConstVariables'
 
 function Bar(props) {
   const {player, bars} = useSelector((state)=>state.player) 
+  console.log(bars)
   const {attributes} = player
   const max = attributes ? attributes[props.category]*10 : 0
   const curr = bars ? bars[props.category] : 0

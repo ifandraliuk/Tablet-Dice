@@ -43,9 +43,9 @@ function EquippedItem(props) {
       return (
         <>
     <OverlayTrigger trigger="click" placement={place} overlay={fullInfo}>
-        <Button variant="light" >
+        <button className="items-btn" >
           <Image className='mb-0' src={`/icons/${r}/${g}xhdpi.png`}></Image>
-        </Button>
+        </button>
     </OverlayTrigger>
     </>
     )
