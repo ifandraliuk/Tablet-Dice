@@ -60,6 +60,11 @@ body {
   background-color: #f3722c;
 }
 
+.btn-edit:focus {
+  background-color: #f3722c;
+  color: #fff;
+}
+
 .btn-remove {
   background-color: #212529;
   padding: 2px 10px;
@@ -69,6 +74,22 @@ body {
 
 .btn-remove:hover:enabled {
   background-color: #f94144;
+}
+
+.btn-enchantment {
+  background-color: #212529;
+  padding: 2px 10px;
+  border: 2px solid;
+  border-color: azure;
+}
+
+.btn-enchantment:hover {
+  background-color: #9d4edd;
+}
+
+.btn-enchantment:focus {
+  background-color: #9d4edd;
+  color: #fff;
 }
 
 button {
@@ -84,11 +105,13 @@ button {
 
 button:focus {
   border: 1px solid;
+  color: #90be6d;
 }
 
 button:disabled {
   background-color: #212529;
   opacity: 50%;
+  cursor: not-allowed;
 }
 
 .items-btn {
@@ -121,6 +144,12 @@ input {
   background-color: #212529;
   color: #fff;
   text-align: center;
+  border: 1px solid white;
+}
+
+input:focus {
+  outline: none;
+  color: #f3722c;
 }
 
 table {
@@ -130,31 +159,35 @@ table {
   border-bottom: #fff;
 }
 
+div {
+  word-wrap: break-word;
+}
+
 h1 {
   text-transform: uppercase;
   color: azure;
-  font-size: 40px;
+  font-size: clamp(1em, 0.5em + 1vw, 1.5em);
   letter-spacing: 7px;
 }
 
 h2 {
   text-transform: uppercase;
   color: azure;
-  font-size: 30px;
+  font-size: clamp(1em, 0.5em + 1vw, 1.3em);
   letter-spacing: 7px;
 }
 
 h3 {
   text-transform: uppercase;
   color: azure;
-  font-size: 25px;
+  font-size: clamp(1em, 0.5em + 1vw, 1.2em);
   letter-spacing: 7px;
 }
 
 h5 {
   text-transform: uppercase;
   color: azure;
-  font-size: 18px;
+  font-size: clamp(1em, 0.5em + 1vw, 0.9em);
   letter-spacing: 7px;
 }
 
@@ -168,6 +201,38 @@ select {
   padding: 2px 4px;
   color: azure;
   border: none;
+}
+
+.blur-bg {
+  height: 100vh;
+  width: 100%;
+  top: 0;
+  left: 0;
+  -webkit-backdrop-filter: blur(5px);
+          backdrop-filter: blur(5px);
+  position: fixed;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup {
+  width: 100%;
+  min-height: -webkit-fit-content;
+  min-height: -moz-fit-content;
+  min-height: fit-content;
+  max-height: 500px;
+  max-width: -webkit-fit-content;
+  max-width: -moz-fit-content;
+  max-width: fit-content;
+  padding: 2em;
+  background-color: #212529;
+  z-index: 2;
+}
+
+strong {
+  color: #f3722c;
 }
 
 .Welles-bg {

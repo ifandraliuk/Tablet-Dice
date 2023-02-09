@@ -29,49 +29,48 @@ function Dashboard() {
 
   return (
     <div className="dark-bg dashboard-page">
-      <div className={`bg ${originName}-bg`}>
+      <div className={`bg ${originName}-bg container-fluid`}>
           <NavbarComp/>
-          <Container fluid style={{color:"white"}}>
-          <div className="row">   
-              <div className='col-lg-3 h-auto'>
+          <div fluid style={{color:"white"}}>
+            <div className="row">   
+              <div className='col-lg-3 col-md-10 col-sm-12'>
                 <div className="row">
-                    <div className="p-2 col-lg-7 col-md-7">
+                    <div className="p-2 col-lg-7 col-md-8 col-sm-6">
                         <img className="user-img " src={`/user/${user?._id}.jpeg`}></img>
                     </div>
-                    <div className='col-lg-2 col-md-3 mt-3'>
-                        <div className="row border"><EquippedItem category="Haupthand"/></div>
-                        <div className='row mt-2'><EquippedItem category="Nebenhand"/></div>
-                        <div className="row">
-                    <div className='col'>
-                    {player?.talents?.findIndex(el=>el.talent?.category==="Nahkampf")>=0?
-                    (<div>
-                      <h5>Proben</h5>
-                      {player.talents.map((el)=>{
-  
-                        const category = el.talent.category
-                        if(category==="Nahkampf" || category==="Fernkampf"){
-                          return (
-                            <div key={el._id}>{`${el.talent.name}: ${el.talent.dice}`}</div>
-                          )
-                        }
-                      })}
-                    </div>):<div>keine</div>}
+                    <div className='col-lg-5 col-md-4 mt-3 col-sm-3'>
+                        <div className="col"><EquippedItem category="Haupthand"/></div>
+                        <div className='col'><EquippedItem category="Nebenhand"/></div>
+                        <div className='col'>
+                         {/* {player?.talents?.findIndex(el=>el.talent?.category==="Nahkampf")>=0?
+                          (<div className="col-lg-12 col-md-12 col-sm-auto">
+                            {player.talents.map((el)=>{
+        
+                              const category = el.talent.category
+                              if(category==="Nahkampf" || category==="Fernkampf"){
+                                return (
+                                <div key={el._id} className="col">{`${el.talent.name}: `}<strong>{el.talent.dice}</strong></div>
+                                )
+                              }
+                            })}
+                          </div>):<div>keine</div>}*/}
+                          <h5>{`Rüstung: `}<strong>{armor}</strong></h5>
+                        </div>
+                       
+                      </div>
                   </div>
-                </div>
-                        <div><h5>{`Rüstung: ${armor}`}</h5></div>
-                    </div>
-                </div>
                 <div className='row'><h1>{user?.name}</h1></div >
                 <div className='row'><h2>{player.userclass?.name}</h2></div >
                 <div className="row">
-                  <div className='col-auto border pt-2'><h3>Stufe: {player?.level}</h3></div>
+                  <div className='col-auto border pt-2'><h3>Stufe: <strong>{player?.level}</strong></h3></div>
                   <div  className='col-auto  border'><button className={originName} onClick={newLevel}><FontAwesomeIcon icon={faLevelUp} /></button></div>
                 </div>
-                <div className='col-7 mt-3'>
+                <div className='col-lg-7 col-md-7 col-sm-12 mt-3'>
                   <Figure><Figure.Image src={`/origin/${originName}ldpi.png`}/></Figure>
                 </div>
               </div>
-              <div className="col ms-6">
+              {/*second column */}
+              <div className="col-lg-9">
                 <div className='row border-bottom border-2 m-1'>
                   <div className="row">
                     <div className="col-lg-12 col-md-12" >
@@ -84,14 +83,14 @@ function Dashboard() {
               </div>
           <div className="row">
               
-              <div className="col-7">
+              <div className="col-lg-7 col-md-12">
               <h3>Aktive Boni</h3>
                 {bonis?.length===0 ? <p>Hast noch keine...</p>:
                 bonis.map((boni, ind)=>(
                   <h5 key={ind}>{boni}</h5>
                 ))}
               </div>
-                {setboni?.length>0 && <div className='col-5'>
+                {setboni?.length>0 && <div className='col-lg-4 col-md-12'>
                   <h3>Set bonus</h3>
                   <h5>{setboni}</h5>
                 </div>
@@ -100,7 +99,7 @@ function Dashboard() {
           </div>
             </div>
           </div>
-          </Container>
+          </div>
       </div>
     </div>
   )

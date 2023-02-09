@@ -70,7 +70,7 @@ function Login() {
     <Container style={{color:"white"}} className="col-md-12 col-sm-12 col-lg-5 d-flex align-items-center h-100 g-0">
         {/* style={loginContainer}*/}
             <Container className="justify-content-center border border-2 rounded">
-            <h2 className='text-center pt-5  border-bottom'><strong>Willkommen in den Dragonlands</strong></h2>
+            <h2 className='text-center pt-5  border-bottom'>Willkommen in den Dragonlands</h2>
                 <Form className="p-5">
                     <Form.Group className='pb-2'controlId='formName'>
                         <Form.Control name="name" type="text" placeholder='Name deines Charakters' onChange={onChange} value={name}></Form.Control>

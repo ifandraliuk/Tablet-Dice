@@ -22,7 +22,7 @@ function EquipmentComponent() {
           </div>
           <div className="col-md-2 col-lg-6 order-lg-2 order-md-3 col-sm-12 w-auto  align-self-start">
             
-          <Figure><Figure.Image src={`/classes_img/${player?.userclass?.name}xxhdpi.png`}/></Figure>
+          <Figure><Figure.Image src={`/classes_img/${player?.userclass?.name}xhdpi.png`}/></Figure>
              
      
           </div>

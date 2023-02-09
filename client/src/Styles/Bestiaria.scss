@@ -1,3 +1,20 @@
+@import './Variables.scss';
+
 .bestiaria{
     color: white;
+
+    .img-creature{
+        border: 3px solid;
+        max-width: 100%;
+    }
+
+    .flieht{
+        background-color: $categoryGreen;
+    }
+    .neutral{
+        background-color: $categoryBlue;
+    }
+    .aggressiv{
+        background-color: $categoryOrange;
+    }
 }

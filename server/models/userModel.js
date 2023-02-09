@@ -3,6 +3,9 @@ const userTalents = require('./userTalentsModel')
 const inventory = require('./inventoryModel')
 const general = require('./generalModel')
 const attribute = require('./attributesModel')
+const companion = require('./companionModel')
+
+
 
 const userSchema = mongoose.Schema({
     name: {
@@ -36,6 +39,10 @@ const userSchema = mongoose.Schema({
     inventory:{
         ref: 'Inventory',
         type: [inventory.schema]
+    },
+    companions: {
+        ref: "Bestiarium",
+        type: [companion.schema]
     },
     attributes: {
         type: attribute.schema

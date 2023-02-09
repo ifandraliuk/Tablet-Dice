@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback, useState} from 'react'
 import "../Styles/Inventory.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faPenToSquare, faFloppyDisk, faPaw, faPlus, faRefresh,faSearch, faShield, faSuitcase, faHammer, faSeedling, faPerson, faHandSparkles, faCoins, faCircleInfo, faTrash} from '@fortawesome/free-solid-svg-icons'
+import {faPenToSquare, faFloppyDisk,  faPaw, faPlus, faRefresh,faSearch, faShield, faSuitcase, faHammer, faSeedling, faPerson, faHandSparkles, faCoins, faCircleInfo, faTrash} from '@fortawesome/free-solid-svg-icons'
 import NavbarComp from '../components/Navbar';
 import {useSelector, useDispatch} from 'react-redux';
 import { getItem, reset, search, getGenuses } from '../features/item/itemSlice';
@@ -16,13 +16,17 @@ import EquipmentComponent from '../components/EquipmentComponent';
 import Enchantment from '../components/Enchantment'
 import InfoListComponent from '../components/InfoListComponent';
 import {itemNames} from '../components/ConstVariables';
+import InvPopup from '../components/InvPopup';
 
 function InventoryPage() {
   const {items, isLoading, loaded, armorGenuses, weaponGenuses, ressourceGenuses, isError, message} = useSelector((state)=>state.items)
-  const {player, weight, loadCapacity} = useSelector((state)=>state.player)
+  const {player, weight, money, loadCapacity} = useSelector((state)=>state.player)
   const {user} = useSelector((state)=>state.auth)
   const [modify, setModify] = useState(false) // activate enchantment
-  const [selected, setSelected] = useState({state: false, item:""}) // show additional info in the inventory
+  const [showInfo, showInfoActive] = useState({state: false, item:""}) // show additional info in the inventory
+  const [trigger, setTrigger] = useState(false) //popup trigger
+  const [sellPrice, setSellprice] = useState() // sum of selected items to sell
+  const [multi, setMulti] = useState([])
   const {genus, rarity} = itemNames
   const [toUpdate, setUpdate] = useState([])
   const [newMoney, updateMoney] = useState(player?.money)
@@ -92,10 +96,7 @@ const weightBarCallback = useCallback(()=>{
     } else dispatch(reset() )
 
   }, [user, isLoad, items.length, message, isError, navigate, dispatch])
-  // Dismount general info
-  const clear = () => {
-    setFilter("")
-  }
+ 
 
   const getDetails = e => {
     setId(parseInt(e.currentTarget.name))
@@ -166,7 +167,7 @@ const weightBarCallback = useCallback(()=>{
       setUpdate([{item:e.target.name, [e.target.id]: e.target.value}])
 
     }
-    //const id = selected.findIndex(el=>el.name === e.target.id)
+    //const id = showInfo.findIndex(el=>el.name === e.target.id)
     if(isLoading || player.isLoading){
       return <Spinner  animation="border"/>
     }
@@ -174,9 +175,18 @@ const weightBarCallback = useCallback(()=>{
   const itemSelected = e => {
     console.log(e.target.name)
     if(e.target.name){
-      setSelected({state:!selected.state, item:e.target.name})
+      showInfoActive({state:!showInfo.state, item:e.target.name})
     }
-    
+  }
+  const onMultiSelect = e => {
+    console.log(e.target)
+    const id = e.target?.id
+    if(multi.includes(id)){
+      setMulti(multi.filter(el=>el!==id))
+    } else {
+      setMulti([...multi, id])
+    }
+    console.log(multi)
   }
   const showItems = e => {
     e.preventDefault()
@@ -194,12 +204,99 @@ const weightBarCallback = useCallback(()=>{
     )))
     console.log(newMoney)
   }
+
+
+  const handleSearch = e => {
+    console.log(e.target.value)
+    //setSearch(e.target.value)
+  }
+  const onClickSearch = e => {
+    const searchbar = document.getElementById("searchbar")
+    if(searchbar.value.length>0){
+      setSearch(searchbar.value)
+    }
+  }
+
+  const clearSearch = () => {
+    document.getElementById("Brust").focus()
+    document.getElementById("searchbar").value = ""
+    setFilter("Brust")
+    setSearch("")
+  }
+  const sellItems = () => {
+    /**
+     counts sum of selected elements, removes this els 
+     && reload players money balance
+     */
+    if(multi?.length>0){
+      let sum = 0.0
+      multi.forEach((el)=>{
+        //find selected element 
+        const toSell = player?.inventory.find(item=>item._id===el)
+        if(toSell){
+          // convert string money type & count its cost
+          sum += moneyToFloat(toSell.item.price)*toSell.amount
+        }
+       
+      })
+      //console.log(sum)
+      // calculate new players balance
+      const balance = moneyToFloat(player?.money) + sum
+      const selled = floatToArray(sum)
+      //console.log(selled)
+      //console.log(floatToArray(balance))
+      // info for the animated output
+      const info = `${selled[0]>0 ? `${selled[0]} Gold`: ""} ${selled[1]>0 ? ` ${selled[1]} Silber`: ""} ${selled[2]>0 ? `${selled[2]} Kupfer `: ""}`
+      setSellprice(info)
+      setTrigger(true)
+      //dispatch(newBalance(floatToArray(balance)))
+      //animateInv(info)
+
+    }
+      function moneyToFloat(coins){
+        // convert "0.21.0" or [0,21,0] cost into float
+        const arr = typeof(coins)==="string" ? coins.split(".") : coins
+        let arrToStr = `${arr[0]}.${arr[1].length===1 ? `0${arr[1]}` : arr[1]}${arr[2].length===1 ?  `0${arr[2]}` : arr[2]}`
+        return parseFloat(arrToStr)
+      }
+
+      function floatToArray(coins){
+        ///converts 1.4501 into array [1,45,1] - 1 gold, 45 silver 1 copper
+        const str = coins.toFixed(4) /// '1.4501'
+        const splitGold = str.split(".") /// ['1','4501']
+        const gold = parseInt(splitGold) // 1
+        const silver = parseInt(splitGold[1].slice(0,2)) // extract first 2 elements - 45
+        const copper = parseInt(splitGold[1].slice(2,4)) 
+        return [gold, silver, copper]
+      }
+  }
+
+  /// Animations 
+  
+  const animateInv = (text) => {
+    let elem = document.getElementById("sell-info"); 
+    elem.innerHTML = text
+    let id = setInterval(frame, 15)
+    let pos = 0
+    elem.style.display = "visible"
+    function frame() {
+      if(pos === 100){
+        clearInterval(id)
+        elem.innerHTML = ""
+      } else {
+        pos++
+        elem.style.marginLeft = pos + "px"
+      }
+    }
+  }
+
+  // animate weight bar 
   const move = (weight) =>{
-    var elem = document.getElementById("curr-weight");   
-    var height = 0;
+    let elem = document.getElementById("curr-weight");   
+    let height = 0;
     const currPercentage = weight / (loadCapacity/100)
     console.log(currPercentage)
-    var id = setInterval(frame, 100);
+    let id = setInterval(frame, 15);
     function frame() {
       if (height >= currPercentage) {
         clearInterval(id);
@@ -222,37 +319,20 @@ const weightBarCallback = useCallback(()=>{
     
   }
 
-
-  const handleSearch = e => {
-    console.log(e.target.value)
-    //setSearch(e.target.value)
-  }
-  const onClickSearch = e => {
-    const searchbar = document.getElementById("searchbar")
-    if(searchbar.value.length>0){
-      setSearch(searchbar.value)
-    }
-  }
-
-  const clearSearch = () => {
-    document.getElementById("Brust").focus()
-    document.getElementById("searchbar").value = ""
-    setFilter("Brust")
-    setSearch("")
-  }
   return (
     <div className="dark-bg">
       <div className={`bg ${originName}-bg`}>
+      <InvPopup trigger={trigger} sellPrice={sellPrice}/>
     <NavbarComp/>
     <div  className="container-fluid g-5 inventory-page">
     <div className="row mt-3 ">
     <div className="col-lg-auto col-md-12 col-sm-12 h-auto">
-      <div className="row mt-5"><button name={user.name} onClick={onClickFilter}><FontAwesomeIcon icon={faSuitcase}/></button></div>
-      <div className="row"><button name="Ausgerüstet" onClick={onClickFilter}><FontAwesomeIcon icon={faPerson}/></button></div>
-      <div className="row"><button name="Rüstung" onClick={onClickFilter}><FontAwesomeIcon icon={faShield}/></button></div>
-      <div className="row"><button name="Waffe" onClick={onClickFilter}><FontAwesomeIcon icon={faHammer}/></button></div>
-      <div className="row"><button name="Ressource" onClick={onClickFilter}><FontAwesomeIcon icon={faSeedling}/></button></div>
-      <div className="row"><button name="all" onClick={onClickFilter}><FontAwesomeIcon icon={faRefresh}/></button></div>
+      <div className="row mt-5"><button name={user.name} className={originName} onClick={onClickFilter}><FontAwesomeIcon icon={faSuitcase}/></button></div>
+      <div className="row"><button name="Ausgerüstet" className={originName} onClick={onClickFilter}><FontAwesomeIcon icon={faPerson}/></button></div>
+      <div className="row"><button name="Rüstung" className={originName}  onClick={onClickFilter}><FontAwesomeIcon icon={faShield}/></button></div>
+      <div className="row"><button name="Waffe" className={originName} onClick={onClickFilter}><FontAwesomeIcon icon={faHammer}/></button></div>
+      <div className="row"><button name="Ressource" className={originName} onClick={onClickFilter}><FontAwesomeIcon icon={faSeedling}/></button></div>
+      <div className="row"><button name="all" className={originName}  onClick={onClickFilter}><FontAwesomeIcon icon={faRefresh}/></button></div>
       <div className="row">
         <div id='weight-progressbar'>
             <div id='curr-weight' style={{height:"0px", backgroundColor: "#90be6d"}}>0</div>
@@ -271,16 +351,30 @@ const weightBarCallback = useCallback(()=>{
        ) : 
        (
         <div >
-          <ButtonGroup>
-            <Button variant={edit? "info": "dark"} className={modify? "disabled": ""} onClick={handleEdit}><FontAwesomeIcon icon={faPenToSquare} /></Button>
-            <Button variant={modify? "info": "secondary"} style={{hoverOverlay:"#8685EF"}} className={edit? "disabled": ""} onClick={handleModify}><FontAwesomeIcon icon={faHandSparkles} /></Button>
-            <Button className={edit ? "":"disabled"} variant="outline-secondary"  onClick={handleSave} type="submit"><FontAwesomeIcon icon={faFloppyDisk} /></Button>
-            </ButtonGroup>
+          
+          <div className='row'>
+          <div className="button-group col-auto">
+            {modify? 
+              <button  className="btn-edit" disabled><FontAwesomeIcon icon={faPenToSquare} /></button>
+              :
+              <button  className="btn-edit"  onClick={handleEdit}><FontAwesomeIcon icon={faPenToSquare} /></button>
+            }
+            {edit? <button className="btn-enchantment" disabled><FontAwesomeIcon icon={faHandSparkles} /></button>
+            : <button className="btn-enchantment"  onClick={handleModify}><FontAwesomeIcon icon={faHandSparkles} /></button>}
+            {
+              edit ? <button className="btn-save" variant="outline-secondary"  onClick={handleSave} type="submit" ><FontAwesomeIcon icon={faFloppyDisk} /></button>
+              :
+              <button className="btn-save" variant="outline-secondary" disabled><FontAwesomeIcon icon={faFloppyDisk} /></button>
+            }
+            <button className="btn-edit" onClick={sellItems}><FontAwesomeIcon icon={faCoins} /></button>
+          </div>
+          <div id="sell-info" style={{left:0, display:"visible", color:"yellow"}} className="col-auto"></div>
+          </div>
         {modify && <Alert variant="info">Verzaubern: zum Verzaubern eines Gegenstandes klicke auf das Icon</Alert> } 
         <table className='w-100 text-align-left'>
           <thead>
-            <tr>
-              <th>#</th>
+            <tr className="border-bottom">
+          
               <th>Name</th>
               <th>Anzahl</th>
               <th>Status</th>
@@ -296,19 +390,18 @@ const weightBarCallback = useCallback(()=>{
               iFilter === "Ressource" && iFilter === invElement.item.category ? true : false
               const showElement = filterCheck || categoryCheck
               return r && g && showElement && (
-                  <tr key={invElement._id} name={invElement._id} onClick={itemSelected}>
-                  
-                   <td className='pb-0'><Image name={invElement.item.name} src={`/icons/${r}/${g}xhdpi.png`} onClick={itemSelected}></Image></td>
-                   
-                    <td><strong>{invElement.item.name}</strong>
+                  <tr key={invElement._id} name={invElement._id}>
+                    <td style={{textAlign:"left"}}>
+                    <input type="checkbox" name="multichoice" id={invElement._id} onChange={onMultiSelect}/>
+                    <Image name={invElement.item.name} src={`/icons/${r}/${g}xhdpi.png`} onClick={itemSelected}></Image>
+                    <label htmlFor={invElement._id}><h4> {invElement.item.name}</h4></label>
                     {modify ? (
-                            selected?.state && selected.item === invElement.item.name &&
+                            showInfo?.state && showInfo.item === invElement.item.name &&
                        <Enchantment id={invElement._id} handleModify={handleModify}/>
                     ) : (
-                      selected?.state && selected.item === invElement.item.name &&
-
-                  <InfoListComponent item={invElement.item} enchantment={invElement.enchantment}/>
-                    ) 
+                      showInfo?.state && showInfo.item === invElement.item.name &&
+                        <InfoListComponent item={invElement.item} enchantment={invElement.enchantment}/>
+                      ) 
                     }
                     </td>
                     {edit ? (<td><input id="amount" name={invElement._id} type="number" onChange={handleChange} defaultValue={invElement.amount}/></td>)
@@ -426,9 +519,7 @@ const weightBarCallback = useCallback(()=>{
               </div>}
               <div className="col-3">
         {items[detailsId] && detailsId >= 0 && 
-
-          <InfoListComponent item={items[detailsId]}/>
-        
+          <InfoListComponent item={items[detailsId]}/>    
       }   
       </div>
         </div>

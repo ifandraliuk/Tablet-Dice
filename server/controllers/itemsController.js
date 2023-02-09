@@ -72,5 +72,13 @@ const getItem = asyncHandler( async (req, res) => {
     
 })
 
+const rename = asyncHandler(async (req,res)=>{
+    const items = await Item.updateMany({rarity:"Selten"}, {$set: {rarity: "selten"}}, {new:true})
+    if(!items){
+        res.status(400).json("fehlschlag")
+    }
+        res.json({message:"renamed"})
 
-module.exports = { setItem, getItem, findItem, updateItem}
+})
+
+module.exports = { setItem, getItem, findItem, updateItem, rename}

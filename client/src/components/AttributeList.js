@@ -32,7 +32,7 @@ function AttributeList() {
             <div className="row border m-0">
                 {keys.map((key)=>(
                    attributes[key]>0 && <div key={key} className="col me-0 w-auto">
-                        <h6>{`${allAttributes[key]}:`}</h6><h5>{attributes[key]}</h5>
+                        <h6>{`${allAttributes[key]}:`}</h6><strong>{attributes[key]}</strong>
                 {difference!==0 &&<button id={key} className="" onClick={onClick}><FontAwesomeIcon icon={faPlus}/></button>}
                     </div>     
       

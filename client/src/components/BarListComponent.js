@@ -41,7 +41,7 @@ function BarListComponent() {
         attributes && attributes[name]>0 && <Bar category={name} key={name}/>
       ))}
    
-      <Row className="mb-2">
+      <Row className="mb-2 mt-2">
         <Col className="col-auto pe-0">
         
           <select className="text-capitalize" value={damage.type} name="type"  onChange={onChange}>

@@ -7,6 +7,8 @@ const Talent = require('../models/talentModel')
 const UserTalents = require('../models/userTalentsModel')
 const Item = require('../models/itemsModel')
 const Inventory = require('../models/inventoryModel')
+const Companion = require('../models/companionModel')
+const Bestiarium = require('../models/bestiariumModel')
 const mongoose = require('mongoose')
 
 
@@ -18,6 +20,7 @@ const getPlayer = asyncHandler(async (req, res) => {
     .populate({path: 'userclass', select:'name category description abilities advantages', model: 'Userclass'}, )
     .populate({path:'talents.talent',  model:'Talent', select:'_id category name dice'})
     .populate({path:'inventory.item',  model:'Item', select:'_id name category dice value rarity type price weight bonuses genus material set'})
+    .populate({path: 'companions.creature', model:'Bestiarium', select:"name"})
     //console.log(user.userclass.name)
     if(!user){
         res.status(500).json({message: 'Spieler nicht gefunden'})
@@ -105,7 +108,22 @@ const createCharacter = asyncHandler(async (req, res) => {
         res.status(400).json({message: 'Charaktererstellung hat fehlgeschlagen'})
     }
     res.status(200).json(doc)
- 
+})
+
+const addCompanion = asyncHandler(async (req, res)=>{
+    const user = await User.findById(req.user.id)
+    if(!user){
+        res.status(500).json({message: 'Spieler nicht gefunden'})
+    }
+    const creature = await Bestiarium.findById(req.body.id)
+    if(!creature){
+        res.status(500).json({message: 'Kreatur nicht gefunden'})
+    }
+    const companion = await Companion.create({
+        creature: creature._id,
+        name: req.body.name.length>0 ? req.body.name : "Otto",
+        
+    })
 })
 
 // @desc update money balance
@@ -184,10 +202,6 @@ const addTalent = asyncHandler(async (req, res)=> {
         throw new Error('Talent nicht gefunden...')        
     }    
     console.log("Neues talent:", req.body.name)
-    const userTalent = await UserTalents.create({
-        talent: talent._id,
-        points: req.body.point,
-    })
     const utalent = await UserTalents.findOneAndUpdate({_id:mongoose.Types.ObjectId()}, {
         talent: talent._id,
         points:req.body.point
@@ -329,7 +343,7 @@ const updateInventory = asyncHandler(async (req, res)=>{
                 'inventory.$.amount': parseInt(req.body.amount),
                 'inventory.$.status': req.body.status,
             }
-        }, {new: true}).populate({path:'inventory.item',  model:'Item', select:'_id name category dice value rarity type price weight bonuses genus'})
+        }, {new: true}).populate({path:'inventory.item',  model:'Item', select:'_id name category dice value rarity type price weight bonuses genus material'})
     } else if(req.body.amount){
         console.log("change amount")
         updated = await User.findOneAndUpdate({
@@ -340,7 +354,7 @@ const updateInventory = asyncHandler(async (req, res)=>{
             $set: {
                 'inventory.$.amount': parseInt(req.body.amount),
             }
-        }, {new: true}).populate({path:'inventory.item',  model:'Item', select:'_id name category dice value rarity type price weight bonuses genus'})
+        }, {new: true}).populate({path:'inventory.item',  model:'Item', select:'_id name category dice value rarity type price weight bonuses genus material'})
     } else if(req.body.status){
         console.log("change status")
         updated = await User.findOneAndUpdate({
@@ -351,7 +365,7 @@ const updateInventory = asyncHandler(async (req, res)=>{
             $set: {
                 'inventory.$.status': req.body.status,
             }
-        }, {new: true}).populate({path:'inventory.item',  model:'Item', select:'_id name category dice value rarity type price weight bonuses genus'})
+        }, {new: true}).populate({path:'inventory.item',  model:'Item', select:'_id name category dice value rarity type price weight bonuses genus material'})
     }
     if(!updated){
         res.status(400).json({error: "Das Update ist fehlgeschlagen"})
@@ -407,7 +421,7 @@ const setEnchantment = asyncHandler(async (req, res)=>{
         $set: {
             'inventory.$.enchantment': enchantment
         }
-    }, {new: true}).populate({path:'inventory.item',  model:'Item', select:'_id name category price bonuses value weight rarity genus dice'})      
+    }, {new: true}).populate({path:'inventory.item',  model:'Item', select:'_id name category price bonuses value weight rarity genus dice material type'})      
     if(!enchanted){
         res.status(400).json({message:"Verzaubern fehlgeschlagen"})
         throw new Error('Verzaubern geht nicht!', req.body.id)

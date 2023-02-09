@@ -1,3 +1,16 @@
 .bestiaria {
   color: white;
+}
+.bestiaria .img-creature {
+  border: 3px solid;
+  max-width: 100%;
+}
+.bestiaria .flieht {
+  background-color: #90be6d;
+}
+.bestiaria .neutral {
+  background-color: #577590;
+}
+.bestiaria .aggressiv {
+  background-color: #f3722c;
 }/*# sourceMappingURL=Bestiaria.css.map */

@@ -69,7 +69,7 @@ function Enchantment(props) {
 
   }
   return (
-    <>
+    <div>
     
       {requirement?.gems.length > 0 ? (
         <Form.Group>
@@ -88,6 +88,7 @@ function Enchantment(props) {
       ): (<Alert variant='danger'>Keine Edelsteine im Inventar</Alert>)}
       {requirement?.tools.length > 0 ? (
         <Form.Group>
+          <Form.Label>Werkzeug</Form.Label>
           <Form.Select id="tool"  value={tool} onChange={handleChange}>
             {player?.inventory.filter(el=>requirement.tools.includes(el.item.name)).map((el)=>(
               <option key={el._id}>{el.item.name}</option>
@@ -103,8 +104,12 @@ function Enchantment(props) {
       <Form.Control type="String" id="bonus" placeholder="+5 Charisma" value={bonus} onChange={handleChange}></Form.Control>
       <Form.Text>Füge gewünschtes Boni ein</Form.Text>
       </Form.Group>
-    <Button className={requirement?.gems.length>0 && requirement?.tools.length>0 && bonus.length>0 ? "":"disabled"}  variant="warning" onClick={handleSubmit}>Verzaubern</Button>
-    </>
+    {
+      requirement?.gems.length>0 && requirement?.tools.length>0 && bonus.length>0 ?
+      <button className="btn-enchantment"  onClick={handleSubmit}>Verzaubern</button> :
+      <button className="btn-enchantment"  disabled>Verzaubern</button>
+    }
+    </div>
   )
 }
 

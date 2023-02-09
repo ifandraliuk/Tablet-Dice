@@ -31,23 +31,32 @@ function Bestiaria() {
           const habitat = creature?.habitat
           return (
           <div className="row m-3" key={creature._id}>
-            <div className="col-12 border">{`${creature.name} (Gattung: ${creature.art})`}</div>
-            <div className="col-3 border">Bild</div>
-            <div className="col-9 border">
-              {creature.description}
+            <div className="col-12 border"><h3>{creature.name}</h3>{` (Gattung: ${creature.art})`}</div>
+            <div className="col-3 mt-3">
+              <img className="img-creature" src={`creature/${creature._id}.png`}/>
+              <h5 className={creature.picture}>{`Status: ${creature.picture}`}</h5>
+              </div>
+            
+            <div className="col-9 border p-2">
+              <h5>Beschreibung:</h5>
+              <p>{creature.description}</p>
+              <h5>Fertigkeiten:</h5>
+              <p>{creature.ability}</p>
+              <ul>
+                <li>Trefferpunkte: <strong>{creature.hitpoints}</strong></li>
+                <li>Rüstung: <strong>{creature.armor}</strong></li>
+                <li>Schaden: <strong>{creature.damage}</strong></li>
+                <li>Trefferchance: <strong>{creature.hitchance}</strong></li>
+              </ul>
+              <h5>Habitate:</h5>
+              <ul>
               {habitat?.map((h)=>(
-                <div className="row border border-top" key={habitat._id}>{h.name}</div>
+                <li className="row" key={h._id}>{h.name}</li>
               ))}
+              </ul>
+
               </div>
-              <div className='col border'>
-                <div className="row">
-                  <div className="col-2">Trefferpunkte: {creature.hitpoints}</div>
-                  <div className="col-2">Rüstung: {creature.armor}</div>
-                  <div className="col-auto">Schaden: {creature.damage}</div>
-                  <div className="col-2">Trefferchance: {creature.hitchance}</div>
-                </div>
-              </div>
-              <div className="col-12 border">{creature.ability}</div>
+
           </div>  
           
         )})}
