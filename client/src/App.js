@@ -4,18 +4,18 @@ import './App.css'
 import './Styles/Main.css'
 //import 'react-toastify/dist/ReactTostify.css'
 import Container from 'react-bootstrap/esm/Container';
-import LoginPage from './pages/Login';
+import LoginPage from './pages/Login/index';
 import ErrorPage from './pages/ErrorPage';
 import { Routes, Route} from 'react-router-dom';
-import CreateCharacter from './pages/CreateCharacter';
-import Talents from './pages/Talents';
-import Bestiaria from './pages/Bestiaria';
+import CreateCharacter from './pages/Create/index';
+import Talents from './pages/Talents/index';
+import Bestiaria from './pages/Bestiarium/index';
 import Enemies from './pages/Enemies';
-import InventoryPage from './pages/Inventory';
+import InventoryPage from './pages/Inventory/index';
 import {useDispatch, useSelector} from 'react-redux';
 import { getPlayer, playerLoaded, getBonis, filterEquipment, getArmor, getWeight } from './features/player/playerSlice';
-import Diary from './pages/Diary';
-import Dashboard from './pages/Dashboard';
+import Diary from './pages/Diary/index';
+import Dashboard from './pages/Dashboard/index';
 
 
 

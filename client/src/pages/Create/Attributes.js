@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import { Container } from 'react-bootstrap'
 import Form from 'react-bootstrap/Form';
-import {setAttr, countTotal} from '../features/creation/creationSlice'
-import {allAttributes} from '../components/ConstVariables';
+import {setAttr, countTotal} from '../../features/creation/creationSlice'
+import {allAttributes} from '../../data/ConstVariables';
 function Attributes() {
   const keys = Object.keys(allAttributes)
   const [attr, setAttribute] = useState({strength: 0, dexterity:0, intelligent:0, vitality:0,stamina:0,charisma:0, mana:0, spirit: 0})

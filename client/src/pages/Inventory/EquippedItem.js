@@ -1,12 +1,10 @@
-import React, {useEffect, useState} from 'react'
-import Button from 'react-bootstrap/Button'
-import Figure from 'react-bootstrap/Figure';
-import {useSelector, useDispatch} from 'react-redux';
+import React from 'react'
+import {useSelector} from 'react-redux';
 import Image from 'react-bootstrap/Image';
 import ListGroup from 'react-bootstrap/ListGroup';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
-import {itemNames} from './ConstVariables';
+import {itemNames} from '../../data/ConstVariables';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faRectangleXmark} from '@fortawesome/free-solid-svg-icons'
 function EquippedItem(props) {

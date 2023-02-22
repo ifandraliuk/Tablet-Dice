@@ -1,10 +1,11 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import  {faPlus } from '@fortawesome/free-solid-svg-icons'
-import React, {useState, useMemo, useEffect} from 'react'
+import React, {useState, useEffect} from 'react'
 import {useSelector, useDispatch} from 'react-redux';
-import {allAttributes} from '../components/ConstVariables';
-import { updateAttribute } from '../features/player/playerSlice';
-function AttributeList() {
+import {allAttributes} from '../../data/ConstVariables';
+import { updateAttribute } from '../../features/player/playerSlice';
+
+function Attributes() {
     const {player} = useSelector((state)=>state.player)
     const {attributes} = player
     const [difference, setDifference] = useState(0)
@@ -43,4 +44,4 @@ function AttributeList() {
     )
 }
 
-export default AttributeList
+export default Attributes

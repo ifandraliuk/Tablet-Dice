@@ -1,13 +1,8 @@
 import React from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHandFist,} from '@fortawesome/free-solid-svg-icons'
-import { Button, Container } from 'react-bootstrap'
-import Card from 'react-bootstrap/Card';
+import  Container from 'react-bootstrap/Container'
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import {decreaseBar} from '../features/player/playerSlice'
+import {decreaseBar} from '../../features/player/playerSlice'
 import {useSelector, useDispatch} from 'react-redux';
 import AbilityCard from './AbilityCard';
 

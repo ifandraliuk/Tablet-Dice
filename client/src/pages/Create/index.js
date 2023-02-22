@@ -7,13 +7,13 @@ import Tab from 'react-bootstrap/Tab';
 import Figure from 'react-bootstrap/Figure';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import {races, racesList, classList, classDescription, originList, countries} from '../components/ConstVariables';
+import {races, racesList, classList, classDescription, originList, countries} from '../../data/ConstVariables';
 import {useSelector, useDispatch} from 'react-redux';
-import {setInfo, getClass, uploadPicture, createCharacter} from '../features/creation/creationSlice'
-import {registationFullfilled} from '../features/auth/AuthSlice'
-import { getPlayer} from '../features/player/playerSlice'
+import {setInfo, getClass, uploadPicture, createCharacter} from '../../features/creation/creationSlice'
+import {registationFullfilled} from '../../features/auth/AuthSlice'
+import { getPlayer} from '../../features/player/playerSlice'
 import { useNavigate } from 'react-router-dom';
-import Attributes from '../components/Attributes';
+import Attributes from './Attributes';
 
 function CreateCharacter() { 
     const dispatch = useDispatch()
@@ -81,8 +81,6 @@ function CreateCharacter() {
 
     }
   return (
-    <>
-    
     <div style={{backgroundImage:"linear-gradient(to right, #0e1c26, #2a454b, #294861)",backgroundPosition:"center", backgroundRepeat: "no-repeat", backgroundAttachment:"fixed", overflow:"auto", backgroundSize:"cover",}}>
         <div style={{backgroundColor:"rgba(0, 0, 0, 0.3)", overflow:"auto", height: "100vh"}}>
             <Form>
@@ -219,7 +217,6 @@ function CreateCharacter() {
             </Form>
         </div>
     </div>
-    </>
   )
 }
 

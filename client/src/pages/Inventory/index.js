@@ -1,22 +1,22 @@
 import React, { useEffect, useCallback, useState} from 'react'
-import "../Styles/Inventory.css"
+import "../../Styles/Inventory.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faPenToSquare, faFloppyDisk,  faPaw, faPlus, faRefresh,faSearch, faShield, faSuitcase, faHammer, faSeedling, faPerson, faHandSparkles, faCoins, faCircleInfo, faTrash} from '@fortawesome/free-solid-svg-icons'
-import NavbarComp from '../components/Navbar';
+import NavbarComp from '../../components/Navbar';
 import {useSelector, useDispatch} from 'react-redux';
-import { getItem, reset, search, getGenuses } from '../features/item/itemSlice';
+import { getItem, reset, getGenuses } from '../../features/item/itemSlice';
 import Alert from 'react-bootstrap/Alert';
 import { useNavigate } from 'react-router-dom';
 import { Button, ButtonGroup,  Spinner } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
-import { filterEquipment, getWeight, newBalance, toInventory,  updateInventory, deleteItem } from '../features/player/playerSlice';
+import { filterEquipment, getWeight, newBalance, toInventory,  updateInventory, deleteItem } from '../../features/player/playerSlice';
 import Image from 'react-bootstrap/Image'
-import EquipmentComponent from '../components/EquipmentComponent';
-import Enchantment from '../components/Enchantment'
-import InfoListComponent from '../components/InfoListComponent';
-import {itemNames} from '../components/ConstVariables';
-import InvPopup from '../components/InvPopup';
+import Equipment from './Equipment';
+import Enchantment from './Enchantment'
+import Info from './Info';
+import {itemNames} from '../../data/ConstVariables';
+import SalePopup from './SalePopup';
 
 function InventoryPage() {
   const {items, isLoading, loaded, armorGenuses, weaponGenuses, ressourceGenuses, isError, message} = useSelector((state)=>state.items)
@@ -322,7 +322,7 @@ const weightBarCallback = useCallback(()=>{
   return (
     <div className="dark-bg">
       <div className={`bg ${originName}-bg`}>
-      <InvPopup trigger={trigger} sellPrice={sellPrice}/>
+      <SalePopup trigger={trigger} sellPrice={sellPrice}/>
     <NavbarComp/>
     <div  className="container-fluid g-5 inventory-page">
     <div className="row mt-3 ">
@@ -400,7 +400,7 @@ const weightBarCallback = useCallback(()=>{
                        <Enchantment id={invElement._id} handleModify={handleModify}/>
                     ) : (
                       showInfo?.state && showInfo.item === invElement.item.name &&
-                        <InfoListComponent item={invElement.item} enchantment={invElement.enchantment}/>
+                        <Info item={invElement.item} enchantment={invElement.enchantment}/>
                       ) 
                     }
                     </td>
@@ -450,7 +450,7 @@ const weightBarCallback = useCallback(()=>{
         }
       </div>
       <div className="col-lg-5 col-md-12 col-sm-12  h-auto" >
-       <EquipmentComponent/>
+       <Equipment/>
       </div>
     </div>
     <Button className={edit? "disabled mb-2":"mb-2"} variant="dark" onClick={showItems} >{isLoad ? "Schließen": "Item hinzufügen"}</Button>
@@ -519,7 +519,7 @@ const weightBarCallback = useCallback(()=>{
               </div>}
               <div className="col-3">
         {items[detailsId] && detailsId >= 0 && 
-          <InfoListComponent item={items[detailsId]}/>    
+          <Info item={items[detailsId]}/>    
       }   
       </div>
         </div>

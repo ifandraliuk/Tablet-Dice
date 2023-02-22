@@ -1,19 +1,18 @@
-import React, { useEffect, useCallback } from 'react'
-import { Container } from 'react-bootstrap'
-import "../Styles/Dashboard.css"
-import NavbarComp from '../components/Navbar'
+import React from 'react'
+
+import "../../Styles/Dashboard.css"
+import NavbarComp from '../../components/Navbar'
 import {useSelector, useDispatch} from 'react-redux';
-import Image from 'react-bootstrap/Image'
 import Figure from 'react-bootstrap/Figure'
 import Spinner from 'react-bootstrap/Spinner'
-import EquippedItem from '../components/EquippedItem'
-import BarListComponent from '../components/BarListComponent'
-import ClassList from '../components/ClassList'
+import EquippedItem from '../Inventory/EquippedItem'
+import BarList from './BarList'
+import ClassList from './Abilities'
 
-import AttributeList from '../components/AttributeList'
+import AttributeList from './Attributes'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLevelUp} from '@fortawesome/free-solid-svg-icons'
-import {updateLevel, getArmor} from '../features/player/playerSlice';
+import {updateLevel} from '../../features/player/playerSlice';
 
 function Dashboard() {
   const {user} = useSelector((state)=>state.auth)
@@ -78,7 +77,7 @@ function Dashboard() {
                    </div>
                 </div>
 
-                <BarListComponent/>
+                <BarList/>
                 {player && player.userclass ? (<ClassList/>) : (<Spinner animation="border"/>)}
               </div>
           <div className="row">

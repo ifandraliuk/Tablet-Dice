@@ -1,7 +1,7 @@
 import React from 'react'
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import {useSelector} from 'react-redux';
-import {germanAttr} from './ConstVariables'
+import {germanAttr} from '../../data/ConstVariables';
 
 
 function Bar(props) {

@@ -1,10 +1,9 @@
 import React from 'react'
 import {useSelector} from 'react-redux';
-import EquippedItem from '../components/EquippedItem';
+import EquippedItem from './EquippedItem';
 import Alert from 'react-bootstrap/Alert';
-import Image from 'react-bootstrap/Image'
 import Figure from 'react-bootstrap/Figure'
-function EquipmentComponent() {
+function Equipment() {
   const {player, isLoading,  equipmentError, armor} = useSelector((state)=>state.player)
   console.log("re-rendering equipment")
     if(isLoading){
@@ -37,4 +36,4 @@ function EquipmentComponent() {
   )
 }
 
-export default EquipmentComponent
+export default Equipment

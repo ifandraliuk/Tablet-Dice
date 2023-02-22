@@ -1,7 +1,6 @@
 import React from 'react'
-import ListGroup from 'react-bootstrap/ListGroup';
 
-function InfoListComponent(props) {
+function Info(props) {
   const {item, enchantment} = props
   const {genus, type, set, price, bonuses, rarity, dice, category, value, weight, material} = item 
   return (
@@ -22,4 +21,4 @@ function InfoListComponent(props) {
   )
 }
 
-export default InfoListComponent
+export default Info

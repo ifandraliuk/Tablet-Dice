@@ -1,10 +1,10 @@
 import React from 'react'
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import { Figure, Image } from 'react-bootstrap';
+import { Image } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStar, faBolt,faGhost, faHeart, faDiceD20} from '@fortawesome/free-solid-svg-icons'
 import { Button } from 'react-bootstrap'
+
+
 function AbilityCard(props) {
    const {_id, name, description,price, type, dice} = props.ability
    const uclass = props.userclass

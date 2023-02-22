@@ -1,7 +1,6 @@
 import React from 'react'
 
-function InvPopup(props) {
-    const {onClick, bodyType, info} = props
+function SalePopup(props) {
   return (props.trigger?
     <div className="blur-bg">
         <div className="popup border">
@@ -26,10 +25,11 @@ function InvPopup(props) {
                     ))
                 }
             </div>
+            <div className="row"><h5>Ergebnis:</h5></div>
             <div className='row mt-3'>
                 <div className='col'></div>
-                <div className='col'><button className="btn-save">Verkaufen</button></div>
-                <div className='col'></div>
+                <div className='col-auto'><button className="btn-save">Verkaufen</button></div>
+                <div className='col-auto'><button className="btn-remove">Abbrechen</button></div>
             </div>
         
         </div> 
@@ -38,4 +38,4 @@ function InvPopup(props) {
   )
 }
 
-export default InvPopup
+export default SalePopup

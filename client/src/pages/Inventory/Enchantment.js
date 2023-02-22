@@ -1,9 +1,11 @@
 import React, {useState, useEffect} from 'react'
 import {useDispatch, useSelector} from 'react-redux';
-import {setEnchantment, deleteItem} from '../features/player/playerSlice';
+import {setEnchantment, deleteItem} from '../../features/player/playerSlice';
 import Form from 'react-bootstrap/Form';
 import Alert from 'react-bootstrap/Alert';
-import Button from 'react-bootstrap/Button';
+
+
+
 function Enchantment(props) {
   const {player} = useSelector((state)=>state.player) 
   const dispatch = useDispatch()

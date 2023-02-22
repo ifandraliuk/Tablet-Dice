@@ -1,9 +1,9 @@
 import React,{useEffect} from 'react'
-import "../Styles/Bestiaria.css"
+import "../../Styles/Bestiaria.css"
 import {useSelector, useDispatch} from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import {reset, getBestiaria} from '../features/bestiaria/bestiariaSlice'
-import NavbarComp from '../components/Navbar'
+import {reset, getBestiaria} from '../../features/bestiaria/bestiariaSlice'
+import NavbarComp from '../../components/Navbar'
 
 
 function Bestiaria() {

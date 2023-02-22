@@ -7,9 +7,11 @@ import Bar from './Bar';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import {useSelector, useDispatch} from 'react-redux';
-import {decreaseBar, increaseBar, resetBars} from '../features/player/playerSlice'
-import {germanAttr} from './ConstVariables'
-function BarListComponent() {
+import {decreaseBar, increaseBar, resetBars} from '../../features/player/playerSlice'
+import {germanAttr} from '../../data/ConstVariables';
+
+
+function BarList() {
     const {player} = useSelector((state)=>state.player) 
     const dispatch = useDispatch()
     const {attributes} = player
@@ -68,4 +70,4 @@ function BarListComponent() {
   )
 }
 
-export default BarListComponent
+export default BarList

@@ -3,7 +3,9 @@ import {useSelector} from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-function TableTalent(props) {
+
+
+function AllTalents(props) {
     const {player} = useSelector((state)=>state.player)
     const {talent} = useSelector((state)=>state.talents)
     const origin = player?.general?.origin.split(" ")
@@ -47,4 +49,4 @@ function TableTalent(props) {
   )
 }
 
-export default TableTalent
+export default AllTalents

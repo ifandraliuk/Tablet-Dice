@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import "../Styles/Diary.css"
-import Note from '../components/Note'
+import "../../Styles/Diary.css"
+import Note from './Note'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faShareNodes, faFloppyDisk, faMarker} from '@fortawesome/free-solid-svg-icons'
-import { diaryCategories } from '../components/ConstVariables'
-import NavbarComp from '../components/Navbar'
+import { diaryCategories } from '../../data/ConstVariables';
+import NavbarComp from '../../components/Navbar'
 import {useSelector, useDispatch} from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import {reset, getUsers, postDiary, editDiary, getMyDiary, removeDiary} from '../features/diary/diarySlice'
-import { Spinner } from 'react-bootstrap'
+import {reset, getUsers, postDiary, editDiary, getMyDiary, removeDiary} from '../../features/diary/diarySlice'
+import Spinner from 'react-bootstrap/Spinner'
 
 function Diary() {
   const {diary, userList} = useSelector((state)=>state.diaries)

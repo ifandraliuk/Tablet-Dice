@@ -1,18 +1,18 @@
 import React, {useEffect, useState} from 'react'
-import "../Styles/Talents.css"
+import "../../Styles/Talents.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faFloppyDisk,faKhanda, faHammer, faHurricane, faMask, faBook, faTree, faUserGroup, faRefresh} from '@fortawesome/free-solid-svg-icons'
-import NavbarComp from '../components/Navbar'
-import { Image, Container, Spinner, } from 'react-bootstrap'
+import NavbarComp from '../../components/Navbar'
+import { Image,  Spinner, } from 'react-bootstrap'
 import {useSelector, useDispatch} from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { getTalent, reset } from '../features/talent/talentSlice';
-import { addTalent } from '../features/player/playerSlice';
-import TalentsList from '../components/TalentsList';
-import { races } from '../components/ConstVariables'
-import TableTalent from '../components/TableTalent'
-import AttributeList from '../components/AttributeList'
-import ScrollUpButton from '../components/ScrollUpButton'
+import { getTalent, reset } from '../../features/talent/talentSlice';
+import { addTalent } from '../../features/player/playerSlice';
+import AllTalents from './AllTalents';
+import { races } from '../../data/ConstVariables';
+import ActiveTalents from './ActiveTalents'
+import AttributeList from '../Dashboard/Attributes'
+import ScrollUpButton from '../../components/ScrollUpButton'
 
 function Talents() {
   const {user} = useSelector((state)=>state.auth)
@@ -141,9 +141,9 @@ function Talents() {
 
           </div>
           <div className="col-lg-7 col-md-12">
-          {player?.talents ? <AttributeList/>:<Spinner animation='border'/>}
-          {player.talents ? (
-            <TalentsList props={player.talents}/>
+          {player?.attributes ? <AttributeList/>:<Spinner animation='border'/>}
+          {player?.talents ? (
+            <ActiveTalents props={player.talents}/>
           ) : (<h5>Du hast noch keine Talente...</h5>)}
             <h5>Alle Talente</h5>
             <button className="btn-save" onClick={handleSubmit}><FontAwesomeIcon icon={faFloppyDisk}/></button>
@@ -157,9 +157,9 @@ function Talents() {
               {filter.length===0 ? Object.keys(els).map((el, ind)=>{
                 return (
                   <div className="col-12" key={ind}>
-                    <TableTalent handleChange={handleChange} handleClick={handleClick} el={el} icons={icons}/>
+                    <AllTalents handleChange={handleChange} handleClick={handleClick} el={el} icons={icons}/>
                    </div>
-              )}) : <TableTalent  handleChange={handleChange} handleClick={handleClick} el={filter} icons={icons}/>}
+              )}) : <AllTalents  handleChange={handleChange} handleClick={handleClick} el={filter} icons={icons}/>}
                 
             </form>
          </div>

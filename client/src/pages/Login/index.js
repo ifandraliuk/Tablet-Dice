@@ -3,14 +3,16 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Container from 'react-bootstrap/Container'
 import { useNavigate, } from 'react-router-dom';
-import {login, register,  reset} from '../features/auth/AuthSlice'
+import {login, register,  reset} from '../../features/auth/AuthSlice'
 import {useSelector, useDispatch} from 'react-redux'
 import Alert from 'react-bootstrap/Alert';
-import { getPlayer} from '../features/player/playerSlice';
+import { getPlayer} from '../../features/player/playerSlice';
+
+
 function Login() {
     const [formData, setFormData] = useState({name:"", pwd:""})
     const {name, pwd} = formData
-    const [registering, setRegistered] = useState(false)
+    const [setRegistered] = useState(false)
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const {user,registered, isError, isSuccess, message} = useSelector((state)=>state.auth)

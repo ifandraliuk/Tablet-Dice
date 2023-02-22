@@ -1,19 +1,16 @@
-import React, { Fragment, useState, useCallback, useEffect } from 'react'
-import "../Styles/Talents.css"
+import React, {  useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faPenToSquare, faTrash, faFloppyDisk, faArrowRight, faSortUp, faSortDown} from '@fortawesome/free-solid-svg-icons'
 import {useDispatch, useSelector} from 'react-redux'
-import { updateTalent, removeTalent, sortValueIncrease, sortedTalents} from '../features/player/playerSlice';
+import { updateTalent, removeTalent, sortedTalents} from '../../features/player/playerSlice';
 
 
-function TalentsList({props}) {
+function ActiveTalents({props}) {
   const {player} = useSelector((state)=>state.player)
+  console.log("hi")
   const dispatch = useDispatch()
-  const origin = player?.general?.origin.split(" ")
-  const originName = origin && origin[origin.length-1]
   const [edit, toEdit] = useState(false)
   const [update, toUpdate] = useState([])
-  const SortOrder = "ascn" | "descn"
   const [sortKey, setSortKey] = useState("")
   const [sortReverse, setSortReverse] = useState(true)
   const talentHeaders = [
@@ -78,10 +75,7 @@ function TalentsList({props}) {
     dispatch(sortedTalents({sortKey: sortKey, reverse:sortReverse}))
   }, [dispatch, sortKey, sortReverse])
     
-const sortedCallback = ()=>{
-    console.log("callback")
-    dispatch(sortedTalents({sortKey: sortKey, reverse:sortReverse}))
-  }
+
   return (
     <div>
       {player?.talents?.length>0 ? 
@@ -126,4 +120,4 @@ const sortedCallback = ()=>{
   )
 }
 
-export default TalentsList
+export default ActiveTalents
