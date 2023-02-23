@@ -16,16 +16,18 @@ import Equipment from './Equipment';
 import Enchantment from './Enchantment'
 import Info from './Info';
 import {itemNames} from '../../data/ConstVariables';
+import { toFloat, floatToArray } from './CurrencyConverters.js'
 import SalePopup from './SalePopup';
 
 function InventoryPage() {
   const {items, isLoading, loaded, armorGenuses, weaponGenuses, ressourceGenuses, isError, message} = useSelector((state)=>state.items)
-  const {player, weight, money, loadCapacity} = useSelector((state)=>state.player)
+  const {player, weight, loadCapacity} = useSelector((state)=>state.player)
   const {user} = useSelector((state)=>state.auth)
   const [modify, setModify] = useState(false) // activate enchantment
   const [showInfo, showInfoActive] = useState({state: false, item:""}) // show additional info in the inventory
   const [trigger, setTrigger] = useState(false) //popup trigger
-  const [sellPrice, setSellprice] = useState() // sum of selected items to sell
+  const [sellPrice, setSellprice] = useState(0) // sum of selected items to sell
+  const [haggle, setHaggle] = useState(1)
   const [multi, setMulti] = useState([])
   const {genus, rarity} = itemNames
   const [toUpdate, setUpdate] = useState([])
@@ -107,7 +109,7 @@ const weightBarCallback = useCallback(()=>{
     dispatch(toInventory({item: items[id].name, amount: 1, status: user.name}))
   }
   const toDelete = e => {
-    let id = e.currentTarget.name
+    let id = e.currentTarget.id
     //dispatch(deleteItem(player.inventory[id]._id))
     dispatch(deleteItem(id))
     //dispatch(getPlayer())
@@ -223,10 +225,9 @@ const weightBarCallback = useCallback(()=>{
     setFilter("Brust")
     setSearch("")
   }
-  const sellItems = () => {
+  const offerCounter = () => {
     /**
-     counts sum of selected elements, removes this els 
-     && reload players money balance
+     counts sum of selected elements & opens popup window
      */
     if(multi?.length>0){
       let sum = 0.0
@@ -235,42 +236,25 @@ const weightBarCallback = useCallback(()=>{
         const toSell = player?.inventory.find(item=>item._id===el)
         if(toSell){
           // convert string money type & count its cost
-          sum += moneyToFloat(toSell.item.price)*toSell.amount
+          sum += toFloat(toSell.item.price)*toSell.amount
         }
        
       })
-      //console.log(sum)
-      // calculate new players balance
-      const balance = moneyToFloat(player?.money) + sum
-      const selled = floatToArray(sum)
-      //console.log(selled)
-      //console.log(floatToArray(balance))
-      // info for the animated output
-      const info = `${selled[0]>0 ? `${selled[0]} Gold`: ""} ${selled[1]>0 ? ` ${selled[1]} Silber`: ""} ${selled[2]>0 ? `${selled[2]} Kupfer `: ""}`
-      setSellprice(info)
+      setSellprice(sum)
       setTrigger(true)
-      //dispatch(newBalance(floatToArray(balance)))
-      //animateInv(info)
-
     }
-      function moneyToFloat(coins){
-        // convert "0.21.0" or [0,21,0] cost into float
-        const arr = typeof(coins)==="string" ? coins.split(".") : coins
-        let arrToStr = `${arr[0]}.${arr[1].length===1 ? `0${arr[1]}` : arr[1]}${arr[2].length===1 ?  `0${arr[2]}` : arr[2]}`
-        return parseFloat(arrToStr)
-      }
-
-      function floatToArray(coins){
-        ///converts 1.4501 into array [1,45,1] - 1 gold, 45 silver 1 copper
-        const str = coins.toFixed(4) /// '1.4501'
-        const splitGold = str.split(".") /// ['1','4501']
-        const gold = parseInt(splitGold) // 1
-        const silver = parseInt(splitGold[1].slice(0,2)) // extract first 2 elements - 45
-        const copper = parseInt(splitGold[1].slice(2,4)) 
-        return [gold, silver, copper]
-      }
   }
 
+  const balanceToUpdate = () => {
+    const userBalance = toFloat(player?.money)
+    console.log(userBalance)
+    const toUpdate = userBalance + sellPrice*haggle
+    console.log(floatToArray(toUpdate))
+    dispatch(newBalance(floatToArray(toUpdate))) // update user balance
+    multi?.forEach(id=>dispatch(deleteItem(id)))
+    setTrigger(false)
+    setSellprice(0)
+  }
   /// Animations 
   
   const animateInv = (text) => {
@@ -322,7 +306,7 @@ const weightBarCallback = useCallback(()=>{
   return (
     <div className="dark-bg">
       <div className={`bg ${originName}-bg`}>
-      <SalePopup trigger={trigger} sellPrice={sellPrice}/>
+      <SalePopup multi={multi} inventory={player?.inventory} trigger={trigger} sellPrice={sellPrice*haggle} setHaggle={setHaggle} setTrigger={setTrigger} balanceToUpdate={balanceToUpdate}/>
     <NavbarComp/>
     <div  className="container-fluid g-5 inventory-page">
     <div className="row mt-3 ">
@@ -366,7 +350,7 @@ const weightBarCallback = useCallback(()=>{
               :
               <button className="btn-save" variant="outline-secondary" disabled><FontAwesomeIcon icon={faFloppyDisk} /></button>
             }
-            <button className="btn-edit" onClick={sellItems}><FontAwesomeIcon icon={faCoins} /></button>
+            <button className="btn-edit" onClick={offerCounter}><FontAwesomeIcon icon={faCoins} /></button>
           </div>
           <div id="sell-info" style={{left:0, display:"visible", color:"yellow"}} className="col-auto"></div>
           </div>
@@ -417,7 +401,7 @@ const weightBarCallback = useCallback(()=>{
                           </td>
                           ):
                           (<td>{invElement.status === user.name ? <FontAwesomeIcon icon={faSuitcase} />: invElement.status === "Ausgerüstet" ? <FontAwesomeIcon icon={faPerson}/>: <FontAwesomeIcon icon={faPaw}/>}</td>)}
-                    <td><button className="btn-remove" name={invElement._id} onClick={toDelete}><FontAwesomeIcon icon={faTrash}/></button></td>
+                    <td><button className="btn-remove" id={invElement._id} onClick={toDelete}><FontAwesomeIcon icon={faTrash}/></button></td>
                   </tr>
               )}
               
