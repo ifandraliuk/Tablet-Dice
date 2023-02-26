@@ -173,7 +173,26 @@ const racesList = ["Elb","Draconid", "Zwerg", "Gnom", "Ork", "Kobold", "Mensch",
             episch: "epic",
             legendär: "legendary",
             einzigartig: "unique"
-        }
+        },
+        gems: [
+            {
+            name: "Smaragd",
+            rarity: "gewöhnlich"
+            },
+            {
+                name: "Bernstein",
+                rarity: "magisch",
+            },
+            {
+                name: "Saphir",
+                rarity:"episch",
+            },
+            {
+                name: "Rubin",
+                rarity: "legendär",
+            }
+
+        ]
     }
 
     // Setbonis
