@@ -3,6 +3,7 @@ body {
     overflow-x: hidden;
     overflow-y: hidden;
 }
+/*BACKGROUND*/
 .dark-bg {
     background-color: $darkBlack;
     height: 100vh;
@@ -15,6 +16,19 @@ body {
     background-repeat: no-repeat;
 
 }
+.blur-bg{
+    height: 100vh;
+    width: 100%;
+    top:0;
+    left:0;
+    backdrop-filter: blur(5px);
+    position: fixed;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+/*BUTTONS*/
 .button-group button:first-child{
     border: 2px solid;
     border-color: azure;
@@ -116,6 +130,7 @@ button:disabled{
     background-color: rgb(219, 219, 219);
 }
 
+/*TEXTAREA; INPUT*/
 textarea{
     background-color: $infoBlack;
     border-top-right-radius: 10px;
@@ -129,6 +144,10 @@ textarea{
 }
 textarea:focus{
     outline: none;
+}
+
+strong {
+    color: $categoryOrange;
 }
 
 input {
@@ -148,10 +167,23 @@ table {
     text-align: center;
     border-bottom: #fff;
   }
+  ul{
+    color: azure;
+    background-color: $infoBlack;
+}
+
+select{
+    background-color: $infoBlack;
+    padding: 2px 4px;
+    color: azure;
+    border:none;
+}
 
 div{
     word-wrap: break-word;
 }
+
+/* HEADINGS*/
 h1 {
     text-transform: uppercase;
     color: azure;
@@ -176,28 +208,27 @@ h5 {
     font-size: clamp(1em, calc(0.5em + 1vw), 0.9em);
     letter-spacing: 7px;
 }
-ul{
-    color: azure;
-    background-color: $infoBlack;
-}
 
-select{
-    background-color: $infoBlack;
-    padding: 2px 4px;
-    color: azure;
-    border:none;
-}
-.blur-bg{
-    height: 100vh;
+/*ALERTS*/
+.alert{
+    color: #fff;
     width: 100%;
-    top:0;
-    left:0;
-    backdrop-filter: blur(5px);
-    position: fixed;
-    z-index: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    text-align: center;
+    text-decoration: underline;
+    padding: 0.2em;
+    border-radius: 5px;
+    &.error{
+        background: rgba(255, 38, 38, 0.8);
+    }
+    &.warning{
+        background: rgba(255, 204, 17, 0.8);
+    }
+    &.success{
+        background: rgba(77, 255, 17, 0.8);
+    }
+    &.info{
+        background: rgba(17, 227, 255, 0.8);
+    }
 }
 .popup{
     width: 100%;
@@ -210,9 +241,7 @@ select{
 }
 
 
-strong {
-    color: $categoryOrange;
-}
+
 .Welles-bg {
     background-image:url(~/public/Welles.svg)
 }
