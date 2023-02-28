@@ -3,6 +3,7 @@ body {
   overflow-y: hidden;
 }
 
+/*BACKGROUND*/
 .dark-bg {
   background-color: #161614;
   height: 100vh;
@@ -16,6 +17,21 @@ body {
   background-repeat: no-repeat;
 }
 
+.blur-bg {
+  height: 100vh;
+  width: 100%;
+  top: 0;
+  left: 0;
+  -webkit-backdrop-filter: blur(5px);
+          backdrop-filter: blur(5px);
+  position: fixed;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/*BUTTONS*/
 .button-group button:first-child {
   border: 2px solid;
   border-color: azure;
@@ -124,6 +140,7 @@ button:disabled {
   background-color: rgb(219, 219, 219);
 }
 
+/*TEXTAREA; INPUT*/
 textarea {
   background-color: #212529;
   border-top-right-radius: 10px;
@@ -138,6 +155,10 @@ textarea {
 
 textarea:focus {
   outline: none;
+}
+
+strong {
+  color: #f3722c;
 }
 
 input {
@@ -159,10 +180,24 @@ table {
   border-bottom: #fff;
 }
 
-div {
-  word-wrap: break-word;
+ul {
+  color: azure;
+  background-color: #212529;
 }
 
+select {
+  background-color: #212529;
+  padding: 2px 4px;
+  color: azure;
+  border: none;
+}
+
+div {
+  word-wrap: break-word;
+  color: azure;
+}
+
+/* HEADINGS*/
 h1 {
   text-transform: uppercase;
   color: azure;
@@ -191,48 +226,44 @@ h5 {
   letter-spacing: 7px;
 }
 
-ul {
-  color: azure;
-  background-color: #212529;
+.txt-info {
+  color: grey;
+  font-size: clamp(0.6em, 0.5em + 1vw, 0.7em);
+  margin: 0 0 0 10px;
 }
 
-select {
-  background-color: #212529;
-  padding: 2px 4px;
-  color: azure;
-  border: none;
-}
-
-.blur-bg {
-  height: 100vh;
+/*ALERTS*/
+.alert {
+  color: #fff;
   width: 100%;
-  top: 0;
-  left: 0;
-  -webkit-backdrop-filter: blur(5px);
-          backdrop-filter: blur(5px);
-  position: fixed;
-  z-index: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  text-align: center;
+  text-decoration: underline;
+  padding: 0.2em;
+  border-radius: 5px;
+}
+.alert.error {
+  background: rgba(255, 38, 38, 0.8);
+}
+.alert.warning {
+  background: rgba(255, 204, 17, 0.8);
+}
+.alert.success {
+  background: rgba(77, 255, 17, 0.8);
+}
+.alert.info {
+  background: rgba(17, 227, 255, 0.8);
 }
 
 .popup {
   width: 100%;
-  min-height: -webkit-fit-content;
   min-height: -moz-fit-content;
   min-height: fit-content;
-  max-height: 500px;
-  max-width: -webkit-fit-content;
+  max-height: 90vh;
   max-width: -moz-fit-content;
   max-width: fit-content;
-  padding: 2em;
+  padding: 1.1em;
   background-color: #212529;
   z-index: 2;
-}
-
-strong {
-  color: #f3722c;
 }
 
 .Welles-bg {
