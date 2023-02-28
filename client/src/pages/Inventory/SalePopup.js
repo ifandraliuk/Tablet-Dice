@@ -30,7 +30,7 @@ function SalePopup(props) {
     
     const onClose = () => {
         setHaggle(1)
-        setTrigger(false)
+        setTrigger()
     }
     return (trigger?
     <div className="blur-bg">
