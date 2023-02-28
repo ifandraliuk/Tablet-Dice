@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback, useState} from 'react'
 import "../../Styles/Inventory.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faPenToSquare, faFloppyDisk,  faPaw, faPlus, faRefresh,faSearch, faShield, faSuitcase, faHammer, faSeedling, faPerson, faHandSparkles, faCoins, faCircleInfo, faTrash} from '@fortawesome/free-solid-svg-icons'
+import {faPenToSquare, faFloppyDisk,  faPaw, faPlus, faRefresh,faSearch, faShield, faSuitcase, faHammer, faSeedling, faPerson, faHandSparkles, faCoins, faCircleInfo, faTrash, faX} from '@fortawesome/free-solid-svg-icons'
 import NavbarComp from '../../components/Navbar';
 import {useSelector, useDispatch} from 'react-redux';
 import { getItem, reset, getGenuses } from '../../features/item/itemSlice';
@@ -10,26 +10,37 @@ import { useNavigate } from 'react-router-dom';
 import { Button, ButtonGroup,  Spinner } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
-import { filterEquipment, getWeight, newBalance, toInventory,  updateInventory, deleteItem } from '../../features/player/playerSlice';
+import { filterEquipment, getWeight, newBalance, toInventory, setEnchantment, updateInventory, deleteItem } from '../../features/player/playerSlice';
 import Image from 'react-bootstrap/Image'
 import Equipment from './Equipment';
-import Enchantment from './Enchantment'
 import Info from './Info';
 import {itemNames} from '../../data/ConstVariables';
 import { toFloat, floatToArray } from './CurrencyConverters.js'
 import SalePopup from './SalePopup';
+import EnchantmentPopup from './EnchantmentPopup';
+
 
 function InventoryPage() {
   const {items, isLoading, loaded, armorGenuses, weaponGenuses, ressourceGenuses, isError, message} = useSelector((state)=>state.items)
   const {player, weight, loadCapacity} = useSelector((state)=>state.player)
-  const {user} = useSelector((state)=>state.auth)
+  const {talents, attributes, inventory} = player
+  const {user} = useSelector((state)=>state.auth)  
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  // multi selector state
+  const [multi, setMulti] = useState([])
+ 
   const [modify, setModify] = useState(false) // activate enchantment
   const [showInfo, showInfoActive] = useState({state: false, item:""}) // show additional info in the inventory
+  // selling states
   const [trigger, setTrigger] = useState(false) //popup trigger
   const [sellPrice, setSellprice] = useState(0) // sum of selected items to sell
-  const [haggle, setHaggle] = useState(1)
-  const [multi, setMulti] = useState([])
+  const [haggle, setHaggle] = useState(1) // haggle percent
+
+  // enchantment states
   const {genus, rarity} = itemNames
+  const [enchantmentTrigger, showEnchantment] = useState(false)
+
   const [toUpdate, setUpdate] = useState([])
   const [newMoney, updateMoney] = useState(player?.money)
   const [isLoad, setLoad] = useState(false)
@@ -40,8 +51,7 @@ function InventoryPage() {
   const origin = player?.general?.origin.split(" ")
   const originName = origin && origin[origin.length-1]
   const [filter, setFilter] = useState("Brust")
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
+
   
 const weightBarCallback = useCallback(()=>{
   console.log("callback - weight changed: ", weight)
@@ -69,12 +79,12 @@ const weightBarCallback = useCallback(()=>{
     }
   }
  useEffect(()=>{
-    if(player.inventory){
+    if(inventory){
       console.log("filter useeffect")
       filteredCallback()
       weightCallback()
     }
-  },[filteredCallback, player.inventory])
+  },[filteredCallback, inventory])
 
   useEffect(()=>{
     weightBarCallback()
@@ -108,8 +118,13 @@ const weightBarCallback = useCallback(()=>{
     let id = e.currentTarget.name
     dispatch(toInventory({item: items[id].name, amount: 1, status: user.name}))
   }
-  const toDelete = e => {
-    let id = e.currentTarget.id
+  const toDelete = (e) => {
+    let id
+    
+    if(typeof(e)==='object'){
+      id = e.currentTarget.id
+    } else id = e
+    console.log(id,typeof(id))
     //dispatch(deleteItem(player.inventory[id]._id))
     dispatch(deleteItem(id))
     //dispatch(getPlayer())
@@ -181,7 +196,6 @@ const weightBarCallback = useCallback(()=>{
     }
   }
   const onMultiSelect = e => {
-    console.log(e.target)
     const id = e.target?.id
     if(multi.includes(id)){
       setMulti(multi.filter(el=>el!==id))
@@ -274,6 +288,12 @@ const weightBarCallback = useCallback(()=>{
     }
   }
 
+  const handleEnchant = (data, removeGemId) => {
+    console.log(data, removeGemId)
+    dispatch(setEnchantment(data))
+    dispatch(deleteItem(removeGemId))
+    }
+
   // animate weight bar 
   const move = (weight) =>{
     let elem = document.getElementById("curr-weight");   
@@ -305,10 +325,28 @@ const weightBarCallback = useCallback(()=>{
 
   return (
     <div className="dark-bg">
-      <div className={`bg ${originName}-bg`}>
-      <SalePopup multi={multi} inventory={player?.inventory} trigger={trigger} sellPrice={sellPrice*haggle} setHaggle={setHaggle} setTrigger={setTrigger} balanceToUpdate={balanceToUpdate}/>
+      <div className={`bg ${originName}-bg  inventory-page`}>
+      <SalePopup 
+        multi={multi} 
+        inventory={player?.inventory} 
+        trigger={trigger} 
+        sellPrice={sellPrice*haggle} 
+        setHaggle={setHaggle} 
+        setTrigger={()=>setTrigger(trigger=>!trigger)} 
+        balanceToUpdate={balanceToUpdate}
+      />
+      <EnchantmentPopup 
+        trigger={enchantmentTrigger} 
+        setTrigger={()=>showEnchantment(enchantmentTrigger=>!enchantmentTrigger)} 
+        selector={multi}  
+        inventory={player?.inventory} 
+        attr={attributes}
+        talent={talents?.find(el=>el.talent.name==="Verzaubern")}
+        enchant={handleEnchant}
+        remove={toDelete}
+      />
     <NavbarComp/>
-    <div  className="container-fluid g-5 inventory-page">
+    <div  className="container-fluid g-5">
     <div className="row mt-3 ">
     <div className="col-lg-auto col-md-12 col-sm-12 h-auto">
       <div className="row mt-5"><button name={user.name} className={originName} onClick={onClickFilter}><FontAwesomeIcon icon={faSuitcase}/></button></div>
@@ -324,7 +362,7 @@ const weightBarCallback = useCallback(()=>{
       </div>
     </div>
       <div className="col-lg-5 col-md-12 col-sm-12  h-auto">
-      {player?.inventory && player.inventory.length === 0 ?
+      {inventory?.length === 0 ?
        (
         <Card>
         <Card.Header>Inventar</Card.Header>
@@ -344,7 +382,7 @@ const weightBarCallback = useCallback(()=>{
               <button  className="btn-edit"  onClick={handleEdit}><FontAwesomeIcon icon={faPenToSquare} /></button>
             }
             {edit? <button className="btn-enchantment" disabled><FontAwesomeIcon icon={faHandSparkles} /></button>
-            : <button className="btn-enchantment"  onClick={handleModify}><FontAwesomeIcon icon={faHandSparkles} /></button>}
+            : <button className="btn-enchantment"  onClick={()=>showEnchantment(enchantmentTrigger=>!enchantmentTrigger)}><FontAwesomeIcon icon={faHandSparkles} /></button>}
             {
               edit ? <button className="btn-save" variant="outline-secondary"  onClick={handleSave} type="submit" ><FontAwesomeIcon icon={faFloppyDisk} /></button>
               :
@@ -366,7 +404,7 @@ const weightBarCallback = useCallback(()=>{
             </tr>
           </thead>
           <tbody>
-            {player?.inventory && player.inventory.map((invElement)=>{
+            {inventory?.map((invElement)=>{
               const r = invElement.enchantment? rarity[invElement.enchantment.rarity] : rarity[invElement.item.rarity]
               const g = genus && genus[invElement.item.genus]
               const filterCheck = iFilter?.length > 0 && invElement.status === iFilter ? true : iFilter === "" ? true : false
@@ -377,15 +415,12 @@ const weightBarCallback = useCallback(()=>{
                   <tr key={invElement._id} name={invElement._id}>
                     <td style={{textAlign:"left"}}>
                     <input type="checkbox" name="multichoice" id={invElement._id} onChange={onMultiSelect}/>
-                    <Image name={invElement.item.name} src={`/icons/${r}/${g}xhdpi.png`} onClick={itemSelected}></Image>
+                    <Image name={invElement.item.name} src={`/icons/${r}/${g}xhdpi.png`} onClick={itemSelected}/>
                     <label htmlFor={invElement._id}><h4> {invElement.item.name}</h4></label>
-                    {modify ? (
-                            showInfo?.state && showInfo.item === invElement.item.name &&
-                       <Enchantment id={invElement._id} handleModify={handleModify}/>
-                    ) : (
+                    {
                       showInfo?.state && showInfo.item === invElement.item.name &&
                         <Info item={invElement.item} enchantment={invElement.enchantment}/>
-                      ) 
+                      
                     }
                     </td>
                     {edit ? (<td><input id="amount" name={invElement._id} type="number" onChange={handleChange} defaultValue={invElement.amount}/></td>)
@@ -401,7 +436,7 @@ const weightBarCallback = useCallback(()=>{
                           </td>
                           ):
                           (<td>{invElement.status === user.name ? <FontAwesomeIcon icon={faSuitcase} />: invElement.status === "Ausgerüstet" ? <FontAwesomeIcon icon={faPerson}/>: <FontAwesomeIcon icon={faPaw}/>}</td>)}
-                    <td><button className="btn-remove" id={invElement._id} onClick={toDelete}><FontAwesomeIcon icon={faTrash}/></button></td>
+                    <td><button className="btn-remove" id={invElement._id} onClick={toDelete}><FontAwesomeIcon icon={faX}/></button></td>
                   </tr>
               )}
               
