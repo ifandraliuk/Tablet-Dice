@@ -125,6 +125,16 @@ const racesList = ["Elb","Draconid", "Zwerg", "Gnom", "Ork", "Kobold", "Mensch",
         spirit: "Spirituelle Kraft",
     }
 
+    const diceAbbr = {
+        STR: "strength",
+        DEX: "dexterity",
+        INT: "intelligent",
+        VIT: "vitality",
+        ST: "stamina",
+        CHA: "charisma",
+        MANA: "mana",
+        SPK: "spirit"
+    }
 
     /// INVENTORY
     const itemNames = {
@@ -176,20 +186,30 @@ const racesList = ["Elb","Draconid", "Zwerg", "Gnom", "Ork", "Kobold", "Mensch",
         },
         gems: [
             {
-            name: "Smaragd",
-            rarity: "gewöhnlich"
+                name: "Opal",
+                rarity: "gewöhnlich",
+                value: 0,
             },
             {
                 name: "Bernstein",
                 rarity: "magisch",
+                value: 1,
             },
+            {
+                name: "Smaragd",
+                rarity: "selten",
+                value: 2,
+            },
+
             {
                 name: "Saphir",
                 rarity:"episch",
+                value: 3,
             },
             {
                 name: "Rubin",
                 rarity: "legendär",
+                value: 4,
             }
 
         ]
@@ -230,6 +250,7 @@ export  {races,
     countries,
     germanAttr,
     allAttributes,
+    diceAbbr,
     itemNames,
     diaryCategories,
     boniList
