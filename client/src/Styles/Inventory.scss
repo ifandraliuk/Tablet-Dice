@@ -31,4 +31,26 @@
         object-position: center;
     }
 
+    .common{ 
+        color: grey;
+    }
+    .rare{
+        color: $categoryGreen;
+    }
+    .magical{
+        color: $categoryYellow;
+    }
+    .epic{
+        color: $categoryBlue;
+    }
+    .unique{
+        color: $enchantment;
+    }
+    .legendary{
+        color: $categoryRed;
+    }
+
+    .enchantment-text {
+        color: $enchantment;
+    }
 }
