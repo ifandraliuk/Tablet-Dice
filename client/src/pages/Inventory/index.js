@@ -149,8 +149,15 @@ const weightBarCallback = useCallback(()=>{
     if(!player.isError)
       activeEdit(edit=>!edit)
     setLoad(false)
-    
   }
+
+  /* Enchant element and remove used gem from users inventory */
+  const handleEnchant = (data, removeGemId) => {
+    console.log(data, removeGemId)
+    dispatch(setEnchantment(data))
+    dispatch(deleteItem(removeGemId))
+    }
+
   const handleChange = e => {
     console.log(`id: ${e.target.id} value: ${e.target.value} name: ${e.target.name}`)
     let flag = false
@@ -208,9 +215,7 @@ const weightBarCallback = useCallback(()=>{
     e.preventDefault()
     setLoad(isLoad=>!isLoad)
   }
-  const handleModify = () => {
-    setModify(modify=>!modify)
-  }
+
   const moneyChange = e => {
     console.log(e.target.id, e.target.value)  
     const id = parseInt(e.target.id)
@@ -269,6 +274,8 @@ const weightBarCallback = useCallback(()=>{
     setTrigger(false)
     setSellprice(0)
   }
+
+
   /// Animations 
   
   const animateInv = (text) => {
@@ -287,12 +294,6 @@ const weightBarCallback = useCallback(()=>{
       }
     }
   }
-
-  const handleEnchant = (data, removeGemId) => {
-    console.log(data, removeGemId)
-    dispatch(setEnchantment(data))
-    dispatch(deleteItem(removeGemId))
-    }
 
   // animate weight bar 
   const move = (weight) =>{
@@ -375,12 +376,8 @@ const weightBarCallback = useCallback(()=>{
         <div >
           
           <div className='row'>
-          <div className="button-group col-auto">
-            {modify? 
-              <button  className="btn-edit" disabled><FontAwesomeIcon icon={faPenToSquare} /></button>
-              :
-              <button  className="btn-edit"  onClick={handleEdit}><FontAwesomeIcon icon={faPenToSquare} /></button>
-            }
+          <div className="button-group col-auto">        
+            <button  className="btn-edit"  onClick={handleEdit}><FontAwesomeIcon icon={faPenToSquare} /></button>
             {edit? <button className="btn-enchantment" disabled><FontAwesomeIcon icon={faHandSparkles} /></button>
             : <button className="btn-enchantment"  onClick={()=>showEnchantment(enchantmentTrigger=>!enchantmentTrigger)}><FontAwesomeIcon icon={faHandSparkles} /></button>}
             {
