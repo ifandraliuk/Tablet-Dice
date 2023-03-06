@@ -181,6 +181,7 @@ select{
 
 div{
     word-wrap: break-word;
+    color: azure;
 }
 
 /* HEADINGS*/
@@ -208,7 +209,11 @@ h5 {
     font-size: clamp(1em, calc(0.5em + 1vw), 0.9em);
     letter-spacing: 7px;
 }
-
+.txt-info{
+    color: grey;
+    font-size: clamp(0.6em, calc(0.5em + 1vw), 0.7em);
+    margin: 0 0 0 10px;
+}
 /*ALERTS*/
 .alert{
     color: #fff;
@@ -233,9 +238,9 @@ h5 {
 .popup{
     width: 100%;
     min-height: fit-content;
-    max-height: 500px;
+    max-height: 90vh;
     max-width: fit-content;
-    padding: 2em;
+    padding: 1.1em;
     background-color: $infoBlack;
     z-index: 2;
 }

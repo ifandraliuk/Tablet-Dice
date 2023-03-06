@@ -26,4 +26,25 @@
      object-fit: cover;
   -o-object-position: center;
      object-position: center;
+}
+.inventory-page .common {
+  color: grey;
+}
+.inventory-page .rare {
+  color: #90be6d;
+}
+.inventory-page .magical {
+  color: #f9c74f;
+}
+.inventory-page .epic {
+  color: #577590;
+}
+.inventory-page .unique {
+  color: #9d4edd;
+}
+.inventory-page .legendary {
+  color: #f94144;
+}
+.inventory-page .enchantment-text {
+  color: #9d4edd;
 }/*# sourceMappingURL=Inventory.css.map */
