@@ -15,6 +15,7 @@ import InventoryPage from './pages/Inventory/index';
 import {useDispatch, useSelector} from 'react-redux';
 import { getPlayer, playerLoaded, getBonis, filterEquipment, getArmor, getWeight } from './features/player/playerSlice';
 import Diary from './pages/Diary/index';
+import Companions from './pages/Companions/index';
 import Dashboard from './pages/Dashboard/index';
 
 
@@ -90,6 +91,7 @@ useEffect(()=>{
         <Route path="/inventory" element={<InventoryPage/>}></Route>
         <Route path="/talents" element={<Talents/>}></Route>
         <Route path="/bestiaria" element={<Bestiaria/>}></Route>
+        <Route path="/companions" element={<Companions/>}></Route>
         <Route path="/enemies" element={<Enemies/>}></Route>
         <Route path="/error" element={<ErrorPage/>}></Route>  
       </Routes>
