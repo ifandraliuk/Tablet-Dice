@@ -5,14 +5,22 @@ const {protect} = require('../middleware/authMiddleware')
 
 router.get('/', protect, getPlayer);
 router.route('/levelup').put(protect, updateLevel)
-router.post('/create', protect, createCharacter); 
+
+//ATTR
 router.put('/attributes/:attr', protect, updateAttribute); 
-router.route('/balance').put(protect, updateBalance)
+
+//TALENTS
 router.route('/talents').put(protect, putTalent).post(protect, addTalent)
 router.route('/talents/:id').delete(protect, removeTalent)
+
+//INVENTORY
 router.route('/inventory').put(protect, updateInventory).post(protect, toInventory)
 router.route('/inventory/:id').delete(protect, deleteItem)
 router.route('/enchantment').put(protect, setEnchantment)
+router.route('/balance').put(protect, updateBalance)
+//CREATE CHARACTER
 router.route('/profilepic').post(protect, uploadPicture)
+router.post('/create', protect, createCharacter); 
+
 
 module.exports = router
