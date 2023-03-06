@@ -1,7 +1,7 @@
 import React from 'react'
 import  '../App.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faHouse, faDiceD20, faPadlet, faHome, faBoxOpen, faBookJournalWhills, faPaw} from '@fortawesome/free-solid-svg-icons'
+import {faHouse, faDiceD20, faPadlet, faHome, faBoxOpen, faBookJournalWhills, faPaw, faUserPlus} from '@fortawesome/free-solid-svg-icons'
 import { Container, Button } from 'react-bootstrap'
 import {Link,} from 'react-router-dom'
 import Nav from 'react-bootstrap/Nav';
@@ -34,6 +34,7 @@ function NavbarComp() {
                 <Nav.Link as={Link} to="/inventory"><FontAwesomeIcon icon={faBoxOpen} /> Inventar</Nav.Link>
                 <Nav.Link as={Link} to="/talents"><FontAwesomeIcon icon={faDiceD20} /> Talente</Nav.Link>
                 <Nav.Link as={Link} to="/bestiaria"><FontAwesomeIcon icon={faPaw} /> Bestiarium</Nav.Link>
+                <Nav.Link as={Link} to="/bestiaria"><FontAwesomeIcon icon={faUserPlus} /> Begleiter</Nav.Link>
               </Nav>
               <Nav>
               <Nav.Link>Datenbank</Nav.Link>
