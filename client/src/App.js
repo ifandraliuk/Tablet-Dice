@@ -1,5 +1,5 @@
 //import './App.css';
-import React, {useEffect, useCallback} from 'react';
+import React, {useEffect, useCallback, useMemo} from 'react';
 import './App.css'
 import './Styles/Main.css'
 //import 'react-toastify/dist/ReactTostify.css'
@@ -31,6 +31,13 @@ const playerCallback = useCallback(()=>{
     dispatch(playerLoaded({value: true}))
 }, [dispatch])
 
+const origin = player?.general?.origin.split(" ")
+
+
+  const originName = useMemo(()=>{
+    console.log("origin changed")
+    return origin && origin[origin.length-1]
+}, [origin])
 
 // load player info
 useEffect(()=>{
@@ -91,7 +98,7 @@ useEffect(()=>{
         <Route path="/inventory" element={<InventoryPage/>}></Route>
         <Route path="/talents" element={<Talents/>}></Route>
         <Route path="/bestiaria" element={<Bestiaria/>}></Route>
-        <Route path="/companions" element={<Companions/>}></Route>
+        <Route path="/companions" element={<Companions origin={originName}/>}></Route>
         <Route path="/enemies" element={<Enemies/>}></Route>
         <Route path="/error" element={<ErrorPage/>}></Route>  
       </Routes>
