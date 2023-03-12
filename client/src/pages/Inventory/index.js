@@ -22,8 +22,8 @@ import EnchantmentPopup from './EnchantmentPopup';
 
 function InventoryPage() {
   const {items, isLoading, loaded, armorGenuses, weaponGenuses, ressourceGenuses, isError, message} = useSelector((state)=>state.items)
-  const {player, weight, loadCapacity} = useSelector((state)=>state.player)
-  const {talents, attributes, inventory} = player
+  const {player, armor, equipmentError, weight, loadCapacity} = useSelector((state)=>state.player)
+  const {talents, attributes, userclass, inventory} = player
   const {user} = useSelector((state)=>state.auth)  
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -264,7 +264,7 @@ const weightBarCallback = useCallback(()=>{
     }
   }
 
-  const balanceToUpdate = () => {
+  const balanceToUpdate = useCallback(() => {
     const userBalance = toFloat(player?.money)
     console.log(userBalance)
     const toUpdate = userBalance + sellPrice*haggle
@@ -273,7 +273,7 @@ const weightBarCallback = useCallback(()=>{
     multi?.forEach(id=>dispatch(deleteItem(id)))
     setTrigger(false)
     setSellprice(0)
-  }
+  }, [multi?.length>0 && trigger])
 
 
   /// Animations 
@@ -327,17 +327,16 @@ const weightBarCallback = useCallback(()=>{
   return (
     <div className="dark-bg">
       <div className={`bg ${originName}-bg  inventory-page`}>
-      <SalePopup 
+      {trigger && <SalePopup 
         multi={multi} 
         inventory={player?.inventory} 
-        trigger={trigger} 
+    
         sellPrice={sellPrice*haggle} 
         setHaggle={setHaggle} 
         setTrigger={()=>setTrigger(trigger=>!trigger)} 
         balanceToUpdate={balanceToUpdate}
-      />
-      <EnchantmentPopup 
-        trigger={enchantmentTrigger} 
+      />}
+      {enchantmentTrigger && <EnchantmentPopup 
         setTrigger={()=>showEnchantment(enchantmentTrigger=>!enchantmentTrigger)} 
         selector={multi}  
         inventory={player?.inventory} 
@@ -345,7 +344,7 @@ const weightBarCallback = useCallback(()=>{
         talent={talents?.find(el=>el.talent.name==="Verzaubern")}
         enchant={handleEnchant}
         remove={toDelete}
-      />
+      />}
     <NavbarComp/>
     <div  className="container-fluid g-5">
     <div className="row mt-3 ">
@@ -466,7 +465,7 @@ const weightBarCallback = useCallback(()=>{
         }
       </div>
       <div className="col-lg-5 col-md-12 col-sm-12  h-auto" >
-       <Equipment/>
+       <Equipment armor={armor} err={equipmentError} uclass={userclass?.name} />
       </div>
     </div>
     <Button className={edit? "disabled mb-2":"mb-2"} variant="dark" onClick={showItems} >{isLoad ? "Schließen": "Item hinzufügen"}</Button>

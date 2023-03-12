@@ -1,9 +1,9 @@
-import React from 'react'
+import React, {memo} from 'react'
 import { floatToArray } from './CurrencyConverters.js'
 
 
-function SalePopup(props) {
-    const {multi, inventory, setHaggle, trigger, setTrigger, sellPrice, balanceToUpdate} = props
+const SalePopup = memo(({multi, inventory, setHaggle, trigger, setTrigger, sellPrice, balanceToUpdate}) => {
+
     const moneyOffer = floatToArray(sellPrice)
     const info = moneyOffer && `${moneyOffer[0]>0 ? `${moneyOffer[0]} Gold`: ""} ${moneyOffer[1]>0 ? ` ${moneyOffer[1]} Silber`: ""} ${moneyOffer[2]>0 ? `${moneyOffer[2]} Kupfer `: ""}`
     const elsToSell = inventory?.filter(el=>multi.includes(el._id))
@@ -32,7 +32,7 @@ function SalePopup(props) {
         setHaggle(1)
         setTrigger()
     }
-    return (trigger?
+    return (
     <div className="blur-bg">
         <div className="popup border">
             <div className='row justify-content-center'>
@@ -67,8 +67,7 @@ function SalePopup(props) {
         
         </div> 
     </div>
-    :""
   )
-}
+})
 
 export default SalePopup

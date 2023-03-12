@@ -5,8 +5,7 @@ import {itemNames} from '../../data/ConstVariables';
 import Alert from '../../components/Alert';
 import DiceInfo from './DiceInfo';
 import Image from "react-bootstrap/Image"
-function EnchantmentPopup(props) {
-  const {trigger, setTrigger, talent, selector, inventory, attr, enchant, remove} = props
+const  EnchantmentPopup = ({ setTrigger, talent, selector, inventory, attr, enchant, remove}) => {
   const itemSelected = selector && inventory?.find(el=>el._id===selector[0] && ["Waffe", "Rüstung"].includes(el.item.category))
   const [requirement, setRequirement] = useState()
   const [disabledButton, setDisabled] = useState(false)
@@ -17,22 +16,20 @@ function EnchantmentPopup(props) {
   const [newRarity, setRarity] = useState("")
   
   useEffect(()=>{
-    if(trigger){
       const req =  findRequirements()
       setRequirement(req)
       console.log("useEffect is active")
-    }
-  },[trigger])
+  },[])
 
 
   useEffect(()=>{
-    if(tool?.length>0 && trigger && itemSelected){
+    if(tool?.length>0 && itemSelected){
       const bookWords = tool.split(" ")
       const diceBoni = bookWords.pop()
       setDiceBonus(diceBoni)
       console.log(diceBonus)
     }
-  },[tool, trigger, itemSelected])
+  },[tool, itemSelected])
   useEffect(()=>{
     if(!itemSelected || requirement?.gems.length===0 || requirement?.tools.length===0 || bonus?.length===0 || !talent){
       setDisabled(true)
@@ -89,7 +86,6 @@ function EnchantmentPopup(props) {
     console.log(enchantment)
   }
   return (
-    trigger?
     <div className="blur-bg">
       <div className='popup border'>
         <div className='row justify-content-end m-0'>
@@ -198,7 +194,6 @@ function EnchantmentPopup(props) {
         </form>
       </div>
     </div>
-    : ""
   )
 }
 

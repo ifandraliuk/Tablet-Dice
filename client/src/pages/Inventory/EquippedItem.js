@@ -7,12 +7,12 @@ import Popover from 'react-bootstrap/Popover';
 import {itemNames} from '../../data/ConstVariables';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faRectangleXmark} from '@fortawesome/free-solid-svg-icons'
-function EquippedItem(props) {
+function EquippedItem({category}) {
   const {player, equipped, } = useSelector((state)=>state.player)
   const {genus, rarity} = itemNames
 
   if(equipped && player){
-    const i = player &&  equipped?.findIndex(el=>el.category===props.category)
+    const i = player &&  equipped?.findIndex(el=>el.category===category)
     const eqId = equipped[i]?.equipment
     const id = player?.inventory?.findIndex(el=>el._id===eqId)
     //console.log(player?.inventory[player?.inventory.findIndex(el=>el._id===equipped[id?.equipment])])
