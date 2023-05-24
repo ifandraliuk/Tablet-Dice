@@ -35,4 +35,17 @@
 }
 .Talents .category {
   text-transform: uppercase;
+}
+.Talents .talent {
+  background-color: black;
+  animation-duration: 3s;
+  animation-name: addTalent;
+}
+@keyframes addTalent {
+  from {
+    background-color: green;
+  }
+  to {
+    background-color: red;
+  }
 }/*# sourceMappingURL=Talents.css.map */

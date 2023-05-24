@@ -40,5 +40,20 @@
     .category {
         text-transform: uppercase;
     }
+
+    .talent{
+        background-color: black;
+        animation-duration: 3s;
+        animation-name: addTalent;
+    }
+
+    @keyframes addTalent {
+        from{
+            background-color: green;
+        }
+        to{
+            background-color: red;
+        }
+    }
 }
 
