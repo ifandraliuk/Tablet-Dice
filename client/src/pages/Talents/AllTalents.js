@@ -49,4 +49,4 @@ function AllTalents(props) {
   )
 }
 
-export default AllTalents
+export default React.memo(AllTalents)

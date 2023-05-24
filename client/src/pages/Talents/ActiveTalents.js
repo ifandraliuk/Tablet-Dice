@@ -120,4 +120,4 @@ function ActiveTalents({props}) {
   )
 }
 
-export default ActiveTalents
+export default React.memo(ActiveTalents)
