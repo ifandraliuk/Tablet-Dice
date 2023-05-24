@@ -2,6 +2,7 @@ import {createSlice, createAsyncThunk} from '@reduxjs/toolkit'
 import playerService from './playerService'
 import { boniList } from '../../data/ConstVariables'
 const vitality = JSON.parse(localStorage.getItem('vitality'))
+
 const stamina = JSON.parse(localStorage.getItem('stamina'))
 const mana = JSON.parse(localStorage.getItem('mana'))
 const spirit = JSON.parse(localStorage.getItem('spirit'))

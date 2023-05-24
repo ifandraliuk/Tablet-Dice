@@ -57,10 +57,7 @@ function Talents() {
       console.log(message)
     }
     dispatch(getTalent())
-    // Dismount general info
-     return () => {
-      dispatch(reset())
-    } 
+
   }, [user, navigate, isError, dispatch, message])
 
   const handleChange = e => {

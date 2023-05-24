@@ -30,7 +30,7 @@ function Dashboard() {
     <div className="dark-bg dashboard-page">
       <div className={`bg ${originName}-bg container-fluid`}>
           <NavbarComp/>
-          <div fluid style={{color:"white"}}>
+          <div  style={{color:"white"}}>
             <div className="row">   
               <div className='col-lg-3 col-md-10 col-sm-12'>
                 <div className="row">
