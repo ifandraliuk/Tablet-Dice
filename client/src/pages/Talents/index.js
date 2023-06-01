@@ -12,7 +12,8 @@ import { races } from '../../data/ConstVariables';
 import ActiveTalents from './ActiveTalents'
 import AttributeList from '../Dashboard/Attributes'
 import ScrollUpButton from '../../components/ScrollUpButton'
-
+import { motion } from 'framer-motion'
+import { pageTransition } from '../../data/Animations'
 function Talents() {
   const {user} = useSelector((state)=>state.auth)
   const {player} = useSelector((state)=>state.player)
@@ -117,7 +118,14 @@ function Talents() {
   }
 
   return (
-    <div style={{backgroundColor:"#161614", overflow:"auto"}} className="Talents">
+    <motion.div
+    variants={pageTransition}
+    initial="init"
+    animate="animate"
+    exit="exit"
+>
+    <div style={{backgroundColor:"#161614", overflow:"auto"}} className="Talents"
+    >
        <div style={{backgroundImage:`url(/${originName}.svg)`, overflow:"auto", backgroundAttachment:"fixed", height:"100vh", backgroundRepeat:"no-repeat"}}>
         <div className="container-fluid" style={{color:"white"}}>
           
@@ -164,6 +172,7 @@ function Talents() {
         </div>
         </div>
         </div>
+        </motion.div>
   )
 }
 
