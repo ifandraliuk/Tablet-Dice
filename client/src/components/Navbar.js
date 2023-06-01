@@ -24,7 +24,7 @@ function NavbarComp() {
     localStorage.removeItem("user")
   }
   return (
-          <Navbar collapseOnSelect expand="xl" variant="dark">
+          <Navbar collapseOnSelect expand="xl" variant="light">
           <Container>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
