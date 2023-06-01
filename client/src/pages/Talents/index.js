@@ -2,11 +2,10 @@ import React, {useEffect, useState} from 'react'
 import "../../Styles/Talents.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faFloppyDisk,faKhanda, faHammer, faHurricane, faMask, faBook, faTree, faUserGroup, faRefresh} from '@fortawesome/free-solid-svg-icons'
-import NavbarComp from '../../components/Navbar'
 import { Image,  Spinner, } from 'react-bootstrap'
 import {useSelector, useDispatch} from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { getTalent, reset } from '../../features/talent/talentSlice';
+import { getTalent } from '../../features/talent/talentSlice';
 import { addTalent } from '../../features/player/playerSlice';
 import AllTalents from './AllTalents';
 import { races } from '../../data/ConstVariables';
@@ -120,7 +119,6 @@ function Talents() {
   return (
     <div style={{backgroundColor:"#161614", overflow:"auto"}} className="Talents">
        <div style={{backgroundImage:`url(/${originName}.svg)`, overflow:"auto", backgroundAttachment:"fixed", height:"100vh", backgroundRepeat:"no-repeat"}}>
-        <NavbarComp/>
         <div className="container-fluid" style={{color:"white"}}>
           
         <div className="row">

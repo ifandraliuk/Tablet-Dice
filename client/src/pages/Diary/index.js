@@ -133,7 +133,6 @@ function Diary() {
   }
   return (
     <div className="dark-bg">
-        <NavbarComp/>
         <div className="container-fluid diary-page"  style={{color:"white"}}>
           <div className="row">
             <div className="col-xl-3  col-lg-3 col-md-12">

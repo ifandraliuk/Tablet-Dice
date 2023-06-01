@@ -1,7 +1,5 @@
 import React from 'react'
-
 import "../../Styles/Dashboard.css"
-import NavbarComp from '../../components/Navbar'
 import {useSelector, useDispatch} from 'react-redux';
 import Figure from 'react-bootstrap/Figure'
 import Spinner from 'react-bootstrap/Spinner'
@@ -29,7 +27,6 @@ function Dashboard() {
   return (
     <div className="dark-bg dashboard-page">
       <div className={`bg ${originName}-bg container-fluid`}>
-          <NavbarComp/>
           <div  style={{color:"white"}}>
             <div className="row">   
               <div className='col-lg-3 col-md-10 col-sm-12'>

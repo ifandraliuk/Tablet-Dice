@@ -1,9 +1,8 @@
-import React,{useCallback, useEffect, useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import "../../Styles/Bestiaria.css"
 import {useSelector, useDispatch} from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import {reset, getBestiaria, filter} from '../../features/bestiaria/bestiariaSlice'
-import NavbarComp from '../../components/Navbar'
+import {reset, getBestiaria} from '../../features/bestiaria/bestiariaSlice'
 import BestienList from './BestienList'
 import HabitatList from './HabitatList'
 import { getHabitat } from '../../features/habitats/habitatSlice'
@@ -30,7 +29,6 @@ const Bestiaria = () => {
 
   return (
     <div className="dark-bg container-fluid g-5">
-      <NavbarComp/>
       <div className='row'>
         <div className='col-2'>
           <HabitatList habitats={habitat} filter={setHabitatFilter}/>
