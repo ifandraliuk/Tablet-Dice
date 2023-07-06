@@ -29,7 +29,8 @@ const login = async (userData) => {
 
 const logout = () => {
     localStorage.removeItem("user")
-    localStorage.clear()
+    localStorage.removeItem("fraction")
+    localStorage.clear();
     
 }
 

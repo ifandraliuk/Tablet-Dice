@@ -1,12 +1,13 @@
 //MAIN
 
-$darkBlack: #161614;
-$infoBlack: #212529;
-
+$darkBlack: rgb(22, 22, 20);
+$infoBlack: rgb(24, 24, 24);
+$transparentBlack: rgba(24, 24, 24, 0.8);
+$mainGrey: #7c7c7c;
 // CATEGORY COLORS
 
 $categoryRed: #f94144;
-$categoryOrange: #f3722c;
+$categoryOrange: rgb(243, 114, 44);
 $categoryGreen: #90be6d;
 $categoryJungle: #43aa8b;
 $categoryYellowOrange: #f8961e;
@@ -24,4 +25,4 @@ $ethelionMain: #2B9348;
 $medorienMain: #cb6327;
 $thamorMain: #54318C;
 $thornheimMain: #95ecff;
-$wellesMain: #ead21c;
+$wellesMain: rgb(255, 240, 90);

@@ -1,13 +1,16 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit'
 import playerService from './playerService'
 import { boniList } from '../../data/ConstVariables'
-const vitality = JSON.parse(localStorage.getItem('vitality'))
-
+const user = JSON.parse(localStorage.getItem("user"))
+console.log(user)
+const vitality =  JSON.parse(localStorage.getItem('vitality'))
+console.log(localStorage)
 const stamina = JSON.parse(localStorage.getItem('stamina'))
 const mana = JSON.parse(localStorage.getItem('mana'))
 const spirit = JSON.parse(localStorage.getItem('spirit'))
 const loadCapacity = JSON.parse(localStorage.getItem('loadCapacity')) // strength * strength multiplier -> important for carying things
 const equippedItems = JSON.parse(localStorage.getItem('equippedItems'))
+const  fraction =   localStorage.getItem('fraction')
 console.log(vitality)
 const initialState = {
     player: [],
@@ -18,6 +21,8 @@ const initialState = {
        spirit: spirit ? spirit : 0,
     },
     playerDataLoaded: false,
+    abilityCategory: "",
+    fractionTheme:  fraction ? fraction : "",
     equipped: equippedItems ? equippedItems : [],
     armor: 0,
     bonis: [],
@@ -45,7 +50,7 @@ export const getPlayer = createAsyncThunk('player/get', async(_, thunkAPI)=>{
             error.message || 
             error.toString()
             console.log((error.message))
-        localStorage.removeItem("user")
+        localStorage.clear()
         return thunkAPI.rejectWithValue(msg)        
     }
 })
@@ -213,6 +218,11 @@ export const playerSlice = createSlice({
     initialState,
     reducers: {
         reset: (state) => initialState,
+        resetLocalData: (state) => {
+            state.fractionTheme = ""
+            state.equipped = []
+
+        },
         playerLoaded: (state, {payload})=>{
             //console.log("reducer: player data was loaded? ", payload)
             state.playerDataLoaded = payload.value
@@ -465,6 +475,7 @@ export const playerSlice = createSlice({
         .addCase(getPlayer.fulfilled, (state, action)=> {
             state.isLoading = false
             state.isSuccess = true
+            state.playerDataLoaded = true
             state.player = action.payload
             console.log(localStorage, vitality)
            const v = JSON.parse(localStorage.getItem('vitality'))
@@ -477,11 +488,14 @@ export const playerSlice = createSlice({
                 mana: m>0 ? m : state.player?.attributes?.mana * 10,
                 spirit: sp>0 ? sp : state.player?.attributes?.spirit * 10,
             }
+            const fraction = localStorage.getItem('fraction')
+            state.fractionTheme = fraction ? fraction : ""
         })
         .addCase(getPlayer.rejected, (state, action)=> {
             state.isLoading = false
             state.isError = true
             state.message= action.payload
+            state.fractionTheme = fraction
         })
         .addCase(updateLevel.pending, (state)=>{
             state.isLoading = true
@@ -641,5 +655,5 @@ export const playerSlice = createSlice({
     }
 })
 
-export const {reset, playerLoaded, sortedTalents, sortValueIncrease, sortValueDecreese, increaseBar, decreaseBar, resetBars, filterEquipment, getArmor, getBonis, getWeight} = playerSlice.actions
+export const {reset, resetLocalData, playerLoaded, sortedTalents, sortValueIncrease, sortValueDecreese, increaseBar, decreaseBar, resetBars, filterEquipment, getArmor, getBonis, getWeight} = playerSlice.actions
 export default playerSlice.reducer

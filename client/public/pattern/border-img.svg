@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="_Шар_2" data-name="Шар 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 584.5 586.66">
+  <g id="pattern">
+    <g>
+      <g>
+        <circle cx="319" cy="30.5" r="18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <polyline points="473 29.5 473 2.5 581 2.5 581 110.5 554 110.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <polyline points="527 56.5 500 56.5 500 29.5 554 29.5 554 83.5 500 83.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <circle cx="456" cy="49.43" r="17" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3.04"/>
+        <circle cx="456" cy="49.43" r="10.93" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3.04"/>
+        <polyline points="338 29.5 365 29.5 365 2.5 392 2.5 392 29.5 419 29.5 419 2.5 446 2.5 446 29.5 473 29.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <polyline points="321 47.5 330 47.5 438 47.5" fill="none" stroke="#fff05a" stroke-miterlimit="10" stroke-width="3.82"/>
+        <polyline points="473 56.5 473 65.5 473 110.5 554 110.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <circle cx="319" cy="30.5" r="28" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <circle cx="319" cy="30.5" r="18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="446" y1="56.5" x2="401" y2="56.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+        <line x1="392" y1="56.5" x2="374" y2="56.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+        <line x1="365" y1="56.5" x2="329" y2="56.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+        <line x1="356" y1="82.5" x2="401" y2="82.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="410" y1="82.5" x2="428" y2="82.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="329" y1="82.5" x2="347" y2="82.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="437" y1="82.5" x2="473" y2="82.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <path d="M437,82.5c0,9.94-8.06,18-18,18s-18-8.06-18-18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="455" y1="109.5" x2="455" y2="82.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="383" y1="109.5" x2="383" y2="82.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <polyline points="554 110.5 554 137.5 581 137.5 581 164.5 554 164.5 554 191.5 581 191.5 581 218.5 554 218.5 554 245.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <circle cx="554" cy="263.5" r="18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <circle cx="554" cy="263.5" r="28" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <circle cx="554" cy="263.5" r="18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <circle cx="535" cy="129.5" r="17" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3.04"/>
+        <circle cx="535" cy="129.5" r="10.93" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3.04"/>
+        <line x1="536" y1="146.5" x2="536" y2="241.16" fill="none" stroke="#fff05a" stroke-miterlimit="10" stroke-width="3.82"/>
+        <line x1="527" y1="137.5" x2="527" y2="182.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+        <line x1="527" y1="191.5" x2="527" y2="209.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+        <line x1="527" y1="218.5" x2="527" y2="254.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+        <line x1="500" y1="227.5" x2="500" y2="182.5" fill="none" stroke="#fff05a" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="500" y1="173.5" x2="500" y2="155.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="500" y1="254.5" x2="500" y2="236.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="500" y1="146.5" x2="500" y2="110.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <path d="M499,262.5c3.92,0,7.54-1.25,10.5-3.38,4.54-3.27,7.5-8.6,7.5-14.62,0-9.94-8.06-18-18-18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <path d="M500,146.5c-9.94,0-18,8.06-18,18s8.06,18,18,18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="473" y1="128.5" x2="500" y2="128.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="473" y1="200.5" x2="500" y2="200.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="500" y1="277.16" x2="500" y2="263.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="500" y1="290.5" x2="500" y2="277.16" fill="none" stroke="#fff05a" stroke-linecap="square" stroke-miterlimit="10" stroke-width="5"/>
+        <path d="M302.5,83.5h18.5c0-9.94,8.06-18,18-18,9.94,0,18,8.06,18,18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="293" y1="83.5" x2="302.5" y2="83.5" fill="none" stroke="#fff05a" stroke-linecap="square" stroke-miterlimit="10" stroke-width="5"/>
+      </g>
+      <g>
+        <circle cx="319" cy="556.16" r="18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <polyline points="473 557.16 473 584.16 581 584.16 581 476.16 554 476.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <polyline points="527 530.16 500 530.16 500 557.16 554 557.16 554 503.16 500 503.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <circle cx="456" cy="537.23" r="17" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3.04"/>
+        <circle cx="456" cy="537.23" r="10.93" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3.04"/>
+        <polyline points="338 557.16 365 557.16 365 584.16 392 584.16 392 557.16 419 557.16 419 584.16 446 584.16 446 557.16 473 557.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <polyline points="321 539.16 330 539.16 438 539.16" fill="none" stroke="#fff05a" stroke-miterlimit="10" stroke-width="3.82"/>
+        <polyline points="473 530.16 473 521.16 473 476.16 554 476.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <circle cx="319" cy="556.16" r="28" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <circle cx="319" cy="556.16" r="18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="446" y1="530.16" x2="401" y2="530.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+        <line x1="392" y1="530.16" x2="374" y2="530.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+        <line x1="365" y1="530.16" x2="329" y2="530.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+        <line x1="356" y1="504.16" x2="401" y2="504.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="410" y1="504.16" x2="428" y2="504.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="329" y1="504.16" x2="347" y2="504.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="437" y1="504.16" x2="473" y2="504.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <path d="M437,504.16c0-9.94-8.06-18-18-18s-18,8.06-18,18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="455" y1="477.16" x2="455" y2="504.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="383" y1="477.16" x2="383" y2="504.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <polyline points="554 476.16 554 449.16 581 449.16 581 422.16 554 422.16 554 395.16 581 395.16 581 368.16 554 368.16 554 341.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <circle cx="554" cy="323.16" r="18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <circle cx="554" cy="323.16" r="28" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <circle cx="554" cy="323.16" r="18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <circle cx="535" cy="457.16" r="17" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3.04"/>
+        <circle cx="535" cy="457.16" r="10.93" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3.04"/>
+        <line x1="536" y1="440.16" x2="536" y2="345.5" fill="none" stroke="#fff05a" stroke-miterlimit="10" stroke-width="3.82"/>
+        <line x1="527" y1="449.16" x2="527" y2="404.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+        <line x1="527" y1="395.16" x2="527" y2="377.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+        <line x1="527" y1="368.16" x2="527" y2="332.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+        <line x1="500" y1="359.16" x2="500" y2="404.16" fill="none" stroke="#fff05a" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="500" y1="413.16" x2="500" y2="431.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="500" y1="332.16" x2="500" y2="350.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="500" y1="440.16" x2="500" y2="476.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <path d="M499,324.16c3.92,0,7.54,1.25,10.5,3.38,4.54,3.27,7.5,8.6,7.5,14.62,0,9.94-8.06,18-18,18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <path d="M500,440.16c-9.94,0-18-8.06-18-18s8.06-18,18-18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="473" y1="458.16" x2="500" y2="458.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="473" y1="386.16" x2="500" y2="386.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="500" y1="309.5" x2="500" y2="323.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="500" y1="296.16" x2="500" y2="309.5" fill="none" stroke="#fff05a" stroke-linecap="square" stroke-miterlimit="10" stroke-width="5"/>
+        <path d="M302.5,503.16h18.5c0,9.94,8.06,18,18,18,9.94,0,18-8.06,18-18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="293" y1="503.16" x2="302.5" y2="503.16" fill="none" stroke="#fff05a" stroke-linecap="square" stroke-miterlimit="10" stroke-width="5"/>
+      </g>
+    </g>
+    <g>
+      <g>
+        <path d="M283.5,30.5c0,9.94-8.06,18-18,18s-18-8.06-18-18c0-9.94,8.06-18,18-18s18,8.06,18,18Z" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <polyline points="111.5 29.5 111.5 2.5 3.5 2.5 3.5 110.5 30.5 110.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <polyline points="57.5 56.5 84.5 56.5 84.5 29.5 30.5 29.5 30.5 83.5 84.5 83.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <path d="M128.5,66.43c-9.37,0-17-7.63-17-17,0-9.37,7.63-17,17-17s17,7.63,17,17-7.63,17-17,17Z" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3.04"/>
+        <circle cx="128.5" cy="49.43" r="10.93" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3.04"/>
+        <polyline points="246.5 29.5 219.5 29.5 219.5 2.5 192.5 2.5 192.5 29.5 165.5 29.5 165.5 2.5 138.5 2.5 138.5 29.5 111.5 29.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <polyline points="263.5 47.5 254.5 47.5 146.5 47.5" fill="none" stroke="#fff05a" stroke-miterlimit="10" stroke-width="3.82"/>
+        <polyline points="111.5 56.5 111.5 65.5 111.5 110.5 30.5 110.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <circle cx="265.5" cy="30.5" r="28" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <path d="M283.5,30.5c0,9.94-8.06,18-18,18s-18-8.06-18-18c0-9.94,8.06-18,18-18s18,8.06,18,18Z" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="138.5" y1="56.5" x2="183.5" y2="56.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+        <line x1="192.5" y1="56.5" x2="210.5" y2="56.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+        <line x1="219.5" y1="56.5" x2="255.5" y2="56.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+        <line x1="228.5" y1="82.5" x2="183.5" y2="82.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="174.5" y1="82.5" x2="156.5" y2="82.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="255.5" y1="82.5" x2="237.5" y2="82.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="147.5" y1="82.5" x2="111.5" y2="82.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <path d="M147.5,82.5c0,9.94,8.06,18,18,18s18-8.06,18-18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="129.5" y1="109.5" x2="129.5" y2="82.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="201.5" y1="109.5" x2="201.5" y2="82.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <polyline points="30.5 110.5 30.5 137.5 3.5 137.5 3.5 164.5 30.5 164.5 30.5 191.5 3.5 191.5 3.5 218.5 30.5 218.5 30.5 245.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <path d="M48.5,263.5c0,9.94-8.06,18-18,18-9.94,0-18-8.06-18-18,0-9.94,8.06-18,18-18,9.94,0,18,8.06,18,18Z" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <circle cx="30.5" cy="263.5" r="28" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <path d="M48.5,263.5c0,9.94-8.06,18-18,18-9.94,0-18-8.06-18-18,0-9.94,8.06-18,18-18,9.94,0,18,8.06,18,18Z" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <path d="M49.5,146.5c-9.37,0-17-7.63-17-17,0-9.37,7.63-17,17-17,9.37,0,17,7.63,17,17,0,9.37-7.63,17-17,17Z" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3.04"/>
+        <circle cx="49.5" cy="129.5" r="10.93" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3.04"/>
+        <line x1="48.5" y1="146.5" x2="48.5" y2="241.16" fill="none" stroke="#fff05a" stroke-miterlimit="10" stroke-width="3.82"/>
+        <line x1="57.5" y1="137.5" x2="57.5" y2="182.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+        <line x1="57.5" y1="191.5" x2="57.5" y2="209.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+        <line x1="57.5" y1="218.5" x2="57.5" y2="254.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+        <line x1="84.5" y1="227.5" x2="84.5" y2="182.5" fill="none" stroke="#fff05a" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="84.5" y1="173.5" x2="84.5" y2="155.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="84.5" y1="254.5" x2="84.5" y2="236.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="84.5" y1="146.5" x2="84.5" y2="110.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <path d="M85.5,262.5c-3.92,0-7.54-1.25-10.5-3.38-4.54-3.27-7.5-8.6-7.5-14.62,0-9.94,8.06-18,18-18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <path d="M84.5,146.5c9.94,0,18,8.06,18,18,0,9.94-8.06,18-18,18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="111.5" y1="128.5" x2="84.5" y2="128.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="111.5" y1="200.5" x2="84.5" y2="200.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="84.5" y1="277.16" x2="84.5" y2="263.5" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="84.5" y1="290.5" x2="84.5" y2="277.16" fill="none" stroke="#fff05a" stroke-linecap="square" stroke-miterlimit="10" stroke-width="5"/>
+        <path d="M282,83.5h-18.5c0-9.94-8.06-18-18-18s-18,8.06-18,18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="291.5" y1="83.5" x2="282" y2="83.5" fill="none" stroke="#fff05a" stroke-linecap="square" stroke-miterlimit="10" stroke-width="5"/>
+      </g>
+      <g>
+        <circle cx="265.5" cy="556.16" r="18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <polyline points="111.5 557.16 111.5 584.16 3.5 584.16 3.5 476.16 30.5 476.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <polyline points="57.5 530.16 84.5 530.16 84.5 557.16 30.5 557.16 30.5 503.16 84.5 503.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <circle cx="128.5" cy="537.23" r="17" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3.04"/>
+        <circle cx="128.5" cy="537.23" r="10.93" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3.04"/>
+        <polyline points="246.5 557.16 219.5 557.16 219.5 584.16 192.5 584.16 192.5 557.16 165.5 557.16 165.5 584.16 138.5 584.16 138.5 557.16 111.5 557.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <polyline points="263.5 539.16 254.5 539.16 146.5 539.16" fill="none" stroke="#fff05a" stroke-miterlimit="10" stroke-width="3.82"/>
+        <polyline points="111.5 530.16 111.5 521.16 111.5 476.16 30.5 476.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <circle cx="265.5" cy="556.16" r="28" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <circle cx="265.5" cy="556.16" r="18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="138.5" y1="530.16" x2="183.5" y2="530.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+        <line x1="192.5" y1="530.16" x2="210.5" y2="530.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+        <line x1="219.5" y1="530.16" x2="255.5" y2="530.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+        <line x1="228.5" y1="504.16" x2="183.5" y2="504.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="174.5" y1="504.16" x2="156.5" y2="504.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="255.5" y1="504.16" x2="237.5" y2="504.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="147.5" y1="504.16" x2="111.5" y2="504.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <path d="M147.5,504.16c0-9.94,8.06-18,18-18s18,8.06,18,18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="129.5" y1="477.16" x2="129.5" y2="504.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="201.5" y1="477.16" x2="201.5" y2="504.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <polyline points="30.5 476.16 30.5 449.16 3.5 449.16 3.5 422.16 30.5 422.16 30.5 395.16 3.5 395.16 3.5 368.16 30.5 368.16 30.5 341.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <circle cx="30.5" cy="323.16" r="18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <circle cx="30.5" cy="323.16" r="28" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <circle cx="30.5" cy="323.16" r="18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <circle cx="49.5" cy="457.16" r="17" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3.04"/>
+        <circle cx="49.5" cy="457.16" r="10.93" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3.04"/>
+        <line x1="48.5" y1="440.16" x2="48.5" y2="345.5" fill="none" stroke="#fff05a" stroke-miterlimit="10" stroke-width="3.82"/>
+        <line x1="57.5" y1="449.16" x2="57.5" y2="404.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+        <line x1="57.5" y1="395.16" x2="57.5" y2="377.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+        <line x1="57.5" y1="368.16" x2="57.5" y2="332.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+        <line x1="84.5" y1="359.16" x2="84.5" y2="404.16" fill="none" stroke="#fff05a" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="84.5" y1="413.16" x2="84.5" y2="431.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="84.5" y1="332.16" x2="84.5" y2="350.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="84.5" y1="440.16" x2="84.5" y2="476.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <path d="M85.5,324.16c-3.92,0-7.54,1.25-10.5,3.38-4.54,3.27-7.5,8.6-7.5,14.62,0,9.94,8.06,18,18,18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <path d="M84.5,440.16c9.94,0,18-8.06,18-18,0-9.94-8.06-18-18-18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="111.5" y1="458.16" x2="84.5" y2="458.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="111.5" y1="386.16" x2="84.5" y2="386.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="84.5" y1="309.5" x2="84.5" y2="323.16" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="84.5" y1="296.16" x2="84.5" y2="309.5" fill="none" stroke="#fff05a" stroke-linecap="square" stroke-miterlimit="10" stroke-width="5"/>
+        <path d="M282,503.16h-18.5c0,9.94-8.06,18-18,18-9.94,0-18-8.06-18-18" fill="none" stroke="#fff05a" stroke-linecap="round" stroke-miterlimit="10" stroke-width="5"/>
+        <line x1="291.5" y1="503.16" x2="282" y2="503.16" fill="none" stroke="#fff05a" stroke-linecap="square" stroke-miterlimit="10" stroke-width="5"/>
+      </g>
+    </g>
+  </g>
+</svg>

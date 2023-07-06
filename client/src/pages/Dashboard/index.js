@@ -1,27 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import "../../Styles/Dashboard.css";
 import { useSelector, useDispatch } from "react-redux";
-import Figure from "react-bootstrap/Figure";
 import Spinner from "react-bootstrap/Spinner";
 import EquippedItem from "../Inventory/EquippedItem";
 import BarList from "./BarList";
-import ClassList from "./Abilities";
+import Abilities from "./Abilities";
 
 import AttributeList from "./Attributes";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLevelUp } from "@fortawesome/free-solid-svg-icons";
+
 import { updateLevel } from "../../features/player/playerSlice";
-import { motion } from "framer-motion";
+import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import { pageTransition } from "../../data/Animations";
+import Fraction from "../../components/Fraction";
+import LevelUp from "./LevelUp";
+import GeneralInfo from "./GeneralInfo";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars, faShield } from "@fortawesome/free-solid-svg-icons";
 function Dashboard() {
   const { user } = useSelector((state) => state.auth);
-  const { player, armor, bonis, setboni } = useSelector(
+  const { fractionTheme, player, armor, bonis, setboni } = useSelector(
     (state) => state.player
   );
+  const [showImage, setShowImage] = useState(true);
   const dispatch = useDispatch();
-  const origin = player?.general?.origin.split(" ");
-  const originName = origin && origin[origin.length - 1];
-  console.log(originName);
+
   const newLevel = () => {
     dispatch(updateLevel());
   };
@@ -33,71 +35,83 @@ function Dashboard() {
       animate="animate"
       exit="exit"
     >
-      <div className="dark-bg dashboard-page">
-        <div className={`bg ${originName}-bg container-fluid`}>
-          <div className="row">
+      <div className="dashboard-page">
+        <div className={`bg ${fractionTheme}-bg container-fluid`}>
+          <div className="row dark-bg">
             <div className="col-lg-3 col-md-10 col-sm-12">
               <div className="row">
-                <div className="p-2 col-lg-7 col-md-8 col-sm-6">
-                  <img
-                    className="user-img "
-                    src={`/user/${user?._id}.jpeg`}
-                  ></img>
+                <div
+                  className="p-2 col-lg-7 col-md-8 col-sm-6 border-pattern p-0"
+                  style={{ overflow: "hidden" }}
+                >
+                  <button
+                    style={{ zIndex: 2, position: "absolute" }}
+                    onClick={() => setShowImage(!showImage)}
+                  >
+                    <FontAwesomeIcon icon={faBars} />
+                  </button>
+
+                  <AnimatePresence mode="wait">
+                    {showImage ? (
+                      <motion.img
+                        key="img"
+                        initial={{
+                          opacity: 0,
+                        }}
+                        animate={{
+                          opacity: 1,
+                        }}
+                        exit={{
+                          opacity: 0,
+                          transition: {
+                            duration: 0.5,
+                          },
+                        }}
+                        className="user-img"
+                        src={`/user/${user?._id}.jpeg`}
+                      ></motion.img>
+                    ) : (
+                      <GeneralInfo key="info" player={player} armor={armor} />
+                    )}
+                  </AnimatePresence>
                 </div>
-                <div className="col-lg-5 col-md-4 mt-3 col-sm-3">
-                  <div className="col">
+                <div className="col-lg-3 col-md-4 mt-3 col-sm-3 d-flex-column">
+                  <div className="row  mb-2 justify-content-center">
+                  <LevelUp level={player?.level} newLevel={newLevel} fraction={fractionTheme}/>
+                  </div>
+                  <div className="row m-auto ">
                     <EquippedItem category="Haupthand" />
                   </div>
-                  <div className="col">
+                  <div className="row m-auto">
                     <EquippedItem category="Nebenhand" />
                   </div>
-                  <div className="col">
-                    {/* {player?.talents?.findIndex(el=>el.talent?.category==="Nahkampf")>=0?
-                          (<div className="col-lg-12 col-md-12 col-sm-auto">
-                            {player.talents.map((el)=>{
-        
-                              const category = el.talent.category
-                              if(category==="Nahkampf" || category==="Fernkampf"){
-                                return (
-                                <div key={el._id} className="col">{`${el.talent.name}: `}<strong>{el.talent.dice}</strong></div>
-                                )
-                              }
-                            })}
-                          </div>):<div>keine</div>}*/}
-                    <h5>
-                      {`Rüstung: `}
+                  <div className="row  justify-content-center">
+                    <div className="armor ">
                       <strong>{armor}</strong>
-                    </h5>
+                    </div>
                   </div>
                 </div>
               </div>
+
               <div className="row">
-                <h1>{user?.name}</h1>
-              </div>
-              <div className="row">
-                <h2>{player.userclass?.name}</h2>
-              </div>
-              <div className="row">
-                <div className="col-auto border pt-2">
-                  <h3>
+                <div className="col-12">
+                  {/** <h3>
                     Stufe: <strong>{player?.level}</strong>
                   </h3>
                 </div>
                 <div className="col-auto  border">
-                  <button className={originName} onClick={newLevel}>
+                  <button className={fractionTheme} onClick={newLevel}>
                     <FontAwesomeIcon icon={faLevelUp} />
-                  </button>
+                        </button>*/}
+
+                  <Fraction fraction={fractionTheme} />
                 </div>
               </div>
-              <div className="col-lg-7 col-md-7 col-sm-12 mt-3">
-                <Figure>
-                  <Figure.Image src={`/origin/${originName}ldpi.png`} />
-                </Figure>
-              </div>
+              <div className="col-lg-7 col-md-7 col-sm-12 mt-3"></div>
             </div>
             {/*second column */}
             <div className="col-lg-9">
-              <div className="row border-bottom border-2 m-1">
+              <div className="row m-1">
                 <div className="row">
                   <div className="col-lg-12 col-md-12">
                     {player && player.attributes ? (
@@ -110,7 +124,7 @@ function Dashboard() {
 
                 <BarList />
                 {player && player.userclass ? (
-                  <ClassList />
+                  <Abilities />
                 ) : (
                   <Spinner animation="border" />
                 )}

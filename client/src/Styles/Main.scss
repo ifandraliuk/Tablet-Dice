@@ -5,7 +5,7 @@ body {
 }
 /*BACKGROUND*/
 .dark-bg {
-    background-color: $darkBlack;
+    background-color: $transparentBlack;
     height: 100vh;
     overflow: auto;
 }
@@ -28,6 +28,46 @@ body {
     justify-content: center;
     align-items: center;
 }
+.info-div{
+    background-color: $transparentBlack;
+    padding: 0.5em;
+    margin: 0.2em 0 0 0.2em;
+}
+
+/* BORDERS */
+.border-pattern{
+    border: 15px solid $transparentBlack;
+    border-image-source: url(~/public/pattern/grey-card-border.svg);
+    border-image-slice:
+    33 33 32 33;
+    border-image-width:
+    15px 15px 15px 15px;
+    border-image-outset:
+    0px 0px 0px 0px;
+    border-image-repeat:
+    stretch stretch;
+
+}
+
+.border-pattern-top {
+    border-top: 20px solid  $transparentBlack;
+    border-image-source: url(~/public/pattern/top-pattern.svg);
+    border-image-slice: 100 0 0 0;
+    border-image-width:25px 0 0 0;
+    border-image-outset:0px 0px 0px 0px;
+    border-image-repeat:round stretch;
+}
+/* TABLE*/
+.custom-table {   
+    color: #fff;
+    text-align: center;
+    border-bottom: #fff;
+    width: 100%;
+    border-collapse:separate;
+    border-spacing: 0 15px;
+    background: rgba($color: #161614, $alpha: 0.7);
+}
+
 /*BUTTONS*/
 .button-group button:first-child{
     border: 2px solid;
@@ -44,6 +84,9 @@ body {
     border-bottom-right-radius: 6px;
 }
 
+.btn-small{
+    width: 0.2em
+}
 .btn-up {
     position: fixed;
     bottom: 0;
@@ -97,7 +140,7 @@ body {
 }
 .btn-enchantment:focus{
     background-color: $enchantment;
-    color: #fff;
+    color: rgb(255, 255, 255);
 }
 button {
     border: none;
@@ -111,8 +154,9 @@ button {
     
 }
 button:focus{
-    border: 1px solid;
-    color: $categoryGreen;
+    box-shadow: 0px 0px 15px 5px #fff;
+    color: rgb(0, 0, 0);
+    background-color: white,
     }
     
 button:disabled{
@@ -121,14 +165,12 @@ button:disabled{
     cursor: not-allowed;
 }
 .items-btn {
-    background-color: white;
-    border-radius: 15%;
+    background-color: $infoBlack;
+    border-radius: 20%;
     min-width: 70px;
 
 }
-.items-btn:hover{
-    background-color: rgb(219, 219, 219);
-}
+
 
 /*TEXTAREA; INPUT*/
 textarea{
@@ -161,16 +203,17 @@ input:focus{
     color: $categoryOrange;
 }
 
+/*TABLE*/
 table {
-    background-color: $infoBlack;
     color: #fff;
     text-align: center;
     border-bottom: #fff;
+    & .inline-td{
+        display: inline-block;
+    }
   }
-  ul{
-    color: azure;
-    background-color: $infoBlack;
-}
+  
+
 
 select{
     background-color: $infoBlack;
@@ -235,6 +278,18 @@ h5 {
         background: rgba(17, 227, 255, 0.8);
     }
 }
+.exclamation{
+    border-radius: 50%;
+    width: 1.5em;
+    height: 1.5em;
+    font-size: 1em;
+    text-align: center;
+    box-shadow:  0px 0px 15px 5px #fff;
+    color: $infoBlack;
+    background-color: #fff;
+    margin: 0;
+  
+}
 .popup{
     width: 100%;
     min-height: fit-content;
@@ -245,22 +300,50 @@ h5 {
     z-index: 2;
 }
 
-
-
-.Welles-bg {
-    background-image:url(~/public/Welles.svg)
-}
 .Algor-bg {
-    background-image:url(~/public/Algor.svg)
-}
-.Ethelion-bg {
-    background-image:url(~/public/Ethelion.svg)
+    background:url(~/public/pattern/algor.svg) rgba(0, 0, 0, 0.8);
+    background-size: 15%;
+    background-repeat: repeat;
 }
 
 .Beltamor-bg {
-    background-image:url(~/public/Beltamor.svg)
+    background:url(~/public/pattern/beltamor.svg) rgba(0, 0, 0, 0.8);
+    background-size: 15%;
+    background-repeat: repeat;
 }
+
+.Ethelion-bg {
+    background:url(~/public/pattern/ethelion.svg) rgba(0, 0, 0, 0.8);
+    background-size: 15%;
+    background-repeat: repeat;
+}
+
 .Medorien-bg {
-    background-image:url(~/public/Medorien.svg)
+    background:url(~/public/pattern/medorien.svg) rgba(0, 0, 0, 0.8);
+    background-size: 15%;
+    background-repeat: repeat;
 }
+
+.Thornheim-bg {
+    background:url(~/public/pattern/thornheim.svg) rgba(0, 0, 0, 0.8);
+    background-size: 15%;
+    background-repeat: repeat;
+}
+
+.Welles-bg {
+    background:url(~/public/pattern/welles.svg) rgba(0, 0, 0, 0.8);
+    background-size: 15%;
+    background-repeat: repeat;
+}
+
+.Welles:hover{
+    background-color: #fff05a;
+    -webkit-box-shadow: 0px 0px 15px 5px #fff05a; 
+    box-shadow: 0px 0px 15px 5px #fff05a;
+}
+
+
+
+
+
 

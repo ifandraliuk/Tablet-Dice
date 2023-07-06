@@ -22,8 +22,8 @@ import {
 } from "./features/player/playerSlice";
 import Diary from "./pages/Diary/index";
 import Dashboard from "./pages/Dashboard/index";
-import NavbarComp from "./components/Navbar";
 import { AnimatePresence } from "framer-motion";
+import Navbar from "./components/Nav";
 
 function App() {
   const dispatch = useDispatch();
@@ -79,7 +79,7 @@ function App() {
 
   useEffect(() => {
     //if player has items in inventory which are equipped && has a boni or enchantment
-    if (player) {
+    if (player ) {
       if (
         player.inventory?.findIndex(
           (el) => el.status === "Ausgerüstet" && el.item.bonuses?.length > 0
@@ -95,17 +95,18 @@ function App() {
 
   return (
     <div className="g-0">
-      <NavbarComp />
+      {localStorage.user && <Navbar />}
+
       <AnimatePresence>
         <Routes location={location} key={location.pathname}>
           <Route index element={<LoginPage />}></Route>
           <Route path="/" element={<LoginPage />}></Route>
           <Route path="/register" element={<CreateCharacter />}></Route>
-          <Route path="/diary" element={<Diary />}></Route>
-          <Route path="/player" element={<Dashboard />}></Route>
-          <Route path="/inventory" element={<InventoryPage />}></Route>
-          <Route path="/talents" element={<Talents />}></Route>
-          <Route path="/bestiaria" element={<Bestiaria />}></Route>
+          <Route exact path="/diary" element={<Diary />}></Route>
+          <Route exact path="/player" element={<Dashboard />}></Route>
+          <Route exact path="/inventory" element={<InventoryPage />}></Route>
+          <Route exact path="/talents" element={<Talents />}></Route>
+          <Route exact path="/bestiaria" element={<Bestiaria />}></Route>
           <Route path="/enemies" element={<Enemies />}></Route>
           <Route path="/error" element={<ErrorPage />}></Route>
         </Routes>

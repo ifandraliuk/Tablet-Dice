@@ -31,6 +31,7 @@ function Login() {
   useEffect(() => {
     if (isError) {
       console.log(message, isError);
+      localStorage.clear()
     }
     if (user && !registered) {
       dispatch(getPlayer());
@@ -39,6 +40,8 @@ function Login() {
       navigate("/register");
     } else {
       navigate("/");
+      localStorage.clear()
+
     }
     // Set everything to false
   }, [user, registered, isError, isSuccess, message, navigate, dispatch]);

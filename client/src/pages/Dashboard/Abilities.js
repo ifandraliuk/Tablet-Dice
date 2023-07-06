@@ -1,55 +1,92 @@
-import React from 'react'
-import  Container from 'react-bootstrap/Container'
-import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs';
-import {decreaseBar} from '../../features/player/playerSlice'
-import {useSelector, useDispatch} from 'react-redux';
-import AbilityCard from './AbilityCard';
+import React from "react";
+import { useState } from "react";
+import { decreaseBar } from "../../features/player/playerSlice";
+import { useSelector, useDispatch } from "react-redux";
+import AbilityCard from "./AbilityCard";
+import { AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 
-
-function ClassList() {
-  const {player} = useSelector((state)=>state.player)
-  const abilities = player?.userclass.abilities
-  const spec=[]
+function Abilities() {
+  const { fractionTheme, player } = useSelector((state) => state.player);
+  const abilities = player?.userclass.abilities;
+  const spec = [];
   const counts = {};
-    // count the amount of cards for each specialization
-    Object.keys(abilities).map((ind) => {
-      return spec.push(abilities[ind].specialization)})
-    spec.forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });  
+  // count the amount of cards for each specialization
+  Object.keys(abilities).map((ind) => {
+    return spec.push(abilities[ind].specialization);
+  });
+  spec.forEach(function (x) {
+    counts[x] = (counts[x] || 0) + 1;
+  });
+  const [filterCategory, setCategory] = useState(spec ? spec[0] : "");
+  const dispatch = useDispatch();
 
-  const dispatch = useDispatch()
-
-  const useAbility = e => {
-    console.log("I was called")
-    console.log(e.target.name)
-    const ability = abilities?.find(el=>el._id===e.target.name)
-    console.log(ability)
+  const useAbility = (e) => {
+    console.log(e.target.name);
+    const ability = abilities?.find((el) => el._id === e.target.name);
+    console.log(ability);
     //const abilityIndex = e.target.name
-    const category =ability.type
-    const value = ability.price
-    dispatch(decreaseBar({category,value}))
-  }
+    const category = ability.type;
+    const value = ability.price;
+    dispatch(decreaseBar({ category, value }));
+  };
+
+  const onCategory = (e) => {
+    setCategory(e.currentTarget.id);
+  };
   return (
-    <Container style={{color:"black"}}>
-        <Tabs justify>
-          {Object.keys(counts).map((el)=>(
-            <Tab eventKey={el} title={el} key={el}>
-              <div  className=" mt-3 mb-2 ">
-                <div className="row">
-                {Object.keys(abilities).map((ind)=>{                
-                  return abilities[ind].specialization === el && (            
-                <div className={counts[el] > 3 ? 'col col-md-3 col-12': 'col-md-4 col-12'} key={abilities[ind].name}>
-                  <AbilityCard key={abilities[ind]._id} ability={abilities[ind]} userclass={player?.userclass?._id} useAbility={useAbility}/>
-                </div>
-                )})}
-            </div>
-            </div>
-            </Tab>
-          ))}        
-        </Tabs>
-    </Container>
-  )
+    <div className="container">
+      <div className="row ">
+        {Object.keys(counts).map((el) => (
+          <div className="col-auto m-0" key={el._id}>
+            <button
+            id={el}
+            key={el._id}
+            className={fractionTheme}
+            onClick={onCategory}
+          >
+            {el}
+          </button>
+          </div>
+        ))}     
+        <div className="col-auto m-0">
+
+          </div> 
+      </div>
+      <div className="row justify-content-center">
+        <AnimatePresence>
+          {Object.keys(abilities).map((ind) => {
+            return (
+              abilities[ind].specialization === filterCategory && (
+                <motion.div className="col-auto col-3"
+                key={ind}
+                layout
+                initial={{ translateY: -30, opacity: 0 }}
+                animate={{
+                  translateY: 0,
+                  opacity: 1,
+                  transition: { duration: 0.5, delay: ind * 0.2 },
+                }}
+                exit={{
+                  scale: 0,
+                }}
+                >
+                 
+                  <AbilityCard
+                    ability={abilities[ind]}
+                    userclass={player?.userclass?._id}
+                    useAbility={useAbility}
+                    theme={fractionTheme}
+                  />
+                </motion.div>
+              )
+            );
+          })}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
 }
 
-export default ClassList
+export default Abilities;

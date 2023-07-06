@@ -1,9 +1,41 @@
+@import './Variables.scss';
 
 .dashboard-page{
     .user-img{
         max-width: 100%;
-        border: solid 6px white;
+        background-color: $transparentBlack;
+        margin-right: 5px;
+        position: relative;
     }
-
-
+    .ability-card{
+        background-color: $transparentBlack;
+        border: 15px solid $transparentBlack;
+        border-image-source: url(~/public/pattern/grey-card-border.svg);
+        border-image-slice:
+        33 33 32 33;
+        border-image-width:
+        15px 15px 15px 15px;
+        border-image-outset:
+        0px 0px 0px 0px;
+        border-image-repeat:
+        stretch stretch;
+        margin-right: 5px;
+    }
+    .round-btn{
+        border: 2px solid;
+        height: 3em;
+        width: auto;
+        border-radius: 50%;
+    }
+    .armor{
+        background: url(~/public/pattern/shield-bg.svg);
+        width: 3.2em;
+        height: 3.2em;
+        text-align: center;
+        
+    }
+    .general-container{
+        background-color: $transparentBlack;
+        margin-top: 3.5em;
+    }
 }

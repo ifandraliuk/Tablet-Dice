@@ -12,6 +12,7 @@ const Bestiaria = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
+  const { fractionTheme } = useSelector((state) => state.player);
   const { bestiaria } = useSelector((state) => state.bestiaria);
   const { habitat } = useSelector((state) => state.habitat);
   const [habitatId, setHabitatFilter] = useState("");
@@ -34,6 +35,7 @@ const Bestiaria = () => {
           initial="init"
           animate="animate"
           exit="exit">
+    <div className={`${fractionTheme}-bg`}>
     <div className="dark-bg container-fluid g-5">
 
         <div className="row">
@@ -44,7 +46,7 @@ const Bestiaria = () => {
             <BestienList creatures={bestiaria} habitatFilter={habitatId} />
           </div>
         </div>
-      
+      </div>
     </div></motion.div>
   );
 };

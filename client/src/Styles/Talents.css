@@ -1,51 +1,35 @@
-.Talents .table {
-  background-color: #212529;
-  color: #fff;
-  text-align: center;
-  border-bottom: #fff;
-}
-.Talents .sort-btn {
+.talents-page .sort-btn {
   margin-left: 2px;
   padding: 0;
 }
-.Talents .sort-btn:focus {
+.talents-page .sort-btn:focus {
   color: #90be6d;
   border: none;
 }
-.Talents .Nahkampf {
+.talents-page .Nahkampf {
   background-color: #f94144;
 }
-.Talents .Fernkampf {
-  background-color: #f3722c;
+.talents-page .Fernkampf {
+  background-color: rgb(243, 114, 44);
 }
-.Talents .Natur {
+.talents-page .Natur {
   background-color: #90be6d;
 }
-.Talents .Wissen {
+.talents-page .Wissen {
   background-color: #43aa8b;
 }
-.Talents .Handwerk {
-  background-color: #f8961e;
+.talents-page .Handwerk {
+  background: #f8961e;
 }
-.Talents .Heimlichkeit {
+.talents-page .Heimlichkeit {
   background-color: #577590;
 }
-.Talents .Gesellschaft {
+.talents-page .Gesellschaft {
   background-color: #f9c74f;
 }
-.Talents .category {
+.talents-page .category {
   text-transform: uppercase;
 }
-.Talents .talent {
+.talents-page .talent {
   background-color: black;
-  animation-duration: 3s;
-  animation-name: addTalent;
-}
-@keyframes addTalent {
-  from {
-    background-color: green;
-  }
-  to {
-    background-color: red;
-  }
 }/*# sourceMappingURL=Talents.css.map */

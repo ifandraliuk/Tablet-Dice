@@ -17,7 +17,7 @@ function Note(props) {
                     <div  key={player._id}><picture><img className={`profile-img ${origin}-border`} src={`/user/${player._id}.jpeg` } alt={`${player.name}`}/></picture></div>
                 )})}
             </div></div>
-            <div className="col-lg-8 col-xl-8 col-md-11 note-body">
+            <div className="col-lg-8 col-xl-8 col-md-11 note-body diary-border">
                 
                 <div className='row'>
                     <div className='col-auto'>

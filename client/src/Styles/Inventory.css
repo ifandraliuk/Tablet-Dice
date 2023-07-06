@@ -1,6 +1,6 @@
 .inventory-page #weight-progressbar {
   width: 50px;
-  background-color: #212529;
+  background-color: rgb(24, 24, 24);
   height: 300px;
   position: relative;
   overflow: hidden;
