@@ -8,6 +8,8 @@ function DiceInfo(props) {
     const {talent, attr, bonus} = props
     const talentAttributes = talent?.talent.dice.split("/")
     const [dicePoints, setDicePoints] = useState("")
+
+
     useEffect(()=>{ 
       let dPoints = []
       talentAttributes?.forEach(talent => {
@@ -17,7 +19,9 @@ function DiceInfo(props) {
       })
       setDicePoints(dPoints.join("/"))
 
-    }, [talentAttributes])
+    }, [talentAttributes, attr])
+
+
   return (
     <div className="row">
         <div className='col-auto border-top border-end'>

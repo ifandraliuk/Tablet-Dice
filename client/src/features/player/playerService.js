@@ -18,20 +18,27 @@ const getPlayer = async (token) => {
     const localM = JSON.parse(localStorage.getItem('mana'))
     const localS = JSON.parse(localStorage.getItem('spirit'))
     const loadCapacity = JSON.parse(localStorage.getItem('loadCapacity'))
-    
+    const fraction = localStorage.getItem('fraction')
     const response = await axios.get(API_URL, config)
     if(!localVit){
-        localStorage.setItem("vitality", parseInt(response.data.attributes?.vitality*10))
+        const value = response.data.attributes?.vitality ? response.data.attributes?.vitality : 0
+        console.log("adding vitality")
+        localStorage.setItem("vitality", parseInt(value*10))
     }
     if(!localSt){
-        localStorage.setItem("stamina", parseInt(response.data.attributes?.stamina*10))
+        const value = response.data.attributes?.stamina ? response.data.attributes?.stamina : 0
+        console.log("adding stamina")
+        localStorage.setItem("stamina", parseInt(value*10))
     }
     if(!localM && response.data.attributes?.mana>0){
-        localStorage.setItem("mana", parseInt(response.data.attributes?.mana*10))
+        const value = response.data.attributes?.mana ? response.data.attributes?.mana : 0
+        console.log("adding mana")
+        localStorage.setItem("mana", parseInt(value*10))
     }
     if(!localS && response.data.attributes?.spirit>0){
+        const value = response.data.attributes?.spirit ? response.data.attributes?.spirit : 0
         console.log("adding spirit")
-        localStorage.setItem("spirit", parseInt(response.data.attributes?.spirit*10))
+        localStorage.setItem("spirit", parseInt(value*10))
     }
     if(!loadCapacity){
         const strength = parseInt(response.data.attributes?.strength)
@@ -39,6 +46,15 @@ const getPlayer = async (token) => {
         const multiplier = strength>=1 && strength <=5 ? 1 : strength>=6 && strength <=10 ? 2 : strength>=11 && strength <=15 ? 3 : strength>=16 && strength <=20 ? 4 : 0
         console.log(multiplier)
         localStorage.setItem("loadCapacity", parseInt(strength*multiplier))
+    }
+    if(!fraction){
+        const origin =  response.data.general?.origin.split(" ");
+        console.log(origin)
+        console.log(response.data.general)
+        const originName = origin ? origin[origin.length - 1] : "";
+        console.log(originName)
+        localStorage.setItem("fraction", originName)
+        console.log("local fraction: ", originName)
     }
     return response.data
 }

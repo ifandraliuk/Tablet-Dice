@@ -10,7 +10,8 @@ const initialState = {
     weaponGenuses: [],
     armorGenuses: [],
     ressourceGenuses: [],
-    categories:[],
+    activeGenus: [],
+    activeCategory: "", 
     loaded:false,
     isError: false, 
     isSuccess: false,
@@ -47,23 +48,16 @@ export const itemSlice = createSlice({
                 state.items = state.items.filter(el=>el.name.includes(payload.name))
             }
         },
-        getGenuses: (state)=>{
-            let weapons = []
-            let armors = []
-            let ressources = []
+        getGenus: (state, {payload})=>{
+            let genus =  []
+            state.activeCategory = payload.category
             state.items.map((item) => {
                 const category = item.category
-                if(category === "Waffe"){  
-                    return !weapons.includes(item.genus) && weapons.push(item.genus)
-                } else if (category==="Rüstung"){
-                    return !armors.includes(item.genus) && armors.push(item.genus)
-                } else {
-                    return !ressources.includes(item.genus) && ressources.push(item.genus)
-                }
+                if(category === payload.category){  
+                    return !genus.includes(item.genus) && genus.push(item.genus)
+                } else return null
             })
-            state.armorGenuses = armors
-            state.weaponGenuses = weapons
-            state.ressourceGenuses = ressources
+            state.activeGenus = genus
         }
     },
     extraReducers: (builder) => {
@@ -87,5 +81,5 @@ export const itemSlice = createSlice({
     }
 })
 
-export const {reset, search, getGenuses} = itemSlice.actions
+export const {reset, search, getGenus} = itemSlice.actions
 export default itemSlice.reducer

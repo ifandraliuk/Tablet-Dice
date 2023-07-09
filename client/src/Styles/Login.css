@@ -1,0 +1,54 @@
+.login-page {
+  position: relative;
+}
+.login-page .background {
+  background-image: url(~/public/dragonlangs-landscape.svg);
+  background-size: cover;
+  height: 100vh;
+}
+.login-page .vignette {
+  background-color: rgba(0, 0, 0, 0.6);
+  height: 100vh;
+}
+.login-page .loading-text {
+  position: absolute;
+  left: 25%;
+  top: 25%;
+}
+.login-page .header {
+  margin-bottom: 0;
+  border-bottom: solid 3px;
+  text-shadow: 0px 0px 8px rgb(255, 255, 255);
+}
+.login-page .content {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  padding: 1.1em;
+}
+.login-page .login-form {
+  border-right-style: solid;
+  border-bottom-style: solid;
+  border-left-style: solid;
+  margin-top: 0;
+}
+.login-page .login-btn {
+  width: 80%;
+  border-radius: 5px;
+  margin-top: 5px;
+  background-color: rgba(250, 250, 250, 0.6);
+}
+.login-page .register-btn {
+  width: 80%;
+  background-color: transparent;
+  border: 2px solid;
+  border-radius: 5px;
+}
+.login-page .register-btn:hover {
+  background-color: rgb(87, 117, 144);
+}
+.login-page .login-btn:hover {
+  background-color: rgb(67, 170, 139);
+}/*# sourceMappingURL=Login.css.map */

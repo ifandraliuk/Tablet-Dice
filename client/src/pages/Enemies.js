@@ -2,7 +2,6 @@ import React, {useState} from 'react'
 import { Button, Container, Form } from 'react-bootstrap'
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import { ListGroup } from 'react-bootstrap';
-import NavbarComp from '../components/Navbar';
 import CloseButton from 'react-bootstrap/CloseButton';
 function Gegner() {
   const [count, setCount] = useState(0)
@@ -11,12 +10,10 @@ function Gegner() {
     setCount(prev=>prev+1)
     console.log(count)
   }
-  const onDelete = e => {
-    
-  }
+
   return (
     <Container fluid>
-      <NavbarComp></NavbarComp>
+
       <Button type="submit" onClick={onClick}>Hinzufügen</Button>
       <ListGroup>
       {arr.map((el, i)=>(

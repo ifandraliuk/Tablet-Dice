@@ -177,9 +177,13 @@ const racesList = ["Elb","Draconid", "Zwerg", "Gnom", "Ork", "Kobold", "Mensch",
             Sonstige: "other",
         },
         rarity: {
+            primitiv: "primitive",
             gewöhnlich: "common",
+            hochwertig:"highgrade",
             magisch: "magical",
+            außergewöhnlich: "extraordinary",
             selten: "rare",
+            sagenhaft:"amazing",
             episch: "epic",
             legendär: "legendary",
             einzigartig: "unique"
@@ -238,6 +242,8 @@ const racesList = ["Elb","Draconid", "Zwerg", "Gnom", "Ork", "Kobold", "Mensch",
         "Wache von Algor":"Standhaft: Bei Umwerfen kann eine STR Probe gewürfelt werden um den Effekt zu verhindern",
         "Gardist von Algor": "Standhaft: Bei Umwerfen oder Betäubung kann eine STR Probe gewürfelt werden um den Effekt zu verhindern",
         "Wächter von Algor":"Standhaft: Immunität gegen Umwerfen oder Betäubung, es kann eine STR Probe gewürfelt werden um den Effekt zu reflektieren",
+        "Wüstenfuchs Banditenrüstung": "Wüstencamouflage: Schleichen in wüstenähnlicher Umgebung ist erleichtert um 3",
+        "Gladiatorenrüstung":"Todgeweiht: Jedes Mal wenn tödlicher Schaden erlitten wird, darf ein Rettungswurf gewürfelt werden. Bei gerader Zahl kann mit halbem Leben weitergekämpft werden."
     }
 
     /// DIARY 

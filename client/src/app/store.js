@@ -6,7 +6,7 @@ import itemReducer from '../features/item/itemSlice'
 import creationReducer from '../features/creation/creationSlice';
 import diaryReducer from '../features/diary/diarySlice';
 import bestiariaReducer from '../features/bestiaria/bestiariaSlice';
-
+import habitatReducer from '../features/habitats/habitatSlice';
 
 
 export const store = configureStore({
@@ -18,5 +18,6 @@ export const store = configureStore({
         items: itemReducer,
         diaries: diaryReducer,
         bestiaria: bestiariaReducer,
+        habitat: habitatReducer,
     },
 })

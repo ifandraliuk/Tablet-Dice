@@ -1,0 +1,49 @@
+@import './Variables.scss';
+
+.navbar-page{
+    .navbar{
+        background-color: $infoBlack;
+        display: flex;
+        width:100%;
+        font-size: 1em;
+    }
+
+    ul {
+        background-color: $infoBlack;
+        list-style-type: none;
+    }
+    li {
+        float:left;
+        margin-left: 10px;
+    }
+    .link{
+        text-decoration: none;
+        color: $mainGrey;
+    }
+    .link:hover{
+        color: white;
+    }
+
+    .logout-btn{
+        justify-self: end;
+        border-color: 2px black;
+        color:$mainGrey;
+        &:hover{
+           color: white;
+           border-color: 2px white;
+        }
+    }
+    @media screen and (max-width: 850px) {
+        .navbar{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        ul{
+            display: flex;
+            flex-direction: column;
+            width: auto;
+
+        }    
+       }
+}

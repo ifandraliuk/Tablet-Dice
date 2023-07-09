@@ -2,36 +2,46 @@
 
 body {
     font-family: 'MedievalSharp';
-    font-size: 20px;
+    font-size: 18px;
  
 }
 
 .Algor:hover{
-    background-color: #cc4749;
+    background-color: #962424;
+    -webkit-box-shadow: 0px 0px 15px 5px #962424; 
+    box-shadow: 0px 0px 15px 5px #962424;
 }
 .Beltamor:hover{
-    background-color: #308fe8;
+    background-color: #00509d;
+    -webkit-box-shadow: 0px 0px 15px 5px #00509d; 
+    box-shadow: 0px 0px 15px 5px #00509d;
 }
 .Ethelion:hover{
-    background-color: #2B9348;
+    background-color: #229680;
+    -webkit-box-shadow: 0px 0px 15px 5px #229680; 
+    box-shadow: 0px 0px 15px 5px #229680;
 }
 
 .Medorien:hover{
-    background-color: #cb6327;
+    background-color: #aa7122;
+    -webkit-box-shadow: 0px 0px 15px 5px #aa7122; 
+    box-shadow: 0px 0px 15px 5px #aa7122;
     
 }
 .Thamor:hover{
-    background-color: #54318C;
+    background-color: #663e91;
     
 }
+.flag {
+    width: 80%;
+}
 
-.Welles:hover{
-    background-color: #ead21c;
-    
+.Welles-border:hover{
+    border-bottom: #fff05a 5px;
 }
 
 
 .Thornheim:hover{
-    background-color: #95ecff;
+    background-color: #99ccff;
     color: black;
 }

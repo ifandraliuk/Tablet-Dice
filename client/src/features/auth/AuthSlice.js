@@ -96,6 +96,10 @@ export const authSlice = createSlice({
             state.user = null
             state.loggedIn = false
         })
+        .addCase(logout.pending, (state)=>{
+            state.user = null
+            state.loggedIn = false
+        })
         .addCase(logout.fulfilled, (state)=>{
             state.user = null
             state.loggedIn = false

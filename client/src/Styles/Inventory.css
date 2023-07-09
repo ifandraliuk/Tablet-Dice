@@ -1,6 +1,6 @@
 .inventory-page #weight-progressbar {
   width: 50px;
-  background-color: #212529;
+  background-color: rgb(24, 24, 24);
   height: 300px;
   position: relative;
   overflow: hidden;
@@ -8,7 +8,7 @@
 .inventory-page #curr-weight {
   width: 50px;
   height: 0px;
-  background-color: #90be6d;
+  background-color: rgb(144, 190, 109);
   text-align: center;
   color: white;
   position: absolute;
@@ -31,19 +31,19 @@
   color: grey;
 }
 .inventory-page .rare {
-  color: #90be6d;
+  color: rgb(144, 190, 109);
 }
 .inventory-page .magical {
-  color: #f9c74f;
+  color: rgb(249, 199, 79);
 }
 .inventory-page .epic {
-  color: #577590;
+  color: rgb(87, 117, 144);
 }
 .inventory-page .unique {
   color: #9d4edd;
 }
 .inventory-page .legendary {
-  color: #f94144;
+  color: rgb(249, 65, 68);
 }
 .inventory-page .enchantment-text {
   color: #9d4edd;

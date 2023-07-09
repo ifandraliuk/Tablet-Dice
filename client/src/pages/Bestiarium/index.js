@@ -1,68 +1,55 @@
-import React,{useEffect} from 'react'
-import "../../Styles/Bestiaria.css"
-import {useSelector, useDispatch} from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import {reset, getBestiaria} from '../../features/bestiaria/bestiariaSlice'
-import NavbarComp from '../../components/Navbar'
+import React, { useEffect, useState } from "react";
+import "../../Styles/Bestiaria.css";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { reset, getBestiaria } from "../../features/bestiaria/bestiariaSlice";
+import BestienList from "./BestienList";
+import HabitatList from "./HabitatList";
+import { getHabitat } from "../../features/habitats/habitatSlice";
+import { pageTransition } from "../../data/Animations";
+import { motion } from "framer-motion";
+const Bestiaria = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
+  const { fractionTheme } = useSelector((state) => state.player);
+  const { bestiaria } = useSelector((state) => state.bestiaria);
+  const { habitat } = useSelector((state) => state.habitat);
+  const [habitatId, setHabitatFilter] = useState("");
 
-
-function Bestiaria() {
-  const dispatch = useDispatch()  
-  const navigate = useNavigate()
-  const {user} = useSelector((state)=>state.auth)
-  const {bestiaria} = useSelector((state)=>state.bestiaria)
-  useEffect(()=>{
-    console.log("getting creatures...")
-    dispatch(getBestiaria())
-    if(!user){
-      navigate("/")
+  useEffect(() => {
+    console.log("getting creatures...");
+    dispatch(getBestiaria());
+    dispatch(getHabitat());
+    if (!user) {
+      navigate("/");
     }
     return () => {
-      console.log("reset")
-      dispatch(reset())
-    } 
-  }, [])
+      console.log("reset");
+      dispatch(reset());
+    };
+  }, [user, dispatch, navigate]);
 
-  return (
-    <div className="dark-bg">
-      <NavbarComp/>
-      <div className="container bestiaria">
-        {bestiaria?.map((creature)=>{
-          const habitat = creature?.habitat
-          return (
-          <div className="row m-3" key={creature._id}>
-            <div className="col-12 border"><h3>{creature.name}</h3>{` (Gattung: ${creature.art})`}</div>
-            <div className="col-3 mt-3">
-              <img className="img-creature" src={`creature/${creature._id}.png`}/>
-              <h5 className={creature.picture}>{`Status: ${creature.picture}`}</h5>
-              </div>
-            
-            <div className="col-9 border p-2">
-              <h5>Beschreibung:</h5>
-              <p>{creature.description}</p>
-              <h5>Fertigkeiten:</h5>
-              <p>{creature.ability}</p>
-              <ul>
-                <li>Trefferpunkte: <strong>{creature.hitpoints}</strong></li>
-                <li>Rüstung: <strong>{creature.armor}</strong></li>
-                <li>Schaden: <strong>{creature.damage}</strong></li>
-                <li>Trefferchance: <strong>{creature.hitchance}</strong></li>
-              </ul>
-              <h5>Habitate:</h5>
-              <ul>
-              {habitat?.map((h)=>(
-                <li className="row" key={h._id}>{h.name}</li>
-              ))}
-              </ul>
+  return (     
+     <motion.div
+          variants={pageTransition}
+          initial="init"
+          animate="animate"
+          exit="exit">
+    <div className={`${fractionTheme}-bg`}>
+    <div className="dark-bg container-fluid g-5">
 
-              </div>
-
-          </div>  
-          
-        )})}
+        <div className="row">
+          <div className="col-2">
+            <HabitatList habitats={habitat} filter={setHabitatFilter} />
+          </div>
+          <div className="col-9">
+            <BestienList creatures={bestiaria} habitatFilter={habitatId} />
+          </div>
+        </div>
       </div>
-      </div>
-  )
-}
+    </div></motion.div>
+  );
+};
 
-export default Bestiaria
+export default Bestiaria;

@@ -1,0 +1,24 @@
+.ql-toolbar.ql-snow {
+  background-color: rgba(24, 24, 24, 0.8);
+  border: none;
+}
+.ql-toolbar.ql-snow.button {
+  color: #fff;
+  background-color: red;
+}
+
+.ql-container.ql-snow {
+  background-color: rgba(24, 24, 24, 0.8);
+  min-height: 10em;
+  max-height: -moz-fit-content;
+  max-height: fit-content;
+  border: none;
+}
+
+.ql-toolbar.ql-snow .ql-picker.ql-expanded .ql-picker-options {
+  background-color: #7c7c7c;
+}
+
+.ql-snow .ql-picker {
+  color: #fff;
+}/*# sourceMappingURL=Editor.css.map */

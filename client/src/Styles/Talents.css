@@ -1,38 +1,35 @@
-.Talents .table {
-  background-color: #212529;
-  color: #fff;
-  text-align: center;
-  border-bottom: #fff;
-}
-.Talents .sort-btn {
+.talents-page .sort-btn {
   margin-left: 2px;
   padding: 0;
 }
-.Talents .sort-btn:focus {
-  color: #90be6d;
+.talents-page .sort-btn:focus {
+  color: rgb(144, 190, 109);
   border: none;
 }
-.Talents .Nahkampf {
-  background-color: #f94144;
+.talents-page .Nahkampf {
+  background-color: rgb(249, 65, 68);
 }
-.Talents .Fernkampf {
-  background-color: #f3722c;
+.talents-page .Fernkampf {
+  background-color: rgb(243, 114, 44);
 }
-.Talents .Natur {
-  background-color: #90be6d;
+.talents-page .Natur {
+  background-color: rgb(144, 190, 109);
 }
-.Talents .Wissen {
-  background-color: #43aa8b;
+.talents-page .Wissen {
+  background-color: rgb(67, 170, 139);
 }
-.Talents .Handwerk {
-  background-color: #f8961e;
+.talents-page .Handwerk {
+  background: rgb(248, 150, 30);
 }
-.Talents .Heimlichkeit {
-  background-color: #577590;
+.talents-page .Heimlichkeit {
+  background-color: rgb(87, 117, 144);
 }
-.Talents .Gesellschaft {
-  background-color: #f9c74f;
+.talents-page .Gesellschaft {
+  background-color: rgb(249, 199, 79);
 }
-.Talents .category {
+.talents-page .category {
   text-transform: uppercase;
+}
+.talents-page .talent {
+  background-color: black;
 }/*# sourceMappingURL=Talents.css.map */

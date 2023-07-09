@@ -21,7 +21,11 @@ const setHabitat = asyncHandler( async (req, res) => {
 })
 
 const getHabitat = asyncHandler( async (req, res) => {
-    const habitats = await Habitat.find()
+   const habitats = await Habitat.find({ressource: {$type: "array", $ne: []}}).populate({
+    path:"ressource.id",
+    model:"Item"
+   })
+    console.log("Habitats", habitats)
     res.status(200).json(habitats)
 })
 

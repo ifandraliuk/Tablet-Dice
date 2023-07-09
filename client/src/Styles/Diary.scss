@@ -58,7 +58,7 @@
                 line-height: 1.8; 
                 margin: 0.8em 1em;  
                 font-size: 2.5w;
-            // background-color: rgb(30, 159, 202);
+             background-color: rgb(30, 159, 202);
             }
             h5{
                 font-size: 3vw;
@@ -98,9 +98,7 @@
     }
 
     .note-body{
-        border:azure 0.3em double;
-        border-top:none;
-        border-right: none;
+
         padding: 0em 0em 1.5em;
         margin-left:0;
         margin-right:0;
@@ -164,9 +162,7 @@
             overflow-x: auto;
         }
         .note-body{
-            border:azure 0.3em double;
-            border-top:none;
-            border-right: none;
+            background-color: $transparentBlack;
             padding: 0em 0em 1.5em;
             margin-left:0;
             margin-right:0;
@@ -228,9 +224,7 @@
             border-radius: 10px;
         }
         .note-body{
-            border:azure 0.3em double;
-            border-top:none;
-            border-right: none;
+
             padding: 0em 0em 1.5em;
             margin-left:0;
             margin-right:0;
@@ -286,7 +280,18 @@
         border-color: rgb(162, 54, 54);
     }
 
-
+    .diary-border{
+        border: 0.8em solid $transparentBlack;
+        border-image-source: url(~/public/pattern/grey-card-border.svg);
+        border-image-slice:
+        33 33 32 33;
+        border-image-width:
+        0.8em 0.8em 0.8em 0.8em;
+        border-image-outset:
+        0px 0px 0px 0px;
+        border-image-repeat:
+        repeat repeat;
+    }
     .Personen {
         background-color: $categoryRed;
     }
