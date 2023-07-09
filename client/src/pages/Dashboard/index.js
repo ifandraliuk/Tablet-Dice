@@ -9,13 +9,13 @@ import Abilities from "./Abilities";
 import AttributeList from "./Attributes";
 
 import { updateLevel } from "../../features/player/playerSlice";
-import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { pageTransition } from "../../data/Animations";
 import Fraction from "../../components/Fraction";
 import LevelUp from "./LevelUp";
 import GeneralInfo from "./GeneralInfo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faShield } from "@fortawesome/free-solid-svg-icons";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
 function Dashboard() {
   const { user } = useSelector((state) => state.auth);
   const { fractionTheme, player, armor, bonis, setboni } = useSelector(

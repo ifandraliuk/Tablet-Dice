@@ -10,9 +10,7 @@ function Gegner() {
     setCount(prev=>prev+1)
     console.log(count)
   }
-  const onDelete = e => {
-    
-  }
+
   return (
     <Container fluid>
 

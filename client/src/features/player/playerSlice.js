@@ -336,17 +336,17 @@ export const playerSlice = createSlice({
                 if(weapons?.length===1){
                     if(weapons[0].item.type === "einhändig"){
                         if(shield.length===1){
-                            //console.log("Einhandwaffe und Schild")
+                            console.log("Einhandwaffe und Schild")
                             state.equipped.push({category:"Nebenhand", equipment:shield[0]._id })
                             state.equipped.push({category:"Haupthand", equipment: weapons[0]._id})
                         } else{
-                            //console.log("1 Einhandwaffe",  weapons[0]._id)
+                            console.log("1 Einhandwaffe",  weapons[0]._id)
                             state.equipped.push({category:"Haupthand", equipment: weapons[0]._id})
                         }
                     } else {
                         //console.log("Zweihandwaffe")
                         if(shield){
-                            //console.log("Zweihandwaffe und Schield gefunden")
+                            console.log("Zweihandwaffe und Schield gefunden")
                             if(state.player?.userclass?.name === "Schildwache"){
                                 state.equipped.push({category:"Nebenhand", equipment:shield[0]._id })
                             } else {
@@ -356,9 +356,9 @@ export const playerSlice = createSlice({
                         state.equipped.push({category:"Haupthand", equipment: weapons[0]._id })
                     }
                 } else if(weapons?.length === 2){
-                    //console.log("Found 2 weapons", weapons[0].item.type)
+                    console.log("Found 2 weapons", weapons[0].item.type)
                     if(weapons[0].item.type === "einhändig" && weapons[0].item.type==="einhändig"){
-                        //console.log("Zwei Einhandwaffen")
+                        console.log("Zwei Einhandwaffen")
                         if(state.player?.userclass?.name === "Assassine" || state.player?.userclass?.name === "Waffenmeister"){
                             state.equipped.push({
                                 category:"Haupthand", equipment:weapons[0]._id

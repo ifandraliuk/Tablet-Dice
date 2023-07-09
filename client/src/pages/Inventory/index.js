@@ -52,7 +52,6 @@ function InventoryPage() {
   // multi selector state
   const [multi, setMulti] = useState([]);
 
-  const [modify, setModify] = useState(false); // activate enchantment
   const [showInfo, showInfoActive] = useState({ state: false, item: "" }); // show additional info in the inventory
   // selling states
   const [trigger, setTrigger] = useState(false); //popup trigger
@@ -69,25 +68,39 @@ function InventoryPage() {
   const [isLoad, setLoad] = useState(false);
   const [searchName, setSearch] = useState("");
   const [filter, setFilter] = useState("");
-  const [genusActive, setGenus] = useState([]);
   const [edit, activeEdit] = useState(false);
   const [detailsId, setId] = useState(-1);
   const [iFilter, setInventoryFilter] = useState("");
 
-  const weightBarCallback = useCallback(() => {
-    console.log("callback - weight changed: ", weight);
-    move(weight);
-  }, [weight]);
 
-  const filteredCallback = useCallback(() => {
-    dispatch(filterEquipment());
-  }, [dispatch]);
-
-  const weightCallback = useCallback(() => {
-    console.log("weightCallback");
-    dispatch(getWeight());
-    move(weight);
-  }, [dispatch]);
+  // animate weight bar
+  const move = useCallback((weight) => {
+    let elem = document.getElementById("curr-weight");
+    let height = 0;
+    const currPercentage = weight / (loadCapacity / 100);
+    console.log(currPercentage);
+    let id = setInterval(frame, 15);
+    function frame() {
+      if (height >= currPercentage) {
+        clearInterval(id);
+      } else {
+        height++;
+        elem.style.height = height + "%";
+        //elem.innerHTML = height * 1  + '%';
+        elem.innerHTML = `${weight} <br>/<br>${loadCapacity}`;
+        if (height >= 75 && height < 90) {
+          elem.style.backgroundColor = "#f3722c";
+        } else if (height >= 90 && height < 100) {
+          elem.style.backgroundColor = "#f3722c";
+        } else if (height === 100) {
+          elem.style.backgroundColor = "#f94144";
+        } else {
+          elem.style.backgroundColor = "#90be6d";
+        }
+      }
+    }
+  },[loadCapacity]);
+  
 
   const onClickFilter = (e) => {
     e.preventDefault();
@@ -99,22 +112,8 @@ function InventoryPage() {
       setInventoryFilter(filterName);
     }
   };
-  useEffect(() => {
-    if (inventory) {
-      console.log("filter useeffect");
-      filteredCallback();
-      weightCallback();
-    }
-  }, [filteredCallback, inventory]);
 
-  useEffect(() => {
-    weightBarCallback();
-  }, [weight]);
 
-  useEffect(() => {
-    console.log("useffect");
-    dispatch(getWeight());
-  }, [dispatch, weight, modify]);
   useEffect(() => {
     if (!user) {
       navigate("/");
@@ -135,7 +134,11 @@ function InventoryPage() {
   const addItem = (e) => {
     let id = e.currentTarget.name;
     dispatch(
-      toInventory({ item: filteredItems()[id].name, amount: 1, status: user.name })
+      toInventory({
+        item: filteredItems()[id].name,
+        amount: 1,
+        status: user.name,
+      })
     );
   };
   const toDelete = (e) => {
@@ -301,33 +304,6 @@ function InventoryPage() {
 
   /// Animations
 
-  // animate weight bar
-  const move = (weight) => {
-    let elem = document.getElementById("curr-weight");
-    let height = 0;
-    const currPercentage = weight / (loadCapacity / 100);
-    console.log(currPercentage);
-    let id = setInterval(frame, 15);
-    function frame() {
-      if (height >= currPercentage) {
-        clearInterval(id);
-      } else {
-        height++;
-        elem.style.height = height + "%";
-        //elem.innerHTML = height * 1  + '%';
-        elem.innerHTML = `${weight} <br>/<br>${loadCapacity}`;
-        if (height >= 75 && height < 90) {
-          elem.style.backgroundColor = "#f3722c";
-        } else if (height >= 90 && height < 100) {
-          elem.style.backgroundColor = "#f3722c";
-        } else if (height === 100) {
-          elem.style.backgroundColor = "#f94144";
-        } else {
-          elem.style.backgroundColor = "#90be6d";
-        }
-      }
-    }
-  };
 
   const filteredItems = useCallback(() => {
     const filterCheck = filter?.length > 0 ? true : false;
@@ -399,7 +375,7 @@ function InventoryPage() {
               <div className="col-lg-auto col-md-12 col-sm-12 h-auto">
                 <div className="row mt-5">
                   <button
-                    name={user.name}
+                    name={user?.name}
                     className={fractionTheme}
                     onClick={onClickFilter}
                   >
@@ -521,12 +497,6 @@ function InventoryPage() {
                         className="col-auto"
                       ></div>
                     </div>
-                    {modify && (
-                      <div className="alert info">
-                        Verzaubern: zum Verzaubern eines Gegenstandes klicke auf
-                        das Icon
-                      </div>
-                    )}
                     <InventoryTable
                       iFilter={iFilter}
                       onMultiSelect={onMultiSelect}
@@ -641,14 +611,15 @@ function InventoryPage() {
                 </div>
                 <div className="col-12 ">
                   <motion.button
-                                      variants={buttonActive}
-                                      animate={activeCategory==="Rüstung" ? 
-                                      "active": "inactive"}
+                    variants={buttonActive}
+                    animate={
+                      activeCategory === "Rüstung" ? "active" : "inactive"
+                    }
                     id="armor"
                     onClick={(e) => {
                       dispatch(getGenus({ category: "Rüstung" }));
                       setFilter("");
-                      setId(-1)
+                      setId(-1);
                     }}
                   >
                     <FontAwesomeIcon icon={faShield} />
@@ -656,26 +627,25 @@ function InventoryPage() {
                   <motion.button
                     id="weapon"
                     variants={buttonActive}
-                    animate={activeCategory==="Waffe" ? 
-                    "active": "inactive"}
+                    animate={activeCategory === "Waffe" ? "active" : "inactive"}
                     onClick={(e) => {
                       dispatch(getGenus({ category: "Waffe" }));
                       setFilter("");
-                      setId(-1)
+                      setId(-1);
                     }}
                   >
                     <FontAwesomeIcon icon={faHammer} />
                   </motion.button>
                   <motion.button
                     variants={buttonActive}
-                    animate={activeCategory==="Ressource" ? 
-                    "active": "inactive"}
-
+                    animate={
+                      activeCategory === "Ressource" ? "active" : "inactive"
+                    }
                     id="ressource"
                     onClick={(e) => {
                       dispatch(getGenus({ category: "Ressource" }));
                       setFilter("");
-                      setId(-1)
+                      setId(-1);
                     }}
                   >
                     <FontAwesomeIcon icon={faSeedling} />
@@ -701,11 +671,13 @@ function InventoryPage() {
                         getDetails={getDetails}
                       />
                     </div>
-                    {items && detailsId>=0 ? (
+                    {items && detailsId >= 0 ? (
                       <div className="col-3">
                         <Info item={filteredItems()[detailsId]} />
                       </div>
-                    ): <></>}
+                    ) : (
+                      <></>
+                    )}
                   </div>
                 )}
               </div>

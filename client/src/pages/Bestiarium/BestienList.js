@@ -12,7 +12,7 @@ const BestienList = memo(function BestienList({ creatures, habitatFilter }) {
           <div className="row" key={creature._id}>
             <div className="col-12 border"><h3>{creature.name}</h3>{` (Gattung: ${creature.art})`}</div>
             <div className="col-3 mt-3">
-              <img className="img-creature" src={`creature/${creature._id}.png`}/>
+              <img className="img-creature" src={`creature/${creature._id}.png`} alt="creature"/>
               <h5 className={creature.picture}>{`Status: ${creature.picture}`}</h5>
               </div>
             

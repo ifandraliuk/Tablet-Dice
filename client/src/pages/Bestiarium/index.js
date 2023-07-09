@@ -16,6 +16,7 @@ const Bestiaria = () => {
   const { bestiaria } = useSelector((state) => state.bestiaria);
   const { habitat } = useSelector((state) => state.habitat);
   const [habitatId, setHabitatFilter] = useState("");
+
   useEffect(() => {
     console.log("getting creatures...");
     dispatch(getBestiaria());
@@ -27,7 +28,7 @@ const Bestiaria = () => {
       console.log("reset");
       dispatch(reset());
     };
-  }, []);
+  }, [user, dispatch, navigate]);
 
   return (     
      <motion.div

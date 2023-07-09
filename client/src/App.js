@@ -29,7 +29,7 @@ function App() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const location = useLocation();
-  const { player, armor, bonis, weight, playerDataLoaded, equipped } =
+  const { player, armor, weight, playerDataLoaded, equipped } =
     useSelector((state) => state.player);
 
   const playerCallback = useCallback(() => {

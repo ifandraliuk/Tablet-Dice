@@ -14,7 +14,7 @@ function Attributes() {
     dispatch(countTotal())
     //setPointsLeft(MAX - sumofAttr)
 
-}, [attr]) 
+}, [attr, dispatch]) 
 
   const onChange = (e) => {
     if(e.target.value){

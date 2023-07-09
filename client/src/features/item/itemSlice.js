@@ -55,7 +55,7 @@ export const itemSlice = createSlice({
                 const category = item.category
                 if(category === payload.category){  
                     return !genus.includes(item.genus) && genus.push(item.genus)
-                }
+                } else return null
             })
             state.activeGenus = genus
         }

@@ -25,11 +25,13 @@ function CreateCharacter() {
         console.log("data changed: get classes")
         dispatch(getClass())
     }, [data, dispatch])
+
     useEffect(()=>{
         if(!user|| !registered){
             navigate("/")
         }
-    },[])
+    },[user, registered, navigate])
+
     useEffect(()=>{
         console.log("data or image status was changed")
         if(dataFilled && imageUploaded){
@@ -37,7 +39,7 @@ function CreateCharacter() {
             dispatch(getPlayer())
             navigate("/player")
         }
-    }, [dataFilled, imageUploaded])
+    }, [dataFilled, imageUploaded, dispatch, navigate])
     const onChange = e => {
         const name = e.target.name
         if(["age", "haircut", "haircolor", "eyecolor", "more"].includes(name)){

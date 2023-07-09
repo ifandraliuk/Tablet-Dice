@@ -81,6 +81,7 @@ function InventoryTable({
                     />
                     <img
                       name={invElement.item.name}
+                      alt="icon"
                       src={`/icons/${r}/${g}xhdpi.png`}
                       onClick={itemSelected}
                     />

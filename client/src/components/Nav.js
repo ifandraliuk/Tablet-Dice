@@ -13,7 +13,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { logout, reset } from "../features/auth/AuthSlice";
 import {
   reset as playerReset,
-  playerLoaded,
 } from "../features/player/playerSlice";
 import { useNavigate } from "react-router-dom";
 

@@ -15,7 +15,7 @@ import {
   sortedTalents,
 } from "../../features/player/playerSlice";
 import { motion, AnimatePresence } from "framer-motion";
-import { listAnimation, tableAnimation } from "../../data/Animations";
+import { tableAnimation } from "../../data/Animations";
 
 function ActiveTalents({ props }) {
   const { player } = useSelector((state) => state.player);

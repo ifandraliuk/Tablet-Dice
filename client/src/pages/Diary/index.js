@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../../Styles/Diary.css";
 import Note from "./Note";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faShareNodes,
-  faFloppyDisk,
-  faMarker,
-} from "@fortawesome/free-solid-svg-icons";
+import Editor from "./Editor";
 import { diaryCategories } from "../../data/ConstVariables";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -22,13 +17,11 @@ import { pageTransition } from "../../data/Animations";
 import { motion } from "framer-motion";
 function Diary() {
   const { diary, userList } = useSelector((state) => state.diaries);
-  console.log("diary page");
-  console.log(localStorage);
-  const { fractionTheme, player } = useSelector((state) => state.player);
+  const { fractionTheme } = useSelector((state) => state.player);
   const { user } = useSelector((state) => state.auth);
-  const [shareActive, setShare] = useState(false);
-  const [share, shareWith] = useState([user._id]);
+
   const [text, setText] = useState([]);
+  const [share, shareWith] = useState([user._id]);
   const [activeCategory, setCategory] = useState("Personen");
   const [saveData, setSave] = useState(false);
   const [edit, setEdit] = useState(false);
@@ -42,28 +35,8 @@ function Diary() {
     if (!user) {
       navigate("/");
     }
-  }, []);
+  }, [navigate, user, dispatch]);
 
-  const onClick = (e) => {
-    console.log(e.target.value, e.target.name);
-    const id = e.target.id;
-    if (share.includes(id)) {
-      shareWith(share.filter((el) => el !== id));
-    } else {
-      shareWith([...share, id]);
-    }
-    console.log(share);
-  };
-
-  const onChange = (e) => {
-    setText(e.target.value);
-  };
-  const shareOptions = () => {
-    setShare((shareActive) => !shareActive);
-    if (activeCategory?.length > 0) {
-      document.getElementById(activeCategory).focus();
-    }
-  };
   const onEdit = (e) => {
     setEdit((edit) => !edit);
     const diaryId = e.currentTarget.id;
@@ -96,6 +69,20 @@ function Diary() {
     //setEditPlayers(toEdit.players)
     shareWith(toEdit.players) */
   };
+
+
+  const onClick = (e) => {
+    console.log(e.target.value, e.target.name);
+    const id = e.target.id;
+    if (share.includes(id)) {
+      shareWith(share.filter((el) => el !== id));
+    } else {
+      shareWith([...share, id]);
+    }
+    console.log(share);
+  };
+
+
   const onRemove = (e) => {
     console.log("remove pressed");
     console.log(e.currentTarget.id);
@@ -131,7 +118,6 @@ function Diary() {
       }
       setText("");
       shareWith([user._id]);
-      setShare(false);
       setSave(false);
     }
   };
@@ -161,77 +147,17 @@ function Diary() {
                   ))}
               </div>
               <div className="col-xl-8 col-lg-8  diary-border col-md-12">
-                <form id="journal" onSubmit={onSubmit}>
-                  <div className="w-auto h-auto  p-2 mb-2">
-                    <textarea
-                      id="textarea-note"
-                      type="text"
-                      cols="40"
-                      rows="5"
-                      onChange={onChange}
-                      value={text}
-                    ></textarea>
-                    <div className="row info-row ">
-                      <div className="col-lg-auto col-md-1">
-                        <button className="btn-edit" onClick={shareOptions}>
-                          <FontAwesomeIcon icon={faShareNodes} />
-                        </button>
-                      </div>
-                      <div className="col-xl-auto col-lg-auto col-md-8">
-                        {activeCategory?.length === 0 ? (
-                          <div>Kategorie nicht gewählt</div>
-                        ) : (
-                          <h5 className={`${activeCategory} `}>
-                            {activeCategory}
-                          </h5>
-                        )}
-                      </div>
-                      <div className="col-lg-auto m-0 p-0 col-md-2">
-                        {activeCategory.length === 0 ? (
-                          <button className="btn-save" disabled>
-                            <FontAwesomeIcon icon={faFloppyDisk} />
-                          </button>
-                        ) : edit ? (
-                          <button
-                            className="btn-save"
-                            type="submit"
-                            onClick={() => setSave(true)}
-                          >
-                            <FontAwesomeIcon icon={faMarker} />
-                          </button>
-                        ) : (
-                          <button
-                            className="btn-save"
-                            type="submit"
-                            onClick={() => setSave(true)}
-                          >
-                            <FontAwesomeIcon icon={faFloppyDisk} />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                    {shareActive && (
-                      <div className="col-3 border mt-2">
-                        {userList?.map(
-                          (u) =>
-                            u.id !== user?._id && (
-                              <div className="p-2" key={u.id}>
-                                <input
-                                  type="checkbox"
-                                  name="users"
-                                  id={u.id}
-                                  onChange={onClick}
-                                  checked={share?.includes(u.id)}
-                                />
-                                <label htmlFor={u.id}>{u.name}</label>
-                                <br />
-                              </div>
-                            )
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </form>
+                <Editor 
+                text={text}
+                user={user}
+                userList={userList}
+                edit={edit}
+                share={share}
+                setSave={setSave}
+                activeCategory={activeCategory}
+                setText={setText}
+                onClick={onClick}
+                 onSubmit={onSubmit} />
               </div>
             </div>
             {diary ? (
@@ -243,6 +169,7 @@ function Diary() {
                         <Note
                           key={note._id}
                           note={note}
+                          editId={editId}
                           onRemove={onRemove}
                           onEdit={onEdit}
                         />

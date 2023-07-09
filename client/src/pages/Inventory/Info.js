@@ -1,6 +1,7 @@
 import React from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { listAnimation } from "../../data/Animations";
+import {  motion } from "framer-motion";
+
+
 function Info(props) {
   
   const { item, enchantment } = props;

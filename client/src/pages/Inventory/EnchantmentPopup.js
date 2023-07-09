@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight,
@@ -8,7 +8,6 @@ import {
   faHandSparkles,
   faShield,
   faX,
-  faCircleQuestion,
 } from "@fortawesome/free-solid-svg-icons";
 import { itemNames } from "../../data/ConstVariables";
 import Alert from "../../components/Alert";
@@ -39,10 +38,30 @@ const EnchantmentPopup = ({
   const [newRarity, setRarity] = useState("");
 
   useEffect(() => {
-    const req = findRequirements();
-    setRequirement(req);
+    const findRequirements = () => {
+      let gems = [],
+        tools = [];
+      inventory?.map((el) =>
+        !gems.includes(el.item._id) &&
+        itemNames.gems?.filter((gem) => gem.name === el.item.name)?.length > 0
+          ? gems.push(el.item.name)
+          : el
+      );
+      inventory?.map(
+        (el) =>
+          !tools.includes(el.item._id) &&
+          el.item.genus === "Werkzeug" &&
+          el.item.name.includes("Verzauberung") &&
+          tools.push(el.item.name)
+      );
+      setGem(gems[0]);
+      setTool(tools[0]);
+  
+      return { gems: gems, tools: tools };
+    };
+    setRequirement(findRequirements);
     console.log("useEffect is active");
-  }, []);
+  }, [inventory]);
 
   useEffect(() => {
     if (tool?.length > 0 && itemSelected) {
@@ -51,7 +70,7 @@ const EnchantmentPopup = ({
       setDiceBonus(diceBoni);
       console.log(diceBonus);
     }
-  }, [tool, itemSelected]);
+  }, [tool, itemSelected, diceBonus]);
   useEffect(() => {
     if (
       !itemSelected ||
@@ -62,8 +81,8 @@ const EnchantmentPopup = ({
     ) {
       setDisabled(true);
     } else setDisabled(false);
-  }, [requirement, bonus]);
-
+  }, [requirement, bonus, itemSelected,talent]);
+/* 
   const raritymemo = useMemo(() => {
     if (gem && itemSelected) {
       const gemRarity = itemNames.gems.find((el) => el.name === gem);
@@ -79,7 +98,7 @@ const EnchantmentPopup = ({
       setRarity(result);
     }
   }, [gem, itemSelected]);
-
+ */
   const reset = () => {
     setGem("");
     setTool("");
@@ -88,27 +107,7 @@ const EnchantmentPopup = ({
     setRarity("");
     setTrigger(false);
   };
-  const findRequirements = () => {
-    let gems = [],
-      tools = [];
-    inventory?.map((el) =>
-      !gems.includes(el.item._id) &&
-      itemNames.gems?.filter((gem) => gem.name === el.item.name)?.length > 0
-        ? gems.push(el.item.name)
-        : el
-    );
-    inventory?.map(
-      (el) =>
-        !tools.includes(el.item._id) &&
-        el.item.genus === "Werkzeug" &&
-        el.item.name.includes("Verzauberung") &&
-        tools.push(el.item.name)
-    );
-    setGem(gems[0]);
-    setTool(tools[0]);
 
-    return { gems: gems, tools: tools };
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
