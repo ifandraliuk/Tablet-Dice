@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {getPlayer,putTalent, toInventory, updateInventory, deleteItem, setEnchantment, uploadPicture, updateLevel, createCharacter, updateAttribute, updateBalance, addTalent, removeTalent} = require('../controllers/playerController')
+const {getPlayer,putTalent, toInventory, updateInventory, deleteItem, setEnchantment, uploadPicture, updateLevel, createCharacter, updateAttribute, updateBalance, addTalent, removeTalent, addCompanion} = require('../controllers/playerController')
 const {protect} = require('../middleware/authMiddleware')
 
 router.get('/', protect, getPlayer);
@@ -22,5 +22,7 @@ router.route('/balance').put(protect, updateBalance)
 router.route('/profilepic').post(protect, uploadPicture)
 router.post('/create', protect, createCharacter); 
 
+//COMPANIONS
+router.post('/companion', protect, addCompanion); 
 
 module.exports = router

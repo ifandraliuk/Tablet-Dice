@@ -122,8 +122,19 @@ const addCompanion = asyncHandler(async (req, res)=>{
     const companion = await Companion.create({
         creature: creature._id,
         name: req.body.name.length>0 ? req.body.name : "Otto",
-        
+        level: 1,
+        status: "Stall",
+        inventory: null,
+        slot1: null,
+        slot2:null
     })
+    const created = await User.findByIdAndUpdate(req.user.id, {$push:{companions: companion}}, {new: true}) 
+    if(!created){
+        res.status(400)
+        throw new Error('Kreatur konnte nicht hinzugefügt werden...') 
+    }
+    console.log("Talent wurde erstellt und hinzgefügt")
+    res.status(200).json(companion)
 })
 
 // @desc update money balance
@@ -444,4 +455,5 @@ module.exports = {
     putTalent,
     removeTalent,
     uploadPicture,
+    addCompanion,
 }
