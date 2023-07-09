@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 
+
 const habitatSchema = ({
     name: {
         type: String,
@@ -8,9 +9,16 @@ const habitatSchema = ({
     description: {
         type: String,
     },
-    ressource: {
-        type: String,
-    },
+    ressource: [{
+        id:{
+            ref: "Item",
+            type: mongoose.Schema.Types.ObjectId
+        },
+        dice: {
+            type: String, 
+        }
+
+    }],
     territory: {
         type: String,
     },

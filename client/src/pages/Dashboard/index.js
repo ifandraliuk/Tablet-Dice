@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../Styles/Dashboard.css";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import Spinner from "react-bootstrap/Spinner";
 import EquippedItem from "../Inventory/EquippedItem";
 import BarList from "./BarList";
@@ -21,12 +22,19 @@ function Dashboard() {
   const { fractionTheme, player, armor, bonis, setboni } = useSelector(
     (state) => state.player
   );
+  const navigate = useNavigate()
   const [showImage, setShowImage] = useState(true);
   const dispatch = useDispatch();
 
   const newLevel = () => {
     dispatch(updateLevel());
   };
+
+  useEffect(()=>{
+    if(!user){
+      navigate('/')
+    }
+  }, [user, navigate])
 
   return (
     <motion.div

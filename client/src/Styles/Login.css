@@ -47,8 +47,8 @@
   border-radius: 5px;
 }
 .login-page .register-btn:hover {
-  background-color: #577590;
+  background-color: rgb(87, 117, 144);
 }
 .login-page .login-btn:hover {
-  background-color: #43aa8b;
+  background-color: rgb(67, 170, 139);
 }/*# sourceMappingURL=Login.css.map */

@@ -24,6 +24,7 @@ import Diary from "./pages/Diary/index";
 import Dashboard from "./pages/Dashboard/index";
 import { AnimatePresence } from "framer-motion";
 import Navbar from "./components/Nav";
+import Atlas from "./pages/Atlas";
 
 function App() {
   const dispatch = useDispatch();
@@ -107,6 +108,7 @@ function App() {
           <Route exact path="/inventory" element={<InventoryPage />}></Route>
           <Route exact path="/talents" element={<Talents />}></Route>
           <Route exact path="/bestiaria" element={<Bestiaria />}></Route>
+          <Route exact path="/atlas" element={<Atlas />}></Route>
           <Route path="/enemies" element={<Enemies />}></Route>
           <Route path="/error" element={<ErrorPage />}></Route>
         </Routes>

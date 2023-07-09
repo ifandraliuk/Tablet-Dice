@@ -6,10 +6,10 @@
   max-width: 100%;
 }
 .bestiaria .flieht {
-  background-color: #90be6d;
+  background-color: rgb(144, 190, 109);
 }
 .bestiaria .neutral {
-  background-color: #577590;
+  background-color: rgb(87, 117, 144);
 }
 .bestiaria .aggressiv {
   background-color: rgb(243, 114, 44);

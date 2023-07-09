@@ -102,7 +102,7 @@ body {
 }
 
 .btn-save:hover:enabled {
-  background-color: #43aa8b;
+  background-color: rgb(67, 170, 139);
 }
 
 .btn-edit {
@@ -124,12 +124,13 @@ body {
 .btn-remove {
   background-color: rgb(24, 24, 24);
   padding: 2px 10px;
-  border: 2px solid;
-  border-color: azure;
+  border: 2px solid 5%;
+  border-color: rgb(24, 24, 24);
 }
 
 .btn-remove:hover:enabled {
-  background-color: #f94144;
+  background-color: rgb(249, 65, 68);
+  border-color: azure;
 }
 
 .btn-enchantment {

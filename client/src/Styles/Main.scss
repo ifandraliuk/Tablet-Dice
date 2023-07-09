@@ -120,12 +120,13 @@ body {
  .btn-remove{
     background-color: $infoBlack;
     padding: 2px 10px;
-    border: 2px solid;
-    border-color: azure;
+    border: 2px solid 5%;
+    border-color: $infoBlack;
 
   }
 .btn-remove:hover:enabled{
     background-color: $categoryRed;
+    border-color: azure;
 }
 .btn-enchantment {
     background-color: $infoBlack;

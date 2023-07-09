@@ -333,23 +333,23 @@
   border-image-repeat: repeat repeat;
 }
 .diary-page .Personen {
-  background-color: #f94144;
+  background-color: rgb(249, 65, 68);
 }
 .diary-page .Orte {
   background-color: rgb(243, 114, 44);
 }
 .diary-page .Wissen {
-  background-color: #f8961e;
+  background-color: rgb(248, 150, 30);
 }
 .diary-page .Erlebtes {
-  background-color: #f9c74f;
+  background-color: rgb(249, 199, 79);
 }
 .diary-page .Aktiv {
-  background-color: #90be6d;
+  background-color: rgb(144, 190, 109);
 }
 .diary-page .Abgeschlossen {
-  background-color: #43aa8b;
+  background-color: rgb(67, 170, 139);
 }
 .diary-page .Sonstiges {
-  background-color: #577590;
+  background-color: rgb(87, 117, 144);
 }/*# sourceMappingURL=Diary.css.map */

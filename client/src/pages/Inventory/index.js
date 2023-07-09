@@ -20,8 +20,10 @@ import { Spinner } from "react-bootstrap";
 import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 import {
-  filterEquipment,
-  getWeight,
+  //filterEquipment,
+  //getWeight,
+
+  loadPercentage,
   newBalance,
   toInventory,
   setEnchantment,
@@ -43,8 +45,15 @@ import GenusList from "./GenusList";
 function InventoryPage() {
   const { items, isLoading, activeCategory, activeGenus, isError, message } =
     useSelector((state) => state.items);
-  const { fractionTheme, player, armor, equipmentError, weight, loadCapacity } =
-    useSelector((state) => state.player);
+  const {
+    fractionTheme,
+    player,
+    armor,
+    equipmentError,
+    weight,
+    currPercentage,
+    loadCapacity,
+  } = useSelector((state) => state.player);
   const { talents, attributes, userclass, inventory } = player;
   const { user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
@@ -72,36 +81,6 @@ function InventoryPage() {
   const [detailsId, setId] = useState(-1);
   const [iFilter, setInventoryFilter] = useState("");
 
-
-  // animate weight bar
-  const move = useCallback((weight) => {
-    let elem = document.getElementById("curr-weight");
-    let height = 0;
-    const currPercentage = weight / (loadCapacity / 100);
-    console.log(currPercentage);
-    let id = setInterval(frame, 15);
-    function frame() {
-      if (height >= currPercentage) {
-        clearInterval(id);
-      } else {
-        height++;
-        elem.style.height = height + "%";
-        //elem.innerHTML = height * 1  + '%';
-        elem.innerHTML = `${weight} <br>/<br>${loadCapacity}`;
-        if (height >= 75 && height < 90) {
-          elem.style.backgroundColor = "#f3722c";
-        } else if (height >= 90 && height < 100) {
-          elem.style.backgroundColor = "#f3722c";
-        } else if (height === 100) {
-          elem.style.backgroundColor = "#f94144";
-        } else {
-          elem.style.backgroundColor = "#90be6d";
-        }
-      }
-    }
-  },[loadCapacity]);
-  
-
   const onClickFilter = (e) => {
     e.preventDefault();
     const filterName = e.currentTarget.name;
@@ -113,7 +92,6 @@ function InventoryPage() {
     }
   };
 
-
   useEffect(() => {
     if (!user) {
       navigate("/");
@@ -124,7 +102,17 @@ function InventoryPage() {
     if (isLoad && items.length === 0) {
       dispatch(getItem());
     }
-  }, [user, items.length, message, isError, navigate, dispatch]);
+  }, [user, items.length, message, isError, isLoad, navigate, dispatch]);
+
+
+  useEffect(() => {
+    if (weight / (loadCapacity / 100) !== currPercentage) {
+      console.log("percentage changed");
+      dispatch(loadPercentage());
+    }
+
+    console.log("frame func && percentage func were called");
+  }, [weight, loadCapacity, currPercentage, dispatch]);
 
   const getDetails = (e) => {
     console.log(e.currentTarget.name);
@@ -133,6 +121,8 @@ function InventoryPage() {
 
   const addItem = (e) => {
     let id = e.currentTarget.name;
+    const item = filteredItems()[id].name;
+    console.log(item);
     dispatch(
       toInventory({
         item: filteredItems()[id].name,
@@ -300,10 +290,9 @@ function InventoryPage() {
     multi?.forEach((id) => dispatch(deleteItem(id)));
     setTrigger(false);
     setSellprice(0);
-  }, [multi?.length > 0 && trigger]);
+  }, [multi.length]);
 
   /// Animations
-
 
   const filteredItems = useCallback(() => {
     const filterCheck = filter?.length > 0 ? true : false;
@@ -429,13 +418,30 @@ function InventoryPage() {
                 </div>
                 <div className="row">
                   <div id="weight-progressbar">
-                    <div
+                    <motion.div
                       id="curr-weight"
-                      style={{ height: "0px", backgroundColor: "#90be6d" }}
+                      initial={{
+                        height: 0,
+                        backgroundColor: "rgb(22, 22, 20)",
+                      }}
+                      animate={{
+                        height: currPercentage + "%",
+                        backgroundColor:
+                          parseInt(currPercentage) < 50
+                            ? "rgb(67, 170, 139)"
+                            :  (currPercentage > 50 && currPercentage < 75) ?
+                             ["rgb(67, 170, 139)","rgb(243, 114, 44)"] : ["rgb(67, 170, 139)","rgb(243, 114, 44)","rgb(249, 65, 68)"],
+                      }}
+                      transition={{ delay: 1, duration: 0.8 }}
                     >
-                      0
-                    </div>
+                      {`${weight.toFixed(2)} / ${loadCapacity}`}
+                    </motion.div>
                   </div>
+                </div>
+                <div className="row mt-2">
+                <button onClick={showItems} className={fractionTheme}>
+              {isLoad ? "X" : "+"}
+            </button>
                 </div>
               </div>
               <div className="col-lg-5 col-md-12 col-sm-12  h-auto">
@@ -589,9 +595,7 @@ function InventoryPage() {
                 />
               </div>
             </div>
-            <button onClick={showItems}>
-              {isLoad ? "Schließen" : "Item hinzufügen"}
-            </button>
+
             {isLoad ? (
               <div className="row ">
                 <div className="col-12 ">

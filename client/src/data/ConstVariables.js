@@ -177,9 +177,13 @@ const racesList = ["Elb","Draconid", "Zwerg", "Gnom", "Ork", "Kobold", "Mensch",
             Sonstige: "other",
         },
         rarity: {
+            primitiv: "primitive",
             gewöhnlich: "common",
+            hochwertig:"highgrade",
             magisch: "magical",
+            außergewöhnlich: "extraordinary",
             selten: "rare",
+            sagenhaft:"amazing",
             episch: "epic",
             legendär: "legendary",
             einzigartig: "unique"
