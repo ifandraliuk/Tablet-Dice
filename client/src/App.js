@@ -31,7 +31,7 @@ function App() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const location = useLocation();
-  const { player, armor, weight, playerDataLoaded, equipped } =
+  const { fractionTheme, player, armor, weight, playerDataLoaded, equipped } =
     useSelector((state) => state.player);
 
   const playerCallback = useCallback(() => {
@@ -109,7 +109,7 @@ function App() {
           <Route exact path="/inventory" element={<InventoryPage />}></Route>
           <Route exact path="/talents" element={<Talents />}></Route>
           <Route exact path="/bestiaria" element={<Bestiaria />}></Route>
-          <Route path="/companions" element={<Companions origin={originName}/>}></Route>
+          <Route path="/companions" element={<Companions origin={fractionTheme}/>}></Route>
         <Route exact path="/atlas" element={<Atlas />}></Route>
           <Route path="/enemies" element={<Enemies />}></Route>
           <Route path="/error" element={<ErrorPage />}></Route>
