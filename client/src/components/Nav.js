@@ -8,6 +8,7 @@ import {
   faBookJournalWhills,
   faPaw,
   faGlobe,
+  faFeather,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -57,7 +58,12 @@ function Navbar() {
         </li>
         <li>
           <Link className="link" to="bestiaria">
-            <FontAwesomeIcon icon={faPaw} /> Bestiarium
+            <FontAwesomeIcon icon={faFeather} /> Bestiarium
+          </Link>
+        </li>
+        <li>
+          <Link className="link" to="companions">
+            <FontAwesomeIcon icon={faPaw} /> Begleiter
           </Link>
         </li>
         <li>
