@@ -20,7 +20,7 @@ const getPlayer = asyncHandler(async (req, res) => {
     .populate({path: 'userclass', select:'name category description abilities advantages', model: 'Userclass'}, )
     .populate({path:'talents.talent',  model:'Talent', select:'_id category name dice'})
     .populate({path:'inventory.item',  model:'Item', select:'_id name category dice value rarity type price weight bonuses genus material set'})
-    .populate({path: 'companions.creature', model:'Bestiarium', select:"name"})
+    .populate({path: 'companions.creature', model:'Bestiarium'})
     //console.log(user.userclass.name)
     if(!user){
         res.status(500).json({message: 'Spieler nicht gefunden'})
@@ -128,7 +128,7 @@ const addCompanion = asyncHandler(async (req, res)=>{
         slot1: null,
         slot2:null
     })
-    const created = await User.findByIdAndUpdate(req.user.id, {$push:{companions: companion}}, {new: true}) 
+    const created = await User.findByIdAndUpdate(req.user.id, {$push:{companions: companion}}, {new: true})
     if(!created){
         res.status(400)
         throw new Error('Kreatur konnte nicht hinzugefügt werden...') 
