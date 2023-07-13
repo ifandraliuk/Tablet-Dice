@@ -93,6 +93,24 @@ export const updateAttribute = createAsyncThunk(
     }
   }
 );
+// Posting a new companion to user
+export const addCompanion = createAsyncThunk(
+  "player/companion/post",
+  async (compData, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await playerService.addCompanion(compData, token);
+    } catch (error) {
+      const msg =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(msg);
+    }
+  }
+);
 // Posting a talent to user
 export const addTalent = createAsyncThunk(
   "player/talents/post",
@@ -639,6 +657,22 @@ export const playerSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
+        state.message = action.payload;
+      })
+      .addCase(addCompanion.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
+      })
+      .addCase(addCompanion.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+        state.player.companions.push(action.payload)
+      })
+      .addCase(addCompanion.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
         state.message = action.payload;
       })
       .addCase(updateAttribute.pending, (state) => {
