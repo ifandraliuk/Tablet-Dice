@@ -1,14 +1,9 @@
 import React, {useState} from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faMinus, faRefresh} from '@fortawesome/free-solid-svg-icons'
-import Container from 'react-bootstrap/Container'
-
 import Bar from './Bar';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import {useSelector, useDispatch} from 'react-redux';
 import {decreaseBar, increaseBar, resetBars} from '../../features/player/playerSlice'
 import {germanAttr} from '../../data/ConstVariables';
+import MathButtonGroup from '../../components/MathButtonGroup';
 
 
 function BarList() {
@@ -38,13 +33,13 @@ function BarList() {
         dispatch(resetBars())
     }
   return (
-    <Container className='mt-2'>
+    <div className='mt-2'>
       {bar.map((name, i)=>(
         attributes && attributes[name]>0 && <Bar category={name} key={name}/>
       ))}
    
-      <Row className="mb-2 mt-2">
-        <Col className="col-auto pe-0">
+      <div className="row mb-2 mt-2">
+        <div className="col-auto pe-0">
         
           <select className="text-capitalize" value={damage.type} name="type"  onChange={onChange}>
             {bar.map((name)=>(
@@ -52,21 +47,17 @@ function BarList() {
             ))}
             </select>
 
-          </Col>
-        <Col className="col-auto">
-          <input type="number" value={damage.val} name="val" onChange={onChange}></input>
-        </Col>
-        <Col>
-          <div className='button-group'>
-            <button id="increase" className='btn-save' onClick={add}><FontAwesomeIcon icon={faPlus}/></button>
-            <button id="decrease"  className='btn-edit' onClick={subtract}><FontAwesomeIcon icon={faMinus}/></button>
-            <button className='btn-remove' onClick={onReset}><FontAwesomeIcon icon={faRefresh}/></button>
           </div>
-        </Col>
-      </Row>
+        <div className="col-auto">
+          <input type="number" value={damage.val} name="val" onChange={onChange}></input>
+        </div>
+        <div>
+            <MathButtonGroup add={add} subtract={subtract} onReset={onReset} />
+        </div>
+      </div>
 
 
-    </Container>
+    </div>
   )
 }
 
