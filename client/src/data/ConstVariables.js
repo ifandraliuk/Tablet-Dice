@@ -248,7 +248,39 @@ const racesList = ["Elb","Draconid", "Zwerg", "Gnom", "Ork", "Kobold", "Mensch",
 
     /// DIARY 
     const diaryCategories = ["Personen", "Orte", "Wissen", "Erlebtes", "Aktiv", "Abgeschlossen", "Sonstiges"]
-export  {races,
+
+/// COMPANIIONS
+const slots = [
+    "Schulterpet",
+    "Reittier",
+    "Begleiter 1",
+    "Begleiter 2",
+    "Drache",
+  ];
+  const slotInfo = [
+    {
+      charismaValue: 1,
+      info: "Keine Kampfaktionen möglich. Der Begleiter kann nur einfachere Befehle folgen, wie scouten, suchen usw.",
+    },
+    {
+      charismaValue: 5,
+      info: "Spieler und Reittier haben gemeinsam 3 Kampfaktionen (2 + 1 oder 1 + 2) und eine Paradeaktion (Spieler)",
+    },
+    {
+      charismaValue: 10,
+      info: "Begleiter ist komplett eigenständig im Kampf und hat zwei Kampfaktionen.",
+    },
+    {
+      charismaValue: 15,
+      info: "Zweiter Begleiter hat entweder 2 Kampfaktionen oder 1 Kampfaktion + 1 Paradeaktion",
+    },
+    {
+      charismaValue: 20,
+      info: "Drache ist ein mächtiges und eigenständiges Wesen mit 2 Kampfaktionen. Kann außerdem geritten werden.",
+    },
+  ];
+
+    export  {races,
      racesList,
     classList,
     classDescription,
@@ -259,5 +291,7 @@ export  {races,
     diceAbbr,
     itemNames,
     diaryCategories,
-    boniList
+    boniList,
+    slots,
+    slotInfo,
 }
