@@ -36,7 +36,7 @@ function InventoryTable({
         </tr>
       </thead>
       <tbody>
-        <AnimatePresence >
+        <AnimatePresence>
           {inventory?.map((invElement, i) => {
             const r = invElement.enchantment
               ? rarity[invElement.enchantment.rarity]
@@ -53,10 +53,12 @@ function InventoryTable({
                 ? true
                 : iFilter === "Waffe" && iFilter === invElement.item.category
                 ? true
-                : iFilter === "Ressource" &&
-                  iFilter === invElement.item.category
+                : iFilter === "Ressource" && iFilter === invElement.item.category
                 ? true
-                : false;
+                : iFilter === "Begleiter" && iFilter === invElement.item.category
+                ? true
+                : false
+                console.log(iFilter, filterCheck, categoryCheck)
             const showElement = filterCheck || categoryCheck;
             return (
               r &&
@@ -70,7 +72,7 @@ function InventoryTable({
                   initial="init"
                   animate="animate"
                   exit="exit"
-                  transition={{ duration: 0.5}}
+                  transition={{ duration: 0.5 }}
                 >
                   <td style={{ textAlign: "left" }}>
                     <input
