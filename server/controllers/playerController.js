@@ -19,7 +19,7 @@ const getPlayer = asyncHandler(async (req, res) => {
     const user = await User.findById(req.user.id)
     .populate({path: 'userclass', select:'name category description abilities advantages', model: 'Userclass'}, )
     .populate({path:'talents.talent',  model:'Talent', select:'_id category name dice'})
-    .populate({path:'inventory.item',  model:'Item', select:'_id name category dice value rarity type price weight bonuses genus material set'})
+    .populate({path:'inventory.item',  model:'Item'})
     .populate({path: 'companions.creature', model:'Bestiarium'})
     //console.log(user.userclass.name)
     if(!user){
@@ -110,6 +110,12 @@ const createCharacter = asyncHandler(async (req, res) => {
     res.status(200).json(doc)
 })
 
+
+/* COMPANIONS */
+
+// @desc post new creature to users companions
+// @route POST /player/companion
+// @access Private
 const addCompanion = asyncHandler(async (req, res)=>{
     const user = await User.findById(req.user.id)
     if(!user){
@@ -136,6 +142,52 @@ const addCompanion = asyncHandler(async (req, res)=>{
     console.log("Talent wurde erstellt und hinzgefügt")
     res.status(200).json(companion)
 })
+
+// @desc update companions status usage
+// @route PUT /player/companion/:id
+// @access Private
+const updateStatus = asyncHandler(async (req, res)=>{
+    console.log(req.body.id, req.body.status)
+    const user = await User.findById(req.user.id)
+    const slots = [
+        "Schulterpet",
+        "Reittier",
+        "Begleiter 1",
+        "Begleiter 2",
+        "Drache",
+        "Stall",
+      ];
+    if(!user){
+        res.status(500).json({message: 'Spieler nicht gefunden'})
+    }
+    if(!req.body.id){
+        res.status(400).json({message: "Kreatur wurde nicht eingegeben"})
+    }
+    if(!req.body.status || slots.findIndex(el=>el===req.body.status) < 0){
+      
+        res.status(400).json({message: "Neuer Status wurde nicht eingegeben oder ist falsch"})
+    }
+    const updated = await User.findOneAndUpdate({
+        _id: req.user.id,
+        //'talents.talent': talent._id
+        'companions._id': req.body.id
+    },
+    {
+        $set: {
+            'companions.$.status': req.body.status
+        }
+    }, {new: true}).populate({path: 'companions.creature', model:'Bestiarium'})
+    if (!updated){
+        res.status(400).json({message: 'Status konnte nicht updated werden'})
+    }
+    const companions = updated.companions
+    console.log(companions)
+    const updatedId = companions.findIndex(el=>el._id.toString()===req.body.id)
+    console.log(updatedId)
+    res.status(200).json({id:req.body.id, updated: companions[updatedId]})
+
+})
+
 
 // @desc update money balance
 // @route PUT /player/balance
@@ -456,4 +508,5 @@ module.exports = {
     removeTalent,
     uploadPicture,
     addCompanion,
+    updateStatus,
 }
