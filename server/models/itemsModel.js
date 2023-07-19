@@ -43,9 +43,16 @@ const itemSchema = mongoose.Schema({
     weight: {
         type: Number,
     },
-    material: {
-        type: String,
-    },
+    material: [{
+        element: {
+            ref: "Item",
+            type: mongoose.Schema.Types.ObjectId
+        },
+        amount: {
+            type: Number,
+        }
+    }],
+
     icon: {
         type: String,
     }
