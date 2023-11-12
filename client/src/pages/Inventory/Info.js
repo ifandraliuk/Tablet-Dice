@@ -6,6 +6,7 @@ function Info(props) {
   
   const { item, enchantment } = props;
   const {
+    _id,
     genus,
     type,
     set,
@@ -26,8 +27,11 @@ function Info(props) {
         duration: 0.5,
       }}
     >
+            <li>
+        {`ID: `} <strong>{_id}</strong>
+      </li>
       <li>
-        {`Kategorie: `} <strong>{props.item.category}</strong>
+        {`Kategorie: `} <strong>{category}</strong>
       </li>
       <li>
         {`Gattung: `}
@@ -56,12 +60,12 @@ function Info(props) {
       {enchantment && (
         <li>
           {`Verzauberung: `}
-          <strong>{enchantment.bonuses}</strong>
+          <strong>{enchantment?.bonuses}</strong>
         </li>
       )}
       <li>
         {`Wertigkeit: `}
-        <strong>{enchantment ? enchantment.rarity : rarity}</strong>
+        <strong>{enchantment ? enchantment?.rarity : rarity}</strong>
       </li>
       {dice && (
         <li>
@@ -79,7 +83,19 @@ function Info(props) {
       </li>
       <li>
         {`Material: `}
-        <strong>{material}</strong>
+        {typeof(material)==="String" ? 
+        (
+          <strong>{material}</strong>
+        )  : 
+        (
+          <ul>
+          {material?.map((m)=>(
+            <li key={m._id}>{m.element?.name}: <strong>{m?.amount}</strong></li>
+          ))}
+        </ul>
+        )
+      }
+
       </li>
     </motion.ul>
   );

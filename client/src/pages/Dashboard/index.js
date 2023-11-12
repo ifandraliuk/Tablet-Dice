@@ -22,7 +22,7 @@ function Dashboard() {
   const { fractionTheme, player, armor, bonis, setboni } = useSelector(
     (state) => state.player
   );
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [showImage, setShowImage] = useState(true);
   const dispatch = useDispatch();
 
@@ -30,11 +30,11 @@ function Dashboard() {
     dispatch(updateLevel());
   };
 
-  useEffect(()=>{
-    if(!user){
-      navigate('/')
+  useEffect(() => {
+    if (!user) {
+      navigate("/");
     }
-  }, [user, navigate])
+  }, [user, navigate]);
 
   return (
     <motion.div
@@ -85,7 +85,11 @@ function Dashboard() {
                 </div>
                 <div className="col-lg-3 col-md-4 mt-3 col-sm-3 d-flex-column">
                   <div className="row  mb-2 justify-content-center">
-                  <LevelUp level={player?.level} newLevel={newLevel} fraction={fractionTheme}/>
+                    <LevelUp
+                      level={player?.level}
+                      newLevel={newLevel}
+                      fraction={fractionTheme}
+                    />
                   </div>
                   <div className="row m-auto ">
                     <EquippedItem category="Haupthand" />

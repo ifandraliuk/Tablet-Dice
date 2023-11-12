@@ -1,6 +1,5 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import Image from "react-bootstrap/Image";
 import ListGroup from "react-bootstrap/ListGroup";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
@@ -10,9 +9,11 @@ import { faRectangleXmark } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "framer-motion";
 
 function EquippedItem({ category, delayValue }) {
-  const { player, equipped, fractionTheme } = useSelector((state) => state.player);
+  const { player, equipped, fractionTheme } = useSelector(
+    (state) => state.player
+  );
   const { genus, rarity } = itemNames;
-  
+
   if (equipped && player) {
     const i = player && equipped?.findIndex((el) => el.category === category);
     const eqId = equipped[i]?.equipment;
@@ -70,18 +71,26 @@ function EquippedItem({ category, delayValue }) {
       );
       return (
         <motion.div
-        initial={{ translateY: -90 }}
-        animate={{ translateY: 0 }}
-        transition={{
-          duration: 2,
-          type: "spring",
-          bounce: 0.5,
-          delay: delayValue ? delayValue * 0.1 : 0.1
-        }}
+          initial={{ translateY: -90 }}
+          animate={{ translateY: 0 }}
+          transition={{
+            duration: 2,
+            type: "spring",
+            bounce: 0.5,
+            delay: delayValue ? delayValue * 0.1 : 0.1,
+          }}
         >
           <OverlayTrigger trigger="click" placement={place} overlay={fullInfo}>
             <button className={`items-btn ${fractionTheme}`}>
-              <Image className="mb-0" src={`/icons/${r}/${g}xhdpi.png`}></Image>
+              <img
+                className="mb-0"
+                src={`/icons/${r}/${g}xhdpi.png`}
+                onError={(event) => {
+                  console.log(g);
+                  event.target.src = "/icons/common/" + g + "xhdpi.png";
+                  event.onerror = null;
+                }}
+              />
             </button>
           </OverlayTrigger>
         </motion.div>

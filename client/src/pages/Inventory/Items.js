@@ -5,7 +5,7 @@ import {
     faCircleInfo,
   } from "@fortawesome/free-solid-svg-icons";
   import { itemNames } from "../../data/ConstVariables";
-
+import ItemIcon from '../../components/ItemIcon';
   
 function Items({items, addItem, itemSelected, getDetails}) {
   const els = items()
@@ -31,12 +31,13 @@ function Items({items, addItem, itemSelected, getDetails}) {
           return (
             <tr key={item._id}>
               <td className="pb-0">
-                <img
+{/*                 <img
                   alt="icon"
                   name={item._id}
                   src={`/icons/${r}/${g}xhdpi.png`}
                   onClick={itemSelected}
-                />
+                /> */}
+                <ItemIcon item={item} enchantment={null}/>
               </td>
               <td>{item.name}</td>
               <td>{item.type}</td>

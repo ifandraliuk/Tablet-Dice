@@ -4,14 +4,14 @@ import { boniList } from "../../data/ConstVariables";
 const user = JSON.parse(localStorage.getItem("user"));
 console.log(user);
 const vitality = JSON.parse(localStorage.getItem("vitality"));
-console.log(localStorage);
+
 const stamina = JSON.parse(localStorage.getItem("stamina"));
 const mana = JSON.parse(localStorage.getItem("mana"));
 const spirit = JSON.parse(localStorage.getItem("spirit"));
 const loadCapacity = JSON.parse(localStorage.getItem("loadCapacity")); // strength * strength multiplier -> important for carying things
 const equippedItems = JSON.parse(localStorage.getItem("equippedItems"));
 const fraction = localStorage.getItem("fraction");
-console.log(vitality);
+const slotsAllowed = JSON.parse(localStorage.getItem("slotsAllowed"));
 const initialState = {
   player: [],
   bars: {
@@ -21,16 +21,17 @@ const initialState = {
     spirit: spirit ? spirit : 0,
   },
   playerDataLoaded: false,
-  abilityCategory: "",
-  fractionTheme: fraction ? fraction : "",
-  equipped: equippedItems ? equippedItems : [],
+  abilityCategory: "", // filter players abilities
+  fractionTheme: fraction ? fraction : "", // main theme color based on his/her fraction
+  equipped: equippedItems ? equippedItems : [], // equipped items
   armor: 0,
-  bonis: [],
+  bonis: [], // all active bonis
   setboni: "",
   weight: 0,
   loadCapacity: loadCapacity ? loadCapacity : 0,
-  currPercentage: 0,
+  currPercentage: 0, // users weight in percent of his/her weight
   equipmentError: { variant: "", msg: "" },
+  slotsAllowed: slotsAllowed ? slotsAllowed : [""], // 1 charisma - 1 slot, 5 CHA - 2 slots etc.
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -100,6 +101,24 @@ export const addCompanion = createAsyncThunk(
     try {
       const token = thunkAPI.getState().auth.user.token;
       return await playerService.addCompanion(compData, token);
+    } catch (error) {
+      const msg =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(msg);
+    }
+  }
+);
+// Posting a new companion to user
+export const updateCompanionStatus = createAsyncThunk(
+  "player/companion/put",
+  async (compData, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await playerService.updateCompanionStatus(compData, token);
     } catch (error) {
       const msg =
         (error.response &&
@@ -282,6 +301,22 @@ export const playerSlice = createSlice({
         console.log(state.bars[payload.category], localStorage);
       }
     },
+    equipItem: (state, {payload})=>{
+      state.equipped = [
+        {
+          category: payload.category,
+          equipment: payload.item,
+        },]
+        localStorage.setItem("equippedItems", JSON.stringify(state.equipped));
+    },
+    unEquipItem: (state, {payload})=>{
+      state.equipped = [
+        {
+          category: payload.category,
+          equipment: "",
+        },]
+        localStorage.setItem("equippedItems", JSON.stringify(state.equipped));
+    },
     sortedTalents: (state, { payload }) => {
       if (payload.sortKey === "points") {
         if (payload.reverse) {
@@ -361,10 +396,10 @@ export const playerSlice = createSlice({
         console.log("casche: ", equippedCashed);
       } else {
         //console.log("no casched equipment found")
-        const filtered = state.player?.inventory?.filter(
+        const filtered = state.player?.inventory? state.player?.inventory?.filter(
           (el) => el.status === "Ausgerüstet"
-        );
-        //console.log(filtered)
+        ) : [];
+        console.log(filtered)
         state.equipped = [
           {
             category: "Kopf",
@@ -439,7 +474,7 @@ export const playerSlice = createSlice({
             consumables.push(element);
           }
         });
-        console.log(weapons, shield, consumables)
+        console.log(weapons, shield, consumables);
         if (weapons?.length === 1) {
           if (weapons[0].item.type === "einhändig") {
             if (shield.length === 1) {
@@ -668,9 +703,26 @@ export const playerSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.player.companions.push(action.payload)
+        state.player.companions.push(action.payload);
       })
       .addCase(addCompanion.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(updateCompanionStatus.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
+      })
+      .addCase(updateCompanionStatus.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+        const updateId = state.player.companions.findIndex(el=>el._id.toString()===action.payload.id)
+        state.player.companions[updateId] = action.payload.updated
+      })
+      .addCase(updateCompanionStatus.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
@@ -723,6 +775,7 @@ export const playerSlice = createSlice({
           state.weight = Number(newWeight.toFixed(1));
           //console.log(Number((newWeight).toFixed(1)))
         }
+        filterEquipment()
       })
       .addCase(updateInventory.rejected, (state, action) => {
         state.isLoading = false;
@@ -735,9 +788,9 @@ export const playerSlice = createSlice({
       .addCase(toInventory.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        const itemWeight = action.payload.item.weight
+        const itemWeight = action.payload.item.weight;
         state.player.inventory.push(action.payload);
-        state.weight = state.weight + itemWeight
+        state.weight = state.weight + itemWeight;
       })
       .addCase(toInventory.rejected, (state, action) => {
         state.isLoading = false;
@@ -748,12 +801,14 @@ export const playerSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(deleteItem.fulfilled, (state, action) => {
-        const itemWeight = state.player.inventory.find(item => item._id===action.payload.id)?.item.weight
-        console.log(itemWeight)
+        const itemWeight = state.player.inventory.find(
+          (item) => item._id === action.payload.id
+        )?.item.weight;
+        console.log(itemWeight);
         state.isLoading = false;
         state.isSuccess = true;
 
-        state.weight = state.weight - itemWeight
+        state.weight = state.weight - itemWeight;
         state.player.inventory = state.player.inventory.filter(
           (item) => item._id !== action.payload.id
         );
@@ -846,6 +901,8 @@ export const {
   increaseBar,
   decreaseBar,
   resetBars,
+  equipItem,
+  unEquipItem,
   filterEquipment,
   getArmor,
   getBonis,

@@ -58,7 +58,7 @@ function InventoryTable({
                 : iFilter === "Begleiter" && iFilter === invElement.item.category
                 ? true
                 : false
-                console.log(iFilter, filterCheck, categoryCheck)
+          
             const showElement = filterCheck || categoryCheck;
             return (
               r &&
@@ -81,11 +81,16 @@ function InventoryTable({
                       id={invElement._id}
                       onChange={onMultiSelect}
                     />
-                    <img
+                     <img
                       name={invElement.item.name}
                       alt="icon"
                       src={`/icons/${r}/${g}xhdpi.png`}
                       onClick={itemSelected}
+                      onError={event => {
+                        console.log(g)
+                        event.target.src = "/icons/common/" + g + "xhdpi.png"
+                        event.onerror = null
+                      }}
                     />
                     <label htmlFor={invElement._id}>
                       <h4> {invElement.item.name}</h4>

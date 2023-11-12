@@ -2,14 +2,21 @@ import React, { useState } from "react";
 import AttributesList from "./AttributesList";
 import MathButtonGroup from "../../components/MathButtonGroup";
 import ProgressBar from "../../components/ProgressBar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faWeightHanging } from "@fortawesome/free-solid-svg-icons";
 
-
-function Slot({ i, category, data, usedBy, unlocked, slotOnClick }) {
-  const {charismaValue,  info } = data;
+function Slot({ i, category, data, usedBy, unlocked, slotOnClick, slotFilter }) {
+  const { charismaValue, info } = data;
   const localHP = localStorage.getItem(category);
   const [damageDone, setDamageDone] = useState(0);
+  const [showList, setShowList] = useState(false)
   const [currentHP, setCurrentHP] = useState(localHP ? parseInt(localHP) : -1);
-  console.log(currentHP)
+  console.log(currentHP);
+  console.log(slotFilter && slotFilter)
+
+  const listVisible = () => {
+    setShowList(showList=>!showList)
+  }
   if (unlocked) {
     if (usedBy?.length === 1) {
       const { _id, creature, name, level } = usedBy[0];
@@ -17,7 +24,7 @@ function Slot({ i, category, data, usedBy, unlocked, slotOnClick }) {
       const add = () => {
         console.log(typeof currentHP, typeof damageDone);
         if (currentHP === -1) {
-          console.log("first load +")
+          console.log("first load +");
           setCurrentHP(() => creature?.hitpoints);
           localStorage.setItem(category, creature?.hitpoints);
         } else if (currentHP + damageDone <= creature?.hitpoints) {
@@ -27,32 +34,28 @@ function Slot({ i, category, data, usedBy, unlocked, slotOnClick }) {
       };
       const subtract = () => {
         if (currentHP === -1) {
-          console.log("first load -")
+          console.log("first load -");
           setCurrentHP(() => creature?.hitpoints - damageDone);
           localStorage.setItem(category, creature?.hitpoints - damageDone);
         } else if (currentHP - damageDone >= 0) {
           localStorage.setItem(category, currentHP - damageDone);
           setCurrentHP((curr) => curr - damageDone);
-          
         }
       };
       return (
         <div className="slot">
           <div className="row">
-            <div className="col-auto ">
+            <div className="col-auto">
               <div className="slot-number">{i}</div>
               <button
                 id="Stall"
                 name={_id}
                 className="slot-number btn-remove mt-2"
-                onClick={(e) =>{
-                  slotOnClick(e.currentTarget.id, e.currentTarget.name)
+                onClick={(e) => {
+                  slotOnClick(e.currentTarget.id, e.currentTarget.name);
                   localStorage.removeItem(category);
-                  setCurrentHP(-1)
-                }
-                  
-                
-                }
+                  setCurrentHP(-1);
+                }}
               >
                 X
               </button>
@@ -117,6 +120,38 @@ function Slot({ i, category, data, usedBy, unlocked, slotOnClick }) {
                 </div>
               </div>
             </div>
+            <div className="col-3 border">
+              <div className="row">
+              {creature.slot1 != null ? (
+                <div className="col-6 border"></div>
+              ) : (
+                <div className="col-auto empty-slot">
+                  <button onClick={listVisible}>+</button>
+                </div>
+              )}
+              {creature.slot2 != null ? (
+                <div className="col-6 "></div>
+              ) : (
+                <div className="col-auto empty-slot">
+                  <button onClick={listVisible}>+</button>
+                </div>
+              )}
+              <div>
+                {showList &&  
+                slotFilter?.map((element=> (
+                  <div className=" row info-div border-pattern repeat" key={element._id}>
+                    <div className="col-9">
+                                          <h4>{element.item?.name}</h4>
+                    <p>{`(${element.item?.bonuses})`}</p>
+                    <strong><FontAwesomeIcon icon={faWeightHanging}/> + {element.item?.value}</strong>
+                    </div>
+                  <div className="col-2 ">
+                    <button>+</button>
+                  </div>
+                  </div>
+                )))}
+              </div>
+            </div></div>
           </div>
         </div>
       );
@@ -149,7 +184,9 @@ function Slot({ i, category, data, usedBy, unlocked, slotOnClick }) {
           </div>
           <div className="col-3">
             <h3 className="disabled">{category}</h3>
-            <div className="alert error">Erfordert {charismaValue} Charismapunkte</div>
+            <div className="alert error">
+              Erfordert {charismaValue} Charismapunkte
+            </div>
           </div>
           <div className="col-3 border-pattern left repeat">
             <p>{info}</p>

@@ -13,6 +13,7 @@ import {
   faPerson,
   faHandSparkles,
   faCoins,
+  faPaw,
 } from "@fortawesome/free-solid-svg-icons";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -20,15 +21,14 @@ import { Spinner } from "react-bootstrap";
 import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 import {
-  //filterEquipment,
-  //getWeight,
-
   loadPercentage,
   newBalance,
   toInventory,
   setEnchantment,
   updateInventory,
   deleteItem,
+  filterEquipment,
+  equipItem,
 } from "../../features/player/playerSlice";
 import Equipment from "./Equipment";
 import Info from "./Info";
@@ -48,6 +48,7 @@ function InventoryPage() {
   const {
     fractionTheme,
     player,
+    isSuccess,
     armor,
     equipmentError,
     weight,
@@ -76,7 +77,7 @@ function InventoryPage() {
   // dB items
   const [isLoad, setLoad] = useState(false);
   const [searchName, setSearch] = useState("");
-  const [filter, setFilter] = useState("");
+  const [filter, setFilter] = useState(""); //db filter
   const [edit, activeEdit] = useState(false);
   const [detailsId, setId] = useState(-1);
   const [iFilter, setInventoryFilter] = useState("");
@@ -104,7 +105,6 @@ function InventoryPage() {
     }
   }, [user, items.length, message, isError, isLoad, navigate, dispatch]);
 
-
   useEffect(() => {
     if (weight / (loadCapacity / 100) !== currPercentage) {
       console.log("percentage changed");
@@ -114,6 +114,11 @@ function InventoryPage() {
     console.log("frame func && percentage func were called");
   }, [weight, loadCapacity, currPercentage, dispatch]);
 
+
+  useEffect(()=>{
+    console.log("filter quippment")
+    dispatch(filterEquipment())
+  }, [player?.inventory])
   const getDetails = (e) => {
     console.log(e.currentTarget.name);
     setId(parseInt(e.currentTarget.name));
@@ -148,12 +153,36 @@ function InventoryPage() {
     updateMoney(player?.money);
     console.log(newMoney);
   };
+
+
   const handleSave = (e) => {
     e.preventDefault();
     console.log(toUpdate);
     if (toUpdate?.length > 0) {
-      toUpdate.forEach((item) => dispatch(updateInventory(item)));
+      toUpdate.forEach((item) => { 
+        const id = item.item
+        let equipFlag = false
+        let unequipFlag = false
+        const oldStatus = player?.inventory.find(el=>el._id == id)?.status
+        console.log(item.item)
+        console.log("old status: ", oldStatus, " new status: ", item.status)
+        if(oldStatus !== item.status){
+          if(oldStatus === "Ausgerüstet"){
+            console.log("newly uneqipped item")
+            unequipFlag = true
+
+          } else if(item.status==="Ausgerüstet"){
+            console.log("newly equipped item")
+            equipFlag = true
+          }
+        }
+        dispatch(updateInventory(item));
+        console.log(item)
+      });
     }
+    //console.log("filter equipment")
+    //dispatch(filterEquipment())
+    console.log(localStorage.getItem("equippedItems"))
     console.log(newMoney, player.money);
     if (
       newMoney[0] !== player?.money[0] ||
@@ -190,11 +219,14 @@ function InventoryPage() {
             if (i === id) {
               console.log("found! ", item);
               flag = true;
+              const newAmount =  e.target.id === "amount" ? e.target.value : item.amount
+              const newStatus =  e.target.id === "status" ? e.target.value : item.status
               let newItem = {
                 item: e.target.name,
-                amount: e.target.id === "amount" ? e.target.value : item.amount,
-                status: e.target.id === "status" ? e.target.value : item.status,
+                amount: newAmount,
+                status:newStatus,
               };
+
               console.log(`new item: ${newItem}`);
               console.log(newItem);
               return newItem;
@@ -212,7 +244,6 @@ function InventoryPage() {
     } else {
       setUpdate([{ item: e.target.name, [e.target.id]: e.target.value }]);
     }
-    //const id = showInfo.findIndex(el=>el.name === e.target.id)
     if (isLoading || player.isLoading) {
       return <Spinner animation="border" />;
     }
@@ -257,11 +288,14 @@ function InventoryPage() {
     }
   };
 
+
   const clearSearch = () => {
     document.getElementById("searchbar").value = "";
     dispatch(getItem());
     setSearch("");
   };
+
+
   const offerCounter = () => {
     /**
      counts sum of selected elements & opens popup window
@@ -405,6 +439,15 @@ function InventoryPage() {
                     onClick={onClickFilter}
                   >
                     <FontAwesomeIcon icon={faSeedling} />
+                  </button>
+                </div>
+                <div className="row">
+                  <button
+                    name="Begleiter"
+                    className={fractionTheme}
+                    onClick={onClickFilter}
+                  >
+                    <FontAwesomeIcon icon={faPaw} />
                   </button>
                 </div>
                 <div className="row">
@@ -653,6 +696,20 @@ function InventoryPage() {
                     }}
                   >
                     <FontAwesomeIcon icon={faSeedling} />
+                  </motion.button>
+                  <motion.button
+                    variants={buttonActive}
+                    animate={
+                      activeCategory === "Begleiter" ? "active" : "inactive"
+                    }
+                    id="companion"
+                    onClick={(e) => {
+                      dispatch(getGenus({ category: "Begleiter" }));
+                      setFilter("");
+                      setId(-1);
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faPaw} />
                   </motion.button>
                 </div>
                 {isLoad && (

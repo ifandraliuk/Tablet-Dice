@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "framer-motion";
-const LevelUp = ({ level, fraction }) => {
+const LevelUp = ({ level, newLevel, fraction }) => {
 
   useEffect(()=>{
 
@@ -29,6 +29,7 @@ const LevelUp = ({ level, fraction }) => {
       className={`round-btn ${fraction}`}
       variants={variants}
       animate="active"
+      onClick={newLevel}
     >
       {level}
       <motion.strong
