@@ -37,14 +37,69 @@ body {
   margin: 0.2em 0 0 0.2em;
 }
 
+.icon-box {
+  width: 80px;
+  height: 80px;
+  border-radius: 20%;
+}
+
+.primitive-bg {
+  background: url(~/public/color_icons/bg/primitive.svg);
+}
+
+.common-bg {
+  background: url(~/public/color_icons/bg/common.svg);
+}
+
+.highgrade-bg {
+  background: url(~/public/color_icons/bg/highgrade.svg);
+}
+
+.magical-bg {
+  background: url(~/public/color_icons/bg/magical.svg);
+}
+
+.extraordinary-bg {
+  background: url(~/public/color_icons/bg/extraordinary.svg);
+}
+
+.rare-bg {
+  background: url(~/public/color_icons/bg/rare.svg);
+}
+
+.amazing-bg {
+  background: url(~/public/color_icons/bg/amazing.svg);
+}
+
+.epic-bg {
+  background: url(~/public/color_icons/bg/epic.svg);
+}
+
+.legendary-bg {
+  background: url(~/public/color_icons/bg/legendary.svg);
+}
+
 /* BORDERS */
 .border-pattern {
   border: 15px solid rgba(24, 24, 24, 0.8);
   border-image-source: url(~/public/pattern/grey-card-border.svg);
   border-image-slice: 33 33 32 33;
-  border-image-width: 15px 15px 15px 15px;
   border-image-outset: 0px 0px 0px 0px;
+}
+.border-pattern.stretch {
   border-image-repeat: stretch stretch;
+}
+.border-pattern.repeat {
+  border-image-repeat: repeat repeat;
+}
+.border-pattern.left {
+  border-image-width: 0 0 0 20px;
+}
+.border-pattern.top {
+  border-image-width: 15px 0 0 0;
+}
+.border-pattern.complete {
+  border-image-width: 15px 15px 15px 15px;
 }
 
 .border-pattern-top {
@@ -83,8 +138,17 @@ body {
   border-bottom-right-radius: 6px;
 }
 
-.btn-small {
-  width: 0.2em;
+.btn-light {
+  background-color: #fff;
+  padding: 2px 10px;
+  border: 2px solid;
+  border-color: azure;
+  color: rgb(24, 24, 24);
+}
+
+.btn-light:hover {
+  background-color: rgb(24, 24, 24);
+  color: #fff;
 }
 
 .btn-up {
@@ -178,6 +242,22 @@ button:disabled {
   min-width: 70px;
 }
 
+/* PROGRESS BAR */
+.horizontall-bar {
+  background-color: rgb(24, 24, 24);
+  border-top-right-radius: 0.5em;
+  border-bottom-right-radius: 0.5em; /* (height of inner div) / 2 + padding */
+  padding: 0.2em;
+}
+
+.horizontall-bar > div {
+  width: 80%; /* Adjust with JavaScript */
+  height: 20px;
+  text-align: center;
+  border-top-right-radius: 0.5em;
+  border-bottom-right-radius: 0.5em;
+}
+
 /*TEXTAREA; INPUT*/
 textarea {
   background-color: rgb(24, 24, 24);
@@ -230,7 +310,7 @@ select {
 
 div {
   word-wrap: break-word;
-  color: azure;
+  color: rgb(240, 255, 255);
 }
 
 /* HEADINGS*/
@@ -321,6 +401,7 @@ h5 {
   z-index: 2;
 }
 
+/* COLORS */
 .Algor-bg {
   background: url(~/public/pattern/algor.svg) rgba(0, 0, 0, 0.8);
   background-size: 15%;
@@ -360,4 +441,16 @@ h5 {
 .Welles:hover {
   background-color: #fff05a;
   box-shadow: 0px 0px 15px 5px #fff05a;
+}
+
+.flieht {
+  background-color: rgb(87, 117, 144);
+}
+
+.neutral {
+  background-color: rgb(144, 190, 109);
+}
+
+.aggressiv {
+  background-color: rgb(243, 114, 44);
 }/*# sourceMappingURL=Main.css.map */

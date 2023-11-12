@@ -5,12 +5,27 @@
   border: 3px solid;
   max-width: 100%;
 }
-.bestiaria .flieht {
-  background-color: rgb(144, 190, 109);
+.bestiaria .img-popup {
+  width: 50px;
+  height: auto;
 }
-.bestiaria .neutral {
-  background-color: rgb(87, 117, 144);
+.bestiaria .border-left {
+  border: 15px solid rgba(24, 24, 24, 0.8);
+  border-image-source: url(~/public/pattern/grey-card-border.svg);
+  border-image-slice: 33 33 32 33;
+  border-image-width: 0 0 0 10px;
+  border-image-outset: 0px 0px 0px 0px;
+  border-image-repeat: repeat;
 }
-.bestiaria .aggressiv {
-  background-color: rgb(243, 114, 44);
+.bestiaria .border-popup {
+  border: 15px solid rgba(24, 24, 24, 0.8);
+  border-image-source: url(~/public/pattern/grey-card-border.svg);
+  border-image-slice: 33 33 32 33;
+  border-image-width: 10px 10px 10px 10px;
+  border-image-outset: 0px 0px 0px 0px;
+  border-image-repeat: repeat;
+}
+.bestiaria .info {
+  background-color: rgba(24, 24, 24, 0.8);
+  margin: 0.2em 0;
 }/*# sourceMappingURL=Bestiaria.css.map */

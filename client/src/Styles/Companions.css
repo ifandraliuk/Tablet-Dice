@@ -1,3 +1,41 @@
 .companions-page {
   color: white;
+}
+.companions-page .companion-list {
+  background-color: rgba(24, 24, 24, 0.8);
+  margin: 0.7em;
+  padding: 0.5em;
+}
+.companions-page .empty-slot {
+  min-height: 3em;
+  padding: 0.2em;
+  width: 3em;
+}
+.companions-page .companion-list:hover {
+  background-color: rgb(24, 24, 24);
+}
+.companions-page .level-div {
+  border: 2px solid;
+  width: 2em;
+  border-radius: 50%;
+  text-align: center;
+  margin-top: auto;
+  margin-bottom: auto;
+  padding: 0.2em;
+}
+.companions-page .slot-number {
+  border: 2px solid;
+  background-color: rgb(24, 24, 24);
+  width: 2em;
+  height: 2em;
+  border-radius: 20%;
+  text-align: center;
+  padding: 0.2em;
+}
+.companions-page .disabled {
+  color: #7c7c7c !important;
+}
+.companions-page .line {
+  width: 100%;
+  height: 0.2em;
 }/*# sourceMappingURL=Companions.css.map */

@@ -33,6 +33,48 @@ body {
     padding: 0.5em;
     margin: 0.2em 0 0 0.2em;
 }
+.icon-box {
+    width: 80px;
+    height: 80px;
+    border-radius: 20%;
+    
+}
+.primitive-bg{
+    background: url(~/public/color_icons/bg/primitive.svg);
+}
+.common-bg{
+    background: url(~/public/color_icons/bg/common.svg);
+}
+.highgrade-bg{
+    background: url(~/public/color_icons/bg/highgrade.svg);
+    ///background: -webkit-radial-gradient(circle, rgb(241, 241, 241) 0%, hsla(0, 0%, 0%, 1) 45%)
+}
+.magical-bg{
+    background: url(~/public/color_icons/bg/magical.svg);
+    //background: -webkit-radial-gradient(circle, hsl(31, 100%, 43%) 0%, hsla(0, 0%, 0%, 1) 45%);
+}
+.extraordinary-bg{
+    background: url(~/public/color_icons/bg/extraordinary.svg);
+    //background: -webkit-radial-gradient(circle, hsla(300, 68%, 32%, 1) 0%, hsla(0, 0%, 0%, 1) 45%);
+}
+.rare-bg{
+    background: url(~/public/color_icons/bg/rare.svg);
+    //background: -webkit-radial-gradient(circle,  hsla(97, 69%, 31%, 1) 0%,  hsla(0, 0%, 0%, 1) 65%);
+}
+
+
+.amazing-bg{
+    background: url(~/public/color_icons/bg/amazing.svg);
+    //background: -webkit-radial-gradient(circle,  hsl(54, 100%, 50%) 0%, hsla(0, 0%, 0%, 1) 65%);
+}
+.epic-bg{
+    background: url(~/public/color_icons/bg/epic.svg);
+    ///background: -webkit-radial-gradient(circle, hsla(197, 100%, 31%, 1) 0%, hsla(0, 0%, 0%, 1) 65%);
+}
+.legendary-bg {
+    background: url(~/public/color_icons/bg/legendary.svg);
+    //background: -webkit-radial-gradient(circle, hsla(0, 100%, 26%, 1) 0%, hsla(0, 0%, 0%, 1) 65%);
+}
 
 /* BORDERS */
 .border-pattern{
@@ -40,12 +82,28 @@ body {
     border-image-source: url(~/public/pattern/grey-card-border.svg);
     border-image-slice:
     33 33 32 33;
-    border-image-width:
-    15px 15px 15px 15px;
     border-image-outset:
     0px 0px 0px 0px;
+&.stretch{
     border-image-repeat:
     stretch stretch;
+}
+&.repeat{
+    border-image-repeat:
+    repeat repeat;
+}
+&.left{
+    border-image-width:
+    0  0  0 20px;
+}
+&.top{
+    border-image-width:
+    15px 0  0 0;
+}
+&.complete {
+    border-image-width:
+    15px 15px 15px 15px;
+}
 
 }
 
@@ -84,8 +142,16 @@ body {
     border-bottom-right-radius: 6px;
 }
 
-.btn-small{
-    width: 0.2em
+.btn-light{
+    background-color: #fff;
+    padding: 2px 10px;
+    border: 2px solid;
+    border-color: azure;
+    color: $infoBlack;
+}
+.btn-light:hover{
+    background-color: $infoBlack;
+    color: #fff;
 }
 .btn-up {
     position: fixed;
@@ -172,6 +238,22 @@ button:disabled{
 
 }
 
+/* PROGRESS BAR */
+
+.horizontall-bar{
+    background-color: $infoBlack;
+    border-top-right-radius: 0.5em;
+    border-bottom-right-radius: 0.5em; /* (height of inner div) / 2 + padding */
+    padding: 0.2em;
+}
+.horizontall-bar > div{
+    
+    width: 80%; /* Adjust with JavaScript */
+    height: 20px;
+    text-align: center;
+    border-top-right-radius: 0.5em;
+    border-bottom-right-radius: 0.5em;
+}
 
 /*TEXTAREA; INPUT*/
 textarea{
@@ -225,7 +307,7 @@ select{
 
 div{
     word-wrap: break-word;
-    color: azure;
+    color: rgb(240, 255, 255);
 }
 
 /* HEADINGS*/
@@ -307,6 +389,8 @@ h5 {
     z-index: 2;
 }
 
+
+/* COLORS */
 .Algor-bg {
     background:url(~/public/pattern/algor.svg) rgba(0, 0, 0, 0.8);
     background-size: 15%;
@@ -347,6 +431,18 @@ h5 {
     background-color: #fff05a;
     -webkit-box-shadow: 0px 0px 15px 5px #fff05a; 
     box-shadow: 0px 0px 15px 5px #fff05a;
+}
+
+// COMPANION COLORS
+
+.flieht{
+    background-color: $categoryBlue;
+}
+.neutral{
+    background-color: $categoryGreen;
+}
+.aggressiv{
+    background-color: $categoryOrange;
 }
 
 

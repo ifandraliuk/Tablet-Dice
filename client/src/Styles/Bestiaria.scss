@@ -7,14 +7,38 @@
         border: 3px solid;
         max-width: 100%;
     }
+    .img-popup{
+        width: 50px;
+        height: auto;
+    }
+    .border-left{
+        border: 15px solid $transparentBlack;
+        border-image-source: url(~/public/pattern/grey-card-border.svg);
+        border-image-slice:
+        33 33 32 33;
+        border-image-width:
+        0  0  0 10px;
+        border-image-outset:
+        0px 0px 0px 0px;
+        border-image-repeat:
+        repeat;       
+    }
+    .border-popup{
+        border: 15px solid $transparentBlack;
+        border-image-source: url(~/public/pattern/grey-card-border.svg);
+        border-image-slice:
+        33 33 32 33;
+        border-image-width:
+        10px  10px  10px 10px;
+        border-image-outset:
+        0px 0px 0px 0px;
+        border-image-repeat:
+        repeat;       
+    }
+    .info{
+        background-color: $transparentBlack;
+        margin: 0.2em 0;
+    }
+    
 
-    .flieht{
-        background-color: $categoryGreen;
-    }
-    .neutral{
-        background-color: $categoryBlue;
-    }
-    .aggressiv{
-        background-color: $categoryOrange;
-    }
 }
