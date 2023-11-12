@@ -141,7 +141,8 @@ const racesList = ["Elb","Draconid", "Zwerg", "Gnom", "Ork", "Kobold", "Mensch",
         category : {
             Waffe: "weapon",
             Rüstung: "armor",
-            Ressource: "ressource"
+            Ressource: "ressource",
+            Begleiter: "companion",
         },
         genus: {
             Brust: "chest",
@@ -175,17 +176,22 @@ const racesList = ["Elb","Draconid", "Zwerg", "Gnom", "Ork", "Kobold", "Mensch",
             Pflanzen: "plant",
             Organisch: "organical",
             Sonstige: "other",
+            // companion
+            Sattel: "saddle",
+            Tasche: "bag",
         },
         rarity: {
             primitiv: "primitive",
             gewöhnlich: "common",
             hochwertig:"highgrade",
-            magisch: "magical",
-            außergewöhnlich: "extraordinary",
-            selten: "rare",
-            sagenhaft:"amazing",
-            episch: "epic",
-            legendär: "legendary",
+
+            magisch: "magical", //orange
+            außergewöhnlich: "extraordinary", //lila
+            selten: "rare", // grün
+            
+            sagenhaft:"amazing", // gelb
+            episch: "epic", // blau
+            legendär: "legendary", //rot
             einzigartig: "unique"
         },
         gems: [
