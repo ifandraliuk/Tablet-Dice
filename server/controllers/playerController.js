@@ -20,6 +20,7 @@ const getPlayer = asyncHandler(async (req, res) => {
     .populate({path: 'userclass', select:'name category description abilities advantages', model: 'Userclass'}, )
     .populate({path:'talents.talent',  model:'Talent', select:'_id category name dice'})
     .populate({path:'inventory.item',  model:'Item'})
+    .populate({path:'inventory.item.material.element',  model:'Item', select: "_id name"})
     .populate({path: 'companions.creature', model:'Bestiarium'})
     //console.log(user.userclass.name)
     if(!user){

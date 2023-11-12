@@ -58,7 +58,7 @@ function App() {
       if (equipped?.length === 0) {
         // equipped items was not filtered
         dispatch(filterEquipment());
-        // console.log("filter equipment...")
+        console.log("filter equipment...")
       }
     }
     if (player?.inventory?.length > 0 && weight === 0) {

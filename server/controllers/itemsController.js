@@ -67,7 +67,7 @@ const findItem = asyncHandler( async (req, res) => {
     }
 })
 const getItem = asyncHandler( async (req, res) => {
-    const items = await Item.find()
+    const items = await Item.find().populate({path:'material.element',  model:'Item', select: "_id name"})
     res.status(200).json(items)
     
 })
