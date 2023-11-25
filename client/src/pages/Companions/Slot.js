@@ -3,26 +3,40 @@ import AttributesList from "./AttributesList";
 import MathButtonGroup from "../../components/MathButtonGroup";
 import ProgressBar from "../../components/ProgressBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faWeightHanging } from "@fortawesome/free-solid-svg-icons";
+import { faShield } from "@fortawesome/free-solid-svg-icons";
+import { motion } from "framer-motion";
+import ItemIcon from "../../components/ItemIcon";
 
-function Slot({ i, category, data, usedBy, unlocked, slotOnClick, slotFilter }) {
+/*
+ * Active companion slot wit all information about it. Has also 2 equipment slots. 
+The items are sorted out of the users inventory.
+
+ */
+function Slot({
+  i,
+  category,
+  data,
+  usedBy,
+  unlocked,
+  slotOnClick,
+  slotFilter,
+  equipItem,
+  clearSlot
+}) {
   const { charismaValue, info } = data;
   const localHP = localStorage.getItem(category);
   const [damageDone, setDamageDone] = useState(0);
-  const [showList, setShowList] = useState(false)
+  const [showList, setShowList] = useState(false);
   const [currentHP, setCurrentHP] = useState(localHP ? parseInt(localHP) : -1);
-  console.log(currentHP);
-  console.log(slotFilter && slotFilter)
 
   const listVisible = () => {
-    setShowList(showList=>!showList)
-  }
+    setShowList((showList) => !showList);
+  };
   if (unlocked) {
     if (usedBy?.length === 1) {
-      const { _id, creature, name, level } = usedBy[0];
-
+      const { _id, creature, name } = usedBy[0];
+      console.log(usedBy);
       const add = () => {
-        console.log(typeof currentHP, typeof damageDone);
         if (currentHP === -1) {
           console.log("first load +");
           setCurrentHP(() => creature?.hitpoints);
@@ -42,6 +56,7 @@ function Slot({ i, category, data, usedBy, unlocked, slotOnClick, slotFilter }) 
           setCurrentHP((curr) => curr - damageDone);
         }
       };
+
       return (
         <div className="slot">
           <div className="row">
@@ -75,6 +90,8 @@ function Slot({ i, category, data, usedBy, unlocked, slotOnClick, slotFilter }) 
                 capacity={creature?.capacity}
                 hitchance={creature?.hitchance}
                 armor={creature?.armor}
+                slot1={usedBy[0]?.slot1}
+                slot2={usedBy[0]?.slot2}
               />
               <ProgressBar
                 color={creature?.picture}
@@ -107,6 +124,19 @@ function Slot({ i, category, data, usedBy, unlocked, slotOnClick, slotFilter }) 
               <h4>Fertigkeiten</h4>
               <p>{creature?.ability}</p>
               <div className={`line ${creature?.picture}`}></div>
+              {usedBy[0]?.slot1 || usedBy[0]?.slot2 ? (
+                <div>
+                  <h4>Ausrüstungsbonus</h4>
+                  {usedBy[0].slot1 && (
+                    <p>{`${usedBy[0].slot1?.bonuses} (${usedBy[0].slot1.name})`}</p>
+                  )}
+                  {usedBy[0].slot2 && (
+                    <p>{`${usedBy[0].slot2?.bonuses} (${usedBy[0].slot2.name})`}</p>
+                  )}
+                </div>
+              ) : (
+                <></>
+              )}
               <h4>Schaden</h4>
               <div className="row">
                 <div className="col-auto">{info}</div>
@@ -120,38 +150,77 @@ function Slot({ i, category, data, usedBy, unlocked, slotOnClick, slotFilter }) 
                 </div>
               </div>
             </div>
-            <div className="col-3 border">
+            <div className="col-3">
               <div className="row">
-              {creature.slot1 != null ? (
-                <div className="col-6 border"></div>
-              ) : (
-                <div className="col-auto empty-slot">
-                  <button onClick={listVisible}>+</button>
-                </div>
-              )}
-              {creature.slot2 != null ? (
-                <div className="col-6 "></div>
-              ) : (
-                <div className="col-auto empty-slot">
-                  <button onClick={listVisible}>+</button>
-                </div>
-              )}
-              <div>
-                {showList &&  
-                slotFilter?.map((element=> (
-                  <div className=" row info-div border-pattern repeat" key={element._id}>
-                    <div className="col-9">
-                                          <h4>{element.item?.name}</h4>
-                    <p>{`(${element.item?.bonuses})`}</p>
-                    <strong><FontAwesomeIcon icon={faWeightHanging}/> + {element.item?.value}</strong>
+                {usedBy[0]?.slot1 ? (
+                  <div className="col-6 info-div">
+                    <div className="row ">
+                      <div className="col-auto ">
+                        <ItemIcon item={usedBy[0]?.slot1} />
+                      </div>
+                      <div className="col-4">
+                        <button id='slot1' className="btn-remove" onClick={(e)=>clearSlot(usedBy[0], e.currentTarget.id) }>X</button>{" "}
+                      </div>
                     </div>
-                  <div className="col-2 ">
-                    <button>+</button>
                   </div>
+                ) : (
+                  <div className="col-auto empty-slot">
+                    <button onClick={listVisible}>+</button>
                   </div>
-                )))}
+                )}
+                {usedBy[0]?.slot2 ? (
+                  <div className="col-6 info-div">
+                  <div className="row ">
+                    <div className="col-auto ">
+                      <ItemIcon item={usedBy[0]?.slot2} />
+                    </div>
+                    <div className="col-4">
+                      <button id='slot2' className="btn-remove" onClick={(e)=>clearSlot(usedBy[0], e.currentTarget.id) }>X</button>{" "}
+                    </div>
+                  </div>
+                </div>
+                ) : (
+                  <div className="col-auto empty-slot">
+                    <button onClick={listVisible}>+</button>
+                  </div>
+                )}
+                <div>
+                  {showList &&
+                    slotFilter?.map((element) => {
+                      console.log(element.item?.type, usedBy[0].creature?.art)
+                      if(element.item?.type === usedBy[0].creature?.art){
+                      return(
+                      <motion.div
+                      initial={{opacity: 0}}
+                      animate={{opacity: 1}}
+                        className=" row companion-list "
+                        key={element._id}
+                      >
+                        <div
+                          className="col-9"
+                          onClick={() => {
+                            equipItem(
+                              _id,
+                              element.item?.genus,
+                              element?.item._id
+                            );
+                            listVisible();
+                          }}
+                        >
+                          <h4>{element.item?.name}</h4>
+                          <p>{`(${element.item?.bonuses})`}</p>
+                          <strong>
+                            <FontAwesomeIcon icon={faShield} /> +{" "}
+                            {element.item?.value}
+                          </strong>
+                        </div>
+                      </motion.div>
+                      )} else return (<></>)
+                      
+                  })}
+                </div>
               </div>
-            </div></div>
+            </div>
           </div>
         </div>
       );

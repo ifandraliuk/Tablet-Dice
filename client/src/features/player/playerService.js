@@ -118,6 +118,31 @@ const updateCompanionStatus = async (compData, token) => {
   return response.data;
 };
 
+// put an equipment to the companion
+const equipToCompanion = async (compData, token) => {
+  console.log("frontend request to equip an item to a companion");
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.put(API_URL + "companion/equip", compData, config);
+  return response.data;
+}
+// unequip slot to the companion
+const unequipCompanionItem = async (compData, token) => {
+  console.log("frontend request to unequip an item ");
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.put(API_URL + "companion/item", compData, config);
+  return response.data;
+}
+
 const updateLevel = async (token) => {
   console.log("frontend - level up");
   const config = {
@@ -269,6 +294,8 @@ const playerService = {
   newBalance,
   addCompanion,
   updateCompanionStatus,
+  equipToCompanion,
+  unequipCompanionItem,
   updateAttribute,
   addTalent,
   removeTalent,

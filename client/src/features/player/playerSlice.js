@@ -112,13 +112,50 @@ export const addCompanion = createAsyncThunk(
     }
   }
 );
-// Posting a new companion to user
+// Put a new companion to user
 export const updateCompanionStatus = createAsyncThunk(
   "player/companion/put",
   async (compData, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
       return await playerService.updateCompanionStatus(compData, token);
+    } catch (error) {
+      const msg =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(msg);
+    }
+  }
+);
+
+// Put an equipment to the companion
+export const equipToCompanion = createAsyncThunk(
+  "player/companion/equip/put",
+  async (compData, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await playerService.equipToCompanion(compData, token);
+    } catch (error) {
+      const msg =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(msg);
+    }
+  }
+);
+// Put an equipment to the companion
+export const unequipCompanionItem = createAsyncThunk(
+  "player/companion/item/put",
+  async (compData, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await playerService.unequipCompanionItem(compData, token);
     } catch (error) {
       const msg =
         (error.response &&
@@ -301,21 +338,23 @@ export const playerSlice = createSlice({
         console.log(state.bars[payload.category], localStorage);
       }
     },
-    equipItem: (state, {payload})=>{
+    equipItem: (state, { payload }) => {
       state.equipped = [
         {
           category: payload.category,
           equipment: payload.item,
-        },]
-        localStorage.setItem("equippedItems", JSON.stringify(state.equipped));
+        },
+      ];
+      localStorage.setItem("equippedItems", JSON.stringify(state.equipped));
     },
-    unEquipItem: (state, {payload})=>{
+    unEquipItem: (state, { payload }) => {
       state.equipped = [
         {
           category: payload.category,
           equipment: "",
-        },]
-        localStorage.setItem("equippedItems", JSON.stringify(state.equipped));
+        },
+      ];
+      localStorage.setItem("equippedItems", JSON.stringify(state.equipped));
     },
     sortedTalents: (state, { payload }) => {
       if (payload.sortKey === "points") {
@@ -396,10 +435,10 @@ export const playerSlice = createSlice({
         console.log("casche: ", equippedCashed);
       } else {
         //console.log("no casched equipment found")
-        const filtered = state.player?.inventory? state.player?.inventory?.filter(
-          (el) => el.status === "Ausgerüstet"
-        ) : [];
-        console.log(filtered)
+        const filtered = state.player?.inventory
+          ? state.player?.inventory?.filter((el) => el.status === "Ausgerüstet")
+          : [];
+        console.log(filtered);
         state.equipped = [
           {
             category: "Kopf",
@@ -719,10 +758,54 @@ export const playerSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        const updateId = state.player.companions.findIndex(el=>el._id.toString()===action.payload.id)
-        state.player.companions[updateId] = action.payload.updated
+        const updateId = state.player.companions.findIndex(
+          (el) => el._id.toString() === action.payload.id
+        );
+        state.player.companions[updateId] = action.payload.updated;
       })
       .addCase(updateCompanionStatus.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(equipToCompanion.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
+      })
+      .addCase(equipToCompanion.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+        const updateId = state.player.companions.findIndex(
+          (el) => el._id.toString() === action.payload.id
+        );
+        state.player.companions[updateId] = action.payload.updated;
+      })
+      .addCase(equipToCompanion.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(unequipCompanionItem.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
+      })
+      .addCase(unequipCompanionItem.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+        const updateId = state.player.companions.findIndex(
+          (el) => el._id.toString() === action.payload.companion
+        );
+        if (action.payload.slotName === "slot1" ) {
+          state.player.companions[updateId].slot1 = null;
+        } else {
+          state.player.companions[updateId].slot2 = null;
+        }
+      })
+      .addCase(unequipCompanionItem.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
@@ -775,7 +858,7 @@ export const playerSlice = createSlice({
           state.weight = Number(newWeight.toFixed(1));
           //console.log(Number((newWeight).toFixed(1)))
         }
-        filterEquipment()
+        filterEquipment();
       })
       .addCase(updateInventory.rejected, (state, action) => {
         state.isLoading = false;

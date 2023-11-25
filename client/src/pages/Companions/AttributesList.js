@@ -1,14 +1,20 @@
 import React from "react";
 import {
-    faArrowsToCircle,
-    faDice,
-    faHeart,
-    faShield,
-    faWeightHanging,
-  } from "@fortawesome/free-solid-svg-icons";
-  import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-  
-function AttributesList({hitpoints, hitchance, capacity, armor}) {
+  faDice,
+  faHeart,
+  faShield,
+  faWeightHanging,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+function AttributesList({
+  hitpoints,
+  hitchance,
+  capacity,
+  armor,
+  slot1,
+  slot2,
+}) {
   return (
     <div className="row">
       <div className="col-auto">
@@ -23,10 +29,19 @@ function AttributesList({hitpoints, hitchance, capacity, armor}) {
         <FontAwesomeIcon icon={faWeightHanging} />
         {capacity}
       </div>
-      <div className="col-auto ms-auto">
-        <FontAwesomeIcon icon={faShield} />
-        {armor}
-      </div>
+      {slot1?.value ? (
+        <div className="col-auto ms-auto">
+          <strong>
+            <FontAwesomeIcon icon={faShield} />
+            {armor + slot1.value}
+          </strong>
+        </div>
+      ) : (
+        <div className="col-auto ms-auto">
+          <FontAwesomeIcon icon={faShield} />
+          {armor}
+        </div>
+      )}
     </div>
   );
 }

@@ -17,6 +17,7 @@ function ItemIcon({ item, enchantment }) {
         genus === "Ausrüstung" ||
         genus === "Wurfwaffe" ||
         genus === "Armbrust" ||
+        genus === "Speer" ||
         category === "Begleiter" ||
         genus === "Zauberstab") ? (
         <div className={`icon-box ${rarityColor}-bg`}>

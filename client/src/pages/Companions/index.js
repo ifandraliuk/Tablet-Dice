@@ -1,33 +1,56 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import "../../Styles/Companions.css";
 import Companion from "./Companion";
-import { AnimatePresence, delay, motion, transform } from "framer-motion";
+import { AnimatePresence,  motion} from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
 import { pageTransition } from "../../data/Animations";
 import { slots, slotInfo } from "../../data/ConstVariables";
 import Slot from "./Slot";
-import { updateCompanionStatus } from "../../features/player/playerSlice";
+import { updateCompanionStatus, equipToCompanion, unequipCompanionItem } from "../../features/player/playerSlice";
 function Companions() {
   const { player, fractionTheme, slotsAllowed } = useSelector(
     (state) => state.player
   );
-  const [msg, setMsg] = useState({id: "", text:""})
+  const [msg, setMsg] = useState({ id: "", text: "" });
   const dispatch = useDispatch();
   const { companions } = player;
 
   const slotOnClick = (status, id) => {
-    const slotIsEmpty = companions.findIndex(el=>el.status === status) < 0 || status==="Stall" ? true : false
+    const slotIsEmpty =
+      companions.findIndex((el) => el.status === status) < 0 ||
+      status === "Stall"
+        ? true
+        : false;
     console.log(status, id);
-    if(slotIsEmpty){
+    if (slotIsEmpty) {
       const data = {
         id: id,
         status: status,
       };
       dispatch(updateCompanionStatus(data));
-      setMsg({id: "", text:""})
-    } else setMsg({id: id, text:"Der Slot ist bereits besetzt"})
-
+      setMsg({ id: "", text: "" });
+    } else setMsg({ id: id, text: "Der Slot ist bereits besetzt" });
   };
+  const equipItem = (companionId, genus, itemId ) => {
+        console.log(companionId, genus, itemId)
+        const data = {
+          id: companionId,
+          genus: genus,
+          itemId: itemId
+        }
+        console.log(data)
+       dispatch(equipToCompanion(data))
+  }
+  const clearSlot = (companion, slotName) => {
+    console.log(companion)
+    const data = {
+      id: companion._id,
+      itemId: companion.slot1?._id,
+      slotName: slotName
+    }
+    console.log(data)
+    dispatch(unequipCompanionItem(data))
+  }
   console.log(companions);
   return (
     <div className={`${fractionTheme}-bg`}>
@@ -45,7 +68,7 @@ function Companions() {
                   <AnimatePresence wait>
                     {slots?.map((category, i) => (
                       <motion.div
-                      key={category}
+                        key={category}
                         layout
                         initial={{ opacity: 0, scale: 0 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -57,11 +80,15 @@ function Companions() {
                           i={i + 1}
                           category={category}
                           data={slotInfo[i]}
-                          slotFilter={player?.inventory?.filter(el=>el.item.category==="Begleiter")}
+                          slotFilter={player?.inventory?.filter(
+                            (el) => el.item.category === "Begleiter"
+                          )}
                           usedBy={companions?.filter(
                             (c) => c.status === category
                           )}
                           slotOnClick={slotOnClick}
+                          equipItem={equipItem}
+                          clearSlot={clearSlot}
                           unlocked={i + 1 <= slotsAllowed ? true : false}
                         />
                       </motion.div>
@@ -75,37 +102,34 @@ function Companions() {
                     </div>
                   </div>
                   <AnimatePresence wait>
-                    { companions?.map(
+                    {companions?.map(
                       (companion, i) =>
                         companion.status === "Stall" && (
                           <motion.div
                             layout
                             key={companion._id}
-                           
                             initial={{
                               scale: 0,
                               x: -100,
                             }}
                             animate={{
-                              scale:1,
+                              scale: 1,
                               x: 0,
                             }}
                             exit={{
-                           
                               opacity: 0,
-                              
-                              transition:{
-                                duration: i * 0.2
-                              }
+
+                              transition: {
+                                duration: i * 0.2,
+                              },
                             }}
-                         
                           >
                             <Companion
                               data={companion}
                               slots={slots}
                               slotOnClick={slotOnClick}
                               fractionTheme={fractionTheme}
-                              slotsAllowed={ slotsAllowed}
+                              slotsAllowed={slotsAllowed}
                               msg={msg}
                             />
                           </motion.div>
