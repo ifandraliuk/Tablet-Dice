@@ -11,7 +11,7 @@ const initialState = {
 }
 
 
-// Get talents 
+// Get all users 
 export const getUsers = createAsyncThunk('diary/userlist/getAll', async(_, thunkAPI)=>{
     try {
         return await diaryService.getUsers()

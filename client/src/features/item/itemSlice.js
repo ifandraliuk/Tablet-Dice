@@ -1,16 +1,18 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit'
 import itemService from './itemService'
-
+import { weapon, armor, ressource, companion, itemNames } from "../../data/ConstVariables";
 
 
 
 const initialState = {
-    items: [],
+    data: [],
+    n: 0,
+    m: 10,
     genuses: [],
     weaponGenuses: [],
     armorGenuses: [],
     ressourceGenuses: [],
-    activeGenus: [],
+    activeGenus: "",
     activeCategory: "", 
     loaded:false,
     isError: false, 
@@ -21,9 +23,10 @@ const initialState = {
 
 
 // Get items 
-export const getItem = createAsyncThunk('items/getAll', async(_, thunkAPI)=>{
+export const getItem = createAsyncThunk('items/get', async(data, thunkAPI)=>{
+    console.log(data)
     try {
-        return await itemService.getItem()
+        return await itemService.getItem(data)
     } catch (error) {
         const msg = 
         (error.response && 
@@ -48,28 +51,49 @@ export const itemSlice = createSlice({
                 state.items = state.items.filter(el=>el.name.includes(payload.name))
             }
         },
-        getGenus: (state, {payload})=>{
-            let genus =  []
-            state.activeCategory = payload.category
-            state.items.map((item) => {
-                const category = item.category
-                if(category === payload.category){  
-                    return !genus.includes(item.genus) && genus.push(item.genus)
-                } else return null
-            })
-            state.activeGenus = genus
-        }
+        getGenuses: (state, action)=>{
+           
+            const category = action.payload.filter
+            console.log(category)
+            if(category === "Waffe"){
+                state.genuses = Object.keys(weapon)
+            } else if(category === "Begleiter"){
+                state.genuses = Object.keys(companion)
+            } else if(category === "Ressource"){
+                state.genuses = Object.keys(ressource)
+            } else {
+                state.genuses = Object.keys(armor)
+            }
+            
+        },
+        selectedGenus: (state, action)=>{
+            state.activeGenus = action.payload.genus
+            state.n = 0
+            state.m = 10
+        },
+
+          setPagination: (state, action) => {
+            console.log("update pagination")
+            state.n = action.payload.n;
+            state.m = action.payload.m;
+          },
     },
     extraReducers: (builder) => {
         builder
         .addCase(getItem.pending, (state)=>{
             state.isLoading = true
+            state.isSuccess = false
         })
         .addCase(getItem.fulfilled, (state, action)=> {
+            const {data, n,m} = action.payload
+            
             state.isLoading = false
             state.isSuccess = true
-            state.items = action.payload
-            state.loaded = true
+            state.data = data
+            state.m = m
+            state.n = n
+            state.totalCount = state.data.length
+            console.log("frontent fullfilled:", n,m)
         })
         .addCase(getItem.rejected, (state, action)=> {
             state.isLoading = false
@@ -81,5 +105,5 @@ export const itemSlice = createSlice({
     }
 })
 
-export const {reset, search, getGenus} = itemSlice.actions
+export const {reset, search, getGenuses, selectedGenus, setItems, setPagination } = itemSlice.actions
 export default itemSlice.reducer

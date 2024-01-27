@@ -55,7 +55,14 @@ const listAnimation = {
 }
 /** BUTTONS */
 
-
+const buttonImpackt = {
+  whileHover: {
+    scale: 0.9,
+  },
+  whileTap: {
+    scale: [0.8, 1, 1.2],
+  },
+};
 const buttonAnimation = {
     init: {
       scale: 0
@@ -94,4 +101,5 @@ const buttonActive = {
     tableAnimation,
     buttonAnimation,
     focusButton,
+    buttonImpackt
   }

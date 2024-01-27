@@ -7,11 +7,12 @@ import creationReducer from '../features/creation/creationSlice';
 import diaryReducer from '../features/diary/diarySlice';
 import bestiariaReducer from '../features/bestiaria/bestiariaSlice';
 import habitatReducer from '../features/habitats/habitatSlice';
-
+import inventoryPageReducer from '../features/inventoryPage/inventoryPageSlice';
 
 export const store = configureStore({
     reducer: {
         creation: creationReducer,
+        inventoryPage: inventoryPageReducer,
         auth: authReducer,
         player: playerReducer,
         talents: talentReducer,

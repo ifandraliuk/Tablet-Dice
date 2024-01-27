@@ -6,9 +6,7 @@ import Spinner from "react-bootstrap/Spinner";
 import EquippedItem from "../Inventory/EquippedItem";
 import BarList from "./BarList";
 import Abilities from "./Abilities";
-
 import AttributeList from "./Attributes";
-
 import { updateLevel } from "../../features/player/playerSlice";
 import { AnimatePresence, motion } from "framer-motion";
 import { pageTransition } from "../../data/Animations";
@@ -17,10 +15,17 @@ import LevelUp from "./LevelUp";
 import GeneralInfo from "./GeneralInfo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { extendInfo, getUserWeapons } from "../../features/inventoryPage/inventoryPageSlice";
+import ExtendedInfo from "../Inventory/ExtendedInfo";
 function Dashboard() {
   const { user } = useSelector((state) => state.auth);
+  const [showInfo, setShowInfo] = useState(false);
+  const [activeButton, setActiveButton] = useState(null); // active button
   const { fractionTheme, player, armor, bonis, setboni } = useSelector(
     (state) => state.player
+  );
+  const { mainWeapon, secondWeapon, extendedId } = useSelector(
+    (state) => state.inventoryPage
   );
   const navigate = useNavigate();
   const [showImage, setShowImage] = useState(true);
@@ -29,13 +34,19 @@ function Dashboard() {
   const newLevel = () => {
     dispatch(updateLevel());
   };
+  const setExtendedId = (id) => {
+    setShowInfo((prevStatus) => !prevStatus);
+    dispatch(extendInfo({ id: id }));
+  };
 
   useEffect(() => {
     if (!user) {
       navigate("/");
     }
   }, [user, navigate]);
-
+  useEffect(() => {
+    dispatch(getUserWeapons());
+  }, []);
   return (
     <motion.div
       variants={pageTransition}
@@ -43,6 +54,14 @@ function Dashboard() {
       animate="animate"
       exit="exit"
     >
+      {showInfo && (
+        <ExtendedInfo
+          customItemInfo={extendedId === mainWeapon._id ? mainWeapon : secondWeapon}
+          key="extended-info"
+          minimized={true}
+          hideInfo={setShowInfo}
+        />
+      )}
       <div className="dashboard-page">
         <div className={`bg ${fractionTheme}-bg container-fluid`}>
           <div className="row dark-bg">
@@ -91,12 +110,24 @@ function Dashboard() {
                       fraction={fractionTheme}
                     />
                   </div>
-                  <div className="row m-auto ">
-                    <EquippedItem category="Haupthand" />
-                  </div>
-                  <div className="row m-auto">
-                    <EquippedItem category="Nebenhand" />
-                  </div>
+                 {mainWeapon && (<div id={mainWeapon._id} className="row m-auto" >
+                     
+                      <EquippedItem
+                        equippedItem={mainWeapon}
+                        delayValue={0.3}
+                        setShowInfo={setExtendedId}
+                      />
+                    
+                  </div>)}
+                  {secondWeapon && (<div className="row m-auto">
+                    
+                      <EquippedItem
+                        equippedItem={secondWeapon}
+                        delayValue={0.4}
+                        setShowInfo={setExtendedId}
+                      />
+                    
+                  </div>)}
                   <div className="row  justify-content-center">
                     <div className="armor ">
                       <strong>{armor}</strong>

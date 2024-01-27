@@ -613,6 +613,7 @@ const updateInventory = asyncHandler(async (req, res) => {
       select:
         "_id name category dice value rarity type price weight bonuses genus material",
     });
+    
   } else if (req.body.amount) {
     console.log("change amount");
     updated = await User.findOneAndUpdate(

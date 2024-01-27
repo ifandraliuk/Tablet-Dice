@@ -67,9 +67,15 @@ const findItem = asyncHandler( async (req, res) => {
     }
 })
 const getItem = asyncHandler( async (req, res) => {
-    const items = await Item.find().populate({path:'material.element',  model:'Item', select: "_id name"})
-    res.status(200).json(items)
-    
+    console.log("backend get item")
+    const { n, m, category, genus } = req.params;
+    console.log(req.params)
+    const skipCount = n || 0; // Default to 0 if not provided
+    const items = await Item.find({"category": category, "genus": genus}).skip(parseInt(skipCount)).limit(parseInt(m)).populate({
+      path: 'material.element',
+      model: 'Item'
+    });
+    res.status(200).json({data: items, n: parseInt(n), m:parseInt(m)});
 })
 
 const rename = asyncHandler(async (req,res)=>{

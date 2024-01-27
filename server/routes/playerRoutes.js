@@ -33,10 +33,10 @@ router.route("/talents/:id").delete(protect, removeTalent);
 
 //INVENTORY
 router
-  .route("/inventory")
+  .route("/inv")
   .put(protect, updateInventory)
   .post(protect, toInventory);
-router.route("/inventory/:id").delete(protect, deleteItem);
+router.route("/inv/:id").delete(protect, deleteItem);
 router.route("/enchantment").put(protect, setEnchantment);
 router.route("/balance").put(protect, updateBalance);
 //CREATE CHARACTER

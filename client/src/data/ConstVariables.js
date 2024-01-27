@@ -137,6 +137,45 @@ const racesList = ["Elb","Draconid", "Zwerg", "Gnom", "Ork", "Kobold", "Mensch",
     }
 
     /// INVENTORY
+    const weapon = {
+        Schwert: "sword",
+        Axt: "axe",
+        Streitkolben: "mace",
+        Dolch: "dagger",
+        Wurfwaffe: "throwable",
+        Speer: "spear",
+        Stab: "staff",
+        Zauberstab: "wand",
+        Bogen: "bow",
+        Armbrust: "crossbow",
+        Schusswaffe: "firearm",
+        Ausrüstung: "equippable",
+        Werkzeug: "tool",
+    }
+    const armor = {
+        Brust: "chest",
+        Beine: "legs",
+        Kopf: "head", 
+        Arme: "arms",
+        Füße: "feet",
+        Hüfte: "hip",
+        Schild: "shield",
+        Rücken: "back",
+        Hals: "neck",
+        Finger: "finger",
+    }
+    const ressource={
+        Holz: "wood",
+        Gestein: "rock",
+        Nahrung: "food",
+        Pflanzen: "plant",
+        Organisch: "organical",
+        Sonstige: "other",
+    }
+    const companion= {
+        Sattel: "saddle",
+        Tasche: "bag",
+    }
     const itemNames = {
         category : {
             Waffe: "weapon",
@@ -171,7 +210,7 @@ const racesList = ["Elb","Draconid", "Zwerg", "Gnom", "Ork", "Kobold", "Mensch",
             Werkzeug: "tool",
             // ressource
             Holz: "wood",
-            Gestein: "mineral",
+            Gestein: "rock",
             Nahrung: "food",
             Pflanzen: "plant",
             Organisch: "organical",
@@ -203,23 +242,23 @@ const racesList = ["Elb","Draconid", "Zwerg", "Gnom", "Ork", "Kobold", "Mensch",
             {
                 name: "Bernstein",
                 rarity: "magisch",
-                value: 1,
+                value: 4,
             },
             {
                 name: "Smaragd",
                 rarity: "selten",
-                value: 2,
+                value: 6,
             },
 
             {
                 name: "Saphir",
                 rarity:"episch",
-                value: 3,
+                value: 8,
             },
             {
                 name: "Rubin",
                 rarity: "legendär",
-                value: 4,
+                value: 9,
             }
 
         ]
@@ -295,6 +334,10 @@ const slots = [
     germanAttr,
     allAttributes,
     diceAbbr,
+    weapon, 
+    armor,
+    ressource,
+    companion,
     itemNames,
     diaryCategories,
     boniList,

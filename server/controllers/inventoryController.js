@@ -3,6 +3,147 @@ const Item = require("../models/itemsModel");
 const Inventory = require("../models/inventoryModel");
 const User = require("../models/userModel");
 const mongoose = require("mongoose");
+
+// @desc get users inventory
+// @route GET /inventory
+// @access Private
+const getInventory = asyncHandler(async (req,res)=>{
+  const user = await User.findById(req.user.id).populate({
+    path: "inventory.item",
+    model: "Item",
+    populate: {
+      path: "material.element",
+      model: "Item",
+      
+    },
+  });
+  if(!user){
+    res.status(500).json({ message: "User nicht gefunden" });
+  } else {
+    const inventory = user.inventory ? user.inventory : {}
+    res.status(200).json({data: inventory})
+  }
+})
+
+// @desc get users weapons
+// @route GET /inventory/weapons
+// @access Private
+const getWeapons = asyncHandler(async (req,res)=>{
+  const user = await User.findById(req.user.id).populate({
+    path: "inventory.item",
+    model: "Item",
+    populate: {
+      path: "material.element",
+      model: "Item",
+      
+    },
+  });
+  if(!user){
+    res.status(500).json({ message: "User nicht gefunden" });
+  } else {
+    const inventory = user.inventory?.filter(el=>el.status === "Ausgerüstet") 
+    const equippedWeapons = inventory.filter(el=>el.item.category === "Waffe" || el.item.genus==="Schild")
+    if(equippedWeapons.length===1){
+      //console.log("only 1 weapon found")
+      res.status(200).json({mainWeapon: equippedWeapons[0], secondWeapon: null})
+    } else if(equippedWeapons.length===2){
+      //console.log("more than 1 weapon equipped")
+      res.status(200).json({mainWeapon: equippedWeapons[0], secondWeapon: equippedWeapons[1]})
+    }
+     else {
+      //console.log("no weapons or shields equipped")
+      res.status(200).json([{mainWeapon: null, secondWeapon: null}])
+    }
+  }
+
+})
+
+// @desc get users inventory
+// @route PUT /inventory/add-one
+// @access Private
+const putAmount = asyncHandler(async (req, res) => {
+  const { invId } = req.body;
+  if (!invId) {
+    return res.status(400).json({ message: "Id not provided" });
+  }
+  const user = await User.findById(req.user.id).populate({
+    path: "inventory.item",
+    model: "Item",
+    populate: {
+      path: "material.element",
+      model: "Item",
+    },
+  });
+  if (!user) {
+    return res.status(500).json({ message: "User not found" });
+  }
+  const oldItem = user.inventory?.find((el) => el._id.toString() === invId.toString());
+  if (oldItem) {
+    const updated = await User.findOneAndUpdate(
+      { user: req.user.id, "inventory._id": invId },
+      { $inc: { "inventory.$.amount": 1 } },
+      { new: true }
+    ).populate({
+      path: "inventory.item",
+      model: "Item",
+      populate: {
+        path: "material.element",
+        model: "Item",
+      },
+    });
+
+    if (!updated) {
+      return res.status(400).json({ message: "Failed to update" });
+    }
+    const updatedItem = updated?.inventory?.find((el) => el._id.toString() === invId.toString());
+    return res.status(200).json(updatedItem);
+  }
+  return res.status(400).json({ msg: "Error" });
+});
+
+
+// @desc get users inventory
+// @route PUT /inventory/sub-one
+// @access Private
+const substractAmount = asyncHandler(async (req, res) => {
+  const { invId } = req.body;
+  if (!invId) {
+    return res.status(400).json({ message: "Id not provided" });
+  }
+  const user = await User.findById(req.user.id).populate({
+    path: "inventory.item",
+    model: "Item",
+    populate: {
+      path: "material.element",
+      model: "Item",
+    },
+  });
+  if (!user) {
+    return res.status(500).json({ message: "User not found" });
+  }
+  const oldItem = user.inventory?.find((el) => el._id.toString() === invId.toString());
+  if (oldItem) {
+    const updated = await User.findOneAndUpdate(
+      { user: req.user.id, "inventory._id": invId },
+      { $inc: { "inventory.$.amount": -1 } },
+      { new: true }
+    ).populate({
+      path: "inventory.item",
+      model: "Item",
+      populate: {
+        path: "material.element",
+        model: "Item",
+      },
+    });
+
+    if (!updated) {
+      return res.status(400).json({ message: "Failed to update" });
+    }
+    const updatedItem = updated?.inventory?.find((el) => el._id.toString() === invId.toString());
+    return res.status(200).json(updatedItem);
+  }
+  return res.status(400).json({ msg: "Error" });
+})
 // @desc Add item to users inventory
 // @route POST /inventory
 // @access Private
@@ -11,14 +152,14 @@ const toInventory = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Bitte überprüfe deine Eingabe!");
   }
-  const item = await Item.findOne({ name: req.body.item });
+  const item = await Item.findById( req.body.item );
   if (!item) {
     res.status(400);
     throw new Error("Item nicht gefunden...");
   }
   // new item from the db - add to inventory
   const inventory = await Inventory.create({
-    item: item._id,
+    item: item,
     amount: req.body.amount,
     status: req.user.name,
   });
@@ -44,12 +185,44 @@ const toInventory = asyncHandler(async (req, res) => {
   });
 });
 // @desc Add item to users inventory
-// @route POST /item
+// @route get /money/
 // @access Private
+
+const getMoney =  asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user.id)
+  const money = user?.money
+  if(!money || !user){
+    res.status(400).json("no money");
+  }
+  res.status(200).json(money)
+})
+
+// @desc update money balance
+// @route PUT /inventory/money
+// @access Private
+const updateMoney = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user.id);
+  const money = req.body.money
+  console.log(money)
+  if (!user) [res.status(400).json({ message: "Nutzer nicht gefunden" })];
+  console.log(req.body);
+  user.money = req.body;
+ const updated = await User.findByIdAndUpdate(req.user.id,
+  { $set: { money: money } },
+  { new: true }
+)
+  if (!updated) {
+    res.status(400).json({ message: "Dein Geldbalance wurde nicht geändert" });
+  }
+  res.status(200).json(updated.money);
+});
+
 const addToInventory = asyncHandler(async (req, res) => {
   if (!req.body.id) {
     res.status(400).json({ message: "Kein Id des Items vorhanden" });
   }
+  console.log("attempting to add item")
+  console.log(req.body.id)
   const item = await Item.findById(req.body.id);
   if (!item) {
     res.status(400).json({ message: "Item nicht gefunden" });
@@ -108,7 +281,8 @@ const addToInventory = asyncHandler(async (req, res) => {
     const newElement = created.inventory.find(
       (el) => el._id.toString() === inventory._id.toString()
     );
-    res.status(200).json({ data: newElement });
+    console.log(newElement)
+    res.status(200).json(newElement)
   }
 });
 
@@ -141,84 +315,62 @@ const removeFromInventory = asyncHandler(async (req, res) => {
   if (!removedFromDB) {
     console.log("Inventory nicht gelöscht");
   }
-  res.status(200).json({ id: req.params.id });
+  res.status(200).json(req.params.id);
 });
 
 // @desc Remove item from users inventory
-// @route PUT /inventory/:id
+// @route PUT /inventory/split/:id
 // @access Private
 const splitAmount = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user.id);
   if (!user) {
-    res.status(500).json({ message: "Spieler nicht gefunden" });
+    return res.status(500).json({ message: "Spieler nicht gefunden" });
   }
-  const amountToSplit = parseInt(req.body.amount);
-  const inventoryId = req.params.id;
-  if (!amountToSplit || !inventoryId) {
-    res.status(500).json({ message: "Anzahl oder Item nicht gefunden" });
+  const { amount, id: inventoryId } = req.body;
+  if (!amount || !inventoryId) {
+    return res.status(500).json({ message: "Anzahl oder Item nicht gefunden" });
   }
-  const inv = user.inventory;
-  console.log(inv);
-  const oldItem = inv.find(
-    (el) => el._id.toString() === inventoryId.toString()
-  );
+  const oldItem = user.inventory.find(el => el._id.toString() === inventoryId.toString());
+  if (!oldItem) {
+    return res.status(400).json({ message: "Item nicht gefunden" });
+  }
   const itemId = oldItem.item._id;
-  console.log(itemId);
-  const newAmount = oldItem.amount - amountToSplit;
-  console.log(newAmount);
+  const newAmount = oldItem.amount - parseInt(amount);
   if (newAmount < 0) {
-    res
-      .status(400)
-      .json({
-        message:
-          "Anzahl der gesplitteten Elementen soll weniger als Anzahl des Items sein",
-      });
-  } else {
-    const updatedItem = await User.findOneAndUpdate(
-      {
-        user: req.user.id,
-        "inventory._id": inventoryId,
-      },
-      {
-        $set: {
-          "inventory.$.amount": parseInt(newAmount),
-        },
-      },
-      { new: true }
-    ).populate({
-      path: "inventory.item",
-      model: "Item",
-    });
-    if (!updatedItem) {
-      res.status(400).json({ message: "Altes Item wurde nicht geändert" });
-    }
-    const updated = updatedItem.inventory.find(
-      (el) => el._id.toString() === inventoryId.toString()
-    );
-    console.log(updated);
-    const splittedItem = await Inventory.create({
-      item: itemId,
-      amount: amountToSplit,
-      status: req.user.name,
-    });
-    const created = await User.findByIdAndUpdate(
-      req.user.id,
-      { $push: { inventory: splittedItem } },
-      { new: true }
-    );
-    if (!created) {
-      res
-        .status(400)
-        .json({ message: "Gesplittetes Item wurde nicht geändert" });
-    }
-    if (!splittedItem) {
-      res
-        .status(400)
-        .json({ message: "Gesplittetes Item wurde nicht geändert" });
-    }
-    res.status(200).json({ updatedItem: updated, newItem: splittedItem });
+    return res.status(400).json({ message: "Anzahl der gesplitteten Elementen soll weniger als Anzahl des Items sein" });
   }
+  const updated = await User.findOneAndUpdate(
+    { user: req.user.id, "inventory._id": inventoryId },
+    { $inc: { "inventory.$.amount": -parseInt(amount) } },
+    { new: true }
+  ).populate({
+    path: "inventory.item",
+    model: "Item",
+  });
+  if (!updated) {
+    return res.status(400).json({ message: "Altes Item wurde nicht geändert" });
+  }
+  const splittedItem = await Inventory.create({
+    item: itemId,
+    amount: parseInt(amount),
+    status: req.user.name,
+  });
+  const created = await User.findByIdAndUpdate(
+    req.user.id,
+    { $push: { inventory: splittedItem } },
+    { new: true }
+  ).populate({
+    path: "inventory.item",
+    model: "Item",
+  });
+  if (!created || !splittedItem) {
+    return res.status(400).json({ message: "Gesplittetes Item wurde nicht geändert" });
+  }
+  const updatedItem =  updated.inventory.find(el => el._id.toString() === inventoryId.toString())
+  const newItem = created.inventory.find(el => el._id.toString() === splittedItem._id.toString())
+  res.status(200).json({ updatedItem:updatedItem, newItem: newItem });
 });
+
 
 // @desc Post iventory item to other user
 // @route POST /inventory/share
@@ -228,11 +380,13 @@ const shareWith = asyncHandler(async (req, res) => {
   if (!user) {
     res.status(500).json({ message: "Spieler nicht gefunden" });
   }
-  console.log(req.body.uid, mongoose.Types.ObjectId(req.body.uid))
-  const userToShare = await User.findById(req.body.uid)
-  console.log(userToShare.name)
+  const {uid, inv} = req.body
+  console.log(uid, inv)
+  console.log(uid, mongoose.Types.ObjectId(uid))
+  const userToShare = await User.findById(uid)
+  console.log("give item to: ", userToShare?.name)
   const userInv = user.inventory
-  const itemToRemove = userInv.find(el=>el._id.toString() === req.body.inv)
+  const itemToRemove = userInv.find(el=>el._id.toString() === inv)
   const amountToGive = itemToRemove.amount
   const itemToGive =  itemToRemove.item
   if (userToShare) {
@@ -240,17 +394,17 @@ const shareWith = asyncHandler(async (req, res) => {
       const inventoryItem = await User.findByIdAndUpdate(
         {        
           _id: req.user.id,
-          "inventory._id": req.body.inv
+          "inventory._id": inv
         },
         {
           $pull: {
-            inventory: { _id: req.body.inv },
+            inventory: { _id: inv },
           },
         }
       );
       if (!inventoryItem) {
         console.log(inventoryItem)
-        res.status(400).json({ message: "Inventory konnte man nicht entfernen" });
+        res.status(400).json({ message: "Inventory Item konnte man nicht entfernen" });
       } else {
        const newInv = await Inventory.create({
         item: itemToGive,
@@ -266,7 +420,7 @@ const shareWith = asyncHandler(async (req, res) => {
           if(!getterUser){
             res.status(400).json({ message: "Das Element wurde nicht weitergeleitet" });
           }
-          res.status(200).json({id: req.body.inv, userToShare: userToShare.name, item: itemToRemove });
+          res.status(200).json(req.body.inv);
       }
       
     } else {
@@ -275,19 +429,23 @@ const shareWith = asyncHandler(async (req, res) => {
 });
 
 // @desc Get items of specific category
-// @route POST /inventory/sorted
+// @route POST /inventory/filter
 // @access Private
 const getCategorizedInventory = asyncHandler(async (req, res) => {
+  console.log("hi")
+  
   const user = await User.findById(req.user.id).populate({
     path: "inventory.item",
     model: "Item",
     populate: {
       path: "material.element",
       model: "Item",
-      select: "name",
+      
     },
   });
-  const category = req.body.category;
+  const category = req.params.category;
+  console.log(category)
+  //const category = req.body.category;
   if (!user) {
     res.status(500).json({ message: "Spieler nicht gefunden" });
   }
@@ -295,13 +453,13 @@ const getCategorizedInventory = asyncHandler(async (req, res) => {
     res.status(500).json({ message: "Kategorie nicht eingegeben" });
   }
   const inventory = user.inventory;
-  console.log(inventory);
+
   if (!inventory) {
     res.status(500).json({ message: "Kein Inventar vorhanden" });
   }
   const sorted = inventory.filter(
-    (el) => el.item?.category === req.body.category
-  );
+    (el) => el.item?.category=== category
+  )
   if (sorted.length === 0) {
     res.status(200).json({
       found: false,
@@ -339,7 +497,7 @@ const getCategorizedItems = asyncHandler(async (req, res) => {
 // @route PUT /inventory/equip
 // @access Public
 const equipItem = asyncHandler(async (req, res) => {
-  const invId = req.body.invId;
+  const {invId} = req.body;
   const slotsPossible = [
     "Kopf",
     "Beine",
@@ -355,12 +513,15 @@ const equipItem = asyncHandler(async (req, res) => {
     .populate({
       path: "inventory.item",
       model: "Item",
-    })
-    .populate({
-      path: "userclass",
-      model: "Userclass",
-      select: "name",
-    });
+      populate: {
+        path: "material.element",
+        model: "Item",
+        
+      }}).populate({
+        path: "userclass",
+        select: "name category description abilities advantages",
+        model: "Userclass",
+      })
   if (!invId) {
     res.status(500).json({ message: "Id des Items nicht eingegeben" });
   }
@@ -382,6 +543,7 @@ const equipItem = asyncHandler(async (req, res) => {
     (el) => el.status === "Ausgerüstet" && el.item.category === "Waffe"
   );
   const uclass = user.userclass?.name;
+  console.log(user.userclass)
   if (slotCategory === "Waffe") {
     //check shield is equipped
     const shieldEquipped = inventory.find(
@@ -427,6 +589,7 @@ const equipItem = asyncHandler(async (req, res) => {
       } else {
         // no shield, only weapons are equipped
         if (onehand) {
+          console.log(uclass)
           if (uclass === "Assassine" || uclass === "Waffenmeister") {
             //can equip two 1hand weapons
             if (weaponsEquipped.length === 1) {
@@ -612,8 +775,8 @@ const equipItem = asyncHandler(async (req, res) => {
         model: "Item",
         populate: {
           path: "material.element",
-          model: "Item",
-          select: "name",
+          model: "Item"
+          
         },
       });
       if (!replaced) {
@@ -642,8 +805,7 @@ const equipItem = asyncHandler(async (req, res) => {
       model: "Item",
       populate: {
         path: "material.element",
-        model: "Item",
-        select: "name",
+        model: "Item"
       },
     });
     if (!updated) {
@@ -670,8 +832,7 @@ const equipItem = asyncHandler(async (req, res) => {
         model: "Item",
         populate: {
           path: "material.element",
-          model: "Item",
-          select: "name",
+          model: "Item"
         },
       });
       if (!additionalReplacement) {
@@ -686,27 +847,80 @@ const equipItem = asyncHandler(async (req, res) => {
         .status(200)
         .json({
           replaced: replacedFlag,
-          old: [replacedItem, additional],
+          //old: [replacedItem, additional],
+          unequipItem: replacedItem,
+          additionalUnequiup: additional,
           updated: updatedItem,
         });
     } else {
       res
         .status(200)
         .json({
-          replaced: replacedFlag,
-          old: [replacedItem],
+         replaced: replacedFlag,
+         unequipItem: replacedItem,
+         additionalUnequiup: null,
+         // old: [replacedItem],
           updated: updatedItem,
         });
     }
   }
 });
+// @desc Unequip item  - set status to user.name
+// @route PUT /inventory/unequip
+// @access Public
+const unequipItem= asyncHandler(async (req,res)=>{
+  const {id} = req.body
+  const user = await User.findById(req.user.id).populate({
+    path: "inventory.item",
+    model: "Item",
+    populate: {
+      path: "material.element",
+      model: "Item",
+    },
+  });
+  const uname = user?.name
+  if(!uname || !id){
+    res.status(400).json({ error: "Parameter sind falsch" });
+  }
+  updated = await User.findOneAndUpdate(
+    {
+      user: req.user.id,
+      "inventory._id": id
+    },
+    {
+      $set: {
+        "inventory.$.status": uname,
+      },
+    },
+    { new: true }).populate({
+      path: "inventory.item",
+      model: "Item",
+      populate: {
+        path: "material.element",
+        model: "Item"
+      },
+    });
+    if(!updated){
+      res.status(400).json({ error: "Das Update ist fehlgeschlagen" });
+    } else {
+      res.status(200).json({id, uname})
+    }
+
+})
 module.exports = {
+  getInventory,
+  getWeapons,
+  getMoney,
+  updateMoney,
+  putAmount,
+  substractAmount,
   toInventory,
   addToInventory,
   removeFromInventory,
   getCategorizedInventory,
   getCategorizedItems,
   equipItem,
+  unequipItem,
   splitAmount,
   shareWith,
 };

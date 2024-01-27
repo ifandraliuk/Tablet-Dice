@@ -15,7 +15,7 @@ const getUsernames = asyncHandler(async(req,res)=>{
     }
     console.log()
     let userList = []
-    users.forEach(el=>userList.push({id:el._id, name: el.name, level:el.level, userclass:el.userclass?.name}))
+    users.forEach(el=>userList.push({id:el._id, name: el.name, level:el.level, userclass:el.userclass?.name, origin: el.general?.origin}))
     res.status(200).json(userList)
 })
 

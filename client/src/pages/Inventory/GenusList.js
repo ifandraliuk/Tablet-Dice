@@ -1,12 +1,15 @@
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import {  useDispatch, useSelector } from "react-redux";
 import { listAnimation } from "../../data/Animations";
+import MotionButton from "../../components/MotionButton";
 
-function GenusList({ fraction, genus, setFilter, setId }) {
-
+function GenusList({handleActiveGenus }) {
+  const { genuses, activeGenus} = useSelector((state) => state.items);
+  const fraction = localStorage.getItem("fraction");
   return (
     <AnimatePresence>
-      {genus?.map((type, i) => (
+      {genuses?.map((type, i) => (
         <motion.div className="row"
           key={type}
           layout
@@ -16,15 +19,7 @@ function GenusList({ fraction, genus, setFilter, setId }) {
           exit="exit"
           transition={{ duration: 0.2, delay: i*0.2}}
         >
-          <motion.button
-
-            key={type}
-            className={fraction}
-            id={type}
-            onClick={(e) => {setFilter(e.target.id); setId(-1)}}
-          >
-            {type}
-          </motion.button>
+          <MotionButton name={type} content={type} onClick={handleActiveGenus} theme={activeGenus===type? fraction : ""}/>
         </motion.div>
       ))}
     </AnimatePresence>

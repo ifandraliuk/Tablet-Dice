@@ -10,10 +10,12 @@ import {
   faDiceD20,
 } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "framer-motion";
+import MotionButton from "../../components/MotionButton";
 
 function AbilityCard(props) {
   const { _id, name, description, price, type, dice } = props.ability;
-  const uclass = props.userclass;
+  const {userclass, theme} = props;
+  
   const [toAnimate, setAnimate] = useState(false)
   const animateCard = {
     init: {
@@ -78,7 +80,7 @@ function AbilityCard(props) {
         </div>
       </div>
       <div className="row m-0 p-0 ">
-        <Image src={`/abilities/${uclass && uclass}/${_id}xhdpi.png`}></Image>
+        <Image src={`/abilities/${userclass && userclass}/${_id}xhdpi.png`}></Image>
       </div>
       <div
         className="row m-auto"
@@ -100,13 +102,13 @@ function AbilityCard(props) {
       </div>
       <div className="row">
         <div className="col-auto ms-auto me-auto mb-1">
-          <button
-            className={props.theme}
-            name={_id}
-            onClick={onClick}
-          >
-            Verwenden
-          </button>
+        <MotionButton 
+              name={_id}
+              content="Verwenden"
+              onClick={onClick}
+              theme=""
+            />
+
         </div>
       </div>
     </motion.div>

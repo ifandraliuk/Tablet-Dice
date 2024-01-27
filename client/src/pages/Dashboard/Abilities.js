@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import AbilityCard from "./AbilityCard";
 import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion";
+import MotionButton from "../../components/MotionButton";
 
 
 function Abilities() {
@@ -33,21 +34,19 @@ function Abilities() {
   };
 
   const onCategory = (e) => {
-    setCategory(e.currentTarget.id);
+    setCategory(e.currentTarget.name);
   };
   return (
     <div className="container">
       <div className="row ">
         {Object.keys(counts).map((el) => (
           <div className="col-auto m-0" key={el._id}>
-            <button
-            id={el}
-            key={el._id}
-            className={fractionTheme}
-            onClick={onCategory}
-          >
-            {el}
-          </button>
+            <MotionButton 
+              name={el}
+              content={el}
+              onClick={onCategory}
+              theme={filterCategory === el ? fractionTheme : ""}
+            />
           </div>
         ))}     
         <div className="col-auto m-0">
