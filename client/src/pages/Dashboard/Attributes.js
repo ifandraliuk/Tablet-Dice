@@ -7,19 +7,21 @@ import { updateAttribute } from "../../features/player/playerSlice";
 import ExclamationMark from "../../components/ExclamationMark";
 
 function Attributes() {
-  const { player } = useSelector((state) => state.player);
-  const { attributes } = player;
+  const {attributes, pointsLeft } = useSelector((state) => state.player);
+  
   const [difference, setDifference] = useState(0);
   const dispatch = useDispatch();
   const keys = Object.keys(allAttributes);
-  console.log(keys)
+
   useEffect(() => {
-    let out = 0;
-    keys.forEach((key) => {let value = typeof(attributes[key]) === "number" ?  attributes[key] : 0; out = out +value});
-    const diff = player?.pointsLeft - out;
+    const out = keys.reduce((sum, key) => sum + (typeof attributes[key] === 'number' ? attributes[key] : 0), 0);
+    const diff = pointsLeft - out;
+    
     setDifference(diff);
-    console.log(player?.pointsLeft, out, attributes, diff)
-  }, [player?.pointsLeft, keys, attributes]);
+    console.log(keys[0],attributes[keys[0]],pointsLeft, out, attributes, diff);
+  }, [pointsLeft, keys, attributes]);
+  
+
 
   const onClick = (e) => {
     dispatch(updateAttribute(e.currentTarget.id));
@@ -39,9 +41,9 @@ function Attributes() {
         <h3>Attribute</h3>
       )}
       <div className="row info-div border-pattern-top">
-        {keys.map(
+        {keys?.map(
           (key) =>
-            attributes[key] > 0 && (
+          attributes[key] > 0 && (
               <div key={key} className="col me-0 w-auto">
                 <h6>{`${allAttributes[key]}:`}</h6>
                 <strong>{attributes[key]}</strong>

@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { pageTransition } from "../../data/Animations";
 import { slots, slotInfo } from "../../data/ConstVariables";
 import Slot from "./Slot";
-import { updateCompanionStatus, equipToCompanion, unequipCompanionItem } from "../../features/player/playerSlice";
+import { updateCompanionStatus, equipToCompanion, unequipCompanionItem } from "../../features/companion/companionSlice";
 function Companions() {
   const { player, fractionTheme, slotsAllowed } = useSelector(
     (state) => state.player

@@ -24,7 +24,7 @@ app.use('/player', require('./routes/playerRoutes'))
 app.use('/inventory', require('./routes/inventoryRoutes'))
 app.use('/talents', require('./routes/talentRoutes'))
 
-app.use('/classes', require('./routes/classesRoutes'))
+app.use('/professions', require('./routes/professionRoutes'))
 app.use('/items', require('./routes/itemsRoutes'))
 
 // Attributes (dexterity, vitality)
@@ -38,6 +38,9 @@ app.use('/creatures', require('./routes/bestiariumRoutes'))
 
 //Habitats
 app.use('/habitats', require('./routes/habitatRoutes'))
+
+//Companions
+app.use('/companion', require('./routes/companionRoutes'))
 
 app.listen(port, () => console.log(`Listening on port ${port}`)); //Line 6
 

@@ -9,17 +9,19 @@ import MotionButton from "../../components/MotionButton";
 
 
 function Abilities() {
-  const { fractionTheme, player } = useSelector((state) => state.player);
-  const abilities = player?.userclass.abilities;
+  const { profession, fractionTheme } = useSelector((state) => state.player);
+  const {_id, abilities} = profession
+  //const abilities = player?.userclass.abilities;
   const spec = [];
   const counts = {};
   // count the amount of cards for each specialization
-  Object.keys(abilities).map((ind) => {
-    return spec.push(abilities[ind].specialization);
+  abilities?.map((ability) => {
+    return spec.push(ability.specialization);
   });
   spec.forEach(function (x) {
     counts[x] = (counts[x] || 0) + 1;
   });
+  console.log(counts)
   const [filterCategory, setCategory] = useState(spec ? spec[0] : "");
   const dispatch = useDispatch();
 
@@ -38,9 +40,10 @@ function Abilities() {
   };
   return (
     <div className="container">
+      <h2>Fertigkeiten</h2>
       <div className="row ">
         {Object.keys(counts).map((el) => (
-          <div className="col-auto m-0" key={el._id}>
+          <div key={el} className="col-auto m-0" >
             <MotionButton 
               name={el}
               content={el}
@@ -55,11 +58,11 @@ function Abilities() {
       </div>
       <div className="row justify-content-center">
         <AnimatePresence>
-          {Object.keys(abilities).map((ind) => {
+          {abilities?.map((ability, ind) => {
             return (
-              abilities[ind].specialization === filterCategory && (
+              ability.specialization === filterCategory && (
                 <motion.div className="col-auto col-3"
-                key={ind}
+                key={ability._id}
                 layout
                 initial={{ translateY: -30, opacity: 0 }}
                 animate={{
@@ -73,8 +76,8 @@ function Abilities() {
                 >
                  
                   <AbilityCard
-                    ability={abilities[ind]}
-                    userclass={player?.userclass?._id}
+                    ability={ability}
+                    userclass={_id}
                     useAbility={useAbility}
                     theme={fractionTheme}
                   />

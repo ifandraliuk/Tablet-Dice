@@ -38,8 +38,8 @@ function ExtendedInfo({
   const [isOpen, setIsOpen] = useState(true);
   const [inputValue, setInputValue] = useState(0);
   const stateInfo = useSelector((state) =>
-    state.inventoryPage.inventory?.find(
-      (el) => el._id.toString() === state.inventoryPage.extendedId.toString()
+    state.inventory.inventory?.find(
+      (el) => el._id.toString() === state.inventory.extendedId.toString()
     )
   );
 

@@ -9,7 +9,7 @@ import { getHabitat } from "../../features/habitats/habitatSlice";
 import { pageTransition } from "../../data/Animations";
 import { motion } from "framer-motion";
 import CompanionPopup from "./CompanionPopup";
-import { addCompanion } from "../../features/player/playerSlice";
+import { addCompanion } from "../../features/companion/companionSlice";
 const Bestiaria = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();

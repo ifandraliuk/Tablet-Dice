@@ -4,17 +4,17 @@ import EquippedItem from "./EquippedItem";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShield, faRectangleXmark } from "@fortawesome/free-solid-svg-icons";
-import { getUserWeapons } from "../../features/inventoryPage/inventoryPageSlice";
+import { getUserWeapons } from "../../features/inventory/inventorySlice";
 
 const Equipment = memo(({ setShowInfo, armor, err, uclass }) => {
   console.log("re-rendering equipment");
   console.log(uclass);
   const dispatch = useDispatch();
   const equipped = useSelector((state) =>
-    state.inventoryPage.inventory.filter((el) => el.status === "Ausgerüstet")
+    state.inventory.inventory.filter((el) => el.status === "Ausgerüstet")
   );
   const { mainWeapon, secondWeapon } = useSelector(
-    (state) => state.inventoryPage
+    (state) => state.inventory
   );
   console.log(equipped, mainWeapon, secondWeapon);
   useEffect(() => {

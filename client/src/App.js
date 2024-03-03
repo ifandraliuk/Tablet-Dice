@@ -10,7 +10,7 @@ import CreateCharacter from "./pages/Create/index";
 import Talents from "./pages/Talents/index";
 import Bestiaria from "./pages/Bestiarium/index";
 import Enemies from "./pages/Enemies";
-import InventoryPage from "./pages/Inventory/new_index";
+import InventoryPage from "./pages/Inventory/index";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getPlayer,
@@ -57,7 +57,7 @@ function App() {
       //players inventory includes et least 1 item with status "equipped"
       if (equipped?.length === 0) {
         // equipped items was not filtered
-        dispatch(filterEquipment());
+       // dispatch(filterEquipment());
         console.log("filter equipment...")
       }
     }

@@ -7,7 +7,7 @@ import EquippedItem from "../Inventory/EquippedItem";
 import BarList from "./BarList";
 import Abilities from "./Abilities";
 import AttributeList from "./Attributes";
-import { updateLevel } from "../../features/player/playerSlice";
+import { getAttributes, getLevel, getProfession, reset, updateLevel } from "../../features/player/playerSlice";
 import { AnimatePresence, motion } from "framer-motion";
 import { pageTransition } from "../../data/Animations";
 import Fraction from "../../components/Fraction";
@@ -15,17 +15,17 @@ import LevelUp from "./LevelUp";
 import GeneralInfo from "./GeneralInfo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
-import { extendInfo, getUserWeapons } from "../../features/inventoryPage/inventoryPageSlice";
+import { extendInfo, getUserWeapons } from "../../features/inventory/inventorySlice";
 import ExtendedInfo from "../Inventory/ExtendedInfo";
 function Dashboard() {
   const { user } = useSelector((state) => state.auth);
   const [showInfo, setShowInfo] = useState(false);
   const [activeButton, setActiveButton] = useState(null); // active button
-  const { fractionTheme, player, armor, bonis, setboni } = useSelector(
+  const { fractionTheme, player, profession, attributes, level, armor, bonis, setboni } = useSelector(
     (state) => state.player
   );
   const { mainWeapon, secondWeapon, extendedId } = useSelector(
-    (state) => state.inventoryPage
+    (state) => state.inventory
   );
   const navigate = useNavigate();
   const [showImage, setShowImage] = useState(true);
@@ -40,13 +40,18 @@ function Dashboard() {
   };
 
   useEffect(() => {
-    if (!user) {
+    // Dispatch actions only when the component mounts
+    if (user) {
+      dispatch(getUserWeapons());
+      dispatch(getAttributes());
+      dispatch(getLevel());
+      dispatch(getProfession())
+    } else {
+      // Redirect to "/" if user is not logged in
       navigate("/");
+      dispatch(reset())
     }
-  }, [user, navigate]);
-  useEffect(() => {
-    dispatch(getUserWeapons());
-  }, []);
+  }, [dispatch, user, navigate]);
   return (
     <motion.div
       variants={pageTransition}
@@ -105,7 +110,7 @@ function Dashboard() {
                 <div className="col-lg-3 col-md-4 mt-3 col-sm-3 d-flex-column">
                   <div className="row  mb-2 justify-content-center">
                     <LevelUp
-                      level={player?.level}
+                      level={level}
                       newLevel={newLevel}
                       fraction={fractionTheme}
                     />
@@ -157,7 +162,7 @@ function Dashboard() {
               <div className="row m-1">
                 <div className="row">
                   <div className="col-lg-12 col-md-12">
-                    {player && player.attributes ? (
+                    {attributes  ? (
                       <AttributeList />
                     ) : (
                       <Spinner animation="border" />
@@ -166,7 +171,7 @@ function Dashboard() {
                 </div>
 
                 <BarList />
-                {player && player.userclass ? (
+                {profession ? (
                   <Abilities />
                 ) : (
                   <Spinner animation="border" />

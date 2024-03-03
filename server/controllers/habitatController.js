@@ -25,7 +25,7 @@ const getHabitat = asyncHandler( async (req, res) => {
     path:"ressource.id",
     model:"Item"
    })
-    console.log("Habitats", habitats)
+
     res.status(200).json(habitats)
 })
 

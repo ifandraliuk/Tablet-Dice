@@ -15,7 +15,7 @@ import {
 import { Image, Spinner } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getTalent } from "../../features/talent/talentSlice";
+import { getTalent, addToPlayer, getPlayerTalent } from "../../features/talent/talentSlice";
 import { addTalent } from "../../features/player/playerSlice";
 import AllTalents from "./AllTalents";
 import { races } from "../../data/ConstVariables";
@@ -28,7 +28,7 @@ import { pageTransition } from "../../data/Animations";
 function Talents() {
   const { user } = useSelector((state) => state.auth);
   const { fractionTheme, player } = useSelector((state) => state.player);
-  const { talent, isLoading, isError, message } = useSelector(
+  const { allTalents, playerTalents, isLoading, isError, message } = useSelector(
     (state) => state.talents
   );
   const [filter, setFilter] = useState("");
@@ -36,7 +36,7 @@ function Talents() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const categories = [];
-  const els = {};
+  const categorizedTalents = {};
   const icons = {
     Nahkampf: faKhanda,
     Fernkampf: faHurricane,
@@ -48,19 +48,13 @@ function Talents() {
   };
   const kindAdvantage = races[player?.general?.kind]?.ability;
   //find all categories from dB
-  Object.keys(talent).map((ind) => {
-    return categories.push(talent[ind].category);
+  allTalents.map((talent,ind) => {
+    return categories.push(talent.category);
   });
-  // count amount of els in each category
+  // count amount of categorizedTalents in each category
   categories.forEach(function (x) {
-    els[x] = (els[x] || 0) + 1;
+    categorizedTalents[x] = (categorizedTalents[x] || 0) + 1;
   });
-
-  /*  
- const sorted = Object.fromEntries(
-    Object.entries(els).sort(([,a],[,b]) => parseInt(b)-parseInt(a))
-);
-*/
 
   useEffect(() => {
     if (!user) {
@@ -68,8 +62,12 @@ function Talents() {
     }
     if (isError) {
       console.log(message);
+
+    } else  {
+          dispatch(getTalent());
+    dispatch(getPlayerTalent())
     }
-    dispatch(getTalent());
+
   }, [user, navigate, isError, dispatch, message]);
 
   const handleChange = (e) => {
@@ -107,7 +105,7 @@ function Talents() {
       const value = parseInt(talent[1]);
       if (value > 0) {
         console.log("adding manually talent");
-        dispatch(addTalent({ name: name, point: value }));
+        dispatch(addToPlayer({ name: name, point: value }));
         setNewTalent(newTalents.map((t) => (t[0] === name ? [t[0], 0] : t)));
         console.log(talent);
       }
@@ -119,7 +117,7 @@ function Talents() {
     newTalents.forEach((el, i) => {
       if (el[1] > 0)
         //sorting out null values
-        dispatch(addTalent({ name: el[0], point: el[1] }));
+        dispatch(addToPlayer({ name: el[0], point: el[1] }));
     });
     console.log(newTalents);
     setNewTalent([]);
@@ -163,7 +161,7 @@ function Talents() {
                   <Spinner animation="border" />
                 )}
                 {player?.talents ? (
-                  <ActiveTalents props={player.talents} />
+                  <ActiveTalents props={playerTalents} />
                 ) : (
                   <h5>Du hast noch keine Talente...</h5>
                 )}
@@ -188,13 +186,13 @@ function Talents() {
                 </div>
                 <form>
                   {filter.length === 0 ? (
-                    Object.keys(els).map((el, ind) => {
+                    Object.keys(categorizedTalents).map((el, ind) => {
                       return (
                         <div className="col-12" key={ind}>
                           <AllTalents
                             handleChange={handleChange}
                             handleClick={handleClick}
-                            el={el}
+                            categorizedTalents={el}
                             icons={icons}
                           />
                         </div>
@@ -204,7 +202,7 @@ function Talents() {
                     <AllTalents
                       handleChange={handleChange}
                       handleClick={handleClick}
-                      el={filter}
+                      categorizedTalents={filter}
                       icons={icons}
                     />
                   )}

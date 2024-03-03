@@ -35,31 +35,42 @@ const setAttributes = asyncHandler( async (req, res)=>{
     }
 })
 
-const getAttributes = asyncHandler( async (req, res)=>{
-    console.log('getting attributes for specific user')
-    if (!req.user) {
-        res.status(400)
-        console.log("not authorized...")
-        throw new Error('Nicht autorizied') 
+
+// @desc update users attribute
+// @route PUT player/attributes/:attr
+// @access Private
+const updateAttribute = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user.id);
+    if (!user) [res.status(400).json({ message: "Nutzer nicht gefunden" })];
+    if (user.attributes && user.attributes[req.params.attr]) {
+      const val = user.attributes[req.params.attr];
+      console.log("Old value: ", val);
+      user.attributes[req.params.attr] = val + 1;
+  
+      const doc = await user.save();
+      console.log("updating attribute ", req.params.attr);
+      if (!doc) {
+        res.status(400).json({ message: "Update fehlgesclagen" });
+      }
+      res
+        .status(200)
+        .json({ attr: req.params.attr, value: doc.attributes[req.params.attr] });
     }
+  });
+  
+// @desc Get user data
+// @route GET /attributes
+// @access Private
+const getAttributes = asyncHandler(async (req, res) => {
     const user = await User.findById(req.user.id)
-    if(req.user && user.attributes){
-        console.log(`succesfully`)
-        res.status(200).json(user.attributes)
-
-    } else{
-        console.log("attributes are empty")
-        res.status(200).json({})
+    const attributes = user?.attributes
+    if(!attributes){
+      res.status(400).json("Keine Attribute gefunden")
     }
-})
-
-const updateAttributes = asyncHandler(async (req, res)=> {
-    console.log('updating attributes')
-    // add level check
-    
-})
-
+    res.status(200).json(attributes)
+  })
+  
 
 module.exports = {
-    getAttributes, setAttributes,
+    getAttributes, setAttributes, updateAttribute
 }

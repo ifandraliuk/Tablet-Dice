@@ -10,15 +10,15 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  updateTalent,
-  removeTalent,
+  updatePlayersTalent,
+  removeFromPlayer,
   sortedTalents,
-} from "../../features/player/playerSlice";
+} from "../../features/talent/talentSlice";
 import { motion, AnimatePresence } from "framer-motion";
 import { tableAnimation } from "../../data/Animations";
 
 function ActiveTalents({ props }) {
-  const { player } = useSelector((state) => state.player);
+  const { playerTalents } = useSelector((state) => state.talents);
   const dispatch = useDispatch();
   const [edit, toEdit] = useState(false);
   const [update, toUpdate] = useState([]);
@@ -57,7 +57,7 @@ function ActiveTalents({ props }) {
   };
   const handleRemove = (e) => {
     console.log(e.currentTarget.name);
-    dispatch(removeTalent(e.currentTarget.name));
+    dispatch(removeFromPlayer(e.currentTarget.name));
   };
 
   const handleSubmit = (e) => {
@@ -65,7 +65,7 @@ function ActiveTalents({ props }) {
     update.forEach((el, i) => {
       if (el[1] > 0)
         //sorting out null values
-        dispatch(updateTalent({ id: el[0], point: el[1] }));
+        dispatch(updatePlayersTalent({ id: el[0], point: el[1] }));
     });
     toEdit((edit) => !edit);
     toUpdate([]);
@@ -82,13 +82,13 @@ function ActiveTalents({ props }) {
     console.log(sortKey, sortReverse);
   };
   useEffect(() => {
-    console.log("useffect");
+    console.log("sort");
     dispatch(sortedTalents({ sortKey: sortKey, reverse: sortReverse }));
   }, [dispatch, sortKey, sortReverse]);
 
   return (
     <div>
-      {player?.talents?.length > 0 ? (
+      {playerTalents.length > 0 ? (
         <>
           <div>
             <h3>Erlernte Talente</h3>
@@ -125,7 +125,7 @@ function ActiveTalents({ props }) {
             </thead>
             <tbody>
               <AnimatePresence>
-                {player?.talents?.map((el, i) => (
+                {playerTalents?.map((el, i) => (
                   <motion.tr
                     key={el._id}
                     layout

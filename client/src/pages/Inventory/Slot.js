@@ -4,7 +4,7 @@ import {  useSelector } from "react-redux";
 import {  motion } from "framer-motion";
 function Slot({ modus, setCustomInfo, filter, setShowInfo }) {
   const inventory = useSelector((state) =>
-  state.inventoryPage.inventory
+  state.inventory.inventory
 );
 const items =  useSelector((state) =>
 state.items.data

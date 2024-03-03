@@ -1,14 +1,14 @@
 const asyncHandler = require('express-async-handler')
-const UserClass = require('../models/classesModel')
+const Userclass = require('../models/classesModel')
 const User = require('../models/userModel')
 const Abilities = require('../models/abilitiesModel')
 const { default: mongoose } = require('mongoose')
 // @desc Get classes
-// @route GET /classes/
+// @route GET /professions/
 // @access Public
-const getClass = asyncHandler( async (req, res) => {
+const getProfessions = asyncHandler( async (req, res) => {
     if(req.body.name){
-        const userclasses = await UserClass.findOne({name:req.body.name})
+        const userclasses = await Userclass.findOne({name:req.body.name})
         if(!userclasses){
             res.status(400).json({message: "Die Klasse wurde nicht gefunden"})
             throw new Error("Falsch! Das Feld darf nicht leer sein")        
@@ -21,23 +21,37 @@ const getClass = asyncHandler( async (req, res) => {
             throw new Error("Falsch! Das Feld darf nicht leer sein")        
         }
         res.status(200).json(userclasses)
-        }
-        
-    
+        }          
 })
+// @desc get level
+// @route GET /professions/player
+// @access Private
 
+const getProfession = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user.id);
+    if (!user || !user?.userclass) {
+      res.status(500).json({ message: "Spieler nicht gefunden" });
+    }
+    const uId = user.userclass._id
+    const userclass = await Userclass.findById(uId)
+    if(!uId || !userclass){
+      res.status(500).json({ message: "Userklasse nicht gefunden" });
+    }
+    res.status(200).json(userclass);
+  });
+  
 
 // @desc Set new class
-// @route POST /classes/
+// @route POST /professions/
 // @access Public
-const setClass = asyncHandler( async (req, res) => {
+const setProfession = asyncHandler( async (req, res) => {
      if(!req.body.name && !req.body.category){
         res.status(400)
         throw new Error("Falsch! Das Feld darf nicht leer sein")
     }
     if(req.body.category ==='Ausdauerklasse' || req.body.category ==='Manaklasse' || req.body.category ==='Spiritklasse'){
 
-        const userClasses = await UserClass.create(req.body)
+        const userClasses = await Userclass.create(req.body)
         /* 
         const userClasses = await UserClass.create({
             name: req.body.name,
@@ -56,7 +70,7 @@ const setClass = asyncHandler( async (req, res) => {
     }
 })
 // @desc Add Class to user
-// @route POST /ability
+// @route POST professions/ability
 // @access Public
 const setAbility = asyncHandler(async (req, res)=>{
     if (req.body.type==='stamina' || req.body.type==='mana' || req.body.type==='spirit'){
@@ -71,7 +85,7 @@ const setAbility = asyncHandler(async (req, res)=>{
             res.status(400).json(req.body)
             throw new Error("Die Fertigkeit konnte nicht erstellt werden")      
         }
-        const doc = await UserClass.findOneAndUpdate({name: req.body.classname}, {$push:{abilities: abilitiy}}, {new: true})
+        const doc = await Userclass.findOneAndUpdate({name: req.body.classname}, {$push:{abilities: abilitiy}}, {new: true})
         console.log(doc)
         if(!doc){
             res.status(400)
@@ -86,5 +100,5 @@ const setAbility = asyncHandler(async (req, res)=>{
 
 
 module.exports = {
-    getClass, setClass, setAbility
+    getProfessions, getProfession, setProfession, setAbility
 }

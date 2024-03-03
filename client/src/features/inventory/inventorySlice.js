@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import inventoryPageService from "./inventoryPageService";
+import inventoryService from "./inventoryService";
 
 const initialState = {
   inventory: [],
@@ -23,7 +23,7 @@ export const getInventory = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
-      return await inventoryPageService.getInventory(token);
+      return await inventoryService.getInventory(token);
     } catch (error) {
       const msg =
         (error.response &&
@@ -42,7 +42,7 @@ export const getUserWeapons = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
-      return await inventoryPageService.getUserWeapons(token);
+      return await inventoryService.getUserWeapons(token);
     } catch (error) {
       const msg =
         (error.response &&
@@ -60,7 +60,7 @@ export const getUserMoney = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
-      return await inventoryPageService.getUserMoney(token);
+      return await inventoryService.getUserMoney(token);
     } catch (error) {
       const msg =
         (error.response &&
@@ -79,7 +79,7 @@ export const updateMoney = createAsyncThunk(
   async (moneyData, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
-      return await inventoryPageService.updateMoney(moneyData, token);
+      return await inventoryService.updateMoney(moneyData, token);
     } catch (error) {
       const msg =
         (error.response &&
@@ -97,7 +97,7 @@ export const addAmount = createAsyncThunk(
   async (data, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
-      return await inventoryPageService.addAmount(data, token);
+      return await inventoryService.addAmount(data, token);
     } catch (error) {
       const msg =
         (error.response &&
@@ -115,7 +115,7 @@ export const substractAmount = createAsyncThunk(
   async (data, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
-      return await inventoryPageService.substractAmount(data, token);
+      return await inventoryService.substractAmount(data, token);
     } catch (error) {
       const msg =
         (error.response &&
@@ -134,7 +134,7 @@ export const addToInventory = createAsyncThunk(
   async (itemData, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
-      return await inventoryPageService.addToInventory(itemData, token);
+      return await inventoryService.addToInventory(itemData, token);
     } catch (error) {
       const msg =
         (error.response &&
@@ -153,7 +153,7 @@ export const removeFromInventory = createAsyncThunk(
   async (id, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
-      return await inventoryPageService.removeFromInventory(id, token);
+      return await inventoryService.removeFromInventory(id, token);
     } catch (error) {
       const msg =
         (error.response &&
@@ -172,7 +172,7 @@ export const splitAmount = createAsyncThunk(
   async (data, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
-      return await inventoryPageService.splitAmount(data, token);
+      return await inventoryService.splitAmount(data, token);
     } catch (error) {
       const msg =
         (error.response &&
@@ -191,7 +191,7 @@ export const shareWith = createAsyncThunk(
   async (data, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
-      return await inventoryPageService.shareWith(data, token);
+      return await inventoryService.shareWith(data, token);
     } catch (error) {
       const msg =
         (error.response &&
@@ -210,7 +210,7 @@ export const equip = createAsyncThunk(
   async (data, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
-      return await inventoryPageService.equip(data, token);
+      return await inventoryService.equip(data, token);
     } catch (error) {
       const msg =
         (error.response &&
@@ -229,7 +229,7 @@ export const unequip = createAsyncThunk(
   async (data, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
-      return await inventoryPageService.unequip(data, token);
+      return await inventoryService.unequip(data, token);
     } catch (error) {
       const msg =
         (error.response &&
@@ -243,8 +243,8 @@ export const unequip = createAsyncThunk(
   }
 );
 
-export const inventoryPageSlice = createSlice({
-  name: "inventory_page",
+export const inventorySlice = createSlice({
+  name: "inventory",
   initialState,
   reducers: {
     reset: (state) => initialState,
@@ -528,5 +528,5 @@ export const inventoryPageSlice = createSlice({
   },
 });
 export const { reset, extendInfo, updateEquipmentStats, updateTotalWeight } =
-  inventoryPageSlice.actions;
-export default inventoryPageSlice.reducer;
+  inventorySlice.actions;
+export default inventorySlice.reducer;

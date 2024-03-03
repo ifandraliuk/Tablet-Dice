@@ -31,7 +31,7 @@ const initialState = {
     isLoading: false,
     message: ''
 }
-export const getClass = createAsyncThunk('classes/getAll', async(_, thunkAPI)=>{
+export const getClass = createAsyncThunk('professions/getAll', async(_, thunkAPI)=>{
     try {
         return await creationService.getClass()        
     } catch (error) {

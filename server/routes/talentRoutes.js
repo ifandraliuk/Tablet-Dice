@@ -1,8 +1,27 @@
-const express = require('express')
-const router = express.Router()
-const {getTalent, setTalent, updateTalent, deleteTalent} = require('../controllers/talentController')
-const {protect} = require('../middleware/authMiddleware')
+const express = require("express");
+const router = express.Router();
+const {
+  getTalent,
+  setTalent,
+  updateTalent,
+  deleteTalent,
+  putUserTalent,
+  addUserTalent,
+  removeUserTalent,
+  getPlayerTalent,
+} = require("../controllers/talentController");
+const { protect } = require("../middleware/authMiddleware");
 
-router.route('/').get(getTalent).post(setTalent); 
-router.route('/:id').put(protect, updateTalent).delete(protect, deleteTalent);
-module.exports = router
+router.route("/").get(getTalent).post(setTalent);
+router.route("/:id").put(protect, updateTalent).delete(protect, deleteTalent);
+
+/*Players talents */
+//TALENTS
+router
+  .route("/to_player/")
+  .put(protect, putUserTalent)
+  .post(protect, addUserTalent);
+  router.route("/player").get(protect, getPlayerTalent)
+router.route("/from_player/:id").delete(protect, removeUserTalent);
+
+module.exports = router;

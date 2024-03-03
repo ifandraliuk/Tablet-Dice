@@ -93,55 +93,39 @@ const getPlayer = async (token) => {
   return response.data;
 };
 
-// post companion to user
-const addCompanion = async (compData, token) => {
-  console.log("frontend request to add a companion to user");
+
+// Get player attributes
+const getAttributes = async (token) => {
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   };
-
-  const response = await axios.post(API_URL + "companion", compData, config);
-  return response.data;
-};
-// post companion to user
-const updateCompanionStatus = async (compData, token) => {
-  console.log("frontend request to update a companion to user");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
-  const response = await axios.put(API_URL + "companion", compData, config);
+  const response = await axios.get("attributes", config);
   return response.data;
 };
 
-// put an equipment to the companion
-const equipToCompanion = async (compData, token) => {
-  console.log("frontend request to equip an item to a companion");
+// Get players level
+const getLevel = async (token) => {
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   };
-
-  const response = await axios.put(API_URL + "companion/equip", compData, config);
+  const response = await axios.get(API_URL + "level", config);
   return response.data;
-}
-// unequip slot to the companion
-const unequipCompanionItem = async (compData, token) => {
-  console.log("frontend request to unequip an item ");
+};
+
+// Get players profession
+const getProfession = async (token) => {
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   };
-
-  const response = await axios.put(API_URL + "companion/item", compData, config);
+  const response = await axios.get("professions/player", config);
   return response.data;
-}
+};
 
 const updateLevel = async (token) => {
   console.log("frontend - level up");
@@ -151,7 +135,7 @@ const updateLevel = async (token) => {
     },
   };
   console.log(config);
-  const response = await axios.put(API_URL + "levelup", null, config);
+  const response = await axios.put(API_URL + "level", null, config);
   console.log(response, response.data);
   return response.data;
 };
@@ -173,75 +157,7 @@ const updateAttribute = async (attributeData, token) => {
   return response.data;
 };
 
-// put talent to user
-const addTalent = async (talentData, token) => {
-  console.log("frontend request to put a talent to user");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
-  const response = await axios.post(API_URL + "talents", talentData, config);
-  return response.data;
-};
-// put talent to user
-const removeTalent = async (talentData, token) => {
-  console.log("frontend request to put a talent to user");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
-  const response = await axios.delete(
-    API_URL + "talents/" + talentData,
-    config
-  );
-  return response.data;
-};
-
-// put talent to user
-const updateTalent = async (talentData, token) => {
-  console.log("frontend request to put a talent to user");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
-  const response = await axios.put(API_URL + "talents", talentData, config);
-  return response.data;
-};
 // Put item from items db to users inventory
-const toInventory = async (itemData, token) => {
-  console.log("frontend request to post an item to users inventory");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
-  const response = await axios.post(API_URL + "inventory", itemData, config);
-  return response.data;
-};
-
-// update item in users inventory
-const updateInventory = async (inventoryData, token) => {
-  console.log("frontend request to update an item to users inventory");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
-  const response = await axios.put(
-    API_URL + "inventory",
-    inventoryData,
-    config
-  );
-  return response.data;
-};
 
 // update money balance
 const newBalance = async (moneyData, token) => {
@@ -256,18 +172,6 @@ const newBalance = async (moneyData, token) => {
   return response.data;
 };
 
-// delete item from inventory
-const deleteItem = async (id, token) => {
-  console.log("frontend request to delete an item to users inventory");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
-  const response = await axios.delete(API_URL + "inventory/" + id, config);
-  return response.data;
-};
 
 const setEnchantment = async (enchantmentData, token) => {
   console.log(
@@ -290,19 +194,12 @@ const setEnchantment = async (enchantmentData, token) => {
 
 const playerService = {
   getPlayer,
+  getAttributes,
+  getProfession,
+  getLevel,
   updateLevel,
   newBalance,
-  addCompanion,
-  updateCompanionStatus,
-  equipToCompanion,
-  unequipCompanionItem,
   updateAttribute,
-  addTalent,
-  removeTalent,
-  updateTalent,
-  toInventory,
-  updateInventory,
-  deleteItem,
   setEnchantment,
 };
 

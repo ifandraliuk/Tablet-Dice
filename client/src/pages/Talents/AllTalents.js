@@ -3,43 +3,52 @@ import {useSelector} from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import MotionButton from '../../components/MotionButton';
 
 
 function AllTalents(props) {
+  const {categorizedTalents} = props
     const {fractionTheme, player} = useSelector((state)=>state.player)
-    const {talent} = useSelector((state)=>state.talents)
+    const {allTalents, playerTalents} = useSelector((state)=>state.talents)
 
   
   return (
         <table className="custom-table h-100">
     <thead>
       <tr>
-        <th className={`${props.el} category`} ><FontAwesomeIcon icon={props.icons[props.el]}/>{` ${props.el}`}</th>
+        <th className={`${categorizedTalents} category`} ><FontAwesomeIcon icon={props.icons[categorizedTalents]}/>{` ${categorizedTalents}`}</th>
         <th>Würfel</th>
         <th>Werte</th>
         <th>+</th>
       </tr>
     </thead>
     <tbody>
-      {Object.keys(talent).map((ind)=>{
-        const talentExists = player?.talents?.find(el=>el.talent.name===talent[ind].name)
+      {allTalents.map((talent,ind)=>{
 
-        return talent[ind].category === props.el && (
-      <tr key={talent[ind]._id}>
-        <td>{talent[ind].name}</td>
-        <td>{talent[ind].dice}</td>
+        const talentExists = playerTalents.find(el=>el.talent.name === talent.name)
+    
+        //const talentExists = playerTalents?.find(el=>el.name===talent[ind].name)
+
+        return talent.category === categorizedTalents && (
+      <tr key={talent._id}>
+        <td>{talent.name}</td>
+        <td>{talent.dice}</td>
         {talentExists ? (
         <>
         <td>
           {talentExists["points"]}
           </td>
-          <td><button type="button" disabled><FontAwesomeIcon icon={faPlus}/></button></td>
+          <td>
+            
+            <button type="button" disabled><FontAwesomeIcon icon={faPlus}/></button></td>
           </>): (
             <>
           <td>
-            <input name={talent[ind].name} type="number"  defaultValue={0} onChange={props.handleChange}/>
+            <input name={talent.name} type="number"  defaultValue={0} onChange={props.handleChange}/>
           </td>
-          <td><button className={`${fractionTheme}`} name={talent[ind].name} onClick={props.handleClick}><FontAwesomeIcon icon={faPlus}/></button></td>
+          <td>
+          <MotionButton name={talent.name} icon={faPlus} onClick={props.handleClick}/>
+           </td>
           </>)}
           </tr>
       )})}

@@ -2,52 +2,22 @@ const express = require("express");
 const router = express.Router();
 const {
   getPlayer,
-  putTalent,
-  toInventory,
-  updateInventory,
-  deleteItem,
   setEnchantment,
   uploadPicture,
   updateLevel,
   createCharacter,
-  updateAttribute,
-  updateBalance,
-  addTalent,
-  removeTalent,
-  addCompanion,
-  updateStatus,
-  equipToCompanion,
-  removeItemCompanion,
+  getLevel,
+  //updateBalance,
 } = require("../controllers/playerController");
 const { protect } = require("../middleware/authMiddleware");
 
 router.get("/", protect, getPlayer);
-router.route("/levelup").put(protect, updateLevel);
-
-//ATTR
-router.put("/attributes/:attr", protect, updateAttribute);
-
-//TALENTS
-router.route("/talents").put(protect, putTalent).post(protect, addTalent);
-router.route("/talents/:id").delete(protect, removeTalent);
-
-//INVENTORY
-router
-  .route("/inv")
-  .put(protect, updateInventory)
-  .post(protect, toInventory);
-router.route("/inv/:id").delete(protect, deleteItem);
+router.route("/level").put(protect, updateLevel).get(protect, getLevel);
 router.route("/enchantment").put(protect, setEnchantment);
-router.route("/balance").put(protect, updateBalance);
+//router.route("/balance").put(protect, updateBalance);
 //CREATE CHARACTER
 router.route("/profilepic").post(protect, uploadPicture);
 router.post("/create", protect, createCharacter);
 
-//COMPANIONS
-router
-  .route("/companion")
-  .put(protect, updateStatus)
-  .post(protect, addCompanion);
-router.route("/companion/equip").put(protect, equipToCompanion);
-router.route("/companion/item").put(protect, removeItemCompanion);
+
 module.exports = router;

@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion } from "framer-motion";
 const MotionButton = ({ name, onClick, content, icon, theme, onRepeat }) => {
-  console.log(name);
+
   const buttonVariants = {
     init: {
         opacity: 0
