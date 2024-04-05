@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../Styles/Companions.css";
 import Companion from "./Companion";
 import { AnimatePresence,  motion} from "framer-motion";
@@ -6,15 +6,26 @@ import { useSelector, useDispatch } from "react-redux";
 import { pageTransition } from "../../data/Animations";
 import { slots, slotInfo } from "../../data/ConstVariables";
 import Slot from "./Slot";
-import { updateCompanionStatus, equipToCompanion, unequipCompanionItem } from "../../features/companion/companionSlice";
+import { updateCompanionStatus, equipToCompanion, unequipCompanionItem, getCompanion, getSlotsAvailable, reset, getEquipable } from "../../features/companion/companionSlice";
 function Companions() {
-  const { player, fractionTheme, slotsAllowed } = useSelector(
+  const {fractionTheme} = useSelector(
     (state) => state.player
   );
+
   const [msg, setMsg] = useState({ id: "", text: "" });
   const dispatch = useDispatch();
-  const { companions } = player;
-
+  const { companions, slotsAllowed, equipable } =  useSelector(
+    (state) => state.companion
+  );
+  useEffect(() => {
+    dispatch(getCompanion())
+    dispatch(getSlotsAvailable())
+    dispatch(getEquipable())
+    return () => {
+      console.log("reset");
+      dispatch(reset());
+    };
+  },[dispatch])
   const slotOnClick = (status, id) => {
     const slotIsEmpty =
       companions.findIndex((el) => el.status === status) < 0 ||
@@ -51,7 +62,6 @@ function Companions() {
     console.log(data)
     dispatch(unequipCompanionItem(data))
   }
-  console.log(companions);
   return (
     <div className={`${fractionTheme}-bg`}>
       <div className="dark-bg container-fluid g-5">
@@ -80,9 +90,7 @@ function Companions() {
                           i={i + 1}
                           category={category}
                           data={slotInfo[i]}
-                          slotFilter={player?.inventory?.filter(
-                            (el) => el.item.category === "Begleiter"
-                          )}
+                          slotFilter={equipable}
                           usedBy={companions?.filter(
                             (c) => c.status === category
                           )}

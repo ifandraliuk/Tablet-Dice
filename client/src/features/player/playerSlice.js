@@ -435,10 +435,12 @@ export const playerSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(getAttributes.fulfilled, (state, action) => {
+        const {attributes, pointsLeft} = action.payload
         state.isLoading = false;
         state.isSuccess = true;
         state.playerDataLoaded = true;
-        state.attributes = action.payload;
+        state.attributes = attributes;
+        state.pointsLeft = pointsLeft
       })
       .addCase(getAttributes.rejected, (state, action) => {
         state.isLoading = false;

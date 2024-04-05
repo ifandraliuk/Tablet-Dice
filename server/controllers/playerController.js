@@ -50,6 +50,22 @@ const getLevel = asyncHandler(async (req, res) => {
   res.status(200).json({ level: user.level, pointsLeft: user.pointsLeft });
 });
 
+// @desc get fraction
+// @route GET /player/level
+// @access Private
+
+const getFraction= asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user.id);
+  if (!user || !user?.level || !user?.pointsLeft) {
+    res.status(500).json({ message: "Spieler nicht gefunden" });
+  }
+  const origin = user.general?.origin.split(" ");
+  console.log(origin);
+  const originName = origin ? origin[origin.length - 1] : "";
+  console.log(originName);
+  res.status(200).json(originName);
+});
+
 
 // @desc level up a character
 // @route PUT /player/level
@@ -215,6 +231,7 @@ const setEnchantment = asyncHandler(async (req, res) => {
 
 module.exports = {
   getPlayer,
+  getFraction,
   createCharacter,
   getLevel,
   updateLevel,

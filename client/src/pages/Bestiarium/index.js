@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { reset, getBestiaria } from "../../features/bestiaria/bestiariaSlice";
 import BestienList from "./BestienList";
-import HabitatList from "./HabitatList";
+import ArtListComp from "./ArtListComp";
 import { getHabitat } from "../../features/habitats/habitatSlice";
 import { pageTransition } from "../../data/Animations";
 import { motion } from "framer-motion";
@@ -15,15 +15,18 @@ const Bestiaria = () => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const { fractionTheme, isSuccess } = useSelector((state) => state.player);
-  const { bestiaria } = useSelector((state) => state.bestiaria);
+  const { bestiaria, artList } = useSelector((state) => state.bestiaria);
   const { habitat } = useSelector((state) => state.habitat);
-  const [habitatId, setHabitatFilter] = useState("");
+  const [art, setArtFilter] = useState("");
   const [companionId, setCompanionId] = useState("");
   const [onPopup, setOnPopup] = useState(false);
   useEffect(() => {
     console.log("getting creatures...");
     dispatch(getBestiaria());
     dispatch(getHabitat());
+  
+    
+    
     if (!user) {
       navigate("/");
     }
@@ -45,6 +48,7 @@ const Bestiaria = () => {
       setOnPopup(false);
     }
   };
+  console.log(art)
   return (
     <motion.div
       variants={pageTransition}
@@ -52,6 +56,7 @@ const Bestiaria = () => {
       animate="animate"
       exit="exit"
     >
+      
       <div className={`${fractionTheme}-bg`}>
         {onPopup && (
           <CompanionPopup
@@ -65,16 +70,16 @@ const Bestiaria = () => {
         <div className="dark-bg container-fluid g-5">
           <div className="row">
             <div className="col-2">
-              <HabitatList
-                habitats={habitat}
-                filter={setHabitatFilter}
+              <ArtListComp
+                arts={artList}
+                filter={setArtFilter}
                 fractionTheme={fractionTheme}
               />
             </div>
             <div className="col-9">
               <BestienList
                 creatures={bestiaria}
-                habitatFilter={habitatId}
+                artFilter={art}
                 setOnPopup={setOnPopup}
                 setCompanionId={setCompanionId}
                 fractionTheme={fractionTheme}

@@ -4,24 +4,25 @@ import React from "react";
 import { memo } from "react";
 const BestienList = memo(function BestienList({
   creatures,
-  habitatFilter,
+  artFilter,
   setOnPopup,
   setCompanionId,
   fractionTheme,
 }) {
-  console.log("bestien render");
   const creatureList =
-    habitatFilter.length === 0
+    artFilter.length === 0
       ? creatures
       : creatures.filter(
-          (cr) => cr.habitat.filter((h) => h._id === habitatFilter).length > 0
-        );
+          cr => cr.art === artFilter)
+        ;
+    
   if (creatureList.length > 0) {
     return (
       <div className="bestiaria ">
         {creatureList?.map((creature) => {
           const habitat = creature?.habitat;
-          return (
+          
+           return (
             <div className="row info " key={creature._id}>
 
               <div className="row ">
@@ -90,7 +91,7 @@ const BestienList = memo(function BestienList({
     );
   } else {
     return (
-      <div>Es wurden noch keine Tiere in dieses Habitat hinzugefügt...</div>
+      <div>Es wurden noch keine Tiere zu dieser Art hinzugefügt...</div>
     );
   }
 });

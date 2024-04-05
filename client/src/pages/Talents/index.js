@@ -15,8 +15,12 @@ import {
 import { Image, Spinner } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getTalent, addToPlayer, getPlayerTalent } from "../../features/talent/talentSlice";
-import { addTalent } from "../../features/player/playerSlice";
+import {
+  getTalent,
+  addToPlayer,
+  getPlayerTalent,
+} from "../../features/talent/talentSlice";
+import { addTalent, getAttributes } from "../../features/player/playerSlice";
 import AllTalents from "./AllTalents";
 import { races } from "../../data/ConstVariables";
 import ActiveTalents from "./ActiveTalents";
@@ -27,10 +31,9 @@ import { pageTransition } from "../../data/Animations";
 
 function Talents() {
   const { user } = useSelector((state) => state.auth);
-  const { fractionTheme, player } = useSelector((state) => state.player);
-  const { allTalents, playerTalents, isLoading, isError, message } = useSelector(
-    (state) => state.talents
-  );
+  const { fractionTheme, player, attributes } = useSelector((state) => state.player);
+  const { allTalents, playerTalents, isLoading, isError, message } =
+    useSelector((state) => state.talents);
   const [filter, setFilter] = useState("");
   const [newTalents, setNewTalent] = useState([]);
   const navigate = useNavigate();
@@ -48,7 +51,7 @@ function Talents() {
   };
   const kindAdvantage = races[player?.general?.kind]?.ability;
   //find all categories from dB
-  allTalents.map((talent,ind) => {
+  allTalents.map((talent, ind) => {
     return categories.push(talent.category);
   });
   // count amount of categorizedTalents in each category
@@ -62,12 +65,11 @@ function Talents() {
     }
     if (isError) {
       console.log(message);
-
-    } else  {
-          dispatch(getTalent());
-    dispatch(getPlayerTalent())
+    } else {
+      dispatch(getTalent());
+      dispatch(getPlayerTalent());
+      dispatch(getAttributes())
     }
-
   }, [user, navigate, isError, dispatch, message]);
 
   const handleChange = (e) => {
@@ -134,8 +136,7 @@ function Talents() {
       animate="animate"
       exit="exit"
     >
-      <div className="talents-page"
-      >
+      <div className="talents-page">
         <div className={`${fractionTheme}-bg`}>
           <div className="container-fluid">
             <div className="row dark-bg">
@@ -155,12 +156,12 @@ function Talents() {
                 </div>
               </div>
               <div className="col-lg-7 col-md-12">
-                {player?.attributes ? (
+                {attributes ? (
                   <AttributeList />
                 ) : (
                   <Spinner animation="border" />
                 )}
-                {player?.talents ? (
+                {playerTalents ? (
                   <ActiveTalents props={playerTalents} />
                 ) : (
                   <h5>Du hast noch keine Talente...</h5>

@@ -42,10 +42,12 @@ const MotionButton = ({ name, onClick, content, icon, theme, onRepeat }) => {
       animate={onRepeat ? "repeatAnimation" : "animate"}
       whileHover="whileHover"
       whileFocus=""
-      className={theme}
+      className={`${theme} border-btn`}
+    //  className={"btn-light"}
+    
     >
-      {icon && <FontAwesomeIcon icon={icon} />} {/* Render icon if provided */}
-      {content && !icon && content} {/* Render text if provided and no icon */}
+      {icon && <FontAwesomeIcon icon={icon}  />} {/* Render icon if provided */}
+      {content  && content} {/* Render text if provided and no icon */}
     </motion.button>
   );
 };

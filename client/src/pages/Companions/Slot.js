@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AttributesList from "./AttributesList";
 import MathButtonGroup from "../../components/MathButtonGroup";
 import ProgressBar from "../../components/ProgressBar";
@@ -21,17 +21,25 @@ function Slot({
   slotOnClick,
   slotFilter,
   equipItem,
-  clearSlot
+  clearSlot,
 }) {
   const { charismaValue, info } = data;
   const localHP = localStorage.getItem(category);
   const [damageDone, setDamageDone] = useState(0);
   const [showList, setShowList] = useState(false);
   const [currentHP, setCurrentHP] = useState(localHP ? parseInt(localHP) : -1);
-
+  const [allowedForCompanion, setAllowedForCompanion] = useState([])
   const listVisible = () => {
     setShowList((showList) => !showList);
   };
+  useEffect(()=>{
+
+    if(unlocked){
+      setAllowedForCompanion(slotFilter.filter(
+        (el) => el.item?.type === usedBy[0]?.creature?.art
+      ))
+    }
+  },[unlocked, slotFilter, usedBy])
   if (unlocked) {
     if (usedBy?.length === 1) {
       const { _id, creature, name } = usedBy[0];
@@ -159,7 +167,15 @@ function Slot({
                         <ItemIcon item={usedBy[0]?.slot1} />
                       </div>
                       <div className="col-4">
-                        <button id='slot1' className="btn-remove" onClick={(e)=>clearSlot(usedBy[0], e.currentTarget.id) }>X</button>{" "}
+                        <button
+                          id="slot1"
+                          className="btn-remove"
+                          onClick={(e) =>
+                            clearSlot(usedBy[0], e.currentTarget.id)
+                          }
+                        >
+                          X
+                        </button>{" "}
                       </div>
                     </div>
                   </div>
@@ -170,31 +186,36 @@ function Slot({
                 )}
                 {usedBy[0]?.slot2 ? (
                   <div className="col-6 info-div">
-                  <div className="row ">
-                    <div className="col-auto ">
-                      <ItemIcon item={usedBy[0]?.slot2} />
-                    </div>
-                    <div className="col-4">
-                      <button id='slot2' className="btn-remove" onClick={(e)=>clearSlot(usedBy[0], e.currentTarget.id) }>X</button>{" "}
+                    <div className="row ">
+                      <div className="col-auto ">
+                        <ItemIcon item={usedBy[0]?.slot2} />
+                      </div>
+                      <div className="col-4">
+                        <button
+                          id="slot2"
+                          className="btn-remove"
+                          onClick={(e) =>
+                            clearSlot(usedBy[0], e.currentTarget.id)
+                          }
+                        >
+                          X
+                        </button>{" "}
+                      </div>
                     </div>
                   </div>
-                </div>
                 ) : (
                   <div className="col-auto empty-slot">
                     <button onClick={listVisible}>+</button>
                   </div>
                 )}
                 <div>
-                  {showList &&
-                    slotFilter?.map((element) => {
-                      console.log(element.item?.type, usedBy[0].creature?.art)
-                      if(element.item?.type === usedBy[0].creature?.art){
-                      return(
+                  {showList && (allowedForCompanion.length > 0 ? (
+                    allowedForCompanion.map((element) => (
                       <motion.div
-                      initial={{opacity: 0}}
-                      animate={{opacity: 1}}
-                        className=" row companion-list "
                         key={element._id}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className=" row companion-list "
                       >
                         <div
                           className="col-9"
@@ -215,9 +236,12 @@ function Slot({
                           </strong>
                         </div>
                       </motion.div>
-                      )} else return (<></>)
-                      
-                  })}
+                    ))
+                  ) : (
+                    <div className="alert info">
+                      {`Nichts passendes im Inventar zu Begleitertyp "${usedBy[0]?.creature?.art}" gefunden`}
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>

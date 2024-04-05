@@ -40,6 +40,9 @@ app.use('/creatures', require('./routes/bestiariumRoutes'))
 app.use('/habitats', require('./routes/habitatRoutes'))
 
 //Companions
+app.use('/atlas', require('./routes/atlasRoutes'))
+
+//Companions
 app.use('/companion', require('./routes/companionRoutes'))
 
 app.listen(port, () => console.log(`Listening on port ${port}`)); //Line 6

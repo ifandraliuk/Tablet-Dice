@@ -10,7 +10,6 @@
   "license": "MIT",
   "devDependencies": {
     "concurrently": "^7.4.0"
-    
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.2.1",

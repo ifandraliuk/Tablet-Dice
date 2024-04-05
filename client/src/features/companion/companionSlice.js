@@ -3,11 +3,71 @@ import companionService from './companionService'
 
 const initialState = {
     companions: [],
+    equipable: [],
+    slotsAllowed : 0,
     isError: false, 
     isSuccess: false,
     isLoading: false,
     message: ''    
 }
+
+// Getting companions
+export const getCompanion = createAsyncThunk(
+  "companion/get",
+  async (_,thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await companionService.getCompanion(token);
+    } catch (error) {
+      const msg =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(msg);
+    }
+  }
+);
+
+// Getting slots available for the user
+export const getSlotsAvailable = createAsyncThunk(
+  "companion/slots/get",
+  async (_,thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await companionService.getSlotsAvailable(token);
+    } catch (error) {
+      const msg =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(msg);
+    }
+  }
+);
+
+// Getting slots available for the user
+export const getEquipable = createAsyncThunk(
+  "companion/equipable/get",
+  async (_,thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await companionService.getEquipable(token);
+    } catch (error) {
+      const msg =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(msg);
+    }
+  }
+);
+
 
 // Posting a new companion to user
 export const addCompanion = createAsyncThunk(
@@ -91,6 +151,54 @@ export const companionSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
+        .addCase(getCompanion.pending, (state) => {
+          state.isLoading = true;
+          state.isError = false;
+          state.isSuccess = false;
+        })    
+      .addCase(getCompanion.fulfilled, (state, action) => {
+          state.isLoading = false;
+          state.isSuccess = true;
+          state.isError = false;
+          state.companions = action.payload;
+        })
+        .addCase(getCompanion.rejected, (state, action) => {
+          state.isLoading = false;
+          state.isError = true;
+          state.message = action.payload;
+        })
+        .addCase(getSlotsAvailable.pending, (state) => {
+          state.isLoading = true;
+          state.isError = false;
+          state.isSuccess = false;
+        })    
+      .addCase(getSlotsAvailable.fulfilled, (state, action) => {
+          state.isLoading = false;
+          state.isSuccess = true;
+          state.isError = false;
+          state.slotsAllowed = action.payload;
+        })
+        .addCase(getSlotsAvailable.rejected, (state, action) => {
+          state.isLoading = false;
+          state.isError = true;
+          state.message = action.payload;
+        })
+        .addCase(getEquipable.pending, (state) => {
+          state.isLoading = true;
+          state.isError = false;
+          state.isSuccess = false;
+        })    
+      .addCase(getEquipable.fulfilled, (state, action) => {
+          state.isLoading = false;
+          state.isSuccess = true;
+          state.isError = false;
+          state.equipable = action.payload;
+        })
+        .addCase(getEquipable.rejected, (state, action) => {
+          state.isLoading = false;
+          state.isError = true;
+          state.message = action.payload;
+        })
         .addCase(addCompanion.pending, (state) => {
             state.isLoading = true;
             state.isError = false;
@@ -116,7 +224,7 @@ export const companionSlice = createSlice({
             state.isLoading = false;
             state.isSuccess = true;
             state.isError = false;
-            const updateId = state.player.companions.findIndex(
+            const updateId = state.companions.findIndex(
               (el) => el._id.toString() === action.payload.id
             );
             state.companions[updateId] = action.payload.updated;
@@ -135,10 +243,10 @@ export const companionSlice = createSlice({
             state.isLoading = false;
             state.isSuccess = true;
             state.isError = false;
-            const updateId = state.player.companions.findIndex(
+            const updateId = state.companions.findIndex(
               (el) => el._id.toString() === action.payload.id
             );
-            state.player.companions[updateId] = action.payload.updated;
+            state.companions[updateId] = action.payload.updated;
           })
           .addCase(equipToCompanion.rejected, (state, action) => {
             state.isLoading = false;

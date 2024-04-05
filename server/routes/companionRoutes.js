@@ -6,9 +6,14 @@ const {
   updateStatus,
   equipToCompanion,
   removeItemCompanion,
+  getCompanion,
+  getSlotsAvailable,
+  getEquipable,
 } = require("../controllers/companionController");
 //COMPANIONS
-router.route("/").put(protect, updateStatus).post(protect, addCompanion);
+router.route("/").get(protect, getCompanion).put(protect, updateStatus).post(protect, addCompanion);
+router.route("/slots").get(protect, getSlotsAvailable);
+router.route("/equipable").get(protect, getEquipable);
 router.route("/equip").put(protect, equipToCompanion);
 router.route("/item").put(protect, removeItemCompanion);
 

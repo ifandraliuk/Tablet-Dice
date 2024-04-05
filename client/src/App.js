@@ -34,10 +34,10 @@ function App() {
   const { fractionTheme, player, armor, weight, playerDataLoaded, equipped } =
     useSelector((state) => state.player);
 
-  const playerCallback = useCallback(() => {
+/*   const playerCallback = useCallback(() => {
     //console.log("callback dispatch to get player info")
-    dispatch(getPlayer());
-    dispatch(playerLoaded({ value: true }));
+    //dispatch(getPlayer());
+    //dispatch(playerLoaded({ value: true }));
   }, [dispatch]);
 
   // load player info
@@ -93,7 +93,7 @@ function App() {
         dispatch(getBonis());
       }
     }
-  }, [player, dispatch]);
+  }, [player, dispatch]); */
 
   return (
     <div className="g-0">

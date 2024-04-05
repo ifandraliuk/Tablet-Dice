@@ -1,0 +1,11 @@
+.atlas-page .worldmap {
+  border: 2px solid white;
+  border-radius: 2%;
+  width: 50%;
+  padding: 0;
+  margin: 0;
+}
+.atlas-page .img-habitat {
+  width: 20em;
+  height: 20em;
+}/*# sourceMappingURL=Atlas.css.map */

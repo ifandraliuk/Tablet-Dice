@@ -9,6 +9,7 @@ import diaryReducer from '../features/diary/diarySlice';
 import bestiariaReducer from '../features/bestiaria/bestiariaSlice';
 import habitatReducer from '../features/habitats/habitatSlice';
 import inventoryReducer from '../features/inventory/inventorySlice';
+import atlasReducer from '../features/atlas/atlasSlice';
 
 export const store = configureStore({
     reducer: {
@@ -22,5 +23,6 @@ export const store = configureStore({
         diaries: diaryReducer,
         bestiaria: bestiariaReducer,
         habitat: habitatReducer,
+        atlas: atlasReducer
     },
 })

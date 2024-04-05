@@ -64,10 +64,11 @@ const updateAttribute = asyncHandler(async (req, res) => {
 const getAttributes = asyncHandler(async (req, res) => {
     const user = await User.findById(req.user.id)
     const attributes = user?.attributes
-    if(!attributes){
+    const pointsLeft = user?.pointsLeft
+    if(!user || !attributes || !pointsLeft){
       res.status(400).json("Keine Attribute gefunden")
     }
-    res.status(200).json(attributes)
+    res.status(200).json({attributes:attributes, pointsLeft: pointsLeft})
   })
   
 
