@@ -1,10 +1,6 @@
 .bestiaria {
   color: white;
 }
-.bestiaria .img-creature {
-  border: 3px solid;
-  max-width: 100%;
-}
 .bestiaria .img-popup {
   width: 50px;
   height: auto;

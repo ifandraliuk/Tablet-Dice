@@ -8,11 +8,17 @@ import {
   faPersonWalking,
 } from "@fortawesome/free-solid-svg-icons";
 import MotionButton from "../../components/MotionButton";
+import { setActiveHabitat } from "../../features/atlas/atlasSlice";
 
 
-const HabitatInfo = ({ habitat, kingdom, setActiveHabitat }) => {
+const HabitatInfo = ({ habitat, kingdom }) => {
   const { name } = habitat;
   const dispatch = useDispatch();
+  const habitatActive = (e) => {
+    const id = e.currentTarget.name
+    console.log(id)
+    dispatch(setActiveHabitat({id}))
+  }
 
   return (
     <div className="container">
@@ -34,10 +40,10 @@ const HabitatInfo = ({ habitat, kingdom, setActiveHabitat }) => {
             <div className="col-auto">
               <MotionButton
                 content="Flora & Fauna"
-                name="details"
+                name={habitat._id}
                 icon={faLeaf}
                 onClick={(e) =>
-                  setActiveHabitat(habitat)
+                  habitatActive(e)
                 }
                 /*                       theme={
                         activeKingdom.name === kingdom.name &&

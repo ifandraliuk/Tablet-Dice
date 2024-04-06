@@ -42,7 +42,7 @@ const MotionButton = ({ name, onClick, content, icon, theme, onRepeat }) => {
       animate={onRepeat ? "repeatAnimation" : "animate"}
       whileHover="whileHover"
       whileFocus=""
-      className={`${theme} border-btn`}
+      className={`${theme}-active border-btn`}
     //  className={"btn-light"}
     
     >

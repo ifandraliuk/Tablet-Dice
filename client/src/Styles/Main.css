@@ -75,6 +75,11 @@ body {
   height: 100%;
 }
 
+.img-creature {
+  border: 3px solid;
+  max-width: 100%;
+}
+
 .large-icon {
   width: 210px;
   height: 210px;
@@ -520,9 +525,41 @@ h5 {
   background-repeat: repeat;
 }
 
-.Welles {
-  background-color: #fff05a;
-  box-shadow: 0px 0px 15px 5px #fff05a;
+.Algor-active {
+  background-color: #cc4749;
+  box-shadow: 0px 0px 15px 5px #962424;
+}
+
+.Beltamor-active {
+  background-color: #308fe8;
+  box-shadow: 0px 0px 15px 5px #00509d;
+}
+
+.Ethelion-active {
+  background-color: #2B9348;
+  box-shadow: 0px 0px 15px 5px #229680;
+}
+
+.Medorien-active {
+  background-color: #cb6327;
+  box-shadow: 0px 0px 15px 5px #cf7900;
+}
+
+.Thornheim-active {
+  background-color: #95ecff;
+  box-shadow: 0px 0px 15px 5px #99ccff;
+  color: black;
+}
+
+.Thamor-active {
+  background-color: #54318C;
+  box-shadow: 0px 0px 15px 5px #54318C;
+}
+
+.Welles-active {
+  background-color: rgb(245, 235, 130);
+  box-shadow: 0px 0px 15px 5px #fdeb27;
+  color: rgb(22, 22, 20);
 }
 
 .flieht {

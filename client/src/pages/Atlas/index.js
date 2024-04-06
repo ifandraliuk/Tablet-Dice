@@ -8,18 +8,22 @@ import { pageTransition } from "../../data/Animations";
 
 import HabitatDetails from "./HabitatDetails";
 import Kingdom from "./Kingdom";
+import MapPopUp from "./MapPopUp";
+
+
 
 const Atlas = () => {
   const { user } = useSelector((state) => state.auth);
   const { fractionTheme } = useSelector((state) => state.player);
-  const { kingdom, isError, message } = useSelector((state) => state.atlas);
-  const [activeHabitat, setActiveHabitat] = useState({}); //details component for habitat is active
+  const { kingdom, habitatView,kingdomCategory, isError, message } = useSelector(
+    (state) => state.atlas
+  );
+  const [showInfo, setShowInfo] = useState(false);
   const [habitatCategoryActive, setHabitatCategoryActive] = useState({
     kingdom: "",
     category: "",
     habitat: {},
   });
-  console.log(activeHabitat)
 
   const [activeKingdom, setActiveKingdom] = useState({
     name: "Beltamor",
@@ -37,7 +41,10 @@ const Atlas = () => {
       dispatch(getKingdom());
     }
   }, [user, navigate, isError, dispatch, message]);
-
+  const showMap=(e)=>{
+    console.log(e.currentTarget.name)
+    setShowInfo(prev=>!prev)
+  }
   return (
     <motion.div
       variants={pageTransition}
@@ -45,23 +52,18 @@ const Atlas = () => {
       animate="animate"
       exit="exit"
     >
+      {kingdomCategory === "map" && showInfo ? (      
+         <MapPopUp hideInfo={setShowInfo}
+          />
+        ) : null}
       <div className={`${fractionTheme}-bg`}>
         <div className="dark-bg container-fluid g-5 atlas-page">
-          {activeHabitat ? (
-            kingdom?.map((kingdom) => (
-              <Kingdom
-                fractionTheme={fractionTheme}
-                kingdom={kingdom}
-                setActiveHabitat={setActiveHabitat}
-              />
-            ))
+          {habitatView ? (
+            <HabitatDetails categoryActive={setHabitatCategoryActive} />
           ) : (
-            <HabitatDetails
-              habitat={activeHabitat}
-              kingdom={habitatCategoryActive?.kingdom}
-              categoryActive={setHabitatCategoryActive}
-              back={setActiveHabitat}
-            /> 
+            kingdom?.map((kingdom) => (
+              <Kingdom key={kingdom._id} fractionTheme={fractionTheme} kingdom={kingdom}  showMap={showMap}/>
+            ))
           )}
         </div>
 

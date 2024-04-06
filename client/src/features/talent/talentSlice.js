@@ -4,6 +4,11 @@ import talentService from "./talentService";
 const initialState = {
   allTalents: [],
   playerTalents: [],
+  userclassName: '',
+  userclassBonus: '',
+  kindName: '',
+  kindBonusName: '',
+  kindBonus: '',
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -48,6 +53,27 @@ export const getPlayerTalent = createAsyncThunk(
     }
   );
   
+  export const getUserBoni = createAsyncThunk(
+    "talents/userboni/getAll",
+    async (_, thunkAPI) => {
+      try {
+        const token = thunkAPI.getState().auth.user.token;
+        return await talentService.getUserBoni(token);
+      } catch (error) {
+        const msg =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+        console.log(error.message);
+        return thunkAPI.rejectWithValue(msg);
+      }
+    }
+  );
+  
+
+
 
 // Posting a talent to player
 export const addToPlayer = createAsyncThunk(
@@ -162,6 +188,25 @@ export const talentSlice = createSlice({
         state.playerTalents = action.payload;
       })
       .addCase(getPlayerTalent.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(getUserBoni.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getUserBoni.fulfilled, (state, action) => {
+        const {kindName, kindAdvantageName, kindAdvantage, userclassName, userclassAdvantage } = action.payload
+        console.log(action.payload)
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.kindName = kindName;
+        state.kindBonus = kindAdvantage;
+        state.kindBonusName = kindAdvantageName;
+        state.userclassName = userclassName;
+        state.userclassBonus = userclassAdvantage
+      })
+      .addCase(getUserBoni.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

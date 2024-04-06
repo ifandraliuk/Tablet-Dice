@@ -16,7 +16,6 @@ const Bestiaria = () => {
   const { user } = useSelector((state) => state.auth);
   const { fractionTheme, isSuccess } = useSelector((state) => state.player);
   const { bestiaria, artList } = useSelector((state) => state.bestiaria);
-  const { habitat } = useSelector((state) => state.habitat);
   const [art, setArtFilter] = useState("");
   const [companionId, setCompanionId] = useState("");
   const [onPopup, setOnPopup] = useState(false);
@@ -24,9 +23,7 @@ const Bestiaria = () => {
     console.log("getting creatures...");
     dispatch(getBestiaria());
     dispatch(getHabitat());
-  
-    
-    
+
     if (!user) {
       navigate("/");
     }
@@ -48,7 +45,7 @@ const Bestiaria = () => {
       setOnPopup(false);
     }
   };
-  console.log(art)
+  console.log(art);
   return (
     <motion.div
       variants={pageTransition}
@@ -56,7 +53,6 @@ const Bestiaria = () => {
       animate="animate"
       exit="exit"
     >
-      
       <div className={`${fractionTheme}-bg`}>
         {onPopup && (
           <CompanionPopup

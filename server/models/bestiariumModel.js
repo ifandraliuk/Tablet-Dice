@@ -14,6 +14,7 @@ const bestiariumSchema = mongoose.Schema({
     art: {
         type:String,
     },
+    register:{ type: String},
     capacity:{
         type: Number,
     },

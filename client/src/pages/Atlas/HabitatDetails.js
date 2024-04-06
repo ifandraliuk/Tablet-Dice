@@ -1,85 +1,100 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getHabitat } from "../../features/habitats/habitatSlice";
 import { motion } from "framer-motion";
-import { faLeaf, faPaw, faPersonWalking, faReply } from "@fortawesome/free-solid-svg-icons";
+import {
+  faLeaf,
+  faPaw,
+  faPersonWalking,
+  faReply,
+} from "@fortawesome/free-solid-svg-icons";
 import MotionButton from "../../components/MotionButton";
+import {
+  resetActiveHabitat,
+  setHabitatCategory,
+} from "../../features/atlas/atlasSlice";
+import RessourceList from "./RessourceList";
+import CreatureList from "./CreatureList";
+import HumanoidList from "./HumanoidList";
 
-
-const HabitatDetails = ({ habitat, kingdom, categoryActive, back }) => {
-  const { name } = habitat;
+const HabitatDetails = () => {
+  const { activeKingdomName, activeHabitat, habitatCategory } = useSelector(
+    (state) => state.atlas
+  );
   const dispatch = useDispatch();
 
+  const onBack = () => {
+    dispatch(resetActiveHabitat());
+  };
+
+  const onHabitatCategory = (e) => {
+    const category = e.currentTarget.name;
+    dispatch(setHabitatCategory({ category }));
+  };
   return (
-    <div className="container">
+    <div className=" container-fluid">
       <div className="row mb-4">
         <div className="col-4">
           <img
             alt=""
             className="img-habitat"
-            src={`habitat/${kingdom}/${habitat._id}.png`}
+            src={`habitat/${activeKingdomName}/${activeHabitat._id}.png`}
           />
-        </div>
-        
-        <div className="col-8 ">
-        <h1>{name}</h1>
-  
-          <h2>Beschreibung</h2>
           
+        </div>
+
+        <div className="col-8 dark-bg border-pattern left repeat">
+        <h1>{activeHabitat.name}</h1>
           <div className="row">
             <div className="col-auto">
-            <MotionButton
-                      content="Ressourcen"
-                      name="ressource"
-                      icon={faLeaf}
-                      onClick={(e)=>categoryActive({kingdom: kingdom, category: e.currentTarget.name, habitat: habitat})}
-/*                       theme={
-                        activeKingdom.name === kingdom.name &&
-                        activeKingdom.category === "map"
-                          ? fractionTheme
-                          : ""
-                      } */
-                    />
+              <MotionButton
+                content="Ressourcen"
+                name="ressource"
+                icon={faLeaf}
+                onClick={(e) => onHabitatCategory(e)}
+                theme={habitatCategory === "ressource" ? activeKingdomName : ""}
+              />
             </div>
             <div className="col-auto">
-            <MotionButton
-                      content="Tiere"
-                      name="animal"
-                      icon={faPaw}
-/*                       theme={
-                        activeKingdom.name === kingdom.name &&
-                        activeKingdom.category === "map"
-                          ? fractionTheme
-                          : ""
-                      } */
-                    />
+              <MotionButton
+                content="Tiere"
+                name="creature"
+                icon={faPaw}
+                onClick={(e) => onHabitatCategory(e)}
+                theme={habitatCategory === "creatured" ? activeKingdomName : ""}
+              />
             </div>
             <div className="col-auto">
-            <MotionButton
-                      content="Humanoide"
-                      name="human"
-                      icon={faPersonWalking}
-/*                       theme={
-                        activeKingdom.name === kingdom.name &&
-                        activeKingdom.category === "map"
-                          ? fractionTheme
-                          : ""
-                      } */
-                    />
+              <MotionButton
+                content="Humanoide"
+                name="human"
+                icon={faPersonWalking}
+                onClick={(e) => onHabitatCategory(e)}
+                theme={habitatCategory === "human" ? activeKingdomName : ""}
+              />
             </div>
             <div className="col-auto">
-            <MotionButton
-                      content="Zurück"
-                      name="back"
-                      icon={faReply}
-/*                       theme={
-                        activeKingdom.name === kingdom.name &&
-                        activeKingdom.category === "map"
-                          ? fractionTheme
-                          : ""
-                      } */
-                      onClick={()=>back({})}
-                    />
+              <MotionButton
+                content="Zurück"
+                name="back"
+                icon={faReply}
+                onClick={onBack}
+              />
+            </div>
+          </div>
+          <div className="container">
+            <div className="row">
+              {
+                habitatCategory === 'ressource' ?
+                (
+                  <RessourceList />
+                ) : habitatCategory === 'creature' ?
+                (
+                  <CreatureList  />
+                ) : habitatCategory === 'human' ?
+                (
+                  <HumanoidList />
+                ) : null
+              }
             </div>
           </div>
         </div>

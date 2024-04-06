@@ -19,6 +19,7 @@ import {
   getTalent,
   addToPlayer,
   getPlayerTalent,
+  getUserBoni,
 } from "../../features/talent/talentSlice";
 import { addTalent, getAttributes } from "../../features/player/playerSlice";
 import AllTalents from "./AllTalents";
@@ -32,7 +33,7 @@ import { pageTransition } from "../../data/Animations";
 function Talents() {
   const { user } = useSelector((state) => state.auth);
   const { fractionTheme, player, attributes } = useSelector((state) => state.player);
-  const { allTalents, playerTalents, isLoading, isError, message } =
+  const { allTalents, kindName, kindBonus, kindBonusName, userclassName, userclassBonus, playerTalents, isLoading, isError, message } =
     useSelector((state) => state.talents);
   const [filter, setFilter] = useState("");
   const [newTalents, setNewTalent] = useState([]);
@@ -49,7 +50,6 @@ function Talents() {
     Wissen: faBook,
     Heimlichkeit: faMask,
   };
-  const kindAdvantage = races[player?.general?.kind]?.ability;
   //find all categories from dB
   allTalents.map((talent, ind) => {
     return categories.push(talent.category);
@@ -67,6 +67,7 @@ function Talents() {
       console.log(message);
     } else {
       dispatch(getTalent());
+      dispatch(getUserBoni())
       dispatch(getPlayerTalent());
       dispatch(getAttributes())
     }
@@ -148,11 +149,11 @@ function Talents() {
                   <Image fluid src={`/user/${user?._id}.jpeg`}></Image>
                 </div>
                 <div className="col-lg-9 col-md-10">
-                  <h3>{player?.userclass?.name}</h3>
-                  <p>{player?.userclass?.advantages}</p>
-                  <h3>{player?.general?.kind}</h3>
-                  <h5>{kindAdvantage?.name}</h5>
-                  <p>{kindAdvantage?.descr}</p>
+                  <h3>{userclassName}</h3>
+                  <p>{userclassBonus}</p>
+                  <h3>{kindName}</h3>
+                  <h5>{kindBonusName}</h5>
+                  <p>{kindBonus}</p>
                 </div>
               </div>
               <div className="col-lg-7 col-md-12">

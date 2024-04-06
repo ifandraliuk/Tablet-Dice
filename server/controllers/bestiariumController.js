@@ -49,6 +49,19 @@ const getCreature = asyncHandler( async (req, res) => {
     const creatures = await Bestiaruim.find().populate({path: 'habitat', model: 'Habitat'})
     res.status(200).json(creatures)
 })
+// @desc get creatures in habitat
+// @route GET /creatures/:habitat/:register
+// @access Private
 
+const getCreatureInHabitat =  asyncHandler( async (req, res) => {
+    const habitat = req.params.habitat
+    const register = req.params.register
+    console.log(req.params)
+    const creatures = await Bestiaruim.find({ 'habitat':  habitat, 'register': register  })
+    if(!creatures){
+        res.status(400).json({message: 'Kreatur nicht gefunden'})
+    }
+    res.status(200).json(creatures)
+})
 
-module.exports = { setCreature, getCreature}
+module.exports = { setCreature, getCreature, getCreatureInHabitat}

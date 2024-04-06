@@ -48,12 +48,12 @@ const BestienList = memo(function BestienList({
               <div className="col-3 mt-3">
                 <img
                   className="img-creature"
-                  src={`creature/${creature._id}.png`}
+                  src={`${creature.register}/${creature._id}.png`}
                   alt="creature"
                 />
                 <h5
-                  className={creature.picture}
-                >{`Status: ${creature.picture}`}</h5>
+                  className={creature.status}
+                >{`Status: ${creature.status}`}</h5>
               </div>
 
               <div className="col-9 p-2 border-left">

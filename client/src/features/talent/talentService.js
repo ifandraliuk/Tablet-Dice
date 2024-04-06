@@ -21,6 +21,19 @@ const getPlayerTalent = async (token) => {
     return response.data
 }
 
+const getUserBoni = async (token) => {
+
+  console.log('frontend request to get all player talents')
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const response = await axios.get(API_URL + "userboni", config)
+  return response.data
+}
+
+
 // put talent to user
 const addToPlayer = async (talentData, token) => {
     console.log("frontend request to put a talent to user");
@@ -63,6 +76,7 @@ const addToPlayer = async (talentData, token) => {
   };
 const talentService = {
     getTalent,
+    getUserBoni,
     getPlayerTalent,
     addToPlayer,
     removeFromPlayer,
