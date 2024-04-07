@@ -357,6 +357,24 @@ textarea:focus{
     outline: none;
 }
 
+// TEXT COLORS
+
+
+.cyan-text{
+    color: #8ecae6;
+}
+.yellow-text{
+    color: $categoryYellow;
+}
+.green-text{
+    color: $categoryGreen
+}
+.blue-text{
+    color: #0077b6;
+}
+.violet-text{
+    color: #c77dff;
+}
 strong {
     color: $categoryOrange;
 }
@@ -476,7 +494,7 @@ h5 {
 }
 
 
-/* COLORS */
+/* FRACTION COLORS */
 .Algor-bg {
     background:url(~/public/pattern/algor.svg) rgba(0, 0, 0, 0.8);
     background-size: 15%;
@@ -512,6 +530,29 @@ h5 {
     background-size: 15%;
     background-repeat: repeat;
 }
+
+.Algor-text{
+    color: $algorMain;
+}
+.Beltamor-text{
+    color: $beltamorMain;
+}
+.Ethelion-text{
+    color: $ethelionMain;
+}
+.Medorien-text{
+    color: $medorienMain;
+}
+.Thornheim-text{
+    color: $thornheimMain;
+}
+.Thamor-text{
+    color: $thamorMain;
+}
+.Welles-text{
+    color:  $wellesMain;
+}
+
 .Algor-active{
     background-color: $algorMain;
     -webkit-box-shadow: 0px 0px 15px 5px #962424; 
@@ -554,6 +595,8 @@ h5 {
     color: $darkBlack
 }
 
+
+
 // COMPANION COLORS
 
 .flieht{
@@ -566,8 +609,20 @@ h5 {
     background-color: $categoryOrange;
 }
 
+.Krieger{
+    background-color: $categoryRed;
+}
 
+.Fernkampf{
+    background-color: $categoryOrange;
+}
 
+.Arbeiter{
+    background-color: $categoryYellowOrange;
+}
 
+.Schurke{
+    background-color: $categoryBlue;
+}
 
 

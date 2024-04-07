@@ -20,12 +20,6 @@
   width: auto;
   border-radius: 50%;
 }
-.dashboard-page .armor {
-  background: url(~/public/pattern/shield-bg.svg);
-  width: 3.2em;
-  height: 3.2em;
-  text-align: center;
-}
 .dashboard-page .general-container {
   background-color: rgba(24, 24, 24, 0.8);
   margin-top: 3.5em;

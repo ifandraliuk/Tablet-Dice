@@ -116,6 +116,17 @@ const getLevel = async (token) => {
   return response.data;
 };
 
+// Get players general info
+const getGeneral = async (token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const response = await axios.get(API_URL + "general", config);
+  return response.data;
+};
+
 // Get players profession
 const getProfession = async (token) => {
   const config = {
@@ -196,6 +207,7 @@ const playerService = {
   getPlayer,
   getAttributes,
   getProfession,
+  getGeneral,
   getLevel,
   updateLevel,
   newBalance,

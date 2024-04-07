@@ -38,6 +38,7 @@ const CreatureList = () => {
             <div className="col-6">
               <h2>{creature.name}</h2>
               <ul>
+          
                 <li>Gattung: {creature.art}</li>
               
                 <li>Material: {creature.material}</li>

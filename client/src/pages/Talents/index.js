@@ -20,15 +20,16 @@ import {
   addToPlayer,
   getPlayerTalent,
   getUserBoni,
+  reset
 } from "../../features/talent/talentSlice";
-import { addTalent, getAttributes } from "../../features/player/playerSlice";
+import { getAttributes } from "../../features/player/playerSlice";
 import AllTalents from "./AllTalents";
-import { races } from "../../data/ConstVariables";
 import ActiveTalents from "./ActiveTalents";
 import AttributeList from "../Dashboard/Attributes";
 import ScrollUpButton from "../../components/ScrollUpButton";
 import { motion } from "framer-motion";
 import { pageTransition } from "../../data/Animations";
+import { getCategoryBoni } from "../../features/inventory/inventorySlice";
 
 function Talents() {
   const { user } = useSelector((state) => state.auth);
@@ -67,9 +68,14 @@ function Talents() {
       console.log(message);
     } else {
       dispatch(getTalent());
-      dispatch(getUserBoni())
       dispatch(getPlayerTalent());
+      dispatch(getUserBoni());
+      dispatch(getCategoryBoni("talent"))
+      
       dispatch(getAttributes())
+    }
+    return () =>{
+      dispatch(reset())
     }
   }, [user, navigate, isError, dispatch, message]);
 

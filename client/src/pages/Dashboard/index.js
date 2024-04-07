@@ -7,24 +7,26 @@ import EquippedItem from "../Inventory/EquippedItem";
 import BarList from "./BarList";
 import Abilities from "./Abilities";
 import AttributeList from "./Attributes";
-import { getAttributes, getLevel, getProfession, reset, updateLevel } from "../../features/player/playerSlice";
+import { generateBar, getAttributes, getGeneral, getLevel, getProfession, reset, updateLevel } from "../../features/player/playerSlice";
 import { AnimatePresence, motion } from "framer-motion";
 import { pageTransition } from "../../data/Animations";
 import Fraction from "../../components/Fraction";
 import LevelUp from "./LevelUp";
 import GeneralInfo from "./GeneralInfo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
-import { extendInfo, getUserWeapons } from "../../features/inventory/inventorySlice";
+import { faBars, faShield, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
+import { extendInfo, getArmor, getCategoryBoni, getUserWeapons, reset as inventoryReset, updateEquipmentStats } from "../../features/inventory/inventorySlice";
 import ExtendedInfo from "../Inventory/ExtendedInfo";
+
+
 function Dashboard() {
   const { user } = useSelector((state) => state.auth);
   const [showInfo, setShowInfo] = useState(false);
   const [activeButton, setActiveButton] = useState(null); // active button
-  const { fractionTheme, player, profession, attributes, level, armor, bonis, setboni } = useSelector(
+  const { fractionTheme, profession, attributes, level, bonis, setboni } = useSelector(
     (state) => state.player
   );
-  const { mainWeapon, secondWeapon, extendedId } = useSelector(
+  const { mainWeapon, secondWeapon, armor, armorBoni, extendedId } = useSelector(
     (state) => state.inventory
   );
   const navigate = useNavigate();
@@ -38,18 +40,33 @@ function Dashboard() {
     setShowInfo((prevStatus) => !prevStatus);
     dispatch(extendInfo({ id: id }));
   };
+  const getArmorBonusValue = (armorType) => {
+    console.log(armorType);
+    if(armorBoni?.length > 0){
+      const foundBoni = armorBoni.find((el) => el.bonus.type === armorType);
+      console.log(`Value for ${armorType}: ${foundBoni?.value}`);
+      return foundBoni ? foundBoni.value : null;
+    } else return null
 
+  };
   useEffect(() => {
     // Dispatch actions only when the component mounts
     if (user) {
       dispatch(getUserWeapons());
       dispatch(getAttributes());
+      dispatch(getArmor());
       dispatch(getLevel());
       dispatch(getProfession())
+      dispatch(getGeneral())
+      dispatch(getCategoryBoni("resistance"))
     } else {
       // Redirect to "/" if user is not logged in
       navigate("/");
       dispatch(reset())
+    }
+    return () =>{
+      dispatch(reset())
+      dispatch(inventoryReset())
     }
   }, [dispatch, user, navigate]);
   return (
@@ -103,7 +120,7 @@ function Dashboard() {
                         src={`/user/${user?._id}.jpeg`}
                       ></motion.img>
                     ) : (
-                      <GeneralInfo key="info" player={player} armor={armor} />
+                      <GeneralInfo key="info" />
                     )}
                   </AnimatePresence>
                 </div>
@@ -134,9 +151,15 @@ function Dashboard() {
                     
                   </div>)}
                   <div className="row  justify-content-center">
-                    <div className="armor ">
-                      <strong>{armor}</strong>
+                    <div className="col-auto">
+                      <FontAwesomeIcon icon={faShield}/>
+                      {armor}
                     </div>
+                    <div className="col-auto violet-text">
+                      <FontAwesomeIcon icon={faShieldHalved}/>
+                      {getArmorBonusValue('Magie') ? getArmorBonusValue('Magie') : 0}
+                    </div>  
+                    
                   </div>
                 </div>
               </div>

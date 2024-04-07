@@ -1,6 +1,9 @@
 const asyncHandler = require("express-async-handler");
 const Talent = require("../models/talentModel");
 const User = require("../models/userModel");
+const UserTalents = require("../models/userTalentsModel")
+const mongoose = require("mongoose");
+
 
 const getTalent = asyncHandler(async (req, res) => {
   const talents = await Talent.find();

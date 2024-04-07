@@ -32,10 +32,9 @@ const LevelUp = ({ level, newLevel, fraction }) => {
       onClick={newLevel}
     >
       {level}
-      <motion.strong
-      >
+      <strong className={`${fraction}-text`}>
         <FontAwesomeIcon icon={faPlus} />
-      </motion.strong>
+      </strong>
     </motion.button>
   );
 };

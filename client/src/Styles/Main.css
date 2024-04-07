@@ -362,6 +362,26 @@ textarea:focus {
   outline: none;
 }
 
+.cyan-text {
+  color: #8ecae6;
+}
+
+.yellow-text {
+  color: rgb(249, 199, 79);
+}
+
+.green-text {
+  color: rgb(144, 190, 109);
+}
+
+.blue-text {
+  color: #0077b6;
+}
+
+.violet-text {
+  color: #c77dff;
+}
+
 strong {
   color: rgb(243, 114, 44);
 }
@@ -488,7 +508,7 @@ h5 {
   z-index: 2;
 }
 
-/* COLORS */
+/* FRACTION COLORS */
 .Algor-bg {
   background: url(~/public/pattern/algor.svg) rgba(0, 0, 0, 0.8);
   background-size: 15%;
@@ -523,6 +543,34 @@ h5 {
   background: url(~/public/pattern/welles.svg) rgba(0, 0, 0, 0.8);
   background-size: 15%;
   background-repeat: repeat;
+}
+
+.Algor-text {
+  color: #cc4749;
+}
+
+.Beltamor-text {
+  color: #308fe8;
+}
+
+.Ethelion-text {
+  color: #2B9348;
+}
+
+.Medorien-text {
+  color: #cb6327;
+}
+
+.Thornheim-text {
+  color: #95ecff;
+}
+
+.Thamor-text {
+  color: #54318C;
+}
+
+.Welles-text {
+  color: rgb(245, 235, 130);
 }
 
 .Algor-active {
@@ -572,4 +620,20 @@ h5 {
 
 .aggressiv {
   background-color: rgb(243, 114, 44);
+}
+
+.Krieger {
+  background-color: rgb(249, 65, 68);
+}
+
+.Fernkampf {
+  background-color: rgb(243, 114, 44);
+}
+
+.Arbeiter {
+  background-color: rgb(248, 150, 30);
+}
+
+.Schurke {
+  background-color: rgb(87, 117, 144);
 }/*# sourceMappingURL=Main.css.map */

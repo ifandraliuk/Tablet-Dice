@@ -23,7 +23,7 @@ const getProfessions = asyncHandler( async (req, res) => {
         res.status(200).json(userclasses)
         }          
 })
-// @desc get level
+// @desc get user profession
 // @route GET /professions/player
 // @access Private
 

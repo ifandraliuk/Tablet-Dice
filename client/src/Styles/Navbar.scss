@@ -19,8 +19,15 @@
     .link{
         text-decoration: none;
         color: $mainGrey;
+        &.active{
+            color: white;
+        }
     }
+
+
     .link:hover{
+        margin-left: 0.5em;
+        margin-right: 0.5em;
         color: white;
     }
 

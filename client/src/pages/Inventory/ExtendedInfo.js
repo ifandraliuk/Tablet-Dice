@@ -45,7 +45,7 @@ function ExtendedInfo({
 
   console.log(customItemInfo, stateInfo);
   const extendedItemInfo = customItemInfo ? customItemInfo : stateInfo;
-  debugger;
+  const { fractionTheme } = useSelector((state) => state.player); // get all users to share the item with
   const { userList } = useSelector((state) => state.diaries); // get all users to share the item with
   const item = extendedItemInfo?.item
     ? extendedItemInfo.item
@@ -252,27 +252,27 @@ function ExtendedInfo({
                             ? ""
                             : "Reichweite: "
                         } `}
-                        <strong>{value}</strong>
+                        <strong className={`${fractionTheme}-text`}>{value}</strong>
                       </li>
                     )}
                     <li>
-                      Gattung: <strong>{genus}</strong>
+                      Gattung: <strong className={`${fractionTheme}-text`}>{genus}</strong>
                     </li>
                     <li>
-                      Typ: <strong>{type}</strong>
+                      Typ: <strong className={`${fractionTheme}-text`}>{type}</strong>
                     </li>
                   </ul>
                 </div>
                 <div className="col-lg-6 col-md-12  col-sm-12 ">
                   <ul>
                     <li>
-                      Preis: <strong>{price}</strong>
+                      Preis: <strong className={`${fractionTheme}-text`}>{price}</strong>
                     </li>
                     <li>
-                      Gewicht: <strong>{weight}</strong>
+                      Gewicht: <strong className={`${fractionTheme}-text`}>{weight}</strong>
                     </li>
                     <li>
-                      Wertigkeit: <strong>{rarity}</strong>
+                      Wertigkeit: <strong className={`${fractionTheme}-text`}>{rarity}</strong>
                     </li>
                   </ul>
                 </div>
@@ -287,7 +287,7 @@ function ExtendedInfo({
                           : category === "Ressource"
                           ? "Abbauen/Verarbeiten: "
                           : "Widerstand:"}
-                        <strong>{dice}</strong>
+                        <strong className={`${fractionTheme}-text`}>{dice}</strong>
                       </li>
                     </ul>
                   </div>
@@ -297,7 +297,7 @@ function ExtendedInfo({
                   <div className="col-lg-12 col-md-12 col-sm-12 ">
                     <ul>
                       <li>
-                        Bonus: <strong>{bonuses}</strong>
+                        Bonus: <strong className={`${fractionTheme}-text`}>{bonuses}</strong>
                       </li>
                     </ul>
                   </div>
@@ -319,7 +319,7 @@ function ExtendedInfo({
                     return (
                       <div className="col col-lg-6 col-md-4" key={item?._id}>
                         <ItemIcon item={item} specialAmount={amount} />
-                        <strong>{name}</strong>
+                        <strong className={`${fractionTheme}-text`}>{name}</strong>
                       </div>
                     );
                   })}
@@ -338,7 +338,7 @@ function ExtendedInfo({
                     <FontAwesomeIcon icon={faLeftLong} />
                   </button>
                 </div>
-                <strong>Wähle eine Person zum Teilen aus:</strong>
+                <strong className={`${fractionTheme}-text`}>Wähle eine Person zum Teilen aus:</strong>
                 {userList &&
                   userList.map(
                     (user) =>
@@ -380,7 +380,7 @@ function ExtendedInfo({
                 </div>
                 {extendedItemInfo.amount > 1 ? (
                   <div>
-                    <strong>
+                    <strong className={`${fractionTheme}-text`}>
                       Wie viele Gegegnstände soll die neue Stapel haben?
                     </strong>
                     <input

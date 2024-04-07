@@ -17,7 +17,9 @@ const initialState = {
   level: 0,
   pointsLeft: 0,
   attributes: [],
+  attributesLoaded: false,
   profession: {},
+  general: {},
   bars: {
     vitality: vitality ? vitality : 0,
     stamina: stamina ? stamina : 0,
@@ -28,12 +30,9 @@ const initialState = {
   abilityCategory: "", // filter players abilities
   fractionTheme: fraction ? fraction : "", // main theme color based on his/her fraction
   equipped: equippedItems ? equippedItems : [], // equipped items
-  armor: 0,
   bonis: [], // all active bonis
   setboni: "",
-  weight: 0,
-  loadCapacity: loadCapacity ? loadCapacity : 0,
-  currPercentage: 0, // users weight in percent of his/her weight
+
   equipmentError: { variant: "", msg: "" },
   slotsAllowed: slotsAllowed ? slotsAllowed : [""], // 1 charisma - 1 slot, 5 CHA - 2 slots etc.
   isError: false,
@@ -59,54 +58,86 @@ export const getPlayer = createAsyncThunk("player/get", async (_, thunkAPI) => {
 });
 
 // Get players profession
-export const getProfession = createAsyncThunk("professions/get", async (_, thunkAPI) => {
-  try {
-    const token = thunkAPI.getState().auth.user.token;
-    return await playerService.getProfession(token);
-  } catch (error) {
-    const msg =
-      (error.response && error.response.data && error.response.data.message) ||
-      error.message ||
-      error.toString();
-    console.log(error.message);
- 
-    return thunkAPI.rejectWithValue(msg);
-  }
-});
+export const getProfession = createAsyncThunk(
+  "professions/get",
+  async (_, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await playerService.getProfession(token);
+    } catch (error) {
+      const msg =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      console.log(error.message);
 
+      return thunkAPI.rejectWithValue(msg);
+    }
+  }
+);
 
 // Get player for logged in user
-export const getAttributes = createAsyncThunk("attributes/get", async (_, thunkAPI) => {
-  try {
-    const token = thunkAPI.getState().auth.user.token;
-    return await playerService.getAttributes(token);
-  } catch (error) {
-    const msg =
-      (error.response && error.response.data && error.response.data.message) ||
-      error.message ||
-      error.toString();
-    console.log(error.message);
- 
-    return thunkAPI.rejectWithValue(msg);
+export const getAttributes = createAsyncThunk(
+  "attributes/get",
+  async (_, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await playerService.getAttributes(token);
+    } catch (error) {
+      const msg =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      console.log(error.message);
+
+      return thunkAPI.rejectWithValue(msg);
+    }
   }
-});
+);
 
 // Get level
-export const getLevel = createAsyncThunk("player/level/get", async (_, thunkAPI) => {
-  try {
-    const token = thunkAPI.getState().auth.user.token;
-    return await playerService.getLevel(token);
-  } catch (error) {
-    const msg =
-      (error.response && error.response.data && error.response.data.message) ||
-      error.message ||
-      error.toString();
-    console.log(error.message);
-    return thunkAPI.rejectWithValue(msg);
+export const getLevel = createAsyncThunk(
+  "player/level/get",
+  async (_, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await playerService.getLevel(token);
+    } catch (error) {
+      const msg =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      console.log(error.message);
+      return thunkAPI.rejectWithValue(msg);
+    }
   }
-});
+);
 
-
+// Get general info
+export const getGeneral = createAsyncThunk(
+  "player/general/get",
+  async (_, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await playerService.getGeneral(token);
+    } catch (error) {
+      const msg =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      console.log(error.message);
+      return thunkAPI.rejectWithValue(msg);
+    }
+  }
+);
 // update level up
 export const updateLevel = createAsyncThunk(
   "player/levelup/putAll",
@@ -147,7 +178,6 @@ export const updateAttribute = createAsyncThunk(
     }
   }
 );
-
 
 // Posting a class to user
 export const newBalance = createAsyncThunk(
@@ -288,11 +318,49 @@ export const playerSlice = createSlice({
     sortValueDecreese: (state) => {
       state.player?.talents.sort((a, b) => b.points - a.points);
     },
+    generateBar: (state) => {
+  
+        console.log("getting bars");
+        let v = localStorage.getItem("vitality");
+        if (v === null) {
+          const vitality = state.attributes?.vitality;
+          v = isNaN(vitality) ? 0 : vitality * 10; // Set a default value or handle invalid input
+          console.log(v)
+          localStorage.setItem("vitality", v);
+        }
+        console.log(v, typeof v, v > 0);
+        let st = localStorage.getItem("stamina");
+        if (st === null) {
+            const stamina = state.attributes?.stamina;
+            st = isNaN(stamina) ? 0 : stamina * 10; // Set a default value or handle invalid input
+            
+            localStorage.setItem("stamina", st);
+        }
+        let m = localStorage.getItem("mana");
+        if (m === null) {
+            const mana = state.attributes?.mana;
+            m = isNaN(mana) ? 0 : mana * 10; // Set a default value or handle invalid input
+            localStorage.setItem("mana", m);
+        }
+        let sp = localStorage.getItem("spirit");
+        if (sp === null) {
+            const spirit = state.attributes?.spirit;
+            sp = isNaN(spirit) ? 0 : spirit * 10; // Set a default value or handle invalid input
+            localStorage.setItem("spirit", sp);
+        }
+        state.bars = {
+          vitality: v > 0 ? v : state.attributes?.vitality * 10,
+          stamina: st > 0 ? st : state.attributes?.stamina * 10,
+          mana: m > 0 ? m : state.attributes?.mana * 10,
+          spirit: sp > 0 ? sp : state.attributes?.spirit * 10,
+        };
+      
+    },
     decreaseBar: (state, { payload }) => {
       const newValue = parseInt(state.bars[payload.category] - payload.value);
       if (
         newValue >= 0 &&
-        newValue <= state.player?.attributes[payload.category] * 10
+        newValue <= state.attributes[payload.category] * 10
       ) {
         localStorage.setItem(payload.category, newValue);
         state.bars[payload.category] = newValue;
@@ -314,23 +382,6 @@ export const playerSlice = createSlice({
       if (state.bars?.spirit > 0) {
         console.log("reseting spirit");
         localStorage.setItem("spirit", state.bars?.spirit);
-      }
-    },
-    getArmor: (state) => {
-      let armor = 0;
-      //console.log("get armor reducer")
-
-      if (state.equipped && state.player.inventory) {
-        state.equipped?.forEach((element) => {
-          const item = state.player?.inventory.find(
-            (el) => element.equipment === el._id
-          )?.item;
-          //console.log(item)
-          if (item && item.category.toString() === "Rüstung") {
-            armor += item.value;
-          }
-        });
-        state.armor = armor;
       }
     },
     getBonis: (state) => {
@@ -428,23 +479,25 @@ export const playerSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
-        state.fractionTheme = fraction;
       })
 
       .addCase(getAttributes.pending, (state) => {
         state.isLoading = true;
+        state.attributesLoaded = false
       })
       .addCase(getAttributes.fulfilled, (state, action) => {
-        const {attributes, pointsLeft} = action.payload
+        const { attributes, pointsLeft } = action.payload;
         state.isLoading = false;
         state.isSuccess = true;
         state.playerDataLoaded = true;
         state.attributes = attributes;
-        state.pointsLeft = pointsLeft
+        state.attributesLoaded = true
+        state.pointsLeft = pointsLeft;
       })
       .addCase(getAttributes.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
+        state.attributesLoaded = false
         state.message = action.payload;
       })
 
@@ -462,6 +515,24 @@ export const playerSlice = createSlice({
         state.message = action.payload;
       })
 
+      .addCase(getGeneral.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getGeneral.fulfilled, (state, action) => {
+        if (!state.fractionTheme) {
+          const fraction = action.payload.origin.split(" ");
+          const fractionTheme = fraction ? fraction[fraction.length - 1] : "";
+          localStorage.setItem("fraction", fractionTheme);
+        }
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.general = action.payload;
+      })
+      .addCase(getGeneral.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
 
       .addCase(getLevel.pending, (state) => {
         state.isLoading = true;
@@ -552,14 +623,14 @@ export const {
   sortedTalents,
   sortValueIncrease,
   sortValueDecreese,
+  generateBar,
   increaseBar,
   decreaseBar,
   resetBars,
   equipItem,
   unEquipItem,
   filterEquipment,
-  getArmor,
-  getBonis,
+   getBonis,
   getWeight,
 } = playerSlice.actions;
 export default playerSlice.reducer;

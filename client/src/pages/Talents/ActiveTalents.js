@@ -19,6 +19,7 @@ import { tableAnimation } from "../../data/Animations";
 
 function ActiveTalents({ props }) {
   const { playerTalents } = useSelector((state) => state.talents);
+  const { talentBoni } = useSelector((state) => state.inventory);
   const dispatch = useDispatch();
   const [edit, toEdit] = useState(false);
   const [update, toUpdate] = useState([]);
@@ -30,6 +31,13 @@ function ActiveTalents({ props }) {
     { name: "dice", label: "Würfel" },
     { name: "points", label: "Werte" },
   ];
+
+  const getTalentBonusValue = (talentName) => {
+    console.log(talentBoni);
+    const foundBoni = talentBoni.find((el) => el.bonus.type === talentName);
+    console.log(`Value for ${talentName}: ${foundBoni?.value}`);
+    return foundBoni ? foundBoni.value : null;
+  };
   const handleEdit = () => {
     toEdit((edit) => !edit);
   };
@@ -133,7 +141,7 @@ function ActiveTalents({ props }) {
                     initial="init"
                     animate="animate"
                     exit="exit"
-                    transition={{ duration: 0.5, delay: i*0.2}}
+                    transition={{ duration: 0.5, delay: i * 0.2 }}
                   >
                     <td>{el.talent.name}</td>
                     <td className={`${el.talent.category}`}>
@@ -142,7 +150,7 @@ function ActiveTalents({ props }) {
                     <td>{el.talent.dice}</td>
                     {edit ? (
                       <td>
-                        {`${el.points} `}{" "}
+                        {el.points}
                         <FontAwesomeIcon icon={faArrowRight} />
                         <input
                           name={el._id}
@@ -152,7 +160,18 @@ function ActiveTalents({ props }) {
                         />
                       </td>
                     ) : (
-                      <td>{el.points}</td>
+                      <td>
+                        {getTalentBonusValue(el.talent.name) ? (
+                          <>
+                            {el.points}
+                            <strong className="green-text">
+                              {`+(${getTalentBonusValue(el.talent.name)})`}
+                            </strong>
+                          </>
+                        ) : (
+                          el.points
+                        )}
+                      </td>
                     )}
                     <td>
                       <button

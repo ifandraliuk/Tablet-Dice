@@ -10,9 +10,8 @@ import { germanAttr } from "../../data/ConstVariables";
 import MathButtonGroup from "../../components/MathButtonGroup";
 
 function BarList() {
-  const { player } = useSelector((state) => state.player);
+  const { attributes } = useSelector((state) => state.player);
   const dispatch = useDispatch();
-  const { attributes } = player;
   const [damage, setDamage] = useState({ type: "Vitalität", val: 0 });
   const bar = Object.keys(germanAttr);
 

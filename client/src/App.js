@@ -23,10 +23,10 @@ function App() {
   const location = useLocation();
   const { fractionTheme} =
     useSelector((state) => state.player);
-
+  
   return (
     <div className="g-0">
-      {localStorage.user && <Navbar />}
+      {localStorage.user && <Navbar/>}
 
       <AnimatePresence>
         <Routes location={location} key={location.pathname}>

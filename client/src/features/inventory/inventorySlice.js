@@ -6,10 +6,18 @@ const initialState = {
   mainWeapon: null,
   secondWeapon: null,
   armor: 0,
+  armorCategory: '', // 1 - light armor, 2 - medium, 3 - chain armor, 4 - plate armor
   money: [],
   capacity: 0,
   totalWeight: 0,
+  // different type bonis for display
   activeBonis: [],
+  armorBoni: [],
+  customValuesBoni: [], // vitality, weight, stamina, mana
+  talentBoni: [],
+  attributeBoni: [],
+  setBoni: [], // immunity and set boni
+
   extendedItemInfo: {},
   extendedId: "",
   isError: false,
@@ -24,6 +32,67 @@ export const getInventory = createAsyncThunk(
     try {
       const token = thunkAPI.getState().auth.user.token;
       return await inventoryService.getInventory(token);
+    } catch (error) {
+      const msg =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      console.log(error.message);
+      return thunkAPI.rejectWithValue(msg);
+    }
+  }
+);
+
+// get users armor and armor category
+export const getArmor = createAsyncThunk(
+  "inventory/armor/get",
+  async (_, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await inventoryService.getArmor(token);
+    } catch (error) {
+      const msg =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      console.log(error.message);
+      return thunkAPI.rejectWithValue(msg);
+    }
+  }
+);
+
+
+// get users inventory
+export const getLoadCapacity = createAsyncThunk(
+  "inventory/capacity/get",
+  async (_, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await inventoryService.getLoadCapacity(token);
+    } catch (error) {
+      const msg =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      console.log(error.message);
+      return thunkAPI.rejectWithValue(msg);
+    }
+  }
+);
+
+// get boni in the category
+export const getCategoryBoni = createAsyncThunk(
+  "bonus/get",
+  async (data, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await inventoryService.getCategoryBoni(data, token);
     } catch (error) {
       const msg =
         (error.response &&
@@ -292,6 +361,77 @@ export const inventorySlice = createSlice({
         state.isError = true;
         state.message = action.payload;
       })
+
+      //get Armor
+      .addCase(getArmor.pending, (state) => {
+        state.isLoading = true;
+        state.isLoading = false;
+        state.isError = false;
+      })
+      .addCase(getArmor.fulfilled, (state, action) => {
+        const { armor, armorCategory } = action.payload;
+        state.isLoading = false;
+        state.isSuccess = true;
+
+          state.armor = armor
+          state.armorCategory = armorCategory === 1 ? 'leicht' 
+          : armorCategory === 2 ? 'mittel' : armorCategory === 3 ? "schwer (Kette)" :
+          armorCategory === 3 ? "schwer (Platte)" : "unbekannt"
+        
+      })
+      .addCase(getArmor.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+
+      // get user capacity incl companions capacity
+      .addCase(getLoadCapacity.pending, (state) => {
+        state.isLoading = true;
+        state.isLoading = false;
+        state.isError = false;
+      })
+      .addCase(getLoadCapacity.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.capacity = action.payload;
+      })
+      .addCase(getLoadCapacity.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+
+      // get all bonis in 1 category
+      .addCase(getCategoryBoni.pending, (state) => {
+        state.isLoading = true;
+        state.isLoading = false;
+        state.isError = false;
+      })
+      .addCase(getCategoryBoni.fulfilled, (state, action) => {
+        const { boni, category } = action.payload;
+        console.log(boni, category);
+        if (category === "talent") {
+          return {
+            ...state,
+            talentBoni: boni,
+          };
+        } else if (category === "resistance") {
+          return {
+            ...state,
+            armorBoni: boni,
+          };
+        }
+        state.isLoading = false;
+        state.isSuccess = true;
+        console.log(action.payload);
+      })
+      .addCase(getCategoryBoni.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+
       .addCase(getUserWeapons.pending, (state) => {
         state.isLoading = true;
         state.isLoading = false;
@@ -315,7 +455,7 @@ export const inventorySlice = createSlice({
         state.isError = false;
       })
       .addCase(getUserMoney.fulfilled, (state, action) => {
-        state.money = action.payload
+        state.money = action.payload;
         state.isLoading = false;
         state.isSuccess = true;
       })
@@ -373,7 +513,7 @@ export const inventorySlice = createSlice({
       .addCase(addToInventory.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-     
+
         state.inventory = [...state.inventory, action.payload];
       })
       .addCase(addToInventory.rejected, (state, action) => {
@@ -523,8 +663,7 @@ export const inventorySlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload.message;
-      })
-
+      });
   },
 });
 export const { reset, extendInfo, updateEquipmentStats, updateTotalWeight } =

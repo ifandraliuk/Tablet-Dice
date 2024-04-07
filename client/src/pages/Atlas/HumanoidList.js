@@ -33,12 +33,12 @@ const HumanoidList = () => {
                 src={`humanoid/${creature._id}.png`}
                 alt="creature"
               />
-              <h5 className={creature.status}>Fraktion: {creature.status}</h5>
+              <h5 className={creature.status}>Spezialisierung: {creature.status}</h5>
             </div>
             <div className="col-6">
               <h2>{creature.name}</h2>
               <ul>
-                <li>Gattung: {creature.art}</li>
+                <li>Fraktion: {creature.art}</li>
               
                 <li>Material: {creature.material}</li>
                 <li>Material: {creature._id}</li>

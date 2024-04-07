@@ -1,7 +1,10 @@
 import React from "react";
 import { motion } from "framer-motion";
-function GeneralInfo({ player, armor }) {
-  const { general, name, level, userclass } = player;
+import { useSelector} from "react-redux";
+function GeneralInfo() {
+  const { name, general, profession, level, armor} = useSelector(
+    (state) => state.player
+  );
   return (
     <motion.div
       className="general-container"
@@ -17,7 +20,7 @@ function GeneralInfo({ player, armor }) {
       }}
     >
       <h5>{name}</h5>
-      <h5>{userclass.name}</h5>
+      <h5>{profession.name}</h5>
       <ul>
         <li>
           {general.kind},<strong>{general.age}</strong> Jahre alt

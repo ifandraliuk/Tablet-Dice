@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import {
   getInventory,
   addToInventory,
+  getCategoryBoni,
   addAmount,
   substractAmount,
   shareWith,
@@ -31,7 +32,10 @@ import {
   unequip,
   getUserMoney,
   updateMoney,
+  getLoadCapacity,
+  getArmor,
 } from "../../features/inventory/inventorySlice";
+import { reset as playerReset } from "../../features/player/playerSlice";
 import Equipment from "./Equipment";
 import { motion } from "framer-motion";
 import { buttonImpackt, pageTransition } from "../../data/Animations";
@@ -41,15 +45,12 @@ import MotionButton from "../../components/MotionButton";
 import ItemsView from "./ItemsView";
 
 function InventoryPage() {
-  const { inventory, armor, totalWeight, money, isError, message } =
+  const { inventory, armor, totalWeight, capacity, money, isError, message } =
     useSelector((state) => state.inventory);
   const {
     fractionTheme,
     player,
     equipmentError,
-    weight,
-    currPercentage,
-    loadCapacity,
   } = useSelector((state) => state.player);
   const [showInfo, setShowInfo] = useState(false);
 
@@ -73,10 +74,16 @@ function InventoryPage() {
       dispatch(getInventory());
       dispatch(getUserMoney());
     }
+    return () =>{
+      dispatch(reset())
+      dispatch(playerReset())
+    }
   }, [user, isError, dispatch, navigate, message]);
   useEffect(() => {
     dispatch(updateTotalWeight());
-    dispatch(updateEquipmentStats());
+    dispatch(getArmor());
+    dispatch(getLoadCapacity())
+    dispatch(getCategoryBoni("resistance"))
   }, [dispatch, inventory]);
 
   const moneyChange = (e) => {
@@ -230,11 +237,11 @@ function InventoryPage() {
                         backgroundColor: "rgb(22, 22, 20)",
                       }}
                       animate={{
-                        height: currPercentage + "%",
+                        height: totalWeight/capacity*100 + "%",
                         backgroundColor:
-                          parseInt(currPercentage) < 50
+                          parseInt(totalWeight/capacity*100 ) < 50
                             ? "rgb(67, 170, 139)"
-                            : currPercentage > 50 && currPercentage < 75
+                            : totalWeight/capacity*100  > 50 && totalWeight/capacity*100  < 75
                             ? ["rgb(67, 170, 139)", "rgb(243, 114, 44)"]
                             : [
                                 "rgb(67, 170, 139)",
@@ -244,7 +251,7 @@ function InventoryPage() {
                       }}
                       transition={{ delay: 1, duration: 0.8 }}
                     >
-                      {`${weight.toFixed(2)} / ${loadCapacity}`}
+                      {`${totalWeight.toFixed(2)} / ${capacity}`}
                     </motion.div>
                   </div>
                 </div>

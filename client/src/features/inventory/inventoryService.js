@@ -12,6 +12,39 @@ const getInventory = async (token) => {
     return response.data
 }
 
+const getArmor = async (token) => {
+    const config = {
+        headers:{
+            Authorization: `Bearer ${token}`
+        }
+    }
+    const response = await axios.get(API_URL + "armor", config)
+    return response.data
+}
+
+const getLoadCapacity = async (token) => {
+    const config = {
+        headers:{
+            Authorization: `Bearer ${token}`
+        }
+    }
+    const response = await axios.get(API_URL + "/capacity", config)
+    return response.data
+}
+
+
+
+const getCategoryBoni = async (data,token) => {
+    const config = {
+        headers:{
+            Authorization: `Bearer ${token}`
+        }
+    }
+    const response = await axios.get(`/bonus/${data}`, config)
+    return response.data
+}
+
+
 const getUserWeapons = async (token) => {
     const config = {
         headers:{
@@ -139,6 +172,9 @@ const filterInventory = async (data, token) => {
 
 const inventoryPageService = {
     getInventory, // get users inventory
+    getArmor, // get armor and armor category
+    getLoadCapacity, // get users capacity
+    getCategoryBoni, // get equipped boni for one category
     getUserWeapons, // get equipped weapons
     getUserMoney, // get money
     updateMoney,

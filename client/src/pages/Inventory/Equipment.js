@@ -3,32 +3,63 @@ import { useDispatch, useSelector } from "react-redux";
 import EquippedItem from "./EquippedItem";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faShield, faRectangleXmark } from "@fortawesome/free-solid-svg-icons";
-import { getUserWeapons } from "../../features/inventory/inventorySlice";
+import { faShield, faRectangleXmark, faSun, faSnowflake, faCloudRain, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
+import { getCategoryBoni, getUserWeapons } from "../../features/inventory/inventorySlice";
+import { getProfession } from "../../features/player/playerSlice";
 
-const Equipment = memo(({ setShowInfo, armor, err, uclass }) => {
+const Equipment = memo(({ setShowInfo, err }) => {
   console.log("re-rendering equipment");
-  console.log(uclass);
   const dispatch = useDispatch();
   const equipped = useSelector((state) =>
     state.inventory.inventory.filter((el) => el.status === "Ausgerüstet")
   );
-  const { mainWeapon, secondWeapon } = useSelector(
+  const { armor, armorCategory, armorBoni, mainWeapon, secondWeapon } = useSelector(
     (state) => state.inventory
+  );
+  const { profession, fractionTheme } = useSelector(
+    (state) => state.player
   );
   console.log(equipped, mainWeapon, secondWeapon);
   useEffect(() => {
     dispatch(getUserWeapons());
+    dispatch(getProfession())
+    
   }, []);
+
+  const getArmorBonusValue = (armorType) => {
+    console.log(armorType);
+    if(armorBoni?.length > 0){
+      const foundBoni = armorBoni.find((el) => el.bonus.type === armorType);
+      console.log(`Value for ${armorType}: ${foundBoni?.value}`);
+      return foundBoni ? foundBoni.value : null;
+    } else return null
+
+  };
+
   return (
-    <div className="row w-auto">
+    <div className="container w-auto">
+      <div className="row justify-content-center " >
+        <div className="col-auto">Rüstungsklasse: <strong className={`${fractionTheme}-text`}>{armorCategory}</strong></div>
+      </div>
       <div className="row justify-content-center ">
+        
         <div className="col-auto ">
-          <h3>
-            <FontAwesomeIcon icon={faShield} />
-            {`Rüstwert: ${armor}`}
-          </h3>
+          <FontAwesomeIcon icon={faShield} /> {armor}
         </div>
+        <div className="col-auto  violet-text">
+          <FontAwesomeIcon icon={faShieldHalved} /> 
+          {getArmorBonusValue('Magie') ? getArmorBonusValue('Magie') : 0}
+        </div>
+        <div className="col-auto  yellow-text">
+          <FontAwesomeIcon icon={faSun} /> {getArmorBonusValue('Hitze') ? getArmorBonusValue('Hitze') : 0}
+        </div>
+        <div className="col-auto  cyan-text">
+          <FontAwesomeIcon icon={faSnowflake} /> {getArmorBonusValue('Kälte') ? getArmorBonusValue('Kälte') : 0}
+        </div>
+        <div className="col-auto  blue-text">
+          <FontAwesomeIcon icon={faCloudRain} /> {getArmorBonusValue('Wasser') ? getArmorBonusValue('Wasser') : 0}
+        </div>
+
       </div>
       {err && <div className={`${err.variant}-alert`}>{err.msg}</div>}
       <div className="row justify-content-center">
@@ -59,7 +90,7 @@ const Equipment = memo(({ setShowInfo, armor, err, uclass }) => {
           })}
         </div>
         <div className="col-lg-4 ">
-          <img className="userclass-img" src={`/classes_img/${uclass}.svg`} />
+          <img className="userclass-img" src={`/classes_img/${profession?.name}.svg`} />
         </div>
         <div className="col-auto ">
           {["Rücken", "Hals", "Arme", "Füße"].map((name, i) => {
@@ -121,45 +152,4 @@ const Equipment = memo(({ setShowInfo, armor, err, uclass }) => {
   );
 });
 
-/*
-      <div
-        className="row justify-content-center"
-        style={{ color: "white" }}
-      >{`Rüstwert: ${armor}`}</div>
-      <div>{err && <Alert variant={err.variant}>{err.msg}</Alert>}</div>
-      <div className="row justify-content-center m-3 ">
-        <div className="col-3 order-lg-1 order-md-1 col-md-3 col-sm-6 w-auto h-auto ">
-          {["Kopf",  "Brust", "Hüfte", "Beine"].map(
-            (name, i) => (
-              <motion.div className="row pb-4" key={name}
-              >
-                <EquippedItem category={name} delayValue={i} setShowInfo={setShowInfo}/>
-              </motion.div>
-            )
-          )}
-        </div>
-        <div className="col-md-2 col-lg-6 order-lg-2 order-md-3 col-sm-12 w-auto  align-self-start">
-            <img className="userclass-img" src={`/classes_img/${uclass}.svg`} />
-        </div>
-        <div className="col-3 order-lg-3 order-md-2 col-sm-6  w-auto">
-          {["Rücken", "Hals", "Arme", "Füße"].map(
-            (name, i) => (
-              <div className="row pb-4" key={name}>
-                <EquippedItem category={name} delayValue={i}  setShowInfo={setShowInfo}/>
-              </div>
-            )
-          )}
-        </div>
-      </div>
-      <div className="row  justify-content-center">
-          {["Rücken", "Hals", "Arme", "Füße"].map(
-            (name, i) => (
-              <div className="col-2" key={name}>
-                <EquippedItem category={name} delayValue={i}  setShowInfo={setShowInfo}/>
-              </div>
-            )
-          )}
-        </div>
-    </>
-*/
 export default Equipment;

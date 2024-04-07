@@ -20,6 +20,9 @@ app.use('/users', require('./routes/userRoutes'))
 // All infos about player & data updating
 app.use('/player', require('./routes/playerRoutes'))
 
+//User Bonis
+app.use('/bonus', require('./routes/bonusRoutes'))
+
 //Inventory Page
 app.use('/inventory', require('./routes/inventoryRoutes'))
 app.use('/talents', require('./routes/talentRoutes'))

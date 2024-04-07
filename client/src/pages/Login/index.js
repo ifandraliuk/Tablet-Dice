@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { login, register, reset } from "../../features/auth/AuthSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { buttonAnimation } from "../../data/Animations";
-import { getPlayer } from "../../features/player/playerSlice";
 import { motion } from "framer-motion";
 
 function Login() {
@@ -34,7 +33,7 @@ function Login() {
       localStorage.clear()
     }
     if (user && !registered) {
-      dispatch(getPlayer());
+      //dispatch(getPlayer());
       navigate("/player");
     } else if (user && registered) {
       navigate("/register");

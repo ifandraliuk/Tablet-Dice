@@ -50,6 +50,19 @@ const getLevel = asyncHandler(async (req, res) => {
   res.status(200).json({ level: user.level, pointsLeft: user.pointsLeft });
 });
 
+// @desc get general info
+// @route GET /player/general
+// @access Private
+
+const getGeneral = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user.id);
+  if (!user || !user?.general ) {
+    res.status(500).json({ message: "Spieler oder data nicht gefunden" });
+  }
+
+  res.status(200).json(user.general);
+});
+
 // @desc get fraction
 // @route GET /player/level
 // @access Private
@@ -232,6 +245,7 @@ const setEnchantment = asyncHandler(async (req, res) => {
 module.exports = {
   getPlayer,
   getFraction,
+  getGeneral,
   createCharacter,
   getLevel,
   updateLevel,

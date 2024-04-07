@@ -16,7 +16,12 @@
   text-decoration: none;
   color: #7c7c7c;
 }
+.navbar-page .link.active {
+  color: white;
+}
 .navbar-page .link:hover {
+  margin-left: 0.5em;
+  margin-right: 0.5em;
   color: white;
 }
 .navbar-page .logout-btn {

@@ -102,7 +102,7 @@ function Slot({
                 slot2={usedBy[0]?.slot2}
               />
               <ProgressBar
-                color={creature?.picture}
+                color={creature?.status}
                 current={currentHP < 0 ? creature?.hitpoints : currentHP}
                 max={creature?.hitpoints}
               />

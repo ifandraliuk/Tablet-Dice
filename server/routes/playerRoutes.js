@@ -7,12 +7,14 @@ const {
   updateLevel,
   createCharacter,
   getLevel,
+  getGeneral,
   //updateBalance,
 } = require("../controllers/playerController");
 const { protect } = require("../middleware/authMiddleware");
 
 router.get("/", protect, getPlayer);
 router.route("/level").put(protect, updateLevel).get(protect, getLevel);
+router.route("/general").get(protect, getGeneral);
 router.route("/enchantment").put(protect, setEnchantment);
 //router.route("/balance").put(protect, updateBalance);
 //CREATE CHARACTER

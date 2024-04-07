@@ -15,7 +15,9 @@ const {
      unequipItem,
      getMoney,
      updateMoney,
-    } =  require("../controllers/inventoryController");
+     getLoadCapacity,
+     getArmor,
+    } = require("../controllers/inventoryController");
 
 const { protect } = require("../middleware/authMiddleware");
 
@@ -29,6 +31,9 @@ router
 router
 .route("/weapons")
 .get(protect, getWeapons)
+
+router.route("/capacity").get(protect, getLoadCapacity)
+router.route("/armor").get(protect, getArmor)
 router
 .route("/money")
 .get(protect, getMoney)

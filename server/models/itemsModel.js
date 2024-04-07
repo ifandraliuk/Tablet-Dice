@@ -31,6 +31,10 @@ const itemSchema = mongoose.Schema({
     price: {
         type: String,  
     },
+    boni: {
+        ref: "Bonus",
+        type: [mongoose.Schema.Types.ObjectId]
+    },
     bonuses: {
         type: String,
     },

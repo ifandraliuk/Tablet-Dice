@@ -7,7 +7,7 @@ import { updateAttribute } from "../../features/player/playerSlice";
 import ExclamationMark from "../../components/ExclamationMark";
 
 function Attributes() {
-  const {attributes, pointsLeft } = useSelector((state) => state.player);
+  const {attributes, fractionTheme, pointsLeft } = useSelector((state) => state.player);
   
   const [difference, setDifference] = useState(0);
   const dispatch = useDispatch();
@@ -46,7 +46,7 @@ function Attributes() {
           attributes[key] > 0 && (
               <div key={key} className="col me-0 w-auto">
                 <h6>{`${allAttributes[key]}:`}</h6>
-                <strong>{attributes[key]}</strong>
+                <strong className={`${fractionTheme}-text`}>{attributes[key]}</strong>
                
                 {difference !== 0 && (
                   <button id={key} className="" onClick={onClick}>
