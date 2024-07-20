@@ -5,6 +5,7 @@ import Algor from "./Algor";
 import Beltamor from "./Beltamor";
 import Medorien from "./Medorien";
 import Thornheim from "./Thornheim";
+import Thamor from "./Thamor";
 
 const Fraction = ({ fraction }) => {
   const bgAnimation = {
@@ -106,6 +107,15 @@ const Fraction = ({ fraction }) => {
   } else if (fraction === "Welles") {
     return (
       <Welles
+        bgAnimation={bgAnimation}
+        mainLogo={mainLogo}
+        detailsLogo={detailsLogo}
+        lightsAnimation={lightsAnimation}
+      />
+    );
+  }  else if (fraction === "Thamor") {
+    return (
+      <Thamor
         bgAnimation={bgAnimation}
         mainLogo={mainLogo}
         detailsLogo={detailsLogo}
