@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { decreaseBar } from "../../features/player/playerSlice";
 import { useSelector, useDispatch } from "react-redux";
-import AbilityCard from "./AbilityCard";
+import AbilityCard from "../../components/AbilityCard";
 import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion";
 import MotionButton from "../../components/MotionButton";

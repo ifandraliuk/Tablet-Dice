@@ -1,225 +1,215 @@
-import React, {useEffect, useState} from 'react'
-import { Container } from 'react-bootstrap'
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
-import Tabs from 'react-bootstrap/Tabs';
-import Tab from 'react-bootstrap/Tab';
-import Figure from 'react-bootstrap/Figure';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import {races, racesList, classList, classDescription, originList, countries} from '../../data/ConstVariables';
-import {useSelector, useDispatch} from 'react-redux';
-import {setInfo, getClass, uploadPicture, createCharacter} from '../../features/creation/creationSlice'
-import {registationFullfilled} from '../../features/auth/AuthSlice'
-import { getPlayer} from '../../features/player/playerSlice'
-import { useNavigate } from 'react-router-dom';
-import Attributes from './Attributes';
+import React, { useEffect, useState } from "react";
+import "../../Styles/Create.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  createCharacter,
+  isComplete,
+  resetCreation,
+  // uploadPicture,
+  // createCharacter,
+  setActive,
+  uploadPicture,
+} from "../../features/creation/creationSlice";
+import { registationFullfilled, register } from "../../features/auth/AuthSlice";
+import { getFraction, getPlayer } from "../../features/player/playerSlice";
+import { useNavigate } from "react-router-dom";
+import {
+  faCircleCheck,
+  faCircleXmark,
+  faWarning,
+} from "@fortawesome/free-solid-svg-icons";
+import General from "./General";
+import Profession from "./Profession";
+import Origin from "./Origin";
+import Attributes from "./Attributes";
+import Overview from "./Overview";
+import CreateWindow from "./CreateWindow";
+function CreateCharacter() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const categoryNames = {
+    general: "Allgemein",
+    origin: "Herkunft",
+    profession: "Profession",
+    attributes: "Attribute",
+  };
+  const {
+    generalInfo,
+    attributes,
+    activeOrigin,
+    activeProfession,
+    activeAbility,
+    userImage,
+    totalPoints,
+    partActive,
+    completionFlags,
+    imageUploaded,
+    dataFilled,
+  } = useSelector((state) => state.creation);
 
-function CreateCharacter() { 
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
-    const {data, classes, attributes, attrTotal, imageUploaded, dataFilled} = useSelector((state)=>state.creation)
-    const {user, registered} = useSelector((state)=>state.auth)
-    const [image, targetImage] = useState("")
-    useEffect(()=>{
-        console.log("data changed: get classes")
-        dispatch(getClass())
-    }, [data, dispatch])
+  const [visible, setVisible] = useState(false);
+  const { user, isSuccess, isError } = useSelector(
+    (state) => state.auth
+  );
+  // const [image, targetImage] = useState("");
 
-    useEffect(()=>{
-        if(!user|| !registered){
-            navigate("/")
-        }
-    },[user, registered, navigate])
+  useEffect(() => {
+    dispatch(isComplete());
+  }, [dispatch, completionFlags]);
 
-    useEffect(()=>{
-        console.log("data or image status was changed")
-        if(dataFilled && imageUploaded){
-            dispatch(registationFullfilled())
-            dispatch(getPlayer())
-            navigate("/player")
-        }
-    }, [dataFilled, imageUploaded, dispatch, navigate])
-    const onChange = e => {
-        const name = e.target.name
-        if(["age", "haircut", "haircolor", "eyecolor", "more"].includes(name)){
-            console.log(name, e.target.value)
-            const value = e.target.value
-            dispatch(setInfo({name,value}))
-        } else{
-            console.log(name, e.target.id)
-            const value = e.target.id
-            dispatch(setInfo({name, value}))
-        } 
+  useEffect(() => {
+    if (isSuccess) {
+      const fullGeneral = {
+        ...generalInfo,
+        origin: activeOrigin,
+      };
+      const fullInfo = {
+        user: user,
+        general: fullGeneral,
+        attributes: attributes,
+        pointsLeft: totalPoints,
+        userclass: activeProfession?._id,
+        activeAbility: activeAbility,
+      };
+      dispatch(createCharacter(fullInfo));
     }
-    
-    const setImage = e=> {
-        console.log(e.target.files)
-        targetImage(e.target.files[0])
-    }
+  }, [
+    isSuccess,
+    isError,
+    user,
+    activeOrigin,
+    activeAbility,
+    activeProfession?._id,
+    attributes,
+    generalInfo,
+    totalPoints,
+    dispatch,
+  ]);
 
-    const onSubmit = e => {
-        e.preventDefault()
-        const formData = new FormData()
-        formData.append("img",image, `${user._id}.jpeg`)
-        const fullInfo = {
-            //fullinfo
-            age: data.age,
-            haircolor: data.haircolor,
-            sex: data.sex,
-            eyecolor: data.eyecolor,
-            origin: data.origin,
-            haircut: data.haircut,
-            kind: data.kind,
-            //userclass
-            userclass: data.userclass,
-            attributes:attributes,
-        }
-        console.log(fullInfo)
-        dispatch(createCharacter(fullInfo))
-        console.log(dataFilled, imageUploaded)
-        dispatch(uploadPicture(formData))
-        console.log(dataFilled, imageUploaded)
-
+  useEffect(() => {
+    if (dataFilled && userImage) {
+      const formData = new FormData();
+      // Convert base64 string to Blob object
+      const byteCharacters = atob(userImage.split(",")[1]);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blobUserImage = new Blob([byteArray], { type: "image/jpeg" });
+      // const img = new Blob([userImage])
+      formData.append("img", blobUserImage, `${user?._id}.jpeg`);
+      dispatch(uploadPicture(formData));
     }
+  }, [dataFilled, userImage, user?._id, dispatch]);
+
+  useEffect(() => {
+    if (isSuccess && dataFilled && imageUploaded) {
+      dispatch(resetCreation());
+      dispatch(getFraction())
+      navigate("/player");
+    }
+  }, [isSuccess, dataFilled, imageUploaded, dispatch, navigate]);
+  // const setImage = (e) => {
+  //   console.log(e.target.files);
+  //   targetImage(e.target.files[0]);
+  // };
+  // const setData = (name, value) => {
+  //   dispatch(setInfo({ name: name, value: value }));
+  // };
+
+  // const onSubmit = (e) => {
+  //   e.preventDefault();
+  //   const formData = new FormData();
+  //   formData.append("img", image, `${user._id}.jpeg`);
+  //   const fullInfo = {
+  //     //fullinfo
+  //     age: data.age,
+  //     haircolor: data.haircolor,
+  //     sex: data.sex,
+  //     eyecolor: data.eyecolor,
+  //     origin: data.origin,
+  //     haircut: data.haircut,
+  //     kind: data.kind,
+  //     //userclass
+  //     userclass: data.userclass,
+  //     attributes: attributes,
+  //   };
+  //   console.log(fullInfo);
+  //   dispatch(createCharacter(fullInfo));
+  //   console.log(dataFilled, imageUploaded);
+  //   dispatch(uploadPicture(formData));
+  //   console.log(dataFilled, imageUploaded);
+  // };
+  const onSubmit = (e, formData) => {
+    e.preventDefault();
+    if (isError || !user) {
+      const { name, pwd, check } = formData;
+      if (pwd !== check) {
+        console.log("pwd!=check");
+        window.alert("Passwörter sind nicht identisch!");
+      } else {
+        dispatch(register(formData));
+      }
+    }
+  };
   return (
-    <div style={{backgroundImage:"linear-gradient(to right, #0e1c26, #2a454b, #294861)",backgroundPosition:"center", backgroundRepeat: "no-repeat", backgroundAttachment:"fixed", overflow:"auto", backgroundSize:"cover",}}>
-        <div style={{backgroundColor:"rgba(0, 0, 0, 0.3)", overflow:"auto", height: "100vh"}}>
-            <Form>
-            <Container style={{color:"white"}} className=" border border-2 rounded"> 
-            <Row>{`Charakter: ${user?.name}`}</Row>  
-            {imageUploaded.toString()}{ dataFilled.toString()}
-    
-            <Row className="m-2"><h5>Du erwachst vom Kitzeln eines Sonnenstrahls auf deiner Haut, du stehst auf und schaust in den Spiegel, welches Gesicht siehst du? (1/5)</h5></Row>    
-            <Row>
-                <Tabs>
-                {racesList.map((art)=>(
-                    <Tab  eventKey={art} title={art} key={art}>
-                    <Row className="">
-                        <Col className="col-3">
-                        
-                        <Row className='border-radius-2'><Figure><Figure.Image  width={300} height={500} src={`/race/${data.sex ==="männlich"? "m":"w"}/${art}.jpg`}/></Figure></Row>
-                        <Row className="m-2"><Button id={art} variant={data?.kind === art ? "warning" : "dark"} name="kind" onClick={onChange}>{data?.kind === art ? "Ausgewählt" : "Wählen"}</Button> </Row>
-                        </Col>
-                        <Col>
-                            <Row className="border-bottom">
-                                <Form.Label>Geschlecht</Form.Label>
-                                <Form.Check style={{color:`${data.sex==="männlich"? "yellow":""}`}} type="radio" label="männlich" id="männlich" name="sex" onChange={onChange}/>
-                                <Form.Check style={{color:`${data.sex==="weiblich"? "yellow":""}`}} type="radio" label="weiblich"  id="weiblich"  name="sex" onChange={onChange}/>
-                            </Row>
-                            <Row className="mt-2">
-                                <h4>Beschreibung</h4>
-                                <Container>{races[art].descr}</Container></Row>
-                            <Row className="border-top mt-2"><h4>Spezielle Fertigkeit</h4><u>{`${races[art].ability.name}: `}</u>
-                            <Container>{races[art].ability.descr}</Container></Row>
-                        </Col>
-                    </Row>
-                </Tab>
-                                   
-                ))}
-                </Tabs>
-            </Row>   
-            </Container>
-            <Container style={{color:"white"}}  className=" border border-2 rounded mt-3">
-                <Row className="m-2"><h5>Du denkst zurück an deine Ausbildung, all die Übungsstunden die du verbracht hast, wie hast du dich spezialisiert? (2/5)</h5></Row>
-                <Tabs>
-                    {classList.map((userclass)=>(
-                        <Tab eventKey={userclass} title={userclass} key={userclass}>
-                            <Row>
-                                <Col className="col-3">
-                                <Row><Figure><Figure.Image  src={`/classes_img/${userclass}xxhdpi.png`}/></Figure></Row>
-                                <Row className="m-2"><Button id={userclass} variant={data?.userclass === userclass ? "warning" : "dark"} name="userclass" onClick={onChange}>{data?.userclass === userclass ? "Ausgewählt" : "Wählen"}</Button> </Row>
-                                </Col>
-                                <Col>
-                                    <Row className="border-bottom mb-2 mt-2">
-                                        <h4>Beschreibung</h4>
-                                        <Container>{classDescription[userclass]}</Container>
-                                    </Row>
-                                    <Row>
-                                    <h4>Fertigkeiten</h4>
-                                        {classes?.find(el=>el.name===userclass)?.abilities.map((ability)=>(
-
-                                            <Container key={ability._id}><h5>{ability.name}</h5></Container>
-                                        ))}
-                                    </Row>
-                                </Col>
-                            </Row>
-                        </Tab>
-                    ))}
-                </Tabs>
-            </Container>
-            <Container style={{color:"white"}}  className=" border border-2 rounded mt-3">
-                <Row className="m-2"><h5>Du schreitest ans Fenster und siehst hinaus in deine Heimat, vor dir erstreckt sich die Landschaft von? (3/5)</h5></Row>
-                <Tabs>
-                    {originList.map((country)=>(
-                        <Tab eventKey={country} title={country} key={country}>
-                            <Row>
-                                <Col className="col-4">
-                                <Row><Figure><Figure.Image  src={`/origin/${countries[country].img}xhdpi.png`}/></Figure></Row>
-                                <Row className="m-2"><Button id={country} variant={data?.origin === country ? "warning" : "dark"} name="origin" onClick={onChange}>{data?.origin === country ? "Ausgewählt" : "Wählen"}</Button> </Row>
-                                </Col>
-                                <Col><Figure><Figure.Image src="weltkarte.jpg"/></Figure></Col>
-                            </Row>
-                            <Row><h4>Beschreibung</h4>
-                            <Container>{countries[country].descr}</Container></Row>
-                        </Tab>
-                    ))}
-                </Tabs>
-            </Container>
-            <Container style={{color:"white"}} className=" border border-2 rounded mt-3">
-                <Row  className="m-2"><h5>Nach dem Frühstück gehst du noch einmal zum Spiegel um dich für deine Reise fertig zu machen, wie siehst du aus?</h5></Row>
-                <Row>
-                    <Col className="col-6">
-                    <Form.Group>
-                    <Form.Label>Alter</Form.Label>
-                    <Form.Control type="number" name="age" onChange={onChange} required></Form.Control>
-                    </Form.Group>
-                    </Col>
-                    <Col>
-                    <Form.Group>
-                        <Form.Label>Augenfarbe</Form.Label>
-                        <Form.Control type="text" name="eyecolor" onChange={onChange} required></Form.Control>
-                    </Form.Group>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col className="col-6">
-                        <Form.Group>
-                            <Form.Label>Frisur</Form.Label>
-                            <Form.Control type="text" name="haircut"  onChange={onChange} required></Form.Control>
-                        </Form.Group>
-                    </Col>
-                    <Col className="col-6">
-                        <Form.Group>
-                            <Form.Label>Haarfarbe</Form.Label>
-                            <Form.Control type="text" name="haircolor"  onChange={onChange}></Form.Control>
-                        </Form.Group>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col className="col-6">
-                        <Form.Group>
-                            <Form.Label>Besondere Merkmale</Form.Label>
-                            <Form.Control type="text" name="more"  onChange={onChange}></Form.Control>
-                        </Form.Group>
-                    </Col>
-                    <Col className="col-6">
-                        <Form.Group>
-                            <Form.Label>Profilbild</Form.Label><br/>
-                            <input type="file" name="img" onChange={setImage} />
-                        </Form.Group>
-                    </Col>
-                </Row>
-            </Container>
-            <Container style={{color:"white"}} className=" border border-2 rounded mt-3">
-                <Row  className="m-2"><h5>Als du dich auf den Weg machst, um dein Abenteuer zu beginnen, denkst du dir, dass du bestens vorbereitet bist, denn deine Talente sind? (5/5)</h5></Row>
-            <Attributes/>
-            </Container>
-            {attrTotal===0 && data.userclass.length>0 && data.origin.length>0 && data.kind.length>0 && <Container className="mt-2 mb-3" ><Button type="submit" onClick={onSubmit}>Charakter erstellen</Button></Container>}
-            </Form>
+    <div className="bg general-bg create-page">
+      {visible && (
+        <CreateWindow onSubmit={onSubmit} onClose={() => setVisible(false)} />
+      )}
+      <div className="container-fluid  g-5">
+        <div className="row menu">
+          {Object.keys(categoryNames).map((menuName) => (
+            <div className="col-auto" key={menuName}>
+              <button
+                name={menuName}
+                onClick={(e) => dispatch(setActive(e.currentTarget.name))}
+              >
+                {categoryNames[menuName]}
+                <FontAwesomeIcon
+                  icon={completionFlags[menuName] ? faCircleCheck : faWarning}
+                  className={
+                    completionFlags[menuName] ? " ms-2 success" : "ms-2 warning"
+                  }
+                />
+              </button>
+            </div>
+          ))}
+          <div className="col-auto">
+            <button
+              name="completion"
+              onClick={(e) => dispatch(setActive(e.currentTarget.name))}
+              disabled={completionFlags.complete ? false : true}
+            >
+              Namensgebung
+              <FontAwesomeIcon
+                icon={completionFlags.complete ? faCircleCheck : faCircleXmark}
+                className={completionFlags.complete ? " ms-2 success" : "ms-2"}
+              />
+            </button>
+          </div>
         </div>
+        <div className="info-div ">
+          {partActive === "general" ? (
+            <General />
+          ) : partActive === "profession" ? (
+            <Profession />
+          ) : partActive === "origin" ? (
+            <Origin />
+          ) : partActive === "attributes" ? (
+            <Attributes />
+          ) : partActive === "completion" && completionFlags.complete ? (
+            <Overview onClick={() => setVisible((visible) => !visible)} />
+          ) : (
+            <></>
+          )}
+        </div>
+      </div>
     </div>
-  )
+  );
 }
 
-export default CreateCharacter
+export default CreateCharacter;
+//partActive === "completion" && completionFlags.complete ? disabled={completionFlags.complete ? false: true}

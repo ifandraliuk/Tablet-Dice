@@ -53,15 +53,17 @@ function Login() {
   };
 
   const handleRegister = (e) => {
-    dispatch(reset());
+/*     dispatch(reset());
     const userData = {
       name,
       pwd,
     };
-    dispatch(register(userData));
-    if (isSuccess) {
-      setRegistered(true);
-    }
+    // dispatch(register(userData));
+    // if (isSuccess) {
+    //   setRegistered(true);
+    // } */
+    navigate("/create")
+
   };
 
   return (

@@ -1,0 +1,33 @@
+@import './Variables.scss';
+
+.create-page{
+    .menu{
+        background-color: $infoBlack;
+    }
+    .warning{
+        color: $categoryYellow;
+    }
+    .success{
+        color: $categoryGreen;
+    }
+    input{
+        width: 80%;
+    }
+    input:focus{
+        outline:none;
+        color: $thornheimMain;
+    }
+    .ability-icon{
+        width: 5em;
+    }
+
+    .kingdom-map{
+        width: 100%;
+        cursor: zoom-in;
+    }
+    .worldmap-button{
+        
+        text-align: center;
+        border: 1px solid whitesmoke;
+    }
+}

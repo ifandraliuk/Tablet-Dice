@@ -1,0 +1,27 @@
+.create-page .menu {
+  background-color: rgb(24, 24, 24);
+}
+.create-page .warning {
+  color: rgb(249, 199, 79);
+}
+.create-page .success {
+  color: rgb(144, 190, 109);
+}
+.create-page input {
+  width: 80%;
+}
+.create-page input:focus {
+  outline: none;
+  color: #95ecff;
+}
+.create-page .ability-icon {
+  width: 5em;
+}
+.create-page .kingdom-map {
+  width: 100%;
+  cursor: zoom-in;
+}
+.create-page .worldmap-button {
+  text-align: center;
+  border: 1px solid whitesmoke;
+}/*# sourceMappingURL=Create.css.map */
