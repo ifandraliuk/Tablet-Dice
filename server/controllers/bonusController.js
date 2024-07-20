@@ -76,38 +76,37 @@ const getCategoryBoni = asyncHandler(async (req, res) => {
           ? 15
           : 0;
     } else if (category === "resistance") {
-      if(bonusType === 'Magie'){
+      if (bonusType === "Magie") {
         categoryValue =
-        rarity[bonusRarity] ===  rarity[bonusRarity] === "magical"
-          ? 10
-          : rarity[bonusRarity] === "extraordinary"
-          ? 15
-          : rarity[bonusRarity] === "rare"
-          ? 20
-          : rarity[bonusRarity] === "amazing"
-          ? 30
-          : rarity[bonusRarity] === "epic"
-          ? 40
-          : rarity[bonusRarity] === "legendary"
-          ? 50
-          : 0;
+          (rarity[bonusRarity] === rarity[bonusRarity]) === "magical"
+            ? 10
+            : rarity[bonusRarity] === "extraordinary"
+            ? 15
+            : rarity[bonusRarity] === "rare"
+            ? 20
+            : rarity[bonusRarity] === "amazing"
+            ? 30
+            : rarity[bonusRarity] === "epic"
+            ? 40
+            : rarity[bonusRarity] === "legendary"
+            ? 50
+            : 0;
       } else {
         categoryValue =
-        rarity[bonusRarity] ===  rarity[bonusRarity] === "magical"
-          ? 1
-          : rarity[bonusRarity] === "extraordinary"
-          ? 2
-          : rarity[bonusRarity] === "rare"
-          ? 3
-          : rarity[bonusRarity] === "amazing"
-          ? 4
-          : rarity[bonusRarity] === "epic"
-          ? 6
-          : rarity[bonusRarity] === "legendary"
-          ? 8
-          : 0;
+          (rarity[bonusRarity] === rarity[bonusRarity]) === "magical"
+            ? 1
+            : rarity[bonusRarity] === "extraordinary"
+            ? 2
+            : rarity[bonusRarity] === "rare"
+            ? 3
+            : rarity[bonusRarity] === "amazing"
+            ? 4
+            : rarity[bonusRarity] === "epic"
+            ? 6
+            : rarity[bonusRarity] === "legendary"
+            ? 8
+            : 0;
       }
-
     }
     // Check if the bonus type already exists in boniList
     const existingBonusIndex = boniList.findIndex(
