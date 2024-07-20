@@ -3,7 +3,7 @@ import axios from "axios";
 const API_URL = '/professions/'
 const PLAYER_URL = '/player/'
 
-const getClass = async () => {
+const getProfessions = async () => {
 
     console.log('frontend request to get all classes')
     const response = await axios.get(API_URL)
@@ -32,7 +32,7 @@ const createCharacter = async (characterData, token) => {
     return response.data
 }
 const creationService = {
-    getClass, uploadPicture, createCharacter
+    getProfessions, uploadPicture, createCharacter
 
 }
 

@@ -3,11 +3,9 @@ import authService from './authService'
 // Get user from localStorage
 const user = JSON.parse(localStorage.getItem('user'))
 console.log(user)
-const registered = JSON.parse(localStorage.getItem('registered'))
 const initialState = {
     user: user ? user : null,
     loggedIn: false,
-    registered: registered ? registered : false,
     isError: false, 
     isSuccess: false,
     isLoading: false,
@@ -67,16 +65,21 @@ export const authSlice = createSlice({
         builder
         .addCase(register.pending, (state)=>{
             state.isLoading = true
+            state.isError = false
+            state.isSuccess = false
         })
         .addCase(register.fulfilled, (state, action)=>{
             state.isLoading = false
             state.isSuccess = true
+            state.isError = false
             state.user = action.payload
-            state.registered = true
+ 
+            state.message = "Passwort und der Name wurden gespeichert!"
         })
         .addCase(register.rejected, (state, action)=>{
             state.isLoading = false
             state.isError = true
+            state.isSuccess = false
             state.message = action.payload
             state.user = null
         })

@@ -10,7 +10,7 @@ const mana = JSON.parse(localStorage.getItem("mana"));
 const spirit = JSON.parse(localStorage.getItem("spirit"));
 const loadCapacity = JSON.parse(localStorage.getItem("loadCapacity")); // strength * strength multiplier -> important for carying things
 const equippedItems = JSON.parse(localStorage.getItem("equippedItems"));
-const fraction = localStorage.getItem("fraction");
+//const fraction = localStorage.getItem("fraction");
 const slotsAllowed = JSON.parse(localStorage.getItem("slotsAllowed"));
 const initialState = {
   player: [],
@@ -28,7 +28,7 @@ const initialState = {
   },
   playerDataLoaded: false,
   abilityCategory: "", // filter players abilities
-  fractionTheme: fraction ? fraction : "", // main theme color based on his/her fraction
+  fractionTheme: "", // main theme color based on his/her fraction
   equipped: equippedItems ? equippedItems : [], // equipped items
   bonis: [], // all active bonis
   setboni: "",
@@ -53,6 +53,22 @@ export const getPlayer = createAsyncThunk("player/get", async (_, thunkAPI) => {
       error.toString();
     console.log(error.message);
     localStorage.clear();
+    return thunkAPI.rejectWithValue(msg);
+  }
+});
+
+
+// Get player for logged in user
+export const getFraction= createAsyncThunk("player/fraction/get", async (_, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().auth.user.token;
+    return await playerService.getFraction(token);
+  } catch (error) {
+    const msg =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString();
+    console.log(error.message);
     return thunkAPI.rejectWithValue(msg);
   }
 });
@@ -396,7 +412,9 @@ export const playerSlice = createSlice({
           const el = state.player?.inventory.find(
             (el) => element.equipment === el._id
           );
+          
           if (el?.item) {
+            console.log(el.item)
             if (el.item.bonuses) {
               bonis.push(el.item.bonuses);
             }
@@ -453,34 +471,47 @@ export const playerSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getPlayer.pending, (state) => {
+      // .addCase(getPlayer.pending, (state) => {
+      //   state.isLoading = true;
+      //   state.isError = false
+      //   state.isSuccess = false
+      // })
+      // .addCase(getPlayer.fulfilled, (state, action) => {
+      //   state.isLoading = false;
+      //   state.isSuccess = true;
+      //   state.playerDataLoaded = true;
+      //   state.player = action.payload;
+      //   console.log(localStorage, vitality);
+      //   const v = JSON.parse(localStorage.getItem("vitality"));
+      //   const st = JSON.parse(localStorage.getItem("stamina"));
+      //   const m = JSON.parse(localStorage.getItem("mana"));
+      //   const sp = JSON.parse(localStorage.getItem("spirit"));
+      //   state.bars = {
+      //     vitality: v > 0 ? v : state.player?.attributes.vitality * 10,
+      //     stamina: st > 0 ? st : state.player?.attributes.stamina * 10,
+      //     mana: m > 0 ? m : state.player?.attributes?.mana * 10,
+      //     spirit: sp > 0 ? sp : state.player?.attributes?.spirit * 10,
+      //   };
+      //   const fraction = localStorage.getItem("fraction");
+      //   state.fractionTheme = fraction ? fraction : "";
+      // })
+      // .addCase(getPlayer.rejected, (state, action) => {
+      //   state.isLoading = false;
+      //   state.isError = true;
+      //   state.message = action.payload;
+      // })
+      // get fraction theme
+      .addCase(getFraction.pending, (state) => {
         state.isLoading = true;
+        state.isError = false
+        state.isSuccess = false
       })
-      .addCase(getPlayer.fulfilled, (state, action) => {
+      .addCase(getFraction.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isSuccess = true;
-        state.playerDataLoaded = true;
-        state.player = action.payload;
-        console.log(localStorage, vitality);
-        const v = JSON.parse(localStorage.getItem("vitality"));
-        const st = JSON.parse(localStorage.getItem("stamina"));
-        const m = JSON.parse(localStorage.getItem("mana"));
-        const sp = JSON.parse(localStorage.getItem("spirit"));
-        state.bars = {
-          vitality: v > 0 ? v : state.player?.attributes.vitality * 10,
-          stamina: st > 0 ? st : state.player?.attributes.stamina * 10,
-          mana: m > 0 ? m : state.player?.attributes?.mana * 10,
-          spirit: sp > 0 ? sp : state.player?.attributes?.spirit * 10,
-        };
-        const fraction = localStorage.getItem("fraction");
-        state.fractionTheme = fraction ? fraction : "";
+        state.isError = false
+        state.isSuccess = true
+        state.fractionTheme = action.payload
       })
-      .addCase(getPlayer.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload;
-      })
-
       .addCase(getAttributes.pending, (state) => {
         state.isLoading = true;
         state.attributesLoaded = false
@@ -519,7 +550,7 @@ export const playerSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(getGeneral.fulfilled, (state, action) => {
-        if (!state.fractionTheme) {
+        if (state.fractionTheme?.length===0) {
           const fraction = action.payload.origin.split(" ");
           const fractionTheme = fraction ? fraction[fraction.length - 1] : "";
           localStorage.setItem("fraction", fractionTheme);
