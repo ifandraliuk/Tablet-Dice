@@ -8,11 +8,13 @@ const {
   createCharacter,
   getLevel,
   getGeneral,
+  getFraction,
   //updateBalance,
 } = require("../controllers/playerController");
 const { protect } = require("../middleware/authMiddleware");
 
 router.get("/", protect, getPlayer);
+router.get("/fraction", protect, getFraction);
 router.route("/level").put(protect, updateLevel).get(protect, getLevel);
 router.route("/general").get(protect, getGeneral);
 router.route("/enchantment").put(protect, setEnchantment);

@@ -64,7 +64,7 @@ const getGeneral = asyncHandler(async (req, res) => {
 });
 
 // @desc get fraction
-// @route GET /player/level
+// @route GET /player/fraction
 // @access Private
 
 const getFraction= asyncHandler(async (req, res) => {
@@ -119,72 +119,93 @@ const updateLevel = asyncHandler(async (req, res) => {
 // @access Private
 const createCharacter = asyncHandler(async (req, res) => {
   console.log("uploading data to a new character");
-  const user = await User.findById(req.user.id);
+  const userId = req.body.user._id
+  console.log(userId)
+  const user = await User.findById(userId);
   if (!user) {
     res.status(500).json({ message: "Spieler nicht gefunden" });
   }
   // adding default level 1 && 70 attribute points
   console.log(req.body);
-  console.log(req.body.attributes);
-  user.level = 1;
-  user.pointsLeft = 70;
-  user.money = [0, 0, 0];
-  //adding userclass
-  if (!req.body.userclass) {
-    res.status(400).json({ message: "Bitte wähle eine Spezialisation" });
-  }
-  const userclass = await Userclass.findOne({ name: req.body.userclass });
-  if (!userclass) {
-    res
-      .status(500)
-      .json({ message: "Gewählte Spezialisation wurde nicht gefunden" });
-  }
-  user.userclass = userclass._id;
-  // adding general info
-  if (!req.body.kind) {
-    res
-      .status(400)
-      .json({ message: "Bitte wähle die Specie deines Charakters aus" });
-  }
-  const gen = await General.create({
-    kind: req.body.kind,
-    age: req.body.age,
-    haircolor: req.body.haircolor,
-    sex: req.body.sex,
-    eyecolor: req.body.eyecolor,
-    origin: req.body.origin,
-    more: req.body.more,
-    haircut: req.body.haircut,
-  });
-  if (!gen) {
-    res
-      .status(400)
-      .json({ message: "Die Werte aus dem Schritt 4 sind unvollständig" });
-  }
-  user.general = gen;
-  // adding attributes
-  const attr = await Attribute.create(req.body.attributes);
-  if (!attr) {
-    res
-      .status(400)
-      .json({
-        message:
-          "Die Werte aus dem Schritt 5 sind nicht korrekt. Vitalität eingegeben?",
-      });
-  }
-  user.attributes = attr;
+  console.log("adding general info...")
+  user.general = req.body.general
+  console.log("adding level and points...")
+  user.level = 1
+  user.pointsLeft = req.body.pointsLeft
+  console.log("adding userclass id")
+  user.userclass = mongoose.Types.ObjectId(req.body.userclass)
+  console.log("adding attributes...")
+  user.attributes = req.body.attributes
+  
+  console.log("adding money..")
+  user.money = [0,0,0]
+  console.log(user)
   const doc = await user.save();
   if (!doc) {
     res.status(400).json({ message: "Charaktererstellung hat fehlgeschlagen" });
   }
+  console.log("saved!")
   res.status(200).json(doc);
+  // console.log(req.body.attributes);
+  // user.level = 1;
+  // user.pointsLeft = 70;
+  // user.money = [0, 0, 0];
+  // //adding userclass
+  // if (!req.body.userclass) {
+  //   res.status(400).json({ message: "Bitte wähle eine Spezialisation" });
+  // }
+  // const userclass = await Userclass.findOne({ name: req.body.userclass });
+  // if (!userclass) {
+  //   res
+  //     .status(500)
+  //     .json({ message: "Gewählte Spezialisation wurde nicht gefunden" });
+  // }
+  // user.userclass = userclass._id;
+  // // adding general info
+  // if (!req.body.kind) {
+  //   res
+  //     .status(400)
+  //     .json({ message: "Bitte wähle die Specie deines Charakters aus" });
+  // }
+  // const gen = await General.create({
+  //   kind: req.body.kind,
+  //   age: req.body.age,
+  //   haircolor: req.body.haircolor,
+  //   sex: req.body.sex,
+  //   eyecolor: req.body.eyecolor,
+  //   origin: req.body.origin,
+  //   more: req.body.more,
+  //   haircut: req.body.haircut,
+  // });
+  // if (!gen) {
+  //   res
+  //     .status(400)
+  //     .json({ message: "Die Werte aus dem Schritt 4 sind unvollständig" });
+  // }
+  // user.general = gen;
+  // // adding attributes
+  // const attr = await Attribute.create(req.body.attributes);
+  // if (!attr) {
+  //   res
+  //     .status(400)
+  //     .json({
+  //       message:
+  //         "Die Werte aus dem Schritt 5 sind nicht korrekt. Vitalität eingegeben?",
+  //     });
+  // }
+  // user.attributes = attr;
+  // const doc = await user.save();
+  // if (!doc) {
+  //   res.status(400).json({ message: "Charaktererstellung hat fehlgeschlagen" });
+  // }
+  // res.status(200).json(doc);
 });
 
 const uploadPicture = asyncHandler(async (req, res) => {
   console.log("backend picture upload");
   const image = req.files.img;
   //const filename = req.files[1]
-  console.log(image, image.name);
+  console.log(image, image.name, req.user.id);
   const path = "./../client/public/user/" + image.name;
   image.mv(path, (error) => {
     if (error) {
