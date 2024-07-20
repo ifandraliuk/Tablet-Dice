@@ -15,7 +15,7 @@ const getProfessions = asyncHandler( async (req, res) => {
         }
         res.status(200).json(userclasses)
     } else {
-        const userclasses = await UserClass.find({})
+        const userclasses = await Userclass.find({})
         if(!userclasses){
             res.status(400).json({message: "Keine Klassen gefunden"})
             throw new Error("Falsch! Das Feld darf nicht leer sein")        
@@ -39,8 +39,6 @@ const getProfession = asyncHandler(async (req, res) => {
     }
     res.status(200).json(userclass);
   });
-  
-
 // @desc Set new class
 // @route POST /professions/
 // @access Public
