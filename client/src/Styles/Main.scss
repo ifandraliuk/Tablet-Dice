@@ -1,16 +1,25 @@
 @import './Variables.scss';
 body { 
     overflow-x: hidden;
-    overflow-y: hidden;
+    overflow-y: auto;
+  //  overflow-y: hidden;
 }
+p{
+    text-align: justify;
+}
+.required-asterisk {
+    color: $categoryRed;
+    margin-left: 5px;
+    font-size: 14px;
+  }
 /*BACKGROUND*/
 .dark-bg {
     background-color: $transparentBlack;
     height: 100vh;
-    overflow: auto;
+    overflow: hidden;
 }
 .bg {
-    overflow: auto;
+    overflow: hidden;
     background-attachment: fixed;
     height: 100vh;
     background-repeat: no-repeat;
@@ -40,6 +49,21 @@ body {
   background-color: black; /* Set background color as needed */
 padding: 5px;
   border-radius: 50%; /* Optional: for a circular badge */
+}
+
+.ability-card{
+    background-color: $transparentBlack;
+    border: 15px solid $transparentBlack;
+    border-image-source: url(~/public/pattern/grey-card-border.svg);
+    border-image-slice:
+    33 33 32 33;
+    border-image-width:
+    15px 15px 15px 15px;
+    border-image-outset:
+    0px 0px 0px 0px;
+    border-image-repeat:
+    stretch stretch;
+    margin-right: 5px;
 }
 
 // Item icon
@@ -159,6 +183,9 @@ padding: 5px;
     33 33 32 33;
     border-image-outset:
     0px 0px 0px 0px;
+&.colored{
+    border: 15px solid $categoryGreen;
+}    
 &.stretch{
     border-image-repeat:
     stretch stretch;
@@ -459,16 +486,17 @@ h5 {
     padding: 0.2em;
     border-radius: 5px;
     &.error{
-        background: rgba(255, 38, 38, 0.8);
+        background: $categoryRed;
     }
     &.warning{
-        background: rgba(255, 204, 17, 0.8);
+        background: $categoryYellow;
     }
     &.success{
-        background: rgba(77, 255, 17, 0.8);
+        background: $categoryGreen;
+        
     }
     &.info{
-        background: rgba(17, 227, 255, 0.8);
+        background: $thornheimMain;
     }
 }
 .exclamation{
@@ -495,6 +523,11 @@ h5 {
 
 
 /* FRACTION COLORS */
+.general-bg {
+    background:url(~/public/pattern/general.svg) rgba(0, 0, 0, 0.8);
+    background-size: 15%;
+    background-repeat: repeat;
+}
 .Algor-bg {
     background:url(~/public/pattern/algor.svg) rgba(0, 0, 0, 0.8);
     background-size: 15%;
