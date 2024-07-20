@@ -90,7 +90,7 @@ const Equipment = memo(({ setShowInfo, err }) => {
           })}
         </div>
         <div className="col-lg-4 ">
-          <img className="userclass-img" src={`/classes_img/${profession?.name}.svg`} />
+          <img className="userclass-img" src={`/classes_img/${profession?._id}.svg`} />
         </div>
         <div className="col-auto ">
           {["Rücken", "Hals", "Arme", "Füße"].map((name, i) => {
