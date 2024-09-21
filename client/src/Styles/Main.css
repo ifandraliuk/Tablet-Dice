@@ -1,6 +1,5 @@
 body {
   overflow-x: hidden;
-  overflow-y: auto;
 }
 
 p {
@@ -13,18 +12,21 @@ p {
   font-size: 14px;
 }
 
-/*BACKGROUND*/
 .dark-bg {
   background-color: rgba(24, 24, 24, 0.8);
-  height: 100vh;
-  overflow: hidden;
+  background-attachment: fixed;
+  background-repeat: repeat-y; /* Ensure vertical repeat */
+  background-size: auto; /* Default size to allow repetition */
+  min-height: 100vh; /* Use min-height instead of height */
+  overflow: visible; /* Ensure no extra scroll bar appears */
 }
 
 .bg {
-  overflow: hidden;
   background-attachment: fixed;
-  height: 100vh;
-  background-repeat: no-repeat;
+  background-repeat: repeat-y; /* Ensure vertical repeat */
+  background-size: auto; /* Default size */
+  min-height: 100vh; /* Use min-height instead of height */
+  overflow: visible;
 }
 
 .blur-bg {

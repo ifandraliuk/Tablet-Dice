@@ -1,7 +1,7 @@
 @import './Variables.scss';
 body { 
     overflow-x: hidden;
-    overflow-y: auto;
+    //overflow-y: auto;
   //  overflow-y: hidden;
 }
 p{
@@ -12,18 +12,21 @@ p{
     margin-left: 5px;
     font-size: 14px;
   }
-/*BACKGROUND*/
 .dark-bg {
     background-color: $transparentBlack;
-    height: 100vh;
-    overflow: hidden;
-}
-.bg {
-    overflow: hidden;
     background-attachment: fixed;
-    height: 100vh;
-    background-repeat: no-repeat;
+    background-repeat: repeat-y; /* Ensure vertical repeat */
+    background-size: auto; /* Default size to allow repetition */
+    min-height: 100vh; /* Use min-height instead of height */
+    overflow: visible; /* Ensure no extra scroll bar appears */
+}
 
+.bg {
+    background-attachment: fixed;
+    background-repeat: repeat-y; /* Ensure vertical repeat */
+    background-size: auto; /* Default size */
+    min-height: 100vh; /* Use min-height instead of height */
+    overflow: visible;
 }
 .blur-bg{
     height: 100vh;

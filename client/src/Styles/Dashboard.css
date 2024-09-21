@@ -1,24 +1,33 @@
+.dashboard-page {
+  overflow-y: auto; /* Allow the entire page to scroll */
+  min-height: 100vh; /* Ensure the page spans the full viewport height */
+  overflow-x: hidden; /* Hide horizontal scrolling */
+}
 .dashboard-page .user-img {
   max-width: 100%;
   background-color: rgba(24, 24, 24, 0.8);
   margin-right: 5px;
   position: relative;
+  display: block; /* Ensures the image takes full width in its container */
 }
 .dashboard-page .ability-card {
   background-color: rgba(24, 24, 24, 0.8);
   border: 15px solid rgba(24, 24, 24, 0.8);
   border-image-source: url(~/public/pattern/grey-card-border.svg);
   border-image-slice: 33 33 32 33;
-  border-image-width: 15px 15px 15px 15px;
-  border-image-outset: 0px 0px 0px 0px;
-  border-image-repeat: stretch stretch;
+  border-image-width: 15px; /* Use shorthand */
+  border-image-outset: 0px;
+  border-image-repeat: stretch;
   margin-right: 5px;
 }
 .dashboard-page .round-btn {
   border: 2px solid;
   height: 3em;
-  width: auto;
+  width: 3em; /* Ensure it's a perfect circle */
   border-radius: 50%;
+  align-items: center; /* Ensures content inside is centered */
+  display: flex; /* Added Flexbox */
+  justify-content: center; /* Centers content horizontally */
 }
 .dashboard-page .general-container {
   background-color: rgba(24, 24, 24, 0.8);
