@@ -66,7 +66,7 @@ const getUserMoney = async (token) => {
 
 // update money balance
 const updateMoney = async (moneyData, token) => {
-    console.log("frontend request to update money");
+    console.log("frontend request to update money: ", moneyData);
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,

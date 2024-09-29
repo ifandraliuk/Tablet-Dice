@@ -12,6 +12,7 @@ import {
   faPlus,
   faMinus,
   faPen,
+  faX
 } from "@fortawesome/free-solid-svg-icons";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -86,18 +87,22 @@ function InventoryPage() {
     dispatch(getCategoryBoni("resistance"))
   }, [dispatch, inventory]);
 
+  // Handle the input change
   const moneyChange = (e) => {
-    console.log(e.target.id, e.target.value);
     const id = parseInt(e.target.id);
     const value = parseInt(e.target.value);
 
-    updateBalance(newMoney?.map((currency, i) => (i === id ? value : currency)));
-    console.log(newMoney);
+    // Create a new array with the updated value
+    const updatedMoney = money.map((currency, i) => (i === id ? value : currency));
+
+    // Dispatch updateMoney action to update Redux state and backend
+    dispatch(updateMoney({ money: updatedMoney }));
   };
 
   const updateUserMoney = () => {
     console.log(newMoney)
     dispatch(updateMoney(newMoney));
+    setActiveEditMoney(false)
   }
   const show = (id) => {
     setShowInfo((prevStatus) => !prevStatus);
@@ -105,7 +110,6 @@ function InventoryPage() {
   };
 
   const showDb = () => {
-    console.log("show Db");
     setActiveDb((prev) => !prev);
   };
 
@@ -123,13 +127,11 @@ function InventoryPage() {
     dispatch(substractAmount(data));
   };
   const toPlayer = (e) => {
-    console.log(e.currentTarget.name);
     const itemId = e.currentTarget.name;
     dispatch(addToInventory({ id: itemId }));
     setShowInfo((prev) => !prev);
   };
   const splitStack = (amount, id) => {
-    console.log(amount, id);
     const data = {
       amount: amount,
       id: id,
@@ -142,27 +144,22 @@ function InventoryPage() {
       uid: userId,
       inv: itemId,
     };
-    console.log(data);
     dispatch(shareWith(data));
     setShowInfo(false);
   };
   const removeItem = (id) => {
     dispatch(removeFromInventory(id));
-    console.log(id);
     setShowInfo(false);
   };
   const equipItem = (itemId) => {
-    console.log(itemId);
     dispatch(equip({ invId: itemId }));
   };
   const unEquipItem = (id) => {
-    console.log(id);
     dispatch(unequip({ id: id }));
   };
   const onClickFilter = (e) => {
     e.preventDefault();
     const filterName = e.currentTarget.name;
-    console.log(filterName);
     if (filterName === "all") {
       setInventoryFilter("");
     } else {
@@ -278,6 +275,7 @@ function InventoryPage() {
                     <div className="row ">
                       {activeEditMoney ? (
                         <>
+                        <h4>{newMoney}</h4>
                           <div className="col col-auto border border-2">
                             <div className="row p-0">
                               <div className="col col p-0">
@@ -320,7 +318,7 @@ function InventoryPage() {
                                 Kupfer
                               </div>
                               <div className="col">
-                                <MotionButton name="active-money" icon={faFloppyDisk} onClick={updateUserMoney}/>
+                                <MotionButton name="active-money" icon={faX} onClick={(e) => setActiveEditMoney(state=>!state)}/>
                               </div>
                             </div>
                           </div>

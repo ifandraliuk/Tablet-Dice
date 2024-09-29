@@ -8,7 +8,7 @@ import { getCategoryBoni, getUserWeapons } from "../../features/inventory/invent
 import { getProfession } from "../../features/player/playerSlice";
 
 const Equipment = memo(({ setShowInfo, err }) => {
-  console.log("re-rendering equipment");
+  //console.log("re-rendering equipment");
   const dispatch = useDispatch();
   const equipped = useSelector((state) =>
     state.inventory.inventory.filter((el) => el.status === "Ausgerüstet")
@@ -19,7 +19,7 @@ const Equipment = memo(({ setShowInfo, err }) => {
   const { profession, fractionTheme } = useSelector(
     (state) => state.player
   );
-  console.log(equipped, mainWeapon, secondWeapon);
+ // console.log(equipped, mainWeapon, secondWeapon);
   useEffect(() => {
     dispatch(getUserWeapons());
     dispatch(getProfession())
@@ -27,10 +27,10 @@ const Equipment = memo(({ setShowInfo, err }) => {
   }, []);
 
   const getArmorBonusValue = (armorType) => {
-    console.log(armorType);
+   // console.log(armorType);
     if(armorBoni?.length > 0){
       const foundBoni = armorBoni.find((el) => el.bonus.type === armorType);
-      console.log(`Value for ${armorType}: ${foundBoni?.value}`);
+     // console.log(`Value for ${armorType}: ${foundBoni?.value}`);
       return foundBoni ? foundBoni.value : null;
     } else return null
 
@@ -65,7 +65,7 @@ const Equipment = memo(({ setShowInfo, err }) => {
       <div className="row justify-content-center">
         <div className="col-auto ">
           {["Kopf", "Brust", "Hüfte", "Beine"].map((name, i) => {
-            console.log("kopf");
+           // console.log("kopf");
             const equippedItem = equipped?.find(
               (el) => el.item?.genus === name
             );
@@ -95,7 +95,7 @@ const Equipment = memo(({ setShowInfo, err }) => {
         <div className="col-auto ">
           {["Rücken", "Hals", "Arme", "Füße"].map((name, i) => {
             const equippedItem = equipped?.find((el) => el.item.genus === name);
-            console.log("rücken");
+           // console.log("rücken");
             if (equippedItem) {
               return (
                 <motion.div className="row pb-4" key={name}>
@@ -126,7 +126,7 @@ const Equipment = memo(({ setShowInfo, err }) => {
             } else {
               equippedItem = equipped?.find((el) => el.item.genus === name);
             }
-            console.log("waffen");
+           // console.log("waffen");
             if (equippedItem) {
               return (
                 <motion.div className="col-auto pb-4" key={name}>

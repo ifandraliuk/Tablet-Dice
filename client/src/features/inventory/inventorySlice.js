@@ -321,7 +321,6 @@ export const inventorySlice = createSlice({
       state.extendedId = payload.id;
     },
     updateTotalWeight: (state) => {
-      debugger
       state.totalWeight = state.inventory.reduce((sum, item) => {
         // Check if the item has `item.weight` or `item.item.weight`
         const weight = item.weight ?? item.item?.weight ?? 0;
@@ -466,6 +465,21 @@ export const inventorySlice = createSlice({
         state.isError = true;
         state.message = action.payload;
       })
+      .addCase(updateMoney.pending, (state) => {
+        state.isLoading = true;
+        state.isLoading = false;
+        state.isError = false;
+      })
+      .addCase(updateMoney.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.money = action.payload
+      })
+      .addCase(updateMoney.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
       //add + 1
       .addCase(addAmount.pending, (state) => {
         state.isLoading = true;
@@ -506,6 +520,7 @@ export const inventorySlice = createSlice({
         state.isError = true;
         state.message = action.payload;
       })
+
       //add to Inventory
       .addCase(addToInventory.pending, (state) => {
         state.isLoading = true;

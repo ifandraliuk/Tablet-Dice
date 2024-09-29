@@ -292,21 +292,35 @@ const getMoney = asyncHandler(async (req, res) => {
 // @route PUT /inventory/money
 // @access Private
 const updateMoney = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user.id);
-  const money = req.body.money;
-  console.log(money);
-  if (!user) [res.status(400).json({ message: "Nutzer nicht gefunden" })];
-  console.log(req.body);
-  user.money = req.body;
-  const updated = await User.findByIdAndUpdate(
-    req.user.id,
-    { $set: { money: money } },
-    { new: true }
-  );
-  if (!updated) {
-    res.status(400).json({ message: "Dein Geldbalance wurde nicht geändert" });
+  const user = await User.findById(req.user.id); // Find the user by the authenticated user ID
+
+  // Check if the user exists
+  if (!user) {
+    return res.status(400).json({ message: 'Nutzer nicht gefunden' });
   }
-  res.status(200).json(updated.money);
+
+  // Extract money from the request body
+  const { money } = req.body;
+
+  // Validate that money exists and is an array (if it's supposed to be)
+  if (!money || !Array.isArray(money)) {
+    return res.status(400).json({ message: 'Ungültige Geld-Daten' });
+  }
+
+  // Update user's money in the database
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user.id,
+    { $set: { money: money } }, // Set the money field to the new value
+    { new: true } // Return the updated user document
+  );
+
+  // Check if the update was successful
+  if (!updatedUser) {
+    return res.status(400).json({ message: 'Dein Geldbalance wurde nicht geändert' });
+  }
+
+  // Return the updated money balance
+  return res.status(200).json(updatedUser.money);
 });
 
 const addToInventory = asyncHandler(async (req, res) => {
