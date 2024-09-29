@@ -66,17 +66,23 @@ const findItem = asyncHandler( async (req, res) => {
         res.status(200).json(items)
     }
 })
-const getItem = asyncHandler( async (req, res) => {
-    console.log("backend get item")
-    const { n, m, category, genus } = req.params;
-    console.log(req.params)
-    const skipCount = n || 0; // Default to 0 if not provided
-    const items = await Item.find({"category": category, "genus": genus}).skip(parseInt(skipCount)).limit(parseInt(m)).populate({
-      path: 'material.element',
-      model: 'Item'
+const getItem = asyncHandler(async (req, res) => {
+  console.log("backend get item");
+  const { n, m, category, genus } = req.params;
+  console.log(req.params);
+  const skipCount = n || 0; // Default to 0 if not provided
+  const limitCount =  10; // Default to 10 if not provided
+  const items = await Item.find({ category: category, genus: genus })
+    .skip(parseInt(skipCount))
+    .limit(parseInt(limitCount))
+    .populate({
+      path: "material.element",
+      model: "Item",
     });
-    res.status(200).json({data: items, n: parseInt(n), m:parseInt(m)});
-})
+  //   console.log(items)
+  console.log(items.length);
+  res.status(200).json({ data: items, n: parseInt(n), m: parseInt(m) });
+});
 
 const rename = asyncHandler(async (req,res)=>{
     const items = await Item.updateMany({rarity:"Selten"}, {$set: {rarity: "selten"}}, {new:true})

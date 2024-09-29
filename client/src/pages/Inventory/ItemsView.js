@@ -23,7 +23,7 @@ import GenusList from "./GenusList";
 import Slot from "./Slot";
 const ItemsView = ({ setShowInfo, iFilter, setCustomInfo, addItemToInventory }) => {
   const dispatch = useDispatch();
-  const { data, activeGenus, n, m } = useSelector(
+  const {activeGenus, n, m } = useSelector(
     (state) => state.items
   );
 
@@ -86,9 +86,9 @@ const ItemsView = ({ setShowInfo, iFilter, setCustomInfo, addItemToInventory }) 
           <div className="row mt-3">
             <div className="col-6">
               {n > 0 && (
-                <MotionButton icon={faAnglesLeft} onClick={back} theme="" />
+                <MotionButton icon={faAnglesLeft} text={n} onClick={back} theme="" />
               )}
-              <MotionButton icon={faAnglesRight} onClick={forward} theme="" />
+              <MotionButton icon={faAnglesRight}  text={m}  onClick={forward} theme="" />
             </div>
           </div>
         </div>
