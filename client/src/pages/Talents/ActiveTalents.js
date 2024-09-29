@@ -10,6 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  addToPlayer,
   updatePlayersTalent,
   removeFromPlayer,
   sortedTalents,
@@ -17,7 +18,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { tableAnimation } from "../../data/Animations";
 
-function ActiveTalents({ props }) {
+function ActiveTalents() {
   const { playerTalents } = useSelector((state) => state.talents);
   const { talentBoni } = useSelector((state) => state.inventory);
   const dispatch = useDispatch();
@@ -64,17 +65,19 @@ function ActiveTalents({ props }) {
     }
   };
   const handleRemove = (e) => {
+    e.preventDefault();
     console.log(e.currentTarget.name);
-    dispatch(removeFromPlayer(e.currentTarget.name));
+    dispatch(removeFromPlayer({id: e.currentTarget.id}));
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    update.forEach((el, i) => {
+    //debugger
+   // e.preventDefault();
+     update.forEach((el, i) => {
       if (el[1] > 0)
         //sorting out null values
         dispatch(updatePlayersTalent({ id: el[0], point: el[1] }));
-    });
+    }); 
     toEdit((edit) => !edit);
     toUpdate([]);
   };
@@ -102,10 +105,10 @@ function ActiveTalents({ props }) {
             <h3>Erlernte Talente</h3>
           </div>
           <div className="button-group">
-            <button className="btn-edit" onClick={handleEdit}>
+            <button type="button" className="btn-edit" onClick={handleEdit}>
               <FontAwesomeIcon icon={faPenToSquare} />
             </button>
-            <button className="btn-save" onClick={handleSubmit}>
+            <button type="button" className="btn-save" onClick={handleSubmit}>
               <FontAwesomeIcon icon={faFloppyDisk} />
             </button>
           </div>
@@ -116,6 +119,7 @@ function ActiveTalents({ props }) {
                   <th key={header.name}>
                     {header.label}{" "}
                     <button
+                      type="button"
                       className="sort-btn"
                       name={header.name}
                       onClick={sort}
@@ -175,8 +179,9 @@ function ActiveTalents({ props }) {
                     )}
                     <td>
                       <button
+                        type="button"
                         className="btn-remove"
-                        name={el._id}
+                        id={el._id}
                         style={{ paddingBottom: "1px", paddingTop: "1px" }}
                         onClick={handleRemove}
                       >

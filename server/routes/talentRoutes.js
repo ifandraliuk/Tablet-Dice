@@ -14,7 +14,7 @@ const {
 const { protect } = require("../middleware/authMiddleware");
 
 router.route("/").get(getTalent).post(setTalent);
-router.route("/:id").put(protect, updateTalent).delete(protect, deleteTalent);
+//router.route("/:id").put(protect, updateTalent).delete(protect, deleteTalent);
 
 /*Players talents */
 //TALENTS

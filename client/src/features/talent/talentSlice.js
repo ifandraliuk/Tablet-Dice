@@ -137,32 +137,24 @@ export const talentSlice = createSlice({
   reducers: {
     reset: (state) => initialState,
     sortedTalents: (state, { payload }) => {
-        let sortedTalents;
-      
-        if (payload.sortKey === "points") {
-          sortedTalents = [...state.playerTalents]; // Use spread operator for shallow copy
-          if (payload.reverse) {
-            sortedTalents.sort((a, b) => b.points - a.points);
-          } else {
-            sortedTalents.sort((a, b) => a.points - b.points);
-          }
-        } else {
-          sortedTalents = [...state.playerTalents]; // Use spread operator for shallow copy
-          if (payload.reverse) {
-            sortedTalents.sort((a, b) => b.talent[payload.sortKey]?.localeCompare(a.talent[payload.sortKey]));
-          } else {
-            sortedTalents.sort((a, b) => a.talent[payload.sortKey]?.localeCompare(b.talent[payload.sortKey]));
-          }
-        }
-      
-        // Log the sorted talents to the console for debugging
-        console.log('Sorted Talents:', sortedTalents);
-      
-        // Update the state using setState or equivalent in your React component
-        // Ensure that you're triggering a re-render
-        state.playerTalents = sortedTalents;
+      const sortedTalents = [...state.playerTalents]; // Create a shallow copy
+    
+      // Sort based on points or other attributes
+      if (payload.sortKey === "points") {
+        sortedTalents.sort((a, b) => payload.reverse ? b.points - a.points : a.points - b.points);
+      } else {
+        sortedTalents.sort((a, b) => {
+          const comparison = a.talent[payload.sortKey]?.localeCompare(b.talent[payload.sortKey]);
+          return payload.reverse ? -comparison : comparison;
+        });
       }
-      ,
+    
+      // Log the sorted talents to the console for debugging
+      console.log('Sorted Talents:', sortedTalents);
+    
+      // Update the state with sorted talents
+      state.playerTalents = sortedTalents;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -235,11 +227,11 @@ export const talentSlice = createSlice({
         state.isError = false;
       })
       .addCase(removeFromPlayer.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.playerTalents = state.playerTalents.filter(
-          (item) => item._id !== action.payload.id
-        );
+        state.isLoading = false; // Assuming you set loading to true elsewhere
+        state.isSuccess = true; // Indicate successful removal
+        // Filter out the removed talent by its ID
+        state.playerTalents = state.playerTalents.filter(item => item._id !== action.payload.id);
+        console.log('Updated Player Talents after removal:', state.playerTalents); // Debugging output
       })
       .addCase(removeFromPlayer.rejected, (state, action) => {
         state.isLoading = false;

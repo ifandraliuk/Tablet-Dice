@@ -128,27 +128,48 @@ const getUserBonus = asyncHandler(async (req, res) => {
   const kindAdvantageName = races[userKind]?.ability.name
   res.status(200).json({userclassName: userclassName, userclassAdvantage: userclassAdvantage, kindAdvantageName: kindAdvantageName,kindName: userKind, kindAdvantage: kindAdvantage})
 });
+
+
 const updateTalent = asyncHandler(async (req, res) => {
-  const talent = await Talent.findById(req.params.id);
+  debugger
+  const talentId = mongoose.Types.ObjectId(req.params.id); 
+  // Find talent by ID
+  const talent = await Talent.findById(talentId);
+
+  // If talent not found, throw an error
   if (!talent) {
-    res.status(400);
-    throw new Error("Der Talent wurde nicht gefunden");
+    res.status(404); // Better to use 404 for 'not found'
+    throw new Error("Talent not found");
   }
+
+  // Check if the user is logged in
   if (!req.user) {
     res.status(401);
+    throw new Error("User not authorized");
   }
-  // Logged in user matches talent user
+
+  // Check if the logged-in user is the owner of the talent
   if (talent.user.toString() !== req.user.id) {
     res.status(401);
+    throw new Error("User not authorized to update this talent");
   }
-  const toUpdate = await Talent.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
+
+  // Perform the update and return the updated document
+  const updatedTalent = await Talent.findByIdAndUpdate(req.params.id, req.body, {
+    new: true, // Return the updated document
+    runValidators: true, // Ensures that the new data passes schema validation
   });
-  if (!toUpdate) {
+
+  // If something went wrong with the update, throw an error
+  if (!updatedTalent) {
     res.status(400);
+    throw new Error("Failed to update talent");
   }
-  res.status(200).json(toUpdate);
+
+  // Respond with the updated document
+  res.status(200).json(updatedTalent);
 });
+
 
 const deleteTalent = asyncHandler(async (req, res) => {
   const talent = await Talent.findById(req.params.id);
@@ -210,62 +231,89 @@ const addUserTalent = asyncHandler(async (req, res) => {
   res.status(200).json(utalent);
 });
 
+
 const putUserTalent = asyncHandler(async (req, res) => {
-  console.log(req.body.point, req.body.id);
+  debugger
+  console.log("data",req.body.point, req.body.id);
+
+  // Validate that point and id are provided
   if (!req.body.point || !req.body.id) {
     res.status(400);
     throw new Error("Bitte überprüfe deine Eingabe!");
   }
-  //const talent = await Talent.findById(req.body.id)
-  const talent = await UserTalents.findByIdAndUpdate(
-    req.body.id,
-    { points: req.body.point },
-    { new: true }
-  ).populate({
-    path: "talent",
-    model: "Talent",
-    select: "_id category name dice",
-  });
-  const user = await User.findById(req.user.id);
-  console.log(talent);
-  if (!talent) {
-    res.status(500);
-    throw new Error("Talent nicht gefunden...");
+
+  // Validate the provided ID is a valid ObjectId format
+  if (!mongoose.Types.ObjectId.isValid(req.body.id)) {
+    res.status(400);
+    throw new Error("Ungültige Talent-ID: Die ID muss eine 24-stellige Hex-Zeichenfolge sein.");
   }
-  const updated = await User.findOneAndUpdate(
-    {
-      user: req.user.id,
-      //'talents.talent': talent._id
-      "talents._id": talent._id,
-    },
-    {
-      $set: {
-        "talents.$": talent,
+
+  try {
+    // Convert the ID string to an ObjectId
+    const talentId = mongoose.Types.ObjectId(req.body.id);
+
+    // Find the talent and update it
+    const talent = await UserTalents.findByIdAndUpdate(
+      talentId, // Use the ObjectId here
+      { points: req.body.point },
+      { new: true }
+    ).populate({
+      path: "talent",
+      model: "Talent",
+      select: "_id category name dice",
+    });
+
+    // If the talent is not found, return an error
+    if (!talent) {
+      res.status(500);
+      throw new Error("Talent nicht gefunden...");
+    }
+
+    // Update the user's talents
+    const updatedUser = await User.findOneAndUpdate(
+      {
+        _id: req.user.id, // Ensure you're using the correct user ID
+        "talents._id": talent._id, // Match the talent by its _id in the talents array
       },
-    },
-    { new: true }
-  ).populate({
-    path: "talents.talent",
-    model: "Talent",
-    select: "_id category name dice",
-  });
-  if (!updated) {
-    res
-      .status(400)
-      .json({ message: "Es war unmöglich, diesen Talent zu updaten" });
+      {
+        $set: {
+          "talents.$": talent, // Update the specific talent in the talents array
+        },
+      },
+      { new: true }
+    ).populate({
+      path: "talents.talent",
+      model: "Talent",
+      select: "_id category name dice",
+    });
+
+    // If user talent update fails, return an error
+    if (!updatedUser) {
+      return res
+        .status(400)
+        .json({ message: "Es war unmöglich, diesen Talent zu updaten" });
+    }
+
+    // Respond with the updated talent
+    res.status(200).json(talent);
+  } catch (error) {
+    // Handle other errors
+    res.status(500).json({ message: "Server Error", error: error.message });
   }
-  res.status(200).json(talent);
 });
+
 
 // @desc Remove a talent from users inventory
 // @route DELETE /player/talents/:id
 // @access Private
 const removeUserTalent = asyncHandler(async (req, res) => {
-  if (!req.params.id) {
+  console.log("id to remove:", req.params.id)
+  const talentId = mongoose.Types.ObjectId(req.params.id); 
+  if (!talentId) {
     res.status(400);
     throw new Error("Bitte überprüfe deine Eingabe!");
   }
-  const talent = await UserTalents.findById(req.params.id);
+  const talent = await UserTalents.findById(talentId);
   console.log(talent);
   await talent.remove();
   const u = await User.findById(req.user.id);

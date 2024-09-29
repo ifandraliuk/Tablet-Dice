@@ -169,7 +169,7 @@ function Talents() {
                   <Spinner animation="border" />
                 )}
                 {playerTalents ? (
-                  <ActiveTalents props={playerTalents} />
+                  <ActiveTalents />
                 ) : (
                   <h5>Du hast noch keine Talente...</h5>
                 )}
@@ -192,7 +192,7 @@ function Talents() {
                     <FontAwesomeIcon icon={faRefresh} />
                   </button>
                 </div>
-                <form>
+                <div>
                   {filter.length === 0 ? (
                     Object.keys(categorizedTalents).map((el, ind) => {
                       return (
@@ -214,7 +214,7 @@ function Talents() {
                       icons={icons}
                     />
                   )}
-                </form>
+                </div>
               </div>
               {true && (
                 <div className="col-lg-auto">
