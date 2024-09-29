@@ -44,8 +44,8 @@ const Editor = ({
   return (
     <div>
       {" "}
-      <form id="journal" onSubmit={onSubmit}>
-        <div className="w-auto h-auto  p-2 mb-2 dark-bg">
+      <form id="journal" onSubmit={onSubmit} >
+        <div className="w-auto h-auto  p-2 mb-2">
           {/*           
             <textarea
             id="textarea-note"

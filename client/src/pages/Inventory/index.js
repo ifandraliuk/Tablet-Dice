@@ -203,7 +203,7 @@ function InventoryPage() {
       <div className="inventory-page">
         <div className={`${fractionTheme}-bg`}>
           <div className="container-fluid dark-bg g-5">
-            <div className="row mt-3 ">
+            <div className="row">
               <div className="col-lg-auto col-md-12 col-sm-12">
                 {["Rüstung", "Waffe", "Ressource", "Begleiter", "all"].map(
                   (buttonName, i) => (

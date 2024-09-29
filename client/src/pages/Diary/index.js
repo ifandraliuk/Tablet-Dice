@@ -146,7 +146,7 @@ function Diary() {
                     </button>
                   ))}
               </div>
-              <div className="col-xl-8 col-lg-8  diary-border col-md-12">
+              <div className="col-xl-8 col-lg-8  diary-border info-container col-md-12">
                 <Editor 
                 text={text}
                 user={user}

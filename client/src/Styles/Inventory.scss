@@ -32,6 +32,10 @@
     .bag-div {
         background-color: $transparentBlack;
     }
+    .slot-element{
+        position: relative; /* Needed for absolute positioning of tooltip */
+        display: inline-block; /* Adjust as needed */
+    }
 .userclass-img{
 
     position: relative;
