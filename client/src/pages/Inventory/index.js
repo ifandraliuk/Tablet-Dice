@@ -7,12 +7,13 @@ import {
   faHammer,
   faSeedling,
   faFloppyDisk,
+  faArrowRight,
   faCoins,
   faPaw,
   faPlus,
   faMinus,
   faPen,
-  faX
+  faX,
 } from "@fortawesome/free-solid-svg-icons";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -48,11 +49,9 @@ import ItemsView from "./ItemsView";
 function InventoryPage() {
   const { inventory, armor, totalWeight, capacity, money, isError, message } =
     useSelector((state) => state.inventory);
-  const {
-    fractionTheme,
-    player,
-    equipmentError,
-  } = useSelector((state) => state.player);
+  const { fractionTheme, player, equipmentError } = useSelector(
+    (state) => state.player
+  );
   const [showInfo, setShowInfo] = useState(false);
 
   const { userclass } = player;
@@ -61,11 +60,21 @@ function InventoryPage() {
   const [activeDb, setActiveDb] = useState(false);
   const [customInfo, setCustomInfo] = useState({});
   const [newMoney, updateBalance] = useState(money);
-  console.log(newMoney)
+  const [moneyError, setMoneyError] = useState("");
+  const [goldInput, setGoldInput] = useState("");
+  const [silverInput, setSilverInput] = useState("");
+  const [copperInput, setCopperInput] = useState("");
+  console.log(newMoney);
   const [activeEditMoney, setActiveEditMoney] = useState(false);
+  // Local state to manage the input field for new money
+  const [newMoneyInput, setNewMoneyInput] = useState("");
+  const [inputError, setInputError] = useState(""); // For showing error message
+  // Regex pattern to validate input
+  const moneyInputPattern = /^-?\d+,\d+,\d+$/;
   const navigate = useNavigate();
   const dispatch = useDispatch();
   console.log(customInfo);
+
   useEffect(() => {
     if (!user || isError) {
       navigate("/");
@@ -75,16 +84,17 @@ function InventoryPage() {
       dispatch(getInventory());
       dispatch(getUserMoney());
     }
-    return () =>{
-      dispatch(reset())
-      dispatch(playerReset())
-    }
+    return () => {
+      dispatch(reset());
+      dispatch(playerReset());
+    };
   }, [user, isError, dispatch, navigate, message]);
+
   useEffect(() => {
     dispatch(updateTotalWeight());
     dispatch(getArmor());
-    dispatch(getLoadCapacity())
-    dispatch(getCategoryBoni("resistance"))
+    dispatch(getLoadCapacity());
+    dispatch(getCategoryBoni("resistance"));
   }, [dispatch, inventory]);
 
   // Handle the input change
@@ -93,17 +103,89 @@ function InventoryPage() {
     const value = parseInt(e.target.value);
 
     // Create a new array with the updated value
-    const updatedMoney = money.map((currency, i) => (i === id ? value : currency));
+    const updatedMoney = money.map((currency, i) =>
+      i === id ? value : currency
+    );
 
     // Dispatch updateMoney action to update Redux state and backend
     dispatch(updateMoney({ money: updatedMoney }));
   };
+  const handleUpdateMoney = (isAdding) => {
+    const goldValue = parseInt(goldInput) || 0;
+    const silverValue = parseInt(silverInput) || 0;
+    const copperValue = parseInt(copperInput) || 0;
 
-  const updateUserMoney = () => {
-    console.log(newMoney)
-    dispatch(updateMoney(newMoney));
-    setActiveEditMoney(false)
-  }
+    let updatedMoney = [...money]; // Create a copy of current money
+
+    if (isAdding) {
+      // Adding logic with overflow handling
+      updatedMoney[0] += goldValue; // Add Gold
+      updatedMoney[1] += silverValue; // Add Silver
+      updatedMoney[2] += copperValue; // Add Copper
+
+      // Handle overflow for Copper to Silver
+      if (updatedMoney[2] >= 100) {
+        const overflowSilver = Math.floor(updatedMoney[2] / 100);
+        updatedMoney[2] %= 100; // Remainder copper
+        updatedMoney[1] += overflowSilver; // Add overflow to Silver
+      }
+
+      // Handle overflow for Silver to Gold
+      if (updatedMoney[1] >= 100) {
+        const overflowGold = Math.floor(updatedMoney[1] / 100);
+        updatedMoney[1] %= 100; // Remainder silver
+        updatedMoney[0] += overflowGold; // Add overflow to Gold
+      }
+    } else {
+      // Subtracting logic with borrowing
+      // Subtract copper first
+      // Subtracting logic with validation
+      updatedMoney[2] -= copperValue;
+      if (updatedMoney[2] < 0) {
+        // Borrow from silver if necessary
+        const borrowFromSilver = Math.ceil(Math.abs(updatedMoney[2]) / 100);
+        updatedMoney[2] += borrowFromSilver * 100; // Borrow copper from silver
+        updatedMoney[1] -= borrowFromSilver; // Adjust silver accordingly
+      }
+
+      // Subtract silver next
+      updatedMoney[1] -= silverValue;
+      if (updatedMoney[1] < 0) {
+        // Borrow from gold if necessary
+        const borrowFromGold = Math.ceil(Math.abs(updatedMoney[1]) / 100);
+        updatedMoney[1] += borrowFromGold * 100; // Borrow silver from gold
+        updatedMoney[0] -= borrowFromGold; // Adjust gold accordingly
+      }
+
+      // Finally subtract gold
+      updatedMoney[0] -= goldValue;
+
+      // If there are insufficient funds overall, alert the user
+      if (updatedMoney[0] < 0 || updatedMoney[1] < 0 || updatedMoney[2] < 0) {
+        setMoneyError("Insufficient funds for this operation.");
+        return; // Exit early if validation fails
+      }
+    }
+
+    // Ensure no negative values
+    updatedMoney = updatedMoney.map((amount) => Math.max(amount, 0));
+
+    dispatch(updateMoney({ money: updatedMoney }))
+      .then(() => {
+        console.log("Money updated successfully");
+        setActiveEditMoney(false);
+        setMoneyError("");
+      })
+      .catch((err) => {
+        err = "Failed to update money:" + err;
+        setMoneyError(err);
+      });
+
+    // Clear the inputs after dispatching
+    setGoldInput("");
+    setSilverInput("");
+    setCopperInput("");
+  };
   const show = (id) => {
     setShowInfo((prevStatus) => !prevStatus);
     dispatch(extendInfo({ id: id }));
@@ -126,11 +208,13 @@ function InventoryPage() {
     };
     dispatch(substractAmount(data));
   };
+
   const toPlayer = (e) => {
     const itemId = e.currentTarget.name;
     dispatch(addToInventory({ id: itemId }));
     setShowInfo((prev) => !prev);
   };
+
   const splitStack = (amount, id) => {
     const data = {
       amount: amount,
@@ -146,17 +230,22 @@ function InventoryPage() {
     };
     dispatch(shareWith(data));
     setShowInfo(false);
+    setMoneyError("");
   };
+
   const removeItem = (id) => {
     dispatch(removeFromInventory(id));
     setShowInfo(false);
   };
+
   const equipItem = (itemId) => {
     dispatch(equip({ invId: itemId }));
   };
+
   const unEquipItem = (id) => {
     dispatch(unequip({ id: id }));
   };
+
   const onClickFilter = (e) => {
     e.preventDefault();
     const filterName = e.currentTarget.name;
@@ -234,11 +323,12 @@ function InventoryPage() {
                         backgroundColor: "rgb(22, 22, 20)",
                       }}
                       animate={{
-                        height: totalWeight/capacity*100 + "%",
+                        height: (totalWeight / capacity) * 100 + "%",
                         backgroundColor:
-                          parseInt(totalWeight/capacity*100 ) < 50
+                          parseInt((totalWeight / capacity) * 100) < 50
                             ? "rgb(67, 170, 139)"
-                            : totalWeight/capacity*100  > 50 && totalWeight/capacity*100  < 75
+                            : (totalWeight / capacity) * 100 > 50 &&
+                              (totalWeight / capacity) * 100 < 75
                             ? ["rgb(67, 170, 139)", "rgb(243, 114, 44)"]
                             : [
                                 "rgb(67, 170, 139)",
@@ -254,7 +344,6 @@ function InventoryPage() {
                 </div>
                 <div className="row mt-2">
                   <MotionButton
-                   
                     onClick={showDb}
                     icon={activeDb ? faMinus : faPlus}
                     theme={activeDb ? fractionTheme : ""}
@@ -273,79 +362,114 @@ function InventoryPage() {
                   <>
                     <Slot setShowInfo={show} filter={iFilter} />
                     <div className="row ">
-                      {activeEditMoney ? (
-                        <>
-                        <h4>{newMoney}</h4>
-                          <div className="col col-auto border border-2">
-                            <div className="row p-0">
-                              <div className="col col p-0">
-                                <input
-                                  id="0"
-                                  name="gold"
-                                  type="number"
-                                  onChange={moneyChange}
-                                  defaultValue={money[0]}
-                                  style={{width: "80%"}}
-                                />
-                              </div>
-                              <div className="col" style={{ color: "#FF9D00", textAlign: "left"}}>
-                                Gold
-                              </div>
-                              <div className="col col p-0">
-                                <input
-                                  id="1"
-                                  name="gold"
-                                  type="number"
-                                  onChange={moneyChange}
-                                  defaultValue={money[1]}
-                                  style={{width: "80%"}}
-                                />
-                              </div>
-                              <div className="col" style={{ color: "grey" , textAlign: "left"}}>
-                                Silber
-                              </div>
-                              <div className="col col p-0">
-                                <input
-                                  id="2"
-                                  name="gold"
-                                  style={{width: "80%"}}
-                                  type="number"
-                                  onChange={moneyChange}
-                                  defaultValue={money[2]}
-                                />
-                              </div>
-                              <div className="col" style={{ color: "#B34219", textAlign: "left" }}>
-                                Kupfer
-                              </div>
-                              <div className="col">
-                                <MotionButton name="active-money" icon={faX} onClick={(e) => setActiveEditMoney(state=>!state)}/>
-                              </div>
+                      <div className="col-auto pe-1 mt-2">
+                        <FontAwesomeIcon icon={faCoins} />
+                      </div>
+                      <div
+                        className="col-auto p-0 mt-2"
+                        style={{ color: "#FF9D00" }}
+                      >{`${money ? money[0] : 0} Gold`}</div>
+                      <div
+                        className="col-auto p-0 mt-2"
+                        style={{ color: "grey" }}
+                      >{`, ${money ? money[1] : 0} Silber`}</div>
+                      <div
+                        className="col-auto p-0 mt-2"
+                        style={{ color: "#B34219" }}
+                      >
+                        {`, ${money ? money[2] : 0} Kupfer`}
+                      </div>
+                      <div className="col">
+                        <MotionButton
+                          name="active-money"
+                          icon={faPen}
+                          onClick={() => setActiveEditMoney((prev) => !prev)}
+                        />
+                      </div>
+                      {activeEditMoney && (
+                        <div className="">
+                          {moneyError?.length > 0 && (
+                            <div className="alert alert-danger col-12 mt-2">
+                              {moneyError}
+                            </div>
+                          )}
+                          <div className="row p-0 align-items-center">
+                            <div
+                              className="col-lg-2 p-1"
+                              style={{ color: "#FF9D00" }}
+                            >
+                              <input
+                                type="number"
+                                value={goldInput}
+                                min="0"
+                                onChange={(e) => setGoldInput(e.target.value)}
+                                style={{
+                                  width: "50%",
+                                  marginLeft: "5px",
+                                  padding: "2px",
+                                }} // Reduced width and padding
+                              />
+                              <FontAwesomeIcon icon={faCoins} />
+                            </div>
+
+                            <div
+                              className="col-lg-2 p-1"
+                              style={{ color: "grey" }}
+                            >
+                              <input
+                                type="number"
+                                value={silverInput}
+                                min="0"
+                                onChange={(e) => setSilverInput(e.target.value)}
+                                style={{
+                                  width: "50%",
+                                  marginLeft: "5px",
+                                  padding: "2px",
+                                }} // Reduced width and padding
+                              />
+                              <FontAwesomeIcon icon={faCoins} />
+                            </div>
+
+                            <div
+                              className="col-lg-2 p-1"
+                              style={{ color: "#B34219" }}
+                            >
+                              <input
+                                type="number"
+                                min="0"
+                                value={copperInput}
+                                onChange={(e) => setCopperInput(e.target.value)}
+                                style={{
+                                  width: "50%",
+                                  marginLeft: "5px",
+                                  padding: "2px",
+                                }} // Reduced width and padding
+                              />
+                              <FontAwesomeIcon icon={faCoins} />
+                            </div>
+
+                            <div className="col-auto p-1 d-flex align-items-center justify-content-around">
+                              <button
+                                onClick={() => handleUpdateMoney(true)}
+                                aria-label="Add Money"
+                              >
+                                <FontAwesomeIcon icon={faPlus} />
+                              </button>
+                              <button
+                                onClick={() => handleUpdateMoney(false)}
+                                aria-label="Subtract Money"
+                              >
+                                <FontAwesomeIcon icon={faMinus} />
+                              </button>
+                              <button
+                                onClick={() => setActiveEditMoney(false)}
+                                aria-label="Cancel Edit"
+                              >
+                                <FontAwesomeIcon icon={faX} />
+                              </button>
                             </div>
                           </div>
-                        </>
-                      ) : (
-                        <>
-                          <div className="col-auto pe-1 mt-2">
-                            <FontAwesomeIcon icon={faCoins} />
-                          </div>
-                          <div
-                            className="col-auto p-0 mt-2"
-                            style={{ color: "#FF9D00" }}
-                          >{`${money ? money[0] : 0} Gold`}</div>
-                          <div
-                            className="col-auto p-0 mt-2"
-                            style={{ color: "grey" }}
-                          >{`, ${money ? money[1] : 0} Silber`}</div>
-                          <div
-                            className="col-auto p-0 mt-2"
-                            style={{ color: "#B34219" }}
-                          >
-                            {`, ${money ? money[2] : 0} Kupfer`}
-                          </div>
-                          <div className="col">
-                                <MotionButton name="active-money" icon={faPen} onClick={()=>setActiveEditMoney(prev=>!prev)}/>
-                              </div>
-                        </>
+                        </div>
                       )}
                     </div>
                   </>
