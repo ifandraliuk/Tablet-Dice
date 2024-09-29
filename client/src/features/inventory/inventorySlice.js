@@ -321,10 +321,12 @@ export const inventorySlice = createSlice({
       state.extendedId = payload.id;
     },
     updateTotalWeight: (state) => {
-      state.totalWeight = state.inventory.reduce(
-        (sum, item) => sum + item.item.weight,
-        0
-      );
+      debugger
+      state.totalWeight = state.inventory.reduce((sum, item) => {
+        // Check if the item has `item.weight` or `item.item.weight`
+        const weight = item.weight ?? item.item?.weight ?? 0;
+        return sum + weight;
+      }, 0);
       //state.currPercentage = state.totalWeight / (state.loadCapacity / 100);
     },
     updateEquipmentStats: (state) => {
@@ -514,7 +516,7 @@ export const inventorySlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
 
-        state.inventory = [...state.inventory, action.payload];
+        state.inventory = [...state.inventory, action.payload.data];
       })
       .addCase(addToInventory.rejected, (state, action) => {
         state.isLoading = false;
