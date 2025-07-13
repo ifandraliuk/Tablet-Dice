@@ -30,6 +30,10 @@
 .inventory-page .bag-div {
   background-color: rgba(24, 24, 24, 0.8);
 }
+.inventory-page .slot-element {
+  position: relative; /* Needed for absolute positioning of tooltip */
+  display: inline-block; /* Adjust as needed */
+}
 .inventory-page .userclass-img {
   position: relative;
   right: auto;

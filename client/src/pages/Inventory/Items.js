@@ -31,12 +31,7 @@ function Items({items, addItem, itemSelected, getDetails}) {
           return (
             <tr key={item._id}>
               <td className="pb-0">
-{/*                 <img
-                  alt="icon"
-                  name={item._id}
-                  src={`/icons/${r}/${g}xhdpi.png`}
-                  onClick={itemSelected}
-                /> */}
+
                 <ItemIcon item={item} enchantment={null}/>
               </td>
               <td>{item.name}</td>

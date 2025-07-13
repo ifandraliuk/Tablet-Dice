@@ -590,6 +590,12 @@ h5 {
     background-repeat: repeat;
 }
 
+.Thamor-bg {
+    background:url(~/public/pattern/thamor.svg) rgba(0, 0, 0, 0.8);
+    background-size: 15%;
+    background-repeat: repeat;
+}
+
 .Algor-text{
     color: $algorMain;
 }

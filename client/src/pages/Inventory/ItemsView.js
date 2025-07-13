@@ -2,30 +2,27 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faPaw,
-  faSuitcase,
-  faPerson,
-  faX,
   faAnglesLeft,
   faAnglesRight,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   setPagination,
   getItem,
+  searchQuery,
   selectedGenus,
   getGenuses,
 } from "../../features/item/itemSlice";
-
-import { motion } from "framer-motion";
 import MotionButton from "../../components/MotionButton";
-import ItemIcon from "../../components/ItemIcon";
 import GenusList from "./GenusList";
 import Slot from "./Slot";
-const ItemsView = ({ setShowInfo, iFilter, setCustomInfo, addItemToInventory }) => {
+const ItemsView = ({
+  setShowInfo,
+  iFilter,
+  setCustomInfo,
+  addItemToInventory,
+}) => {
   const dispatch = useDispatch();
-  const {activeGenus, n, m } = useSelector(
-    (state) => state.items
-  );
+  const { data, activeGenus, n, m } = useSelector((state) => state.items);
 
   const forward = () => {
     const nextN = parseInt(n) + 10;
@@ -54,7 +51,7 @@ const ItemsView = ({ setShowInfo, iFilter, setCustomInfo, addItemToInventory }) 
   }, [dispatch, iFilter]);
   useEffect(() => {
     console.log("useEffect request");
-    console.log(iFilter, activeGenus)
+    console.log(iFilter, activeGenus);
     const data = {
       category: iFilter ? iFilter : "Rüstung", //iFilter
       genus: activeGenus ? activeGenus : "Kopf",
@@ -64,7 +61,9 @@ const ItemsView = ({ setShowInfo, iFilter, setCustomInfo, addItemToInventory }) 
 
     dispatch(getItem(data));
   }, [dispatch, n, m, iFilter, activeGenus]);
-
+  const handleSearch = (e) => {
+    dispatch(searchQuery(e.target.value));  // Dispatch search action
+  };
   return (
     <div className="row ">
       <div className="col-lg-4">
@@ -74,21 +73,35 @@ const ItemsView = ({ setShowInfo, iFilter, setCustomInfo, addItemToInventory }) 
       <div className="col-lg-8">
         {<div className="row"></div>}
         <div className="row">
-          
-            <div className="col-auto mt-2" >
-              {/*<ItemIcon item={item} />*/}
-
-      
-              <Slot modus={true} setShowInfo={setShowInfo} setCustomInfo={setCustomInfo}/>
-            </div>
-          
+          <div className="col-auto mt-2">
+            <input
+              type="text"
+              placeholder="Search items..."
+              onChange={handleSearch} // Call the handler when input changes
+            />
+            <Slot
+              modus={true}
+              setShowInfo={setShowInfo}
+              setCustomInfo={setCustomInfo}
+            />
+          </div>
 
           <div className="row mt-3">
             <div className="col-6">
               {n > 0 && (
-                <MotionButton icon={faAnglesLeft} text={n} onClick={back} theme="" />
+                <MotionButton
+                  icon={faAnglesLeft}
+                  text={n}
+                  onClick={back}
+                  theme=""
+                />
               )}
-              <MotionButton icon={faAnglesRight}  text={m}  onClick={forward} theme="" />
+              <MotionButton
+                icon={faAnglesRight}
+                text={m}
+                onClick={forward}
+                theme=""
+              />
             </div>
           </div>
         </div>

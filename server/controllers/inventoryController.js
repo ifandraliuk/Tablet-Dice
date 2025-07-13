@@ -329,7 +329,8 @@ const addToInventory = asyncHandler(async (req, res) => {
   }
   console.log("attempting to add item");
   console.log(req.body.id);
-  const item = await Item.findById(req.body.id);
+  debugger
+  const item = await Item.findById(req.body.id)
   if (!item) {
     res.status(400).json({ message: "Item nicht gefunden" });
   }
@@ -387,8 +388,7 @@ const addToInventory = asyncHandler(async (req, res) => {
     const newElement = created.inventory.find(
       (el) => el._id.toString() === inventory._id.toString()
     );
-    console.log(newElement);
-    res.status(200).json(newElement);
+    res.status(200).json({ data: newElement });
   }
 });
 
@@ -613,6 +613,27 @@ const getCategorizedItems = asyncHandler(async (req, res) => {
   }
   res.status(200).json({ data: item });
 });
+
+
+// @desc Get items of specific category
+// @route GET /inventory/search
+// @access Public
+const getSearchedItems = asyncHandler(async (req, res) => {
+  const name = req.body.category;
+  if (!ctg) {
+    res.status(500).json({ message: "Kategorie nicht eingegeben" });
+  }
+  const item = await Item.find({ name: name }).populate({
+    path: "material.element",
+    model: "Item",
+    select: "name",
+  });
+  if (!item) {
+    res.status(400).json({ message: "Nichts gefunden" });
+  }
+  res.status(200).json({ data: item });
+});
+
 // @desc Equip item to the user - set status to equip & replace the item in the slot if needed
 // @route PUT /inventory/equip
 // @access Public
@@ -1037,6 +1058,7 @@ module.exports = {
   removeFromInventory,
   getCategorizedInventory,
   getCategorizedItems,
+  getSearchedItems,
   equipItem,
   unequipItem,
   splitAmount,

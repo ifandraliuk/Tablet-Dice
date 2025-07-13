@@ -43,6 +43,28 @@ p {
   align-items: center;
 }
 
+.tooltip {
+  visibility: hidden; /* Hidden by default */
+  width: 120px; /* Adjust width as needed */
+  background-color: rgba(0, 0, 0, 0.75); /* Background color */
+  color: #fff; /* Text color */
+  text-align: center; /* Center the text */
+  border-radius: 5px; /* Rounded corners */
+  padding: 5px; /* Padding */
+  position: absolute; /* Position it absolutely */
+  z-index: 1; /* Ensure it appears above other elements */
+  bottom: 125%; /* Position above the container */
+  left: 50%; /* Center horizontally */
+  margin-left: -60px; /* Shift left by half the tooltip width */
+  opacity: 0; /* Start invisible */
+  transition: opacity 0.3s; /* Smooth transition */
+}
+
+.motion-div:hover .tooltip {
+  visibility: visible; /* Show tooltip on hover */
+  opacity: 1; /* Fade in */
+}
+
 .info-div {
   background-color: rgba(24, 24, 24, 0.8);
   padding: 0.5em;
@@ -573,6 +595,12 @@ h5 {
 
 .Welles-bg {
   background: url(~/public/pattern/welles.svg) rgba(0, 0, 0, 0.8);
+  background-size: 15%;
+  background-repeat: repeat;
+}
+
+.Thamor-bg {
+  background: url(~/public/pattern/thamor.svg) rgba(0, 0, 0, 0.8);
   background-size: 15%;
   background-repeat: repeat;
 }
