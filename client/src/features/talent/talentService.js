@@ -54,7 +54,9 @@ const addToPlayer = async (talentData, token) => {
         Authorization: `Bearer ${token}`,
       },
     };
-  
+    if (!talentData?.id) {
+      throw new Error("Talent ID is missing for delete request.");
+    }
     const response = await axios.delete(
       `${API_URL}from_player/${talentData.id}`, // Correctly format the URL
       config

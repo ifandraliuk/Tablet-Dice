@@ -245,6 +245,10 @@ p {
 }
 
 /*BUTTONS*/
+.right-aligned {
+  align-items: end;
+}
+
 .button-group button:first-child {
   border: 2px solid;
   border-color: azure;
@@ -259,6 +263,7 @@ p {
   border-top-right-radius: 6px;
   border-bottom-right-radius: 6px;
 }
+
 
 .btn-light {
   background-color: #fff;

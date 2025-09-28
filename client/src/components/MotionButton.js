@@ -35,6 +35,7 @@ const MotionButton = ({ name, onClick, content, icon, theme, onRepeat }) => {
 
   return (
     <motion.button
+    type="button"
       name={name}
       onClick={onClick}
       variants={buttonVariants}

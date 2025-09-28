@@ -7,6 +7,7 @@ import { updateAttribute } from "../../features/player/playerSlice";
 import ExclamationMark from "../../components/ExclamationMark";
 
 function Attributes() {
+  console.log("ATTRIBUTES rendered")
   const {attributes, fractionTheme, pointsLeft } = useSelector((state) => state.player);
   
   const [difference, setDifference] = useState(0);
@@ -61,4 +62,4 @@ function Attributes() {
   );
 }
 
-export default Attributes;
+export default React.memo(Attributes);

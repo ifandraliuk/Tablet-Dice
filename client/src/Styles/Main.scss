@@ -255,6 +255,9 @@ padding: 5px;
 }
 
 /*BUTTONS*/
+.right-aligned{
+    align-items: end;
+  }
 .button-group button:first-child{
     border: 2px solid;
     border-color: azure;
@@ -269,6 +272,13 @@ padding: 5px;
     border-top-right-radius: 6px;
     border-bottom-right-radius: 6px;
 }
+
+.button-group button.active {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+  }
+  
 
 .btn-light{
     background-color: #fff;

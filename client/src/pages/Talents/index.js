@@ -1,4 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+  shallowEqual,
+} from "react";
 import "../../Styles/Talents.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,6 +17,8 @@ import {
   faTree,
   faUserGroup,
   faRefresh,
+  faPlus,
+  faPenToSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import { Image, Spinner } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
@@ -18,9 +26,10 @@ import { useNavigate } from "react-router-dom";
 import {
   getTalent,
   addToPlayer,
+  updatePlayersTalent,
   getPlayerTalent,
   getUserBoni,
-  reset
+  reset,
 } from "../../features/talent/talentSlice";
 import { getAttributes } from "../../features/player/playerSlice";
 import AllTalents from "./AllTalents";
@@ -32,53 +41,81 @@ import { pageTransition } from "../../data/Animations";
 import { getCategoryBoni } from "../../features/inventory/inventorySlice";
 
 function Talents() {
+  console.log("TALENTS rendered");
+
   const { user } = useSelector((state) => state.auth);
-  const { fractionTheme, player, attributes } = useSelector((state) => state.player);
-  const { allTalents, kindName, kindBonus, kindBonusName, userclassName, userclassBonus, playerTalents, isLoading, isError, message } =
-    useSelector((state) => state.talents);
+  const { fractionTheme, attributes } = useSelector((state) => state.player);
+  const {
+    allTalents,
+    kindName,
+    kindBonus,
+    kindBonusName,
+    userclassName,
+    userclassBonus,
+    //playerTalents,
+    isLoading,
+    isError,
+    message,
+  } = useSelector((state) => state.talents);
+  const playerTalents = useSelector(
+    (state) => state.talents.playerTalents,
+    shallowEqual
+  );
   const [filter, setFilter] = useState("");
+  const [viewMode, setViewMode] = useState("active"); // "active" oder "all"
+
   const [newTalents, setNewTalent] = useState([]);
+  const [edit, toEdit] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const categories = [];
-  const categorizedTalents = {};
-  const icons = {
-    Nahkampf: faKhanda,
-    Fernkampf: faHurricane,
-    Handwerk: faHammer,
-    Gesellschaft: faUserGroup,
-    Natur: faTree,
-    Wissen: faBook,
-    Heimlichkeit: faMask,
-  };
-  //find all categories from dB
-  allTalents.map((talent, ind) => {
-    return categories.push(talent.category);
-  });
-  // count amount of categorizedTalents in each category
-  categories.forEach(function (x) {
-    categorizedTalents[x] = (categorizedTalents[x] || 0) + 1;
-  });
+
+  const icons = useMemo(
+    () => ({
+      Nahkampf: faKhanda,
+      Fernkampf: faHurricane,
+      Handwerk: faHammer,
+      Gesellschaft: faUserGroup,
+      Natur: faTree,
+      Wissen: faBook,
+      Heimlichkeit: faMask,
+    }),
+    []
+  );
 
   useEffect(() => {
-    if (!user) {
+    if (!user) return;
+    if (attributes?.length === 0) {
+      dispatch(getAttributes());
+    }
+    if (allTalents?.length === 0) {
+      dispatch(getTalent());
+    }
+    if (playerTalents?.length === 0) {
+      dispatch(getPlayerTalent());
+    }
+
+    dispatch(getUserBoni());
+    dispatch(getCategoryBoni("talent"));
+  }, [user, attributes, dispatch]);
+
+  useEffect(() => {
+    if (user === null) {
       navigate("/");
     }
-    if (isError) {
-      console.log(message);
-    } else {
-      dispatch(getTalent());
-      dispatch(getPlayerTalent());
-      dispatch(getUserBoni());
-      dispatch(getCategoryBoni("talent"))
-      
-      dispatch(getAttributes())
-    }
-    return () =>{
-      dispatch(reset())
-    }
-  }, [user, navigate, isError, dispatch, message]);
+  }, [user, navigate]);
 
+  useEffect(() => {
+    return () => {
+      dispatch(reset());
+    };
+  }, [dispatch]);
+
+  const handleShowActiveTalents = () => setViewMode("active");
+  const handleShowAllTalents = () => setViewMode("all");
+
+  const handleEdit = () => {
+    toEdit((edit) => !edit);
+  };
   const handleChange = (e) => {
     console.log(e.target.value, e.target.name);
     const name = e.target.name;
@@ -105,44 +142,38 @@ function Talents() {
       }
     }
   };
-  const handleClick = (e) => {
-    e.preventDefault();
-    const name = e.currentTarget.name;
-    console.log(e.currentTarget.name);
-    const talent = newTalents.find((el) => el[0] === name);
-    if (talent) {
-      const value = parseInt(talent[1]);
-      if (value > 0) {
-        console.log("adding manually talent");
-        dispatch(addToPlayer({ name: name, point: value }));
-        setNewTalent(newTalents.map((t) => (t[0] === name ? [t[0], 0] : t)));
-        console.log(talent);
-      }
-    }
-    console.log(newTalents);
-  };
+  const addNewTalent = useCallback(
+    (e) => {
+      //e.preventDefault();
+      const name = e.currentTarget.name;
+
+      console.log("adding manually talent");
+      dispatch(addToPlayer({ name: name, point: 1 }));
+    },
+    [dispatch]
+  );
   const handleSubmit = (e) => {
     e.preventDefault();
+    debugger;
     newTalents.forEach((el, i) => {
       if (el[1] > 0)
         //sorting out null values
-        dispatch(addToPlayer({ name: el[0], point: el[1] }));
+        dispatch(updatePlayersTalent({ id: el[0], point: el[1] }));
     });
     console.log(newTalents);
     setNewTalent([]);
+    toEdit((edit) => !edit);
   };
 
-  if (isLoading) {
+  if (!playerTalents.length || !allTalents.length || isLoading) {
     return <Spinner animation="border" />;
   }
+/*   const MemoizedActiveTalents = React.memo(ActiveTalents);
+  const MemoizedAllTalents = React.memo(AllTalents);
+  const MemoizedAttributes = React.memo(AttributeList); */
 
   return (
-    <motion.div
-      variants={pageTransition}
-      initial="init"
-      animate="animate"
-      exit="exit"
-    >
+    <motion.div>
       <div className="talents-page">
         <div className={`${fractionTheme}-bg`}>
           <div className="container-fluid">
@@ -162,65 +193,85 @@ function Talents() {
                   <p>{kindBonus}</p>
                 </div>
               </div>
+
               <div className="col-lg-7 col-md-12">
                 {attributes ? (
-                  <AttributeList />
+                  <AttributeList  key={attributes._id} />
                 ) : (
                   <Spinner animation="border" />
                 )}
-                {playerTalents ? (
-                  <ActiveTalents />
-                ) : (
-                  <h5>Du hast noch keine Talente...</h5>
-                )}
-                <h5>Alle Talente</h5>
-                <button className="btn-save" onClick={handleSubmit}>
-                  <FontAwesomeIcon icon={faFloppyDisk} />
-                </button>
-                <div className="col-12">
-                  {Object.keys(icons).map((name) => (
-                    <button
-                      key={name}
-                      className={name}
-                      name={name}
-                      onClick={(e) => setFilter(e.currentTarget.name)}
-                    >
-                      <FontAwesomeIcon icon={icons[name]} />
-                    </button>
-                  ))}
-                  <button name="clear" onClick={(e) => setFilter("")}>
-                    <FontAwesomeIcon icon={faRefresh} />
-                  </button>
+                <div className="row align-items-center">
+                  {/* Linksbündige Buttons */}
+                  <div className="col-auto me-auto">
+                    <div className="button-group">
+                      <button
+                        type="button"
+                        className={`${
+                          viewMode === "active" ? `${fractionTheme}-active` : ""
+                        }`}
+                        onClick={handleShowActiveTalents}
+                      >
+                        Erlente talente
+                      </button>
+                      <button
+                        type="button"
+                        className={`${
+                          viewMode === "all" ? `${fractionTheme}-active` : ""
+                        }`}
+                        onClick={handleShowAllTalents}
+                      >
+                        Alle Talente
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Rechtsbündige Buttons */}
+                  <div className="col-auto">
+                    {edit ? (
+                      <button
+                        type="button"
+                        className="btn-save"
+                        onClick={handleSubmit}
+                      >
+                        <FontAwesomeIcon icon={faFloppyDisk} />
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="btn-edit"
+                        onClick={handleEdit}
+                      >
+                        <FontAwesomeIcon icon={faPenToSquare} />
+                      </button>
+                    )}
+                  </div>
                 </div>
-                <div>
-                  {filter.length === 0 ? (
-                    Object.keys(categorizedTalents).map((el, ind) => {
-                      return (
-                        <div className="col-12" key={ind}>
-                          <AllTalents
-                            handleChange={handleChange}
-                            handleClick={handleClick}
-                            categorizedTalents={el}
-                            icons={icons}
-                          />
-                        </div>
-                      );
-                    })
-                  ) : (
-                    <AllTalents
-                      handleChange={handleChange}
-                      handleClick={handleClick}
-                      categorizedTalents={filter}
+                {viewMode === "active" ? (
+                  playerTalents.length > 0 ? (
+                    <ActiveTalents
+                      filter={filter}
+                      setFilter={setFilter}
                       icons={icons}
+                      edit={edit}
+                      handleChange={handleChange}
+                      handleSubmit={handleSubmit}
+                      fractionTheme={fractionTheme}
+                      newTalents={newTalents}
                     />
-                  )}
-                </div>
+                  ) : (
+                    <h5>Du hast noch keine Talente...</h5>
+                  )
+                ) : (
+                  <AllTalents
+                    handleChange={handleChange}
+                    handleClick={addNewTalent}
+                    icons={icons}
+                    filter={filter}
+                    setFilter={setFilter}
+                    fractionTheme={fractionTheme}
+                  />
+                )}
               </div>
-              {true && (
-                <div className="col-lg-auto">
-                  <ScrollUpButton />
-                </div>
-              )}
             </div>
           </div>
         </div>

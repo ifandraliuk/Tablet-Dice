@@ -51,6 +51,7 @@ function ExtendedInfo({
     ? extendedItemInfo.item
     : extendedItemInfo;
   const {
+    _id,
     category,
     value,
     rarity,
@@ -242,6 +243,7 @@ function ExtendedInfo({
                   </button>
                 </div>
                 <div className="col-lg-6 col-md-12">
+                  <p>{_id}</p>
                   <ul>
                     {category !== "Ressource" && (
                       <li>

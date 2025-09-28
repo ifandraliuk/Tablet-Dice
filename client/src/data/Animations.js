@@ -1,11 +1,15 @@
 /* PAGES */
 const pageTransition = {
     init: {
-       scale:0, 
+      // scale:0, 
        opacity:1,
+       transition: {
+        duration: 0.2,
+        when:"afterChildren"
+      },
     },
     animate: {
-      scale:1,
+    //  scale:1,
       opacity: 1,
     },
     exit: {
