@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faAnglesLeft,
-  faAnglesRight,
-} from "@fortawesome/free-solid-svg-icons";
+import { itemNames } from "../../data/ConstVariables";
+
+import { faAnglesLeft, faAnglesRight } from "@fortawesome/free-solid-svg-icons";
 import {
   setPagination,
   getItem,
@@ -23,7 +22,7 @@ const ItemsView = ({
 }) => {
   const dispatch = useDispatch();
   const { data, activeGenus, n, m } = useSelector((state) => state.items);
-
+  const [sortBy, setSortBy] = useState("none");
   const forward = () => {
     const nextN = parseInt(n) + 10;
     const nextM = parseInt(m) + 10;
@@ -46,6 +45,12 @@ const ItemsView = ({
     dispatch(selectedGenus({ genus: genus }));
   };
 
+  const handleSortChange = (e) => {
+    setSortBy(e.target.value);
+    // Wenn du hier direkt neu laden willst:
+    // fetchItems({ sort: e.target.value, n, m, search: searchTerm, ... })
+  };
+
   useEffect(() => {
     dispatch(getGenuses({ filter: iFilter }));
   }, [dispatch, iFilter]);
@@ -62,22 +67,70 @@ const ItemsView = ({
     dispatch(getItem(data));
   }, [dispatch, n, m, iFilter, activeGenus]);
   const handleSearch = (e) => {
-    dispatch(searchQuery(e.target.value));  // Dispatch search action
+    dispatch(searchQuery(e.target.value)); // Dispatch search action
   };
   return (
     <div className="row ">
       <div className="col-lg-4">
         <GenusList handleActiveGenus={handleActiveGenus} />
       </div>
-      <div className="col-lg-8">
+      <div className="col-lg-10">
         {<div className="row"></div>}
         <div className="row">
           <div className="col-auto mt-2">
-            <input
-              type="text"
-              placeholder="Search items..."
-              onChange={handleSearch} // Call the handler when input changes
-            />
+            <div className="row">
+              <div className="col">
+                {" "}
+                <input
+                  type="text"
+                  placeholder="Search items..."
+                  onChange={handleSearch} // Call the handler when input changes
+                />
+              </div>
+              <div className="col">
+                <label className="form-label mb-0">Kategorie</label>
+                <select
+                  id="genusFilter"
+                  className="form-select"
+                  value={sortBy}
+                  onChange={handleSortChange}
+                  aria-label="Sortierung nach Rarity"
+                  style={{ minWidth: 180 }}
+                  label="Rarity"
+                >
+                  <option key="none"></option>
+                  {Object.keys(itemNames?.rarity).map((rarity) => {
+                    return (
+                      <option key={rarity} value={rarity}>
+                        {rarity}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+                            <div className="col">
+                <label className="form-label mb-0">Wertigkeit</label>
+                <select
+                  id="rarityFilter"
+                  className="form-select"
+                  value={sortBy}
+                  onChange={handleSortChange}
+                  aria-label="Sortierung nach Rarity"
+                  style={{ minWidth: 180 }}
+                  label="Rarity"
+                >
+                  <option key="none"></option>
+                  {Object.keys(itemNames?.rarity).map((rarity) => {
+                    return (
+                      <option key={rarity} value={rarity}>
+                        {rarity}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+            </div>
+
             <Slot
               modus={true}
               setShowInfo={setShowInfo}

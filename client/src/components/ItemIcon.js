@@ -38,7 +38,10 @@ function ItemIcon({ animationDelay, item, specialAmount, enchantment, large }) {
         large ? `large-icon  ${rarityColor}-bg` : `small-icon ${rarityColor}-bg`
       }
     >
+
+      {amount &&
       <motion.div
+     
         initial={{ y: -5 }}
         animate={{
           y: 0,
@@ -46,10 +49,15 @@ function ItemIcon({ animationDelay, item, specialAmount, enchantment, large }) {
         }}
         className="badge-container"
       >
-        <div className="number-badge">
+        
+        <div className="number-badge" >
           {specialAmount ? specialAmount : amount}
         </div>
+        
+
       </motion.div>
+      }
+
       <motion.img
         initial={{ scale: 0 }}
         animate={{
