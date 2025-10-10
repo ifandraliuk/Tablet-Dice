@@ -191,6 +191,11 @@ function InventoryPage() {
     dispatch(extendInfo({ id: id }));
   };
 
+  const hideInfo = ()=>{
+    setShowInfo((prevStatus) => !prevStatus);
+    setCustomInfo({})
+  }
+
   const showDb = () => {
     setActiveDb((prev) => !prev);
   };
@@ -281,7 +286,7 @@ function InventoryPage() {
           key="extended-info"
           toPlayer={toPlayer}
           customItemInfo={customInfo}
-          hideInfo={setShowInfo}
+          hideInfo={hideInfo}
           minimized={true}
           dbButtons={true}
         />

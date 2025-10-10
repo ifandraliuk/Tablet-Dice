@@ -69,7 +69,6 @@ const ItemsView = ({
       <div className="col-lg-4">
         <GenusList handleActiveGenus={handleActiveGenus} />
       </div>
-      {/* Display your items here */}
       <div className="col-lg-8">
         {<div className="row"></div>}
         <div className="row">
