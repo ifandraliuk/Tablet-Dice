@@ -245,7 +245,7 @@ const getArmor = asyncHandler(async (req, res) => {
   if (!user || !inventory) {
     res.status(400).json("Inventar oder Nutzer nicht gefunden");
   }
-  debugger
+
   //calculate armor of all equipped items
   const fullEquipment = inventory.filter((el) => el.status === "Ausgerüstet");
 

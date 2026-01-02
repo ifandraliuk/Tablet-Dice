@@ -10,6 +10,7 @@ import {
   searchQuery,
   selectedGenus,
   getGenuses,
+  searchInCategory,
 } from "../../features/item/itemSlice";
 import MotionButton from "../../components/MotionButton";
 import GenusList from "./GenusList";
@@ -21,8 +22,11 @@ const ItemsView = ({
   addItemToInventory,
 }) => {
   const dispatch = useDispatch();
-  const { data, activeGenus, n, m } = useSelector((state) => state.items);
-  const [sortBy, setSortBy] = useState("none");
+  const { data, activeGenus, activeCategory, genuses, n, m } = useSelector(
+    (state) => state.items
+  );
+  const [rarity, serRarirtyFilter] = useState("none");
+  const [searchText, setSearchText] = useState("");
   const forward = () => {
     const nextN = parseInt(n) + 10;
     const nextM = parseInt(m) + 10;
@@ -40,13 +44,24 @@ const ItemsView = ({
   };
 
   const handleActiveGenus = (e) => {
-    const genus = e.currentTarget.name;
+    const genus = e.currentTarget.value;
     console.log(genus);
     dispatch(selectedGenus({ genus: genus }));
   };
 
   const handleSortChange = (e) => {
-    setSortBy(e.target.value);
+    serRarirtyFilter(e.target.value);
+
+    const data = {
+        category: activeCategory,
+        genus: activeGenus,
+        searchText: searchText,
+        n: n,
+        rarity:  rarity !== "" ? rarity : "none"
+      };
+      dispatch(searchInCategory(data)); 
+      
+        dispatch(setPagination({ n: 0, m: 10 }));// Dispatch search action
     // Wenn du hier direkt neu laden willst:
     // fetchItems({ sort: e.target.value, n, m, search: searchTerm, ... })
   };
@@ -54,66 +69,103 @@ const ItemsView = ({
   useEffect(() => {
     dispatch(getGenuses({ filter: iFilter }));
   }, [dispatch, iFilter]);
+
+
   useEffect(() => {
     console.log("useEffect request");
-    console.log(iFilter, activeGenus);
-    const data = {
-      category: iFilter ? iFilter : "Rüstung", //iFilter
-      genus: activeGenus ? activeGenus : "Kopf",
-      n: n,
-      m: m,
-    };
+    console.log(activeCategory, activeGenus, rarity);
+    if (searchText === "") {
+      console.log("get all items - search is empty");
+      const data = {
+        category: iFilter ? iFilter : "Rüstung", //iFilter
+        genus: activeGenus ? activeGenus : "Kopf",
+        n: n,
+        m: m,
+        rarity: rarity !== "" ? rarity : "none"
+      };
 
-    dispatch(getItem(data));
-  }, [dispatch, n, m, iFilter, activeGenus]);
+      dispatch(getItem(data));
+    } else {
+      const data = {
+        category: activeCategory,
+        genus: activeGenus,
+        searchText: searchText,
+        n: n,
+        rarity: rarity !== "" ? rarity : "none"
+      };
+      dispatch(searchInCategory(data)); // Dispatch search action
+    }
+  }, [dispatch, n, m, activeCategory, activeGenus, searchText, rarity]);
+
+
+
   const handleSearch = (e) => {
-    dispatch(searchQuery(e.target.value)); // Dispatch search action
+    const searchText = e.target.value;
+    setSearchText(searchText);
+    if (searchText?.length > 0) {
+      const data = {
+        category: activeCategory,
+        genus: activeGenus,
+        searchText: e.target.value,
+        n: n,
+      };
+      dispatch(searchInCategory(data)); // Dispatch search action
+    } else {
+      // reset search
+      const data = {
+        category: activeCategory, //iFilter
+        genus: activeGenus,
+        n: n,
+        m: m,
+      };
+      setSearchText("");
+      dispatch(getItem(data));
+    }
   };
   return (
     <div className="row ">
-      <div className="col-lg-4">
+      {/*       <div className="col-lg-4" >
         <GenusList handleActiveGenus={handleActiveGenus} />
-      </div>
+      </div> */}
       <div className="col-lg-10">
         {<div className="row"></div>}
         <div className="row">
           <div className="col-auto mt-2">
             <div className="row">
               <div className="col">
-                {" "}
+                <label className="form-label mb-0">Suche:</label>
                 <input
-                  type="text"
+                  type="search"
                   placeholder="Search items..."
                   onChange={handleSearch} // Call the handler when input changes
                 />
               </div>
               <div className="col">
-                <label className="form-label mb-0">Kategorie</label>
+                <label className="form-label mb-0">Gattung:</label>
                 <select
                   id="genusFilter"
                   className="form-select"
-                  value={sortBy}
-                  onChange={handleSortChange}
-                  aria-label="Sortierung nach Rarity"
+                  value={activeGenus}
+                  onChange={handleActiveGenus}
+                  aria-label="Sortierung nach Genus"
                   style={{ minWidth: 180 }}
                   label="Rarity"
                 >
-                  <option key="none"></option>
-                  {Object.keys(itemNames?.rarity).map((rarity) => {
+                  {genuses?.map((genus) => {
                     return (
-                      <option key={rarity} value={rarity}>
-                        {rarity}
+                      <option key={genus} value={genus}>
+                        {genus}
                       </option>
                     );
                   })}
                 </select>
               </div>
-                            <div className="col">
-                <label className="form-label mb-0">Wertigkeit</label>
+              <div className="col">
+                <label className="form-label mb-0">Wertigkeit:</label>
                 <select
                   id="rarityFilter"
                   className="form-select"
-                  value={sortBy}
+                  value={rarity}
                   onChange={handleSortChange}
                   aria-label="Sortierung nach Rarity"
                   style={{ minWidth: 180 }}
@@ -148,12 +200,14 @@ const ItemsView = ({
                   theme=""
                 />
               )}
-              <MotionButton
-                icon={faAnglesRight}
-                text={m}
-                onClick={forward}
-                theme=""
-              />
+              {(
+                <MotionButton
+                  icon={faAnglesRight}
+                  text={m}
+                  onClick={forward}
+                  theme=""
+                />
+              )}
             </div>
           </div>
         </div>

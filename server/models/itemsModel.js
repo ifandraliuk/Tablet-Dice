@@ -13,6 +13,19 @@ const itemSchema = mongoose.Schema({
     rarity: {
         type: String,
     },
+    rarityValue: {
+        type: Number 
+/*  primitiv: 1,
+    gewöhnlich: 2,
+    hochwertig: 3,
+    magisch: 4,
+    außergewöhnlich: 5,
+    selten: 6,
+    sagenhaft: 7,
+    episch: 8,
+    legendär: 9,
+    einzigartig: 10, */
+    },
     genus: {
         type: String,
         required: [true, 'Bitte die Gattung eingeben! (Schwert, Axt, Werkzeug)']

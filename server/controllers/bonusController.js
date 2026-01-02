@@ -41,7 +41,7 @@ const getCategoryBoni = asyncHandler(async (req, res) => {
   equipped.map((equipment) => {
     //TODO: add enchantment and array boni
     const boni = equipment.item.boni[0];
-    console.log(`boni: ${boni}, category: ${boni.category}`);
+ //   console.log(`boni: ${boni}, category: ${boni.category}`);
     if (boni.category === category) {
       equippedBoniCategory.push(boni);
     }
@@ -120,7 +120,7 @@ const getCategoryBoni = asyncHandler(async (req, res) => {
       boniList.push({ bonus: bonus, value: categoryValue });
     }
   });
-  console.log(boniList);
+//  console.log(boniList);
   res.status(200).json({ boni: boniList, category: req.params.category });
 });
 

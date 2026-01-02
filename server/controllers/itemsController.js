@@ -2,6 +2,56 @@ const asyncHandler = require("express-async-handler");
 
 const Item = require("../models/itemsModel");
 
+const migrateRarityValues = async (req, res, next) => {
+  try {
+    const rarityOrder = {
+      primitiv: 1,
+      gewöhnlich: 2,
+      hochwertig: 3,
+      magisch: 4,
+      außergewöhnlich: 5,
+      selten: 6,
+      sagenhaft: 7,
+      episch: 8,
+      legendär: 9,
+      einzigartig: 10,
+    };
+
+    const branches = Object.entries(rarityOrder).map(([k, v]) => ({
+      case: { $eq: ["$rarity", k] },
+      then: v,
+    }));
+
+    // MongoDB ≥ 4.2: Aggregation-Pipeline in updateMany
+    const result = await Item.updateMany({}, [
+      {
+        $set: {
+          rarityValue: {
+            $switch: { branches, default: 0 },
+          },
+        },
+      },
+    ]);
+
+    // Optional: Index für schnellere Sortierung (idempotent)
+    try {
+      await Item.collection.createIndex({
+        category: 1,
+        genus: 1,
+        rarityValue: 1,
+      });
+    } catch (_) {}
+
+    res.status(200).json({
+      ok: true,
+      matched: result.matchedCount,
+      modified: result.modifiedCount,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 const setItem = asyncHandler(async (req, res) => {
   if (!req.body.name) {
     res.status(400);
@@ -67,9 +117,93 @@ const findItem = asyncHandler(async (req, res) => {
     res.status(200).json(items);
   }
 });
+
+/* const getSearchInCategory = asyncHandler(async (req, res) => {
+  console.log("backend get search in category ");
+  const { category,genus, n, searchText } = req.params;
+  console.log(req.params);
+    const rarityOrder = {
+    primitiv: 1,
+    gewöhnlich: 2,
+    hochwertig: 3,
+    magisch: 4,
+    außergewöhnlich: 5,
+    selten: 6,
+    sagenhaft: 7,
+    episch: 8,
+    legendär: 9,
+    einzigartig: 10,
+  };
+  let items = null
+  if(searchText.length>0){
+    // ignore genus
+  const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const safe = escapeRegex(searchText.trim());
+
+  // Für "enthält": ohne ^ — für "beginnt mit": ^${safe}
+  const nameFilter = safe ? { name: { $regex: safe, $options: "i" } } : {};
+
+  items = await Item.find({category, ...nameFilter})
+    .skip(parseInt(n))
+    .limit(10)
+    .collation({ locale: "de", strength: 1 })
+    .populate({
+      path: "material.element",
+      model: "Item",
+    });
+
+  } else {
+    // normal category load
+    items = await Item.find({ category: category, genus: genus })
+    .skip(0)
+    .limit(10)
+    .populate({
+      path: "material.element",
+      model: "Item",
+    });
+  }
+  if(!items){
+    res.status(400).json({message:"Nothing found"})
+  }
+  items.sort((a, b) => rarityOrder[a.rarity] - rarityOrder[b.rarity]);
+  console.log(items.length);
+  res.status(200).json({ data: items});
+}); */
+const getSearchInCategory = asyncHandler(async (req, res) => {
+  console.log("backend get search in category");
+  const { category, genus, n = 0, searchText = "", rarity = "none" } = req.params;
+
+  const skipCount = parseInt(n, 10) || 0;
+  const limitCount = 10;
+
+  // Falls du ganz sicher gehen willst, dass nichts ohne rarityValue reinrutscht:
+  // const rarityGuard = { rarityValue: { $type: "number" } };
+
+  // Suche: genus ignorieren (wie bisher)
+  const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const safe = escapeRegex(searchText.trim());
+
+  const filter =
+    searchText && searchText !== ""
+      ? { category, ...(safe ? { name: { $regex: safe, $options: "i" } } : {}) }
+      : { category, genus };
+
+  if (rarity && rarity !== "none"  && rarity !== "") filter.rarity = rarity;
+  console.log(filter);
+
+  const items = await Item.find(filter)
+    .sort({ rarityValue: 1, _id: 1 }) // ← WICHTIG: Sortierung VOR Pagination
+    .skip(skipCount)
+    .limit(limitCount)
+    .collation({ locale: "de", strength: 1 }) // optional (für name-Sortierung; schadet hier nicht)
+    .populate({ path: "material.element", model: "Item" });
+console.log(items.length)
+  res.status(200).json({ data: items });
+});
+
 const getItem = asyncHandler(async (req, res) => {
   console.log("backend get item");
-  const { n, m, category, genus } = req.params;
+  const { n, m, category, genus,rarity = "" } = req.params;
   console.log(req.params);
   const skipCount = parseInt(n) || 0; // Default to 0 if not provided
   const limitCount = 10; // Default to 10 if not provided
@@ -86,37 +220,15 @@ const getItem = asyncHandler(async (req, res) => {
     legendär: 9,
     einzigartig: 10,
   };
-
-    const items = await Item.find({ category: category, genus: genus })
+  const search = rarity && rarity !== "none"  && rarity !== "" ? { category: category, genus: genus, rarity: rarity } : { category: category, genus: genus }
+  const items = await Item.find(search)
     .skip(parseInt(skipCount))
     .limit(parseInt(limitCount))
     .populate({
       path: "material.element",
       model: "Item",
-    }); 
-    items.sort((a, b) => rarityOrder[a.rarity] - rarityOrder[b.rarity]);
-  // Aggregation Pipeline
-/*   const items = await Item.aggregate([
-    { $match: { category, genus } },
-    {
-      $addFields: {
-        rarityValue: {
-          $switch: {
-            branches: Object.entries(rarityOrder).map(([key, value]) => ({
-              case: { $eq: ["$rarity", key] },
-              then: value,
-            })),
-            default: 0,
-          },
-        },
-      },
-    },
-    { $sort: { rarityValue: 1 } }, // 1 = aufsteigend, -1 = absteigend
-    { $skip: skipCount },
-    { $limit: limitCount },
-    
-  ]); */
-  //   console.log(items)
+    });
+  items.sort((a, b) => rarityOrder[a.rarity] - rarityOrder[b.rarity]);
   console.log(items.length);
   res.status(200).json({ data: items, n: parseInt(n), m: parseInt(m) });
 });
@@ -133,4 +245,12 @@ const rename = asyncHandler(async (req, res) => {
   res.json({ message: "renamed" });
 });
 
-module.exports = { setItem, getItem, findItem, updateItem, rename };
+module.exports = {
+  setItem,
+  getSearchInCategory,
+  getItem,
+  findItem,
+  updateItem,
+  rename,
+  migrateRarityValues,
+};

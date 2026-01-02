@@ -18,6 +18,8 @@ const initialState = {
   ressourceGenuses: [],
   activeGenus: "",
   activeCategory: "",
+  searchText: "",
+  rarity: "none",
   loaded: false,
   isError: false,
   isSuccess: false,
@@ -39,7 +41,25 @@ export const getItem = createAsyncThunk("items/get", async (data, thunkAPI) => {
     return thunkAPI.rejectWithValue(msg);
   }
 });
-
+// sarch items in category
+export const searchInCategory = createAsyncThunk(
+  "items/searchInCategory/get",
+  async (data, thunkAPI) => {
+    console.log(data);
+    try {
+      return await itemService.searchInCategory(data);
+    } catch (error) {
+      const msg =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      console.log(error.message);
+      return thunkAPI.rejectWithValue(msg);
+    }
+  }
+);
 export const itemSlice = createSlice({
   name: "items",
   initialState,
@@ -66,15 +86,22 @@ export const itemSlice = createSlice({
     getGenuses: (state, action) => {
       const category = action.payload.filter;
       console.log(category);
+      state.activeCategory = category || "Rüstung";
       if (category === "Waffe") {
         state.genuses = Object.keys(weapon);
+        state.activeGenus = state.genuses[0];
       } else if (category === "Begleiter") {
         state.genuses = Object.keys(companion);
+        state.activeGenus = state.genuses[0];
       } else if (category === "Ressource") {
         state.genuses = Object.keys(ressource);
+        state.activeGenus = state.genuses[0];
       } else {
         state.genuses = Object.keys(armor);
+        state.activeGenus = state.genuses[0];
       }
+      state.n = 0;
+      state.m = 10;
     },
     selectedGenus: (state, action) => {
       state.activeGenus = action.payload.genus;
@@ -96,7 +123,7 @@ export const itemSlice = createSlice({
       })
       .addCase(getItem.fulfilled, (state, action) => {
         const { data, n, m } = action.payload;
-        state.filteredData = []
+        state.filteredData = [];
         state.isLoading = false;
         state.isSuccess = true;
         state.data = data;
@@ -106,6 +133,23 @@ export const itemSlice = createSlice({
         console.log("frontent fullfilled:", n, m);
       })
       .addCase(getItem.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+        state.loaded = false;
+      })
+      .addCase(searchInCategory.pending, (state) => {
+        state.isLoading = true;
+        state.isSuccess = false;
+      })
+      .addCase(searchInCategory.fulfilled, (state, action) => {
+        state.filteredData = [];
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.data = action.payload.data;
+        state.totalCount = action.payload.data.length;
+      })
+      .addCase(searchInCategory.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
