@@ -191,10 +191,10 @@ function InventoryPage() {
     dispatch(extendInfo({ id: id }));
   };
 
-  const hideInfo = ()=>{
+  const hideInfo = () => {
     setShowInfo((prevStatus) => !prevStatus);
-    setCustomInfo({})
-  }
+    setCustomInfo({});
+  };
 
   const showDb = () => {
     setActiveDb((prev) => !prev);
@@ -296,7 +296,7 @@ function InventoryPage() {
           <div className="container-fluid dark-bg g-5">
             <div className="row">
               <div className="col-lg-auto col-md-12 col-sm-12">
-                {["Rüstung", "Waffe", "Ressource", "Begleiter", "all"].map(
+                {["Rüstung", "Waffe", "Ressource", "Begleiter"].map(
                   (buttonName, i) => (
                     <div key={buttonName} className="row">
                       <MotionButton
@@ -318,7 +318,16 @@ function InventoryPage() {
                     </div>
                   )
                 )}
-
+                {!activeDb && (
+                  <div key="all" className="row">
+                    <MotionButton
+                      name="all"
+                      onClick={onClickFilter}
+                      icon={faRefresh}
+                      theme={iFilter === "all" ? `${fractionTheme}` : ""}
+                    />
+                  </div>
+                )}
                 <div className="row">
                   <div id="weight-progressbar">
                     <motion.div
