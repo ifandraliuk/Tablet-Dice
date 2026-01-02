@@ -245,19 +245,21 @@ const getArmor = asyncHandler(async (req, res) => {
   if (!user || !inventory) {
     res.status(400).json("Inventar oder Nutzer nicht gefunden");
   }
-
+  debugger
   //calculate armor of all equipped items
   const fullEquipment = inventory.filter((el) => el.status === "Ausgerüstet");
-  const armor = fullEquipment.reduce(
-    (sum, item) => sum + item.item.value,
-    0
-  );
+
   // calculate armor class depending on the weight of the equipped items
   const relevantItemTypes = ["Brust", "Beine", "Kopf", "Arme", "Füße", "Hüfte"];
   const equipped = inventory.filter(
     (el) =>
       el.status === "Ausgerüstet" &&
       relevantItemTypes.some((value) => el.item.genus.includes(value))
+  );
+  console.log(equipped.length)
+  const armor = equipped.reduce(
+    (sum, item) => sum + item.item.value,
+    0
   );
   const equipmentWeight = equipped.reduce(
     (sum, item) => sum + item.item.weight,
