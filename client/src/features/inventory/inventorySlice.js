@@ -5,6 +5,7 @@ const initialState = {
   inventory: [],
   mainWeapon: null,
   secondWeapon: null,
+  rangedWeapon: null,
   armor: 0,
   armorCategory: "", // 1 - light armor, 2 - medium, 3 - chain armor, 4 - plate armor
   money: [],
@@ -444,10 +445,11 @@ export const inventorySlice = createSlice({
         state.isError = false;
       })
       .addCase(getUserWeapons.fulfilled, (state, action) => {
-        const { mainWeapon, secondWeapon } = action.payload;
+        const { mainWeapon, secondWeapon, rangedWeapon } = action.payload;
         console.log(mainWeapon, secondWeapon);
         state.mainWeapon = mainWeapon ? { ...mainWeapon } : null;
         state.secondWeapon = secondWeapon ? { ...secondWeapon } : null;
+        state.rangedWeapon = rangedWeapon ? { ...rangedWeapon } : null;
         state.isLoading = false;
         state.isSuccess = true;
       })

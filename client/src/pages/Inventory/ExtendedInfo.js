@@ -193,7 +193,7 @@ function ExtendedInfo({
                     </motion.button>
                   </div>
                   <div className="col-lg-6 col-md-4 col-sm-6 ">
-                    {category === "Ressource" && genus !== "Sattel" ? (
+                    {(category === "Ressource" && genus !== "Sattel") || (category === "Waffe" && genus === "Werkzeug") ? (
                       <button disabled>
                         <FontAwesomeIcon icon={faPerson} />
                       </button>
