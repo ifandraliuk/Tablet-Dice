@@ -43,26 +43,27 @@ const getWeapons = asyncHandler(async (req, res) => {
       (el) => el.status === "Ausgerüstet"
     );
     let equippedWeapons = inventory.filter(
-      (el) => el.item.category === "Waffe" || el.item.genus === "Schild"
+      (el) => el.item.category === "Waffe" && !RANGED.includes(el.item.genus)
     );
-    console.log(equippedWeapons.map((el) => el.item.genus));
-    equippedWeapons = equippedWeapons.filter(
-      (el) =>
-        !["Wurfwaffe", "Armbrust", "Bogen", "Schusswaffe"].includes(
-          el.item.genus
-        )
+    const rangedEquippedWeapon = inventory.find(
+      (el) => el.item.category === "Waffe" && RANGED.includes(el.item.genus)
     );
     // remove range weapon from dual weapons check
     if (equippedWeapons.length === 1) {
       //console.log("only 1 weapon found")
       res
         .status(200)
-        .json({ mainWeapon: equippedWeapons[0], secondWeapon: null });
+        .json({
+          mainWeapon: equippedWeapons[0],
+          secondWeapon: null,
+          rangedWeapon: rangedEquippedWeapon,
+        });
     } else if (equippedWeapons.length === 2) {
       //console.log("more than 1 weapon equipped")
       res.status(200).json({
         mainWeapon: equippedWeapons[0],
         secondWeapon: equippedWeapons[1],
+        rangedWeapon: rangedEquippedWeapon,
       });
     } else {
       //console.log("no weapons or shields equipped")
@@ -643,7 +644,7 @@ function deriveRangedWeapon(inventory) {
       el.item?.category === "Waffe" &&
       RANGED.includes(el.item?.genus)
   );
-  return ranged ? ranged : null
+  return ranged ? ranged : null;
 }
 
 // @desc Get items of specific category
@@ -711,26 +712,28 @@ const equipItem = asyncHandler(async (req, res) => {
   let equipmentAllowed = false; // new item is allowed for equipment
   let additionalId = ""; // replacement of the additional item needed
   let additionalReplaceFlag = false;
-  const rangedEquippedEntry = deriveRangedWeapon(inventory)
+  const rangedEquippedEntry = deriveRangedWeapon(inventory);
 
-  const weaponsEquipped =  inventory.filter(
-  el => el.status === "Ausgerüstet" && el.item.category === "Waffe" && !RANGED.includes(el.item.genus)
-);
+  const weaponsEquipped = inventory.filter(
+    (el) =>
+      el.status === "Ausgerüstet" &&
+      el.item.category === "Waffe" &&
+      !RANGED.includes(el.item.genus)
+  );
   const uclass = user.userclass?.name;
   // ==== NEU: Fernkampf-Slot zuerst behandeln ====
-if (slotCategory === "Waffe" && RANGED.includes(slotGenus)) {
-  // Fernkampfwaffe soll NICHT Nahkampf/Schild beeinflussen
-  if (rangedEquippedEntry) {
-    // bestehende Fernkampf ersetzen
-    replacedFlag = true;
-    toReplaceId = rangedEquippedEntry._id;
-  } else {
-    // erstmals eine Fernkampfwaffe ausrüsten
-    replacedFlag = false;
-  }
-  equipmentAllowed = true;
-
-} else if (slotCategory === "Waffe") {
+  if (slotCategory === "Waffe" && RANGED.includes(slotGenus)) {
+    // Fernkampfwaffe soll NICHT Nahkampf/Schild beeinflussen
+    if (rangedEquippedEntry) {
+      // bestehende Fernkampf ersetzen
+      replacedFlag = true;
+      toReplaceId = rangedEquippedEntry._id;
+    } else {
+      // erstmals eine Fernkampfwaffe ausrüsten
+      replacedFlag = false;
+    }
+    equipmentAllowed = true;
+  } else if (slotCategory === "Waffe") {
     //check shield is equipped
     const shieldEquipped = inventory.find(
       (el) =>
@@ -778,10 +781,13 @@ if (slotCategory === "Waffe" && RANGED.includes(slotGenus)) {
           console.log(uclass);
           if (uclass === "Assassine" || uclass === "Waffenmeister") {
             //can equip two 1hand weapons
-            
-            if (weaponsEquipped.length === 1 && weaponsEquipped[0].item.type !== "zweihändig") {
+
+            if (
+              weaponsEquipped.length === 1 &&
+              weaponsEquipped[0].item.type !== "zweihändig"
+            ) {
               // todo check if weapon is not 2hand
-              console.log(weaponsEquipped[0].item.type)
+              console.log(weaponsEquipped[0].item.type);
               // add the second 1hand
               replacedFlag = false;
               equipmentAllowed = true;

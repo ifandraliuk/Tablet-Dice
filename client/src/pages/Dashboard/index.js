@@ -53,6 +53,7 @@ function Dashboard() {
   const {
     mainWeapon,
     secondWeapon,
+    rangedWeapon,
     armorCategory,
     armor,
     armorBoni,
@@ -192,6 +193,15 @@ function Dashboard() {
                     <div className="row m-auto">
                       <EquippedItem
                         equippedItem={secondWeapon}
+                        delayValue={0.4}
+                        setShowInfo={setExtendedId}
+                      />
+                    </div>
+                  )}
+                  {rangedWeapon && (
+                    <div className="row m-auto">
+                      <EquippedItem
+                        equippedItem={rangedWeapon}
                         delayValue={0.4}
                         setShowInfo={setExtendedId}
                       />
