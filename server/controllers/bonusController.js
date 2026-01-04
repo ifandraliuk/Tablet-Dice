@@ -33,24 +33,32 @@ const getCategoryBoni = asyncHandler(async (req, res) => {
     einzigartig: "unique",
   };
   // all equipped bonis
-  const equipped = user.inventory.filter(
-    (el) => el.status === "Ausgerüstet" && el.item.boni?.length > 0
+  let activeBonis = user.inventory.filter(
+    (el) =>
+      // bisherige Regel
+      (el.status === "Ausgerüstet" && (el.item?.boni?.length ?? 0) > 0) ||
+      // + Werkzeuge immer berücksichtigen
+      (el.item?.category === "Waffe" && el.item?.genus === "Werkzeug")
   );
-  let equippedBoniCategory = [];
+  let activeBoniCategory = [];
   let boniList = [];
-  equipped.map((equipment) => {
+  activeBonis.map((equipment) => {
     //TODO: add enchantment and array boni
-    const boni = equipment.item.boni[0];
- //   console.log(`boni: ${boni}, category: ${boni.category}`);
-    if (boni.category === category) {
-      equippedBoniCategory.push(boni);
-    }
+    const bonis = equipment.item.boni;
+    //   console.log(`boni: ${boni}, category: ${boni.category}`);
+    bonis.map((boni) => {
+      if (boni?.category === category) {
+        activeBoniCategory.push(boni);
+      }
+    });
   });
-  if (!equippedBoniCategory) {
+  // console.log(toolsBoni[4].item.boni[0].category)
+  if (!activeBoniCategory) {
     res.status(500).json({ message: "Nichts in der Katergorie gefunden" });
   }
+  console.log(activeBoniCategory);
   // get values acc to the rarity of the bonus
-  equippedBoniCategory.map((bonus) => {
+  activeBoniCategory.map((bonus) => {
     const bonusRarity = bonus.rarity;
     const bonusType = bonus.type;
     let categoryValue;
@@ -107,6 +115,8 @@ const getCategoryBoni = asyncHandler(async (req, res) => {
             ? 8
             : 0;
       }
+    } else if (category === "action") {
+      categoryValue = 1;
     }
     // Check if the bonus type already exists in boniList
     const existingBonusIndex = boniList.findIndex(
@@ -120,7 +130,7 @@ const getCategoryBoni = asyncHandler(async (req, res) => {
       boniList.push({ bonus: bonus, value: categoryValue });
     }
   });
-//  console.log(boniList);
+  //  console.log(boniList);
   res.status(200).json({ boni: boniList, category: req.params.category });
 });
 

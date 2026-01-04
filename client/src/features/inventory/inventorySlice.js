@@ -17,6 +17,7 @@ const initialState = {
   customValuesBoni: [], // vitality, weight, stamina, mana
   talentBoni: [],
   attributeBoni: [],
+  actionBoni: [],
   setBoni: [], // immunity and set boni
 
   extendedItemInfo: {},
@@ -428,6 +429,11 @@ export const inventorySlice = createSlice({
             ...state,
             armorBoni: boni,
           };
+        } else if(category === "action"){
+          return {
+            ...state,
+            actionBoni: boni
+          }
         }
         state.isLoading = false;
         state.isSuccess = true;

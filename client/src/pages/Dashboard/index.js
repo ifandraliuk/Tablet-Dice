@@ -9,6 +9,7 @@ import Abilities from "./Abilities";
 import AttributeList from "./Attributes";
 import {
   generateBar,
+  updateActions,
   getAttributes,
   getGeneral,
   getLevel,
@@ -48,8 +49,17 @@ function Dashboard() {
   const [activeButton, setActiveButton] = useState(null); // active button
   const [isBonusActionVisible, setBonusActionVisible] = useState(false);
   const [isReactionVisible, setReactionVisible] = useState(false);
-  const { fractionTheme, profession, attributes, level, bonis, setboni } =
-    useSelector((state) => state.player);
+  const {
+    fractionTheme,
+    bonusActionCounter,
+    reactionCounter,
+    profession,
+    attributes,
+    level,
+    bonis,
+    setboni,
+  } = useSelector((state) => state.player);
+  const { actionBoni } = useSelector((state) => state.inventory);
   const {
     mainWeapon,
     secondWeapon,
@@ -80,7 +90,7 @@ function Dashboard() {
   };
   useEffect(() => {
     checkActionVisibility();
-  }, [armorCategory]);
+  }, [armorCategory, actionBoni]);
   useEffect(() => {
     // Dispatch actions only when the component mounts
     if (user) {
@@ -91,6 +101,7 @@ function Dashboard() {
       dispatch(getProfession());
       dispatch(getGeneral());
       dispatch(getCategoryBoni("resistance"));
+      dispatch(getCategoryBoni("action"));
     } else {
       // Redirect to "/" if user is not logged in
       navigate("/");
@@ -103,15 +114,21 @@ function Dashboard() {
   }, [dispatch, user, navigate]);
   const checkActionVisibility = () => {
     console.log("check visibility ", armorCategory);
-    debugger
     let isBonusActionVisible = true;
     let isReactionVisible = true;
-    if (armorCategory === "schwer (Platte)" || armorCategory ===  "schwer (Kette)") {
+    let disatvantage = false;
+    if (
+      armorCategory === "schwer (Platte)" ||
+      armorCategory === "schwer (Kette)"
+    ) {
       isReactionVisible = false;
       isBonusActionVisible = false;
+      disatvantage = true;
     } else if (armorCategory === "mittel") {
-      isBonusActionVisible = false;
+      isBonusActionVisible = true;
+      disatvantage = true;
     }
+    dispatch(updateActions({ actionBoni, armorCategory }));
     setBonusActionVisible(isBonusActionVisible);
     setReactionVisible(isReactionVisible);
   };
@@ -257,24 +274,35 @@ function Dashboard() {
                       style={{ color: "#63E6BE" }}
                     />{" "}
                     <text className="me-3">Aktion</text>
-                    {isReactionVisible && (
-                      <>
+
+
+                    {Array.from({ length: reactionCounter }).map((_, i) => (
+            
+                
                         <FontAwesomeIcon
                           icon={faSquare}
                           style={{ color: "#fc97e9" }}
+                          className="me-1"
                         />
-                        <text className="me-3">Reaktion</text>
-                      </>
-                    )}
-                    {isBonusActionVisible && (
-                      <>
-                        <FontAwesomeIcon
-                          icon={faDiamond}
-                          style={{ color: "#ff7b24" }}
-                        />
-                        <text className="me-3">Bonus Aktion</text>
-                      </>
-                    )}
+                       
+           
+                    ))}
+                    
+                    {
+                      reactionCounter >=1 && <text className="me-3">Reaktion</text>
+                    } 
+                    {Array.from({ length: bonusActionCounter }).map((_, i) => (
+                      <FontAwesomeIcon
+                        key={i}
+                        icon={faDiamond}
+                        className="me-1"
+                        style={{ color: "#ff7b24" }}
+                      />
+                    ))}
+                   {
+
+                   bonusActionCounter >=1 && <text className="me-3">Bonus Aktion</text>
+                   } 
                     <FontAwesomeIcon
                       icon={faPlay}
                       style={{ color: "#ffd43b" }}

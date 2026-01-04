@@ -15,6 +15,8 @@ const slotsAllowed = JSON.parse(localStorage.getItem("slotsAllowed"));
 const initialState = {
   player: [],
   level: 0,
+  bonusActionCounter: 1,
+  reactionCounter: 1,
   pointsLeft: 0,
   attributes: [],
   attributesLoaded: false,
@@ -57,21 +59,25 @@ export const getPlayer = createAsyncThunk("player/get", async (_, thunkAPI) => {
   }
 });
 
-
 // Get player for logged in user
-export const getFraction= createAsyncThunk("player/fraction/get", async (_, thunkAPI) => {
-  try {
-    const token = thunkAPI.getState().auth.user.token;
-    return await playerService.getFraction(token);
-  } catch (error) {
-    const msg =
-      (error.response && error.response.data && error.response.data.message) ||
-      error.message ||
-      error.toString();
-    console.log(error.message);
-    return thunkAPI.rejectWithValue(msg);
+export const getFraction = createAsyncThunk(
+  "player/fraction/get",
+  async (_, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await playerService.getFraction(token);
+    } catch (error) {
+      const msg =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      console.log(error.message);
+      return thunkAPI.rejectWithValue(msg);
+    }
   }
-});
+);
 
 // Get players profession
 export const getProfession = createAsyncThunk(
@@ -297,6 +303,34 @@ export const playerSlice = createSlice({
     loadPercentage: (state) => {
       state.currPercentage = state.weight / (state.loadCapacity / 100);
     },
+    updateActions: (state, { payload }) => {
+      const { actionBoni, armorCategory } = payload;
+      let defaultBonusAction = 1;
+      let defaultReaction = 1;
+      let actionBoniDetected = actionBoni?.find(
+        (el) => el.bonus.type === "Bonusaktion"
+      );
+      let reactionBoniDetected = actionBoni?.find(
+        (el) => el.bonus.type === "Reaktion"
+      );
+      if (
+        armorCategory === "schwer (Platte)" ||
+        armorCategory === "schwer (Kette)"
+      ) {
+        defaultBonusAction = 0;
+        defaultReaction = 0;
+      } else if (armorCategory === "mittel") {
+        defaultBonusAction = 0;
+      }
+
+      if (actionBoniDetected) {
+        state.bonusActionCounter =
+          defaultBonusAction + actionBoniDetected.value;
+      }
+      if (reactionBoniDetected) {
+        state.reactionCounter = defaultReaction + reactionBoniDetected.value;
+      }
+    },
     playerLoaded: (state, { payload }) => {
       //console.log("reducer: player data was loaded? ", payload)
       state.playerDataLoaded = payload.value;
@@ -335,42 +369,40 @@ export const playerSlice = createSlice({
       state.player?.talents.sort((a, b) => b.points - a.points);
     },
     generateBar: (state) => {
-  
-        console.log("getting bars");
-        let v = localStorage.getItem("vitality");
-        if (v === null) {
-          const vitality = state.attributes?.vitality;
-          v = isNaN(vitality) ? 0 : vitality * 10; // Set a default value or handle invalid input
-          console.log(v)
-          localStorage.setItem("vitality", v);
-        }
-        console.log(v, typeof v, v > 0);
-        let st = localStorage.getItem("stamina");
-        if (st === null) {
-            const stamina = state.attributes?.stamina;
-            st = isNaN(stamina) ? 0 : stamina * 10; // Set a default value or handle invalid input
-            
-            localStorage.setItem("stamina", st);
-        }
-        let m = localStorage.getItem("mana");
-        if (m === null) {
-            const mana = state.attributes?.mana;
-            m = isNaN(mana) ? 0 : mana * 10; // Set a default value or handle invalid input
-            localStorage.setItem("mana", m);
-        }
-        let sp = localStorage.getItem("spirit");
-        if (sp === null) {
-            const spirit = state.attributes?.spirit;
-            sp = isNaN(spirit) ? 0 : spirit * 10; // Set a default value or handle invalid input
-            localStorage.setItem("spirit", sp);
-        }
-        state.bars = {
-          vitality: v > 0 ? v : state.attributes?.vitality * 10,
-          stamina: st > 0 ? st : state.attributes?.stamina * 10,
-          mana: m > 0 ? m : state.attributes?.mana * 10,
-          spirit: sp > 0 ? sp : state.attributes?.spirit * 10,
-        };
-      
+      console.log("getting bars");
+      let v = localStorage.getItem("vitality");
+      if (v === null) {
+        const vitality = state.attributes?.vitality;
+        v = isNaN(vitality) ? 0 : vitality * 10; // Set a default value or handle invalid input
+        console.log(v);
+        localStorage.setItem("vitality", v);
+      }
+      console.log(v, typeof v, v > 0);
+      let st = localStorage.getItem("stamina");
+      if (st === null) {
+        const stamina = state.attributes?.stamina;
+        st = isNaN(stamina) ? 0 : stamina * 10; // Set a default value or handle invalid input
+
+        localStorage.setItem("stamina", st);
+      }
+      let m = localStorage.getItem("mana");
+      if (m === null) {
+        const mana = state.attributes?.mana;
+        m = isNaN(mana) ? 0 : mana * 10; // Set a default value or handle invalid input
+        localStorage.setItem("mana", m);
+      }
+      let sp = localStorage.getItem("spirit");
+      if (sp === null) {
+        const spirit = state.attributes?.spirit;
+        sp = isNaN(spirit) ? 0 : spirit * 10; // Set a default value or handle invalid input
+        localStorage.setItem("spirit", sp);
+      }
+      state.bars = {
+        vitality: v > 0 ? v : state.attributes?.vitality * 10,
+        stamina: st > 0 ? st : state.attributes?.stamina * 10,
+        mana: m > 0 ? m : state.attributes?.mana * 10,
+        spirit: sp > 0 ? sp : state.attributes?.spirit * 10,
+      };
     },
     decreaseBar: (state, { payload }) => {
       const newValue = parseInt(state.bars[payload.category] - payload.value);
@@ -412,9 +444,9 @@ export const playerSlice = createSlice({
           const el = state.player?.inventory.find(
             (el) => element.equipment === el._id
           );
-          
+
           if (el?.item) {
-            console.log(el.item)
+            console.log(el.item);
             if (el.item.bonuses) {
               bonis.push(el.item.bonuses);
             }
@@ -503,18 +535,18 @@ export const playerSlice = createSlice({
       // get fraction theme
       .addCase(getFraction.pending, (state) => {
         state.isLoading = true;
-        state.isError = false
-        state.isSuccess = false
+        state.isError = false;
+        state.isSuccess = false;
       })
       .addCase(getFraction.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isError = false
-        state.isSuccess = true
-        state.fractionTheme = action.payload
+        state.isError = false;
+        state.isSuccess = true;
+        state.fractionTheme = action.payload;
       })
       .addCase(getAttributes.pending, (state) => {
         state.isLoading = true;
-        state.attributesLoaded = false
+        state.attributesLoaded = false;
       })
       .addCase(getAttributes.fulfilled, (state, action) => {
         const { attributes, pointsLeft } = action.payload;
@@ -522,13 +554,13 @@ export const playerSlice = createSlice({
         state.isSuccess = true;
         state.playerDataLoaded = true;
         state.attributes = attributes;
-        state.attributesLoaded = true
+        state.attributesLoaded = true;
         state.pointsLeft = pointsLeft;
       })
       .addCase(getAttributes.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.attributesLoaded = false
+        state.attributesLoaded = false;
         state.message = action.payload;
       })
 
@@ -550,7 +582,7 @@ export const playerSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(getGeneral.fulfilled, (state, action) => {
-        if (state.fractionTheme?.length===0) {
+        if (state.fractionTheme?.length === 0) {
           const fraction = action.payload.origin.split(" ");
           const fractionTheme = fraction ? fraction[fraction.length - 1] : "";
           localStorage.setItem("fraction", fractionTheme);
@@ -649,6 +681,7 @@ export const playerSlice = createSlice({
 export const {
   reset,
   resetLocalData,
+  updateActions,
   loadPercentage,
   playerLoaded,
   sortedTalents,
@@ -661,7 +694,7 @@ export const {
   equipItem,
   unEquipItem,
   filterEquipment,
-   getBonis,
+  getBonis,
   getWeight,
 } = playerSlice.actions;
 export default playerSlice.reducer;

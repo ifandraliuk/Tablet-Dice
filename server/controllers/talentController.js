@@ -131,7 +131,6 @@ const getUserBonus = asyncHandler(async (req, res) => {
 
 
 const updateTalent = asyncHandler(async (req, res) => {
-  debugger
   const talentId = mongoose.Types.ObjectId(req.params.id); 
   // Find talent by ID
   const talent = await Talent.findById(talentId);
