@@ -209,6 +209,7 @@ const weapon = {
   Schusswaffe: "firearm",
   Ausrüstung: "equippable",
   Werkzeug: "tool",
+    Schild: "shield",
 };
 const armor = {
   Brust: "chest",
@@ -217,7 +218,7 @@ const armor = {
   Arme: "arms",
   Füße: "feet",
   Hüfte: "hip",
-  Schild: "shield",
+
   Rücken: "back",
   Hals: "neck",
   Finger: "finger",
