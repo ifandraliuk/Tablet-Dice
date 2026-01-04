@@ -7,28 +7,57 @@ import EquippedItem from "../Inventory/EquippedItem";
 import BarList from "./BarList";
 import Abilities from "./Abilities";
 import AttributeList from "./Attributes";
-import { generateBar, getAttributes, getGeneral, getLevel, getProfession, reset, updateLevel } from "../../features/player/playerSlice";
+import {
+  generateBar,
+  getAttributes,
+  getGeneral,
+  getLevel,
+  getProfession,
+  reset,
+  updateLevel,
+} from "../../features/player/playerSlice";
 import { AnimatePresence, motion } from "framer-motion";
 import { pageTransition } from "../../data/Animations";
 import Fraction from "../../components/Fraction";
 import LevelUp from "./LevelUp";
 import GeneralInfo from "./GeneralInfo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faShield, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
-import { extendInfo, getArmor, getCategoryBoni, getUserWeapons, reset as inventoryReset, updateEquipmentStats } from "../../features/inventory/inventorySlice";
+import {
+  faBars,
+  faShield,
+  faShieldHalved,
+  faCircle,
+  faPersonWalking,
+  faSquare,
+  faDiamond,
+  faPlay,
+} from "@fortawesome/free-solid-svg-icons";
+import {
+  extendInfo,
+  getArmor,
+  getCategoryBoni,
+  getUserWeapons,
+  reset as inventoryReset,
+  updateEquipmentStats,
+} from "../../features/inventory/inventorySlice";
 import ExtendedInfo from "../Inventory/ExtendedInfo";
-
 
 function Dashboard() {
   const { user } = useSelector((state) => state.auth);
   const [showInfo, setShowInfo] = useState(false);
   const [activeButton, setActiveButton] = useState(null); // active button
-  const { fractionTheme, profession, attributes, level, bonis, setboni } = useSelector(
-    (state) => state.player
-  );
-  const { mainWeapon, secondWeapon, armor, armorBoni, extendedId } = useSelector(
-    (state) => state.inventory
-  );
+  const [isBonusActionVisible, setBonusActionVisible] = useState(false);
+  const [isReactionVisible, setReactionVisible] = useState(false);
+  const { fractionTheme, profession, attributes, level, bonis, setboni } =
+    useSelector((state) => state.player);
+  const {
+    mainWeapon,
+    secondWeapon,
+    armorCategory,
+    armor,
+    armorBoni,
+    extendedId,
+  } = useSelector((state) => state.inventory);
   const navigate = useNavigate();
   const [showImage, setShowImage] = useState(true);
   const dispatch = useDispatch();
@@ -42,13 +71,15 @@ function Dashboard() {
   };
   const getArmorBonusValue = (armorType) => {
     console.log(armorType);
-    if(armorBoni?.length > 0){
+    if (armorBoni?.length > 0) {
       const foundBoni = armorBoni.find((el) => el.bonus.type === armorType);
       console.log(`Value for ${armorType}: ${foundBoni?.value}`);
       return foundBoni ? foundBoni.value : null;
-    } else return null
-
+    } else return null;
   };
+  useEffect(() => {
+    checkActionVisibility();
+  }, [armorCategory]);
   useEffect(() => {
     // Dispatch actions only when the component mounts
     if (user) {
@@ -56,19 +87,33 @@ function Dashboard() {
       dispatch(getAttributes());
       dispatch(getArmor());
       dispatch(getLevel());
-      dispatch(getProfession())
-      dispatch(getGeneral())
-      dispatch(getCategoryBoni("resistance"))
+      dispatch(getProfession());
+      dispatch(getGeneral());
+      dispatch(getCategoryBoni("resistance"));
     } else {
       // Redirect to "/" if user is not logged in
       navigate("/");
-      dispatch(reset())
+      dispatch(reset());
     }
-    return () =>{
-      dispatch(reset())
-      dispatch(inventoryReset())
-    }
+    return () => {
+      dispatch(reset());
+      dispatch(inventoryReset());
+    };
   }, [dispatch, user, navigate]);
+  const checkActionVisibility = () => {
+    console.log("check visibility ", armorCategory);
+    debugger
+    let isBonusActionVisible = true;
+    let isReactionVisible = true;
+    if (armorCategory === "schwer (Platte)" || armorCategory ===  "schwer (Kette)") {
+      isReactionVisible = false;
+      isBonusActionVisible = false;
+    } else if (armorCategory === "mittel") {
+      isBonusActionVisible = false;
+    }
+    setBonusActionVisible(isBonusActionVisible);
+    setReactionVisible(isReactionVisible);
+  };
   return (
     <motion.div
       variants={pageTransition}
@@ -78,7 +123,9 @@ function Dashboard() {
     >
       {showInfo && (
         <ExtendedInfo
-          customItemInfo={extendedId === mainWeapon._id ? mainWeapon : secondWeapon}
+          customItemInfo={
+            extendedId === mainWeapon._id ? mainWeapon : secondWeapon
+          }
           key="extended-info"
           minimized={true}
           hideInfo={setShowInfo}
@@ -132,34 +179,35 @@ function Dashboard() {
                       fraction={fractionTheme}
                     />
                   </div>
-                 {mainWeapon && (<div id={mainWeapon._id} className="row m-auto" >
-                     
+                  {mainWeapon && (
+                    <div id={mainWeapon._id} className="row m-auto">
                       <EquippedItem
                         equippedItem={mainWeapon}
                         delayValue={0.3}
                         setShowInfo={setExtendedId}
                       />
-                    
-                  </div>)}
-                  {secondWeapon && (<div className="row m-auto">
-                    
+                    </div>
+                  )}
+                  {secondWeapon && (
+                    <div className="row m-auto">
                       <EquippedItem
                         equippedItem={secondWeapon}
                         delayValue={0.4}
                         setShowInfo={setExtendedId}
                       />
-                    
-                  </div>)}
+                    </div>
+                  )}
                   <div className="row  justify-content-center">
                     <div className="col-auto">
-                      <FontAwesomeIcon icon={faShield}/>
+                      <FontAwesomeIcon icon={faShield} />
                       {armor}
                     </div>
                     <div className="col-auto violet-text">
-                      <FontAwesomeIcon icon={faShieldHalved}/>
-                      {getArmorBonusValue('Magie') ? getArmorBonusValue('Magie') : 0}
-                    </div>  
-                    
+                      <FontAwesomeIcon icon={faShieldHalved} />
+                      {getArmorBonusValue("Magie")
+                        ? getArmorBonusValue("Magie")
+                        : 0}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -185,20 +233,48 @@ function Dashboard() {
               <div className="row m-1">
                 <div className="row">
                   <div className="col-lg-12 col-md-12">
-                    {attributes  ? (
+                    {attributes ? (
                       <AttributeList />
                     ) : (
                       <Spinner animation="border" />
                     )}
                   </div>
                 </div>
+                <div className="row mt-2">
+                  <div className="col-12">
+                    <FontAwesomeIcon
+                      icon={faCircle}
+                      style={{ color: "#63E6BE" }}
+                    />{" "}
+                    <text className="me-3">Aktion</text>
+                    {isReactionVisible && (
+                      <>
+                        <FontAwesomeIcon
+                          icon={faSquare}
+                          style={{ color: "#fc97e9" }}
+                        />
+                        <text className="me-3">Reaktion</text>
+                      </>
+                    )}
+                    {isBonusActionVisible && (
+                      <>
+                        <FontAwesomeIcon
+                          icon={faDiamond}
+                          style={{ color: "#ff7b24" }}
+                        />
+                        <text className="me-3">Bonus Aktion</text>
+                      </>
+                    )}
+                    <FontAwesomeIcon
+                      icon={faPlay}
+                      style={{ color: "#ffd43b" }}
+                    />
+                    <text className="me-3">Bewegung</text>
+                  </div>
+                </div>
 
                 <BarList />
-                {profession ? (
-                  <Abilities />
-                ) : (
-                  <Spinner animation="border" />
-                )}
+                {profession ? <Abilities /> : <Spinner animation="border" />}
               </div>
               <div className="row">
                 <div className="col-lg-7 col-md-12">
