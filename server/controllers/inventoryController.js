@@ -3,7 +3,7 @@ const Item = require("../models/itemsModel");
 const Inventory = require("../models/inventoryModel");
 const User = require("../models/userModel");
 const mongoose = require("mongoose");
-
+const RANGED = ["Wurfwaffe", "Armbrust", "Bogen", "Schusswaffe"];
 // @desc get users inventory
 // @route GET /inventory
 // @access Private
@@ -45,9 +45,14 @@ const getWeapons = asyncHandler(async (req, res) => {
     let equippedWeapons = inventory.filter(
       (el) => el.item.category === "Waffe" || el.item.genus === "Schild"
     );
-    console.log(equippedWeapons.map(el=>el.item.genus))
-   equippedWeapons =  equippedWeapons.filter(el=> !["Wurfwaffe", "Armbrust", "Bogen", "Schusswaffe"].includes(el.item.genus))
-// remove range weapon from dual weapons check
+    console.log(equippedWeapons.map((el) => el.item.genus));
+    equippedWeapons = equippedWeapons.filter(
+      (el) =>
+        !["Wurfwaffe", "Armbrust", "Bogen", "Schusswaffe"].includes(
+          el.item.genus
+        )
+    );
+    // remove range weapon from dual weapons check
     if (equippedWeapons.length === 1) {
       //console.log("only 1 weapon found")
       res
@@ -259,16 +264,13 @@ const getArmor = asyncHandler(async (req, res) => {
       el.status === "Ausgerüstet" &&
       relevantItemTypes.some((value) => el.item.genus.includes(value))
   );
-  console.log(equipped.length)
-  const armor = equipped.reduce(
-    (sum, item) => sum + item.item.value,
-    0
-  );
+  console.log(equipped.length);
+  const armor = equipped.reduce((sum, item) => sum + item.item.value, 0);
   const equipmentWeight = equipped.reduce(
     (sum, item) => sum + item.item.weight,
     0
   );
-  console.log("weight:",equipmentWeight)
+  console.log("weight:", equipmentWeight);
   const armorCategory =
     equipmentWeight >= 0 && equipmentWeight <= 1.6
       ? 1
@@ -279,7 +281,7 @@ const getArmor = asyncHandler(async (req, res) => {
       : equipmentWeight >= 6.6 && equipmentWeight <= 10
       ? 4
       : 0;
-  res.status(200).json({armor: armor, armorCategory: armorCategory });
+  res.status(200).json({ armor: armor, armorCategory: armorCategory });
 });
 // @desc Add item to users inventory
 // @route get /money/
@@ -302,7 +304,7 @@ const updateMoney = asyncHandler(async (req, res) => {
 
   // Check if the user exists
   if (!user) {
-    return res.status(400).json({ message: 'Nutzer nicht gefunden' });
+    return res.status(400).json({ message: "Nutzer nicht gefunden" });
   }
 
   // Extract money from the request body
@@ -310,7 +312,7 @@ const updateMoney = asyncHandler(async (req, res) => {
 
   // Validate that money exists and is an array (if it's supposed to be)
   if (!money || !Array.isArray(money)) {
-    return res.status(400).json({ message: 'Ungültige Geld-Daten' });
+    return res.status(400).json({ message: "Ungültige Geld-Daten" });
   }
 
   // Update user's money in the database
@@ -322,7 +324,9 @@ const updateMoney = asyncHandler(async (req, res) => {
 
   // Check if the update was successful
   if (!updatedUser) {
-    return res.status(400).json({ message: 'Dein Geldbalance wurde nicht geändert' });
+    return res
+      .status(400)
+      .json({ message: "Dein Geldbalance wurde nicht geändert" });
   }
 
   // Return the updated money balance
@@ -335,8 +339,8 @@ const addToInventory = asyncHandler(async (req, res) => {
   }
   console.log("attempting to add item");
   console.log(req.body.id);
-  debugger
-  const item = await Item.findById(req.body.id)
+  debugger;
+  const item = await Item.findById(req.body.id);
   if (!item) {
     res.status(400).json({ message: "Item nicht gefunden" });
   }
@@ -621,13 +625,26 @@ const getCategorizedItems = asyncHandler(async (req, res) => {
 });
 
 function deriveMeleeWeapons(inventory) {
-  const ranged = ["Wurfwaffe","Armbrust","Bogen","Schusswaffe"];
+  const ranged = ["Wurfwaffe", "Armbrust", "Bogen", "Schusswaffe"];
   const melee = inventory
-    .filter(el => el.status === "Ausgerüstet" && el.item?.category === "Waffe" && !ranged.includes(el.item?.genus))
-    .sort((a,b) => String(a._id).localeCompare(String(b._id)));
+    .filter(
+      (el) =>
+        el.status === "Ausgerüstet" &&
+        el.item?.category === "Waffe" &&
+        !ranged.includes(el.item?.genus)
+    )
+    .sort((a, b) => String(a._id).localeCompare(String(b._id)));
   return { mainWeapon: melee[0] || null, secondWeapon: melee[1] || null };
 }
-
+function deriveRangedWeapon(inventory) {
+  const ranged = inventory.find(
+    (el) =>
+      el.status === "Ausgerüstet" &&
+      el.item?.category === "Waffe" &&
+      RANGED.includes(el.item?.genus)
+  );
+  return ranged ? ranged : null
+}
 
 // @desc Get items of specific category
 // @route GET /inventory/search
@@ -694,14 +711,26 @@ const equipItem = asyncHandler(async (req, res) => {
   let equipmentAllowed = false; // new item is allowed for equipment
   let additionalId = ""; // replacement of the additional item needed
   let additionalReplaceFlag = false;
-  console.log(slotGenus, slotCategory);
-  let weaponsEquipped = inventory.filter(
-    (el) => el.status === "Ausgerüstet" && el.item.category === "Waffe"
-  );
-  weaponsEquipped = weaponsEquipped.filter(el=>! ["Wurfwaffe", "Armbrust", "Bogen", "Schusswaffe"].includes(el.item.genus))
+  const rangedEquippedEntry = deriveRangedWeapon(inventory)
+
+  const weaponsEquipped =  inventory.filter(
+  el => el.status === "Ausgerüstet" && el.item.category === "Waffe" && !RANGED.includes(el.item.genus)
+);
   const uclass = user.userclass?.name;
-  console.log(user.userclass);
-  if (slotCategory === "Waffe") {
+  // ==== NEU: Fernkampf-Slot zuerst behandeln ====
+if (slotCategory === "Waffe" && RANGED.includes(slotGenus)) {
+  // Fernkampfwaffe soll NICHT Nahkampf/Schild beeinflussen
+  if (rangedEquippedEntry) {
+    // bestehende Fernkampf ersetzen
+    replacedFlag = true;
+    toReplaceId = rangedEquippedEntry._id;
+  } else {
+    // erstmals eine Fernkampfwaffe ausrüsten
+    replacedFlag = false;
+  }
+  equipmentAllowed = true;
+
+} else if (slotCategory === "Waffe") {
     //check shield is equipped
     const shieldEquipped = inventory.find(
       (el) =>
@@ -749,7 +778,10 @@ const equipItem = asyncHandler(async (req, res) => {
           console.log(uclass);
           if (uclass === "Assassine" || uclass === "Waffenmeister") {
             //can equip two 1hand weapons
-            if (weaponsEquipped.length === 1) {
+            
+            if (weaponsEquipped.length === 1 && weaponsEquipped[0].item.type !== "zweihändig") {
+              // todo check if weapon is not 2hand
+              console.log(weaponsEquipped[0].item.type)
               // add the second 1hand
               replacedFlag = false;
               equipmentAllowed = true;
@@ -762,7 +794,7 @@ const equipItem = asyncHandler(async (req, res) => {
               toReplaceId = weaponsEquipped[0]._id;
               equipmentAllowed = true;
               console.log(
-                "Assa oder WM. Zwei Waffen sind bereits ausgerüstet. Erste wird ersetzt. Kein Schild"
+                "Assa oder WM. Meele Waffen slots sind bereits besetzt. Erste wird ersetzt. Kein Schild"
               );
             }
           } else {
@@ -970,7 +1002,7 @@ const equipItem = asyncHandler(async (req, res) => {
     const updatedItem = updated.inventory.find(
       (el) => el._id.toString() === invId
     );
-     let additional = null;
+    let additional = null;
     if (additionalReplaceFlag) {
       // the second item into old data
       const additionalReplacement = await User.findOneAndUpdate(
@@ -992,8 +1024,7 @@ const equipItem = asyncHandler(async (req, res) => {
           model: "Item",
         },
       });
-     
-     
+
       if (!additionalReplacement) {
         res
           .status(400)
@@ -1002,29 +1033,29 @@ const equipItem = asyncHandler(async (req, res) => {
       additional = additionalReplacement.inventory.find(
         (el) => el._id.toString() === additionalId.toString()
       );
-/*       res.status(200).json({
+      /*       res.status(200).json({
         replaced: replacedFlag,
         //old: [replacedItem, additional],
         unequipItem: replacedItem,
         additionalUnequiup: additional,
         updated: updatedItem,
       }); */
-    } 
+    }
     const fresh = await User.findById(req.user.id).populate({
-    path: "inventory.item",
-    model: "Item",
-    populate: { path: "material.element", model: "Item" },
-  });
-  const { mainWeapon, secondWeapon } = deriveMeleeWeapons(fresh.inventory);
+      path: "inventory.item",
+      model: "Item",
+      populate: { path: "material.element", model: "Item" },
+    });
+    const { mainWeapon, secondWeapon } = deriveMeleeWeapons(fresh.inventory);
 
-  res.status(200).json({
-    replaced: replacedFlag,
-    unequipItem: replacedItem,
-    additionalUnequip: additional,     // vereinheitlichter Name
-    updated: updatedItem,
-    mainWeapon: mainWeapon,
-    secondWeapon: secondWeapon,
-  });
+    res.status(200).json({
+      replaced: replacedFlag,
+      unequipItem: replacedItem,
+      additionalUnequip: additional, // vereinheitlichter Name
+      updated: updatedItem,
+      mainWeapon: mainWeapon,
+      secondWeapon: secondWeapon,
+    });
   }
 });
 // @desc Unequip item  - set status to user.name
@@ -1066,18 +1097,18 @@ const unequipItem = asyncHandler(async (req, res) => {
   if (!updated) {
     res.status(400).json({ error: "Das Update ist fehlgeschlagen" });
   } else {
-     const updatedEntry = updated.inventory.find(
-    (el) => el._id.toString() === String(id)
-  );
+    const updatedEntry = updated.inventory.find(
+      (el) => el._id.toString() === String(id)
+    );
 
-  // Aktuelle Waffen-Slots ableiten und mit zurückgeben
-  const { mainWeapon, secondWeapon } = deriveMeleeWeapons(updated.inventory);
-   // res.status(200).json({ id, uname });
-     return res.status(200).json({
-    updated: updatedEntry || null,   // das geänderte Inventory-Objekt
-    mainWeapon,         // aktuelle Haupthand
-    secondWeapon,       // aktuelle Nebenhand
-  });
+    // Aktuelle Waffen-Slots ableiten und mit zurückgeben
+    const { mainWeapon, secondWeapon } = deriveMeleeWeapons(updated.inventory);
+    // res.status(200).json({ id, uname });
+    return res.status(200).json({
+      updated: updatedEntry || null, // das geänderte Inventory-Objekt
+      mainWeapon, // aktuelle Haupthand
+      secondWeapon, // aktuelle Nebenhand
+    });
   }
 });
 module.exports = {
