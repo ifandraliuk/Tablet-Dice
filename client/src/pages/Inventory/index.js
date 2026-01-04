@@ -36,6 +36,7 @@ import {
   updateMoney,
   getLoadCapacity,
   getArmor,
+  getUserWeapons,
 } from "../../features/inventory/inventorySlice";
 import { reset as playerReset } from "../../features/player/playerSlice";
 import Equipment from "./Equipment";
@@ -245,10 +246,12 @@ function InventoryPage() {
 
   const equipItem = (itemId) => {
     dispatch(equip({ invId: itemId }));
+    //dispatch(getUserWeapons())
   };
 
   const unEquipItem = (id) => {
     dispatch(unequip({ id: id }));
+  //  dispatch(getUserWeapons())
   };
 
   const onClickFilter = (e) => {

@@ -6,7 +6,7 @@ const initialState = {
   mainWeapon: null,
   secondWeapon: null,
   armor: 0,
-  armorCategory: '', // 1 - light armor, 2 - medium, 3 - chain armor, 4 - plate armor
+  armorCategory: "", // 1 - light armor, 2 - medium, 3 - chain armor, 4 - plate armor
   money: [],
   capacity: 0,
   totalWeight: 0,
@@ -64,7 +64,6 @@ export const getArmor = createAsyncThunk(
     }
   }
 );
-
 
 // get users inventory
 export const getLoadCapacity = createAsyncThunk(
@@ -374,11 +373,17 @@ export const inventorySlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
 
-          state.armor = armor
-          state.armorCategory = armorCategory === 1 ? 'leicht' 
-          : armorCategory === 2 ? 'mittel' : armorCategory === 3 ? "schwer (Kette)" :
-          armorCategory === 3 ? "schwer (Platte)" : "unbekannt"
-        
+        state.armor = armor;
+        state.armorCategory =
+          armorCategory === 1
+            ? "leicht"
+            : armorCategory === 2
+            ? "mittel"
+            : armorCategory === 3
+            ? "schwer (Kette)"
+            : armorCategory === 4
+            ? "schwer (Platte)"
+            : "unbekannt";
       })
       .addCase(getArmor.rejected, (state, action) => {
         state.isLoading = false;
@@ -440,8 +445,9 @@ export const inventorySlice = createSlice({
       })
       .addCase(getUserWeapons.fulfilled, (state, action) => {
         const { mainWeapon, secondWeapon } = action.payload;
-        state.mainWeapon = mainWeapon;
-        state.secondWeapon = secondWeapon;
+        console.log(mainWeapon, secondWeapon);
+        state.mainWeapon = mainWeapon ? { ...mainWeapon } : null;
+        state.secondWeapon = secondWeapon ? { ...secondWeapon } : null;
         state.isLoading = false;
         state.isSuccess = true;
       })
@@ -473,7 +479,7 @@ export const inventorySlice = createSlice({
       .addCase(updateMoney.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.money = action.payload
+        state.money = action.payload;
       })
       .addCase(updateMoney.rejected, (state, action) => {
         state.isLoading = false;
@@ -616,9 +622,18 @@ export const inventorySlice = createSlice({
       .addCase(equip.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        const { replaced, unequipItem, additionalUnequip, updated } =
-          action.payload;
-
+        const {
+          replaced,
+          unequipItem,
+          additionalUnequip,
+          updated,
+          mainWeapon,
+          secondWeapon,
+        } = action.payload;
+        if (mainWeapon !== undefined)
+          state.mainWeapon = mainWeapon ? { ...mainWeapon } : null;
+        if (secondWeapon !== undefined)
+          state.secondWeapon = secondWeapon ? { ...secondWeapon } : null;
         const updateItemInInventory = (item) => {
           const id = state.inventory.findIndex(
             (invItem) => invItem._id === item._id
@@ -660,9 +675,10 @@ export const inventorySlice = createSlice({
       .addCase(unequip.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        const { id, uname } = action.payload;
-
-        const i = state.inventory.findIndex(
+        const { id, uname, updated, mainWeapon, secondWeapon } = action.payload;
+ if (mainWeapon !== undefined)  state.mainWeapon  = mainWeapon ? { ...mainWeapon } : null;
+  if (secondWeapon !== undefined) state.secondWeapon = secondWeapon ? { ...secondWeapon } : null;
+/*         const i = state.inventory.findIndex(
           (invItem) => invItem._id.toString() === id.toString()
         );
         let item = state.inventory[i];
@@ -674,7 +690,11 @@ export const inventorySlice = createSlice({
             item,
             ...state.inventory.slice(i + 1),
           ];
-        }
+        } */
+        if (updated) {
+    const i = state.inventory.findIndex(x => x._id === updated._id);
+    if (i !== -1) state.inventory.splice(i, 1, updated);
+  }
       })
       .addCase(unequip.rejected, (state, action) => {
         state.isLoading = false;

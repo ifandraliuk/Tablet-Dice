@@ -42,9 +42,12 @@ const getWeapons = asyncHandler(async (req, res) => {
     const inventory = user.inventory?.filter(
       (el) => el.status === "Ausgerüstet"
     );
-    const equippedWeapons = inventory.filter(
+    let equippedWeapons = inventory.filter(
       (el) => el.item.category === "Waffe" || el.item.genus === "Schild"
     );
+    console.log(equippedWeapons.map(el=>el.item.genus))
+   equippedWeapons =  equippedWeapons.filter(el=> !["Wurfwaffe", "Armbrust", "Bogen", "Schusswaffe"].includes(el.item.genus))
+// remove range weapon from dual weapons check
     if (equippedWeapons.length === 1) {
       //console.log("only 1 weapon found")
       res
@@ -265,6 +268,7 @@ const getArmor = asyncHandler(async (req, res) => {
     (sum, item) => sum + item.item.weight,
     0
   );
+  console.log("weight:",equipmentWeight)
   const armorCategory =
     equipmentWeight >= 0 && equipmentWeight <= 1.6
       ? 1
@@ -616,6 +620,14 @@ const getCategorizedItems = asyncHandler(async (req, res) => {
   res.status(200).json({ data: item });
 });
 
+function deriveMeleeWeapons(inventory) {
+  const ranged = ["Wurfwaffe","Armbrust","Bogen","Schusswaffe"];
+  const melee = inventory
+    .filter(el => el.status === "Ausgerüstet" && el.item?.category === "Waffe" && !ranged.includes(el.item?.genus))
+    .sort((a,b) => String(a._id).localeCompare(String(b._id)));
+  return { mainWeapon: melee[0] || null, secondWeapon: melee[1] || null };
+}
+
 
 // @desc Get items of specific category
 // @route GET /inventory/search
@@ -683,9 +695,10 @@ const equipItem = asyncHandler(async (req, res) => {
   let additionalId = ""; // replacement of the additional item needed
   let additionalReplaceFlag = false;
   console.log(slotGenus, slotCategory);
-  const weaponsEquipped = inventory.filter(
+  let weaponsEquipped = inventory.filter(
     (el) => el.status === "Ausgerüstet" && el.item.category === "Waffe"
   );
+  weaponsEquipped = weaponsEquipped.filter(el=>! ["Wurfwaffe", "Armbrust", "Bogen", "Schusswaffe"].includes(el.item.genus))
   const uclass = user.userclass?.name;
   console.log(user.userclass);
   if (slotCategory === "Waffe") {
@@ -929,7 +942,7 @@ const equipItem = asyncHandler(async (req, res) => {
       }
       // extract the replaced item
       replacedItem = replaced.inventory.find(
-        (el) => el._id.toString() === toReplaceId._id.toString()
+        (el) => el._id.toString() === toReplaceId.toString()
       );
     }
     const updated = await User.findOneAndUpdate(
@@ -957,6 +970,7 @@ const equipItem = asyncHandler(async (req, res) => {
     const updatedItem = updated.inventory.find(
       (el) => el._id.toString() === invId
     );
+     let additional = null;
     if (additionalReplaceFlag) {
       // the second item into old data
       const additionalReplacement = await User.findOneAndUpdate(
@@ -978,30 +992,39 @@ const equipItem = asyncHandler(async (req, res) => {
           model: "Item",
         },
       });
+     
+     
       if (!additionalReplacement) {
         res
           .status(400)
           .json({ message: `Abrüsten des Schildes hat nicht funktioniert` });
       }
-      const additional = additionalReplacement.inventory.find(
+      additional = additionalReplacement.inventory.find(
         (el) => el._id.toString() === additionalId.toString()
       );
-      res.status(200).json({
+/*       res.status(200).json({
         replaced: replacedFlag,
         //old: [replacedItem, additional],
         unequipItem: replacedItem,
         additionalUnequiup: additional,
         updated: updatedItem,
-      });
-    } else {
-      res.status(200).json({
-        replaced: replacedFlag,
-        unequipItem: replacedItem,
-        additionalUnequiup: null,
-        // old: [replacedItem],
-        updated: updatedItem,
-      });
-    }
+      }); */
+    } 
+    const fresh = await User.findById(req.user.id).populate({
+    path: "inventory.item",
+    model: "Item",
+    populate: { path: "material.element", model: "Item" },
+  });
+  const { mainWeapon, secondWeapon } = deriveMeleeWeapons(fresh.inventory);
+
+  res.status(200).json({
+    replaced: replacedFlag,
+    unequipItem: replacedItem,
+    additionalUnequip: additional,     // vereinheitlichter Name
+    updated: updatedItem,
+    mainWeapon: mainWeapon,
+    secondWeapon: secondWeapon,
+  });
   }
 });
 // @desc Unequip item  - set status to user.name
@@ -1043,7 +1066,18 @@ const unequipItem = asyncHandler(async (req, res) => {
   if (!updated) {
     res.status(400).json({ error: "Das Update ist fehlgeschlagen" });
   } else {
-    res.status(200).json({ id, uname });
+     const updatedEntry = updated.inventory.find(
+    (el) => el._id.toString() === String(id)
+  );
+
+  // Aktuelle Waffen-Slots ableiten und mit zurückgeben
+  const { mainWeapon, secondWeapon } = deriveMeleeWeapons(updated.inventory);
+   // res.status(200).json({ id, uname });
+     return res.status(200).json({
+    updated: updatedEntry || null,   // das geänderte Inventory-Objekt
+    mainWeapon,         // aktuelle Haupthand
+    secondWeapon,       // aktuelle Nebenhand
+  });
   }
 });
 module.exports = {
