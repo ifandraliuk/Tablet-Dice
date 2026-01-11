@@ -230,7 +230,8 @@ export const talentSlice = createSlice({
         state.isLoading = false; // Assuming you set loading to true elsewhere
         state.isSuccess = true; // Indicate successful removal
         // Filter out the removed talent by its ID
-        state.playerTalents = state.playerTalents.filter(item => item._id !== action.payload.id);
+       state.playerTalents = state.playerTalents.filter(item => item._id !== action.payload.id);
+      // state.playerTalents.map((el)=> el._id !== action.payload.id)
       //  console.log('Updated Player Talents after removal:', state.playerTalents); // Debugging output
       })
       .addCase(removeFromPlayer.rejected, (state, action) => {

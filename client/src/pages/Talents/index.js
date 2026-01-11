@@ -45,6 +45,7 @@ function Talents() {
 
   const { user } = useSelector((state) => state.auth);
   const { fractionTheme, attributes } = useSelector((state) => state.player);
+    const { talentBoni } = useSelector((state) => state.inventory);
   const {
     allTalents,
     kindName,
@@ -52,15 +53,13 @@ function Talents() {
     kindBonusName,
     userclassName,
     userclassBonus,
-    //playerTalents,
+    playerTalents,
     isLoading,
     isError,
     message,
   } = useSelector((state) => state.talents);
-  const playerTalents = useSelector(
-    (state) => state.talents.playerTalents,
-    shallowEqual
-  );
+  
+
   const [filter, setFilter] = useState("");
   const [viewMode, setViewMode] = useState("active"); // "active" oder "all"
 
@@ -68,7 +67,16 @@ function Talents() {
   const [edit, toEdit] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const bonusMap = useMemo(() => {
+    const map = new Map(); // Key: Talent-Name, Value: Bonus-Wert
 
+    for (const el of talentBoni) {
+      // passt das zu deiner Struktur: el.bonus.type und el.value
+      map.set(el.bonus.type, el.value);
+    }
+
+    return map;
+  }, [talentBoni]);
   const icons = useMemo(
     () => ({
       Nahkampf: faKhanda,
@@ -154,7 +162,6 @@ function Talents() {
   );
   const handleSubmit = (e) => {
     e.preventDefault();
-    debugger;
     newTalents.forEach((el, i) => {
       if (el[1] > 0)
         //sorting out null values
@@ -164,14 +171,6 @@ function Talents() {
     setNewTalent([]);
     toEdit((edit) => !edit);
   };
-
-  if (!playerTalents.length || !allTalents.length || isLoading) {
-    return <Spinner animation="border" />;
-  }
-/*   const MemoizedActiveTalents = React.memo(ActiveTalents);
-  const MemoizedAllTalents = React.memo(AllTalents);
-  const MemoizedAttributes = React.memo(AttributeList); */
-
   return (
     <motion.div>
       <div className="talents-page">
@@ -257,6 +256,7 @@ function Talents() {
                       handleSubmit={handleSubmit}
                       fractionTheme={fractionTheme}
                       newTalents={newTalents}
+                      bonusMap={bonusMap}
                     />
                   ) : (
                     <h5>Du hast noch keine Talente...</h5>
@@ -269,6 +269,7 @@ function Talents() {
                     filter={filter}
                     setFilter={setFilter}
                     fractionTheme={fractionTheme}
+                        bonusMap={bonusMap}
                   />
                 )}
               </div>

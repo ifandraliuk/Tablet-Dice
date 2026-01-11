@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { faPlus, faRefresh } from "@fortawesome/free-solid-svg-icons";
-import MotionButton from "../../components/MotionButton";
+
+import AllTalentRow from "./AllTalentRow";
 
 function AllTalents({
   handleChange,
@@ -13,20 +14,27 @@ function AllTalents({
   icons,
   categorizedTalents,
   fractionTheme,
+  bonusMap,
 }) {
-  console.log("ALLTALENTS rerender")
-  const { talentBoni } = useSelector((state) => state.inventory);
+  console.log("ALLTALENTS rerender");
+
   const { allTalents, playerTalents } = useSelector((state) => state.talents);
 
-  const getTalentBonusValue = (talentName) => {
+  /*   const getTalentBonusValue = (talentName) => {
     console.log(talentBoni);
     if (talentBoni.length > 0) {
       const foundBoni = talentBoni.find((el) => el.bonus.type === talentName);
       console.log(`Value for ${talentName}: ${foundBoni?.value}`);
       return foundBoni ? foundBoni.value : null;
     } else return null;
-  };
-
+  }; */
+  const playerTalentPointsByName = useMemo(() => {
+    const m = new Map();
+    for (const el of playerTalents) {
+      m.set(el.talent.name, el.points);
+    }
+    return m;
+  }, [playerTalents]);
   return (
     <div className="row">
       <div className="col-md-1">
@@ -70,38 +78,24 @@ function AllTalents({
           <tbody>
             {allTalents
               ?.filter((talent) => !filter || talent.category === filter)
-              .map((talent, i) => {
-                const talentExists = playerTalents.find(
-                  (el) => el.talent.name === talent.name
-                );
-                return (
-                  <tr key={talent._id}>
-                    <td>{talent.name}</td>
-                    <td className={`${talent.category}`}>
-                      <FontAwesomeIcon icon={icons[talent.category]} />{" "}
-                      {talent.category}
-                    </td>
-                    <td>{talent.dice}</td>
+              .map((talent) => {
+                const existsPoints =
+                  playerTalentPointsByName.get(talent.name) ?? null;
+                const bonus =
+                  existsPoints != null
+                    ? bonusMap.get(talent.name) ?? null
+                    : null;
 
-                    <td>
-                      {talentExists ? talentExists["points"] : 0}
-                      {getTalentBonusValue(talent.name) && (
-                        <strong className="green-text">
-                          {`+(${getTalentBonusValue(talent.name)})`}
-                        </strong>
-                      )}
-                    </td>
-                    <td>
-                      <MotionButton
-                        name={talent.name}
-                        icon={faPlus}
-                        onClick={handleClick}
-                        enabled={`${talentExists}`}
-                      />
-                    </td>
-                  </tr>
+                return (
+                  <AllTalentRow
+                    key={talent._id}
+                    talent={talent}
+                    icons={icons}
+                    existsPoints={existsPoints}
+                    bonus={bonus}
+                    handleClick={handleClick}
+                  />
                 );
-                /* ); */
               })}
           </tbody>
         </table>
@@ -110,4 +104,4 @@ function AllTalents({
   );
 }
 
-export default React.memo(AllTalents);
+export default AllTalents;

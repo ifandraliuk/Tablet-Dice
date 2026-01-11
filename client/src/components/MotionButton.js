@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion } from "framer-motion";
-const MotionButton = ({ name, onClick, content, icon, theme, onRepeat }) => {
+const MotionButton = ({ name, onClick, content, icon, theme, onRepeat, disabled }) => {
 
   const buttonVariants = {
     init: {
@@ -33,7 +33,25 @@ const MotionButton = ({ name, onClick, content, icon, theme, onRepeat }) => {
     },
   };
 
-  return (
+  return disabled ? (
+        <motion.button
+    type="button"
+      name={name}
+      variants={buttonVariants}
+      initial="init"
+      animate={onRepeat ? "repeatAnimation" : "animate"}
+      whileHover="whileHover"
+      whileFocus=""
+      className={`${theme}-active border-btn disabled`}
+      disabled
+    //  className={"btn-light"}
+    
+    >
+      {icon && <FontAwesomeIcon icon={icon}  />} {/* Render icon if provided */}
+      {content  && content} {/* Render text if provided and no icon */}
+    </motion.button>
+  ): (
+
     <motion.button
     type="button"
       name={name}
