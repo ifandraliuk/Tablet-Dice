@@ -137,6 +137,11 @@ function Diary() {
       setSave(false);
     }
   };
+/* TODOS:
+  1. edit mode -switch from Note to Editor
+  2. create popup for filter - options - ascending desc for date
+  3. create popup for create mode
+*/
   return (
     <motion.div>
       <div className="diary-page">
