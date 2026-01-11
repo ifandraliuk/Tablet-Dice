@@ -37,30 +37,7 @@ function AllTalents({
   }, [playerTalents]);
   return (
     <div className="row">
-      <div className="col-md-1">
-        <div className="filter-sidebar d-flex flex-column">
-          {Object.keys(icons).map((name) => (
-            <button
-              key={name}
-              className={`mb-2 ${
-                filter === name ? `${fractionTheme}-active` : ""
-              }`}
-              name={name}
-              onClick={(e) => setFilter(e.currentTarget.name)}
-            >
-              <FontAwesomeIcon icon={icons[name]} />
-            </button>
-          ))}
-          <button
-            className={`mt-2 ${filter === "" ? `${fractionTheme}-active` : ""}`}
-            name="clear"
-            onClick={() => setFilter("")}
-          >
-            <FontAwesomeIcon icon={faRefresh} />
-          </button>
-        </div>
-      </div>
-      <div className="col-md-11">
+      <div className="col-md-12">
         <table className="custom-table h-100">
           <thead>
             <tr>

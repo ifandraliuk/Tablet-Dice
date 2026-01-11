@@ -39,13 +39,14 @@ import ScrollUpButton from "../../components/ScrollUpButton";
 import { motion } from "framer-motion";
 import { pageTransition } from "../../data/Animations";
 import { getCategoryBoni } from "../../features/inventory/inventorySlice";
+import TalentFilterSidebar from "./TalentFilterSidbar";
 
 function Talents() {
   console.log("TALENTS rendered");
 
   const { user } = useSelector((state) => state.auth);
   const { fractionTheme, attributes } = useSelector((state) => state.player);
-    const { talentBoni } = useSelector((state) => state.inventory);
+  const { talentBoni } = useSelector((state) => state.inventory);
   const {
     allTalents,
     kindName,
@@ -58,7 +59,6 @@ function Talents() {
     isError,
     message,
   } = useSelector((state) => state.talents);
-  
 
   const [filter, setFilter] = useState("");
   const [viewMode, setViewMode] = useState("active"); // "active" oder "all"
@@ -195,7 +195,7 @@ function Talents() {
 
               <div className="col-lg-7 col-md-12">
                 {attributes ? (
-                  <AttributeList  key={attributes._id} />
+                  <AttributeList key={attributes._id} />
                 ) : (
                   <Spinner animation="border" />
                 )}
@@ -245,33 +245,45 @@ function Talents() {
                     )}
                   </div>
                 </div>
-                {viewMode === "active" ? (
-                  playerTalents.length > 0 ? (
-                    <ActiveTalents
+                <div className="row">
+                  <div className="col-md-1">
+                    <TalentFilterSidebar
+                      icons={icons}
                       filter={filter}
                       setFilter={setFilter}
-                      icons={icons}
-                      edit={edit}
-                      handleChange={handleChange}
-                      handleSubmit={handleSubmit}
                       fractionTheme={fractionTheme}
-                      newTalents={newTalents}
+                    />
+                  </div>
+                   <div className="col-md-11">
+                  {viewMode === "active" ? (
+                    playerTalents.length > 0 ? (
+                      <ActiveTalents
+                        filter={filter}
+                        setFilter={setFilter}
+                        icons={icons}
+                        edit={edit}
+                        handleChange={handleChange}
+                        handleSubmit={handleSubmit}
+                        fractionTheme={fractionTheme}
+                        newTalents={newTalents}
+                        bonusMap={bonusMap}
+                      />
+                    ) : (
+                      <h5>Du hast noch keine Talente...</h5>
+                    )
+                  ) : (
+                    <AllTalents
+                      handleChange={handleChange}
+                      handleClick={addNewTalent}
+                      icons={icons}
+                      filter={filter}
+                      setFilter={setFilter}
+                      fractionTheme={fractionTheme}
                       bonusMap={bonusMap}
                     />
-                  ) : (
-                    <h5>Du hast noch keine Talente...</h5>
-                  )
-                ) : (
-                  <AllTalents
-                    handleChange={handleChange}
-                    handleClick={addNewTalent}
-                    icons={icons}
-                    filter={filter}
-                    setFilter={setFilter}
-                    fractionTheme={fractionTheme}
-                        bonusMap={bonusMap}
-                  />
-                )}
+                  )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
