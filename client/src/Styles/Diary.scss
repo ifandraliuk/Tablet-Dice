@@ -3,25 +3,38 @@
 
 .diary-page {
 
+    
+    .diary-filter-btn{
+    /* Button sitzt rechts, daher wächst er nach links */
+    align-self: flex-end;
 
-    .categories {
-        color:white;
-        text-align: center;
-        text-transform: uppercase;
-        padding: 2px;   
-        width:100%;
-    }   
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* Inhalt rechts */
+    gap: 10px;
 
-    .categories:hover{
-        letter-spacing: 7px;
-    } 
+    overflow: hidden;
+    white-space: nowrap;
 
-    .categories:focus{
-        padding: 10px;
-    margin-top:2px;
-    margin-bottom: 5px;
-    border:2px solid;
-    letter-spacing: 7px;
+    padding: 8px 10px;
+
+    color: white;
+
+    background: $infoBlack;
+    }
+
+    /* Icon bekommt fixe Breite, damit es immer sauber rechts steht */
+    .diary-filter-icon{
+    width: 24px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.4rem;  
+    }
+
+    /* Text darf nicht umbrechen und soll links “reinlaufen” */
+    .diary-filter-text{
+    display: inline-block;
     }
 
 
@@ -314,4 +327,11 @@
     .Sonstiges {
         background-color: $categoryBlue;
     }
+    .Personen-icon { color: $categoryRed; }
+.Orte-icon { color: $categoryOrange; }
+.Wissen-icon { color: $categoryYellowOrange; }
+.Erlebtes-icon { color: $categoryYellow; }
+.Aktiv-icon { color: $categoryGreen; }
+.Abgeschlossen-icon { color: $categoryJungle; }
+.Sonstiges-icon { color: $categoryBlue; }
 }

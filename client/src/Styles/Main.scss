@@ -364,7 +364,7 @@ button {
     padding: 10px 15px ;
     
 }
-button:focus{
+/* button:focus{
     box-shadow: 0px 0px 15px 5px #fff;
     color: rgb(0, 0, 0);
     background-color: white,
@@ -374,7 +374,7 @@ button:hover{
         box-shadow: 0px 0px 10px 5px #fff;
         color: rgb(0, 0, 0);
         background-color: white,
-}    
+}     */
 button:disabled{
     background-color: $infoBlack;
     opacity: 50%;

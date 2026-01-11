@@ -2,6 +2,14 @@ import React, { useEffect, useState } from "react";
 import "../../Styles/Diary.css";
 import Note from "./Note";
 import Editor from "./Editor";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faMarker,
+  faTrash,
+  faPenToSquare,
+  faPlus,
+  faFilter,
+} from "@fortawesome/free-solid-svg-icons";
 import { diaryCategories } from "../../data/ConstVariables";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -15,10 +23,13 @@ import {
 import Spinner from "react-bootstrap/Spinner";
 import { pageTransition } from "../../data/Animations";
 import { motion } from "framer-motion";
+import DiarySidebar from "./DiarySidebar";
+import ActiveDiaryCategory from "./ActiveDiaryPage";
 function Diary() {
   const { diary, userList } = useSelector((state) => state.diaries);
   const { fractionTheme } = useSelector((state) => state.player);
   const { user } = useSelector((state) => state.auth);
+  const [viewMode, setViewMode] = useState("mine"); // "mine" | "shared"
 
   const [text, setText] = useState([]);
   const [share, shareWith] = useState([user._id]);
@@ -36,7 +47,14 @@ function Diary() {
       navigate("/");
     }
   }, [navigate, user, dispatch]);
-
+  const handleShowMine = () => setViewMode("mine");
+  const handleShowShared = () => setViewMode("shared");
+  const handleToggleEdit = () => setEdit((v) => !v);
+  const handleCreate = () => {
+    setEdit(false);
+    setText(""); // falls du text state hast
+    setEditId(null); // falls du editId nutzt
+  };
   const onEdit = (e) => {
     setEdit((edit) => !edit);
     const diaryId = e.currentTarget.id;
@@ -70,7 +88,6 @@ function Diary() {
     shareWith(toEdit.players) */
   };
 
-
   const onClick = (e) => {
     console.log(e.target.value, e.target.name);
     const id = e.target.id;
@@ -81,7 +98,6 @@ function Diary() {
     }
     console.log(share);
   };
-
 
   const onRemove = (e) => {
     console.log("remove pressed");
@@ -122,32 +138,99 @@ function Diary() {
     }
   };
   return (
-    <motion.div
-      variants={pageTransition}
-      initial="init"
-      animate="animate"
-      exit="exit"
-    >
+    <motion.div>
       <div className="diary-page">
         <div className={`${fractionTheme}-bg`}>
-          <div className="container-fluid dark-bg">
+          <div className="container-fluid dark-bg pt-3">
             <div className="row">
-              <div className="col-xl-3  col-lg-3 col-md-12">
-                {diaryCategories &&
-                  diaryCategories.map((category) => (
-                    <button
-                      id={category}
-                      name={category}
-                      onClick={(e) => setCategory(e.target.name)}
-                      className={`categories ${category}`}
-                      key={category}
-                    >
-                      {category}
-                    </button>
-                  ))}
+              {/* Links: Filter */}
+              <div className="col-lg-3 col-xl-3 "></div>
+              <div className="col-lg-8 col-xl-8">
+                <div className="row align-items-center mb-2 ">
+                  <div className="col-lg-4 col-xl-4 me-auto ">
+                    <div className="button-group">
+                      <button
+                        type="button"
+                        className={`${
+                          viewMode === "mine" ? `${fractionTheme}-active` : ""
+                        }`}
+                        onClick={handleShowMine}
+                      >
+                        Meine Einträge
+                      </button>
+
+                      <button
+                        type="button"
+                        className={`${
+                          viewMode === "shared" ? `${fractionTheme}-active` : ""
+                        }`}
+                        onClick={handleShowShared}
+                      >
+                        Gemeinsame Einträge
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Rechts: Edit + Plus */}
+                  <div className="col-xl-4 d-flex justify-content-end">
+                    <div className="button-group d-flex">
+                      <button
+                        type="button"
+                        className="btn-add"
+                        onClick={handleCreate}
+                        title="Neue Notiz"
+                      >
+                        <FontAwesomeIcon icon={faPlus} />
+                      </button>
+
+                      <button
+                        type="button"
+                        className="btn-add"
+                        onClick={handleCreate}
+                        title="Neue Notiz"
+                      >
+                        <FontAwesomeIcon icon={faFilter} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="col-xl-8 col-lg-8  diary-border info-container col-md-12">
-                <Editor 
+            </div>
+            <div className="row">
+              <div className="col-xl-3 col-lg-3 col-md-12">
+                <DiarySidebar
+                  categories={diaryCategories}
+                  activeCategory={activeCategory}
+                  setCategory={setCategory}
+                  fractionTheme={fractionTheme}
+                />
+              </div>
+
+              <div className="mt-2 col-xl-8 col-lg-8 col-md-12 info-div">
+                {/* TOP BAR */}
+
+                {/* CONTENT */}
+                <ActiveDiaryCategory
+                  diary={diary}
+                  activeCategory={activeCategory}
+                  editId={editId}
+                  onRemove={onRemove}
+                  onEdit={onEdit}
+                  viewMode={viewMode} // gleich unten erklären
+                  edit={edit} // optional
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+export default Diary;
+{
+  /*                 <Editor 
                 text={text}
                 user={user}
                 userList={userList}
@@ -157,36 +240,5 @@ function Diary() {
                 activeCategory={activeCategory}
                 setText={setText}
                 onClick={onClick}
-                 onSubmit={onSubmit} />
-              </div>
-            </div>
-            {diary ? (
-              diary.length > 0 ? (
-                <div>
-                  {diary.map(
-                    (note) =>
-                      note.category === activeCategory && (
-                        <Note
-                          key={note._id}
-                          note={note}
-                          editId={editId}
-                          onRemove={onRemove}
-                          onEdit={onEdit}
-                        />
-                      )
-                  )}
-                </div>
-              ) : (
-                <h5>Du hast noch keine Notizen</h5>
-              )
-            ) : (
-              <Spinner animation="border" />
-            )}
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
+                 onSubmit={onSubmit} /> */
 }
-
-export default Diary;

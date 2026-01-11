@@ -3,40 +3,20 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMarker, faTrash } from "@fortawesome/free-solid-svg-icons";
 function Note(props) {
-  const { note, onEdit, editId, onRemove } = props;
-  const { players, category, text } = note;
+  const { note, onEdit, editId, onRemove, activeCategory } = props;
+  const { players, category, text, createdAt } = note;
 
   return (
-    <div className="row ">
-      <div className="col-lg-3 col-xl-3   col-md-11  d-flex justify-content-end">
-        <div className="col-lg-auto d-flex profile-card  mt-auto mb-auto justify-content-end">
-          {players.map((player) => {
-            const originName = player?.general?.origin.split(" ");
-            const origin = originName[originName?.length - 1];
-            return (
-              <div key={player._id}>
-                <picture>
-                  <img
-                    className={`profile-img ${origin}-border`}
-                    src={`/user/${player._id}.jpeg`}
-                    alt={`${player.name}`}
-                  />
-                </picture>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-      <div className="col-lg-8 col-xl-8 col-md-11 note-body diary-border">
-        {editId === note._id ? <strong>Diese Notiz wird oben auf der Seite bearbeitet</strong> : <></>}
+    <div className="row mt-1">
+      <h2 className={`${activeCategory}-icon`}>
+        {" "}
+        {new Intl.DateTimeFormat("de-DE", {
+          dateStyle: "medium",
+          timeStyle: "short",
+        }).format(new Date(note.createdAt))}
+      </h2>
+      <div className="col-lg-10 col-xl- col-md-11 ms-5 mb-4">
         <div className="row">
-          <div className="col-auto">
-            {category ? (
-              <div className={` ${category}`}>{category}</div>
-            ) : (
-              <div>KEINE</div>
-            )}
-          </div>
           <div className="col-auto d-flex justify-content-end">
             <div className="button-group d-flex">
               <button className="btn-edit" id={note._id} onClick={onEdit}>
@@ -49,7 +29,7 @@ function Note(props) {
           </div>
         </div>
         <div>
-          <p dangerouslySetInnerHTML={{__html:text}}></p>
+          <p dangerouslySetInnerHTML={{ __html: text }}></p>
         </div>
       </div>
     </div>
