@@ -4,26 +4,23 @@ import { AnimatePresence, motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 
-function ItemIcon({ animationDelay, item, specialAmount, enchantment, large }) {
+function ItemIcon({ animationDelay, item, specialAmount, enchantment, large, isEmpty }) {
   const itemInfo = item?.item ?? item;
   const { genus, category, rarity } = itemInfo ?? {};
   const amount = item?.amount;
 
-  if (!genus || !category || !rarity) {
-    // Handle the case where essential properties are undefined
-    return <FontAwesomeIcon icon={faX} />;
-  }
+
 
   const rarityColor = enchantment?.rarity
     ? itemNames?.rarity[enchantment.rarity]
-    : itemNames?.rarity[rarity];
+    : itemNames?.rarity[rarity] ? itemNames?.rarity[rarity]  : "common";
 
   const genusName = itemNames?.genus[genus];
   const categoryName = itemNames?.category[category];
-  let iconSrc = `/color_icons/${categoryName}/${genusName}/${itemInfo?._id}.svg`;
+  let iconSrc = isEmpty ? `/color_icons/empty.svg`: `/color_icons/${categoryName}/${genusName}/${itemInfo?._id}.svg`;
 
   const handleImageError = (event) => {
-    event.target.src = `/color_icons/${categoryName}/${genusName}/${genusName}.svg`;
+    event.target.src =  `/color_icons/${categoryName}/${genusName}/${genusName}.svg`;
   };
 
   return (
