@@ -45,6 +45,12 @@ const ActiveDiaryCategory = React.memo(function ActiveDiaryCategory({
     return () => clearTimeout(timer);
   }, [submitMessage]);
 
+  useEffect(() => {
+    setEdit(false);
+    setEditId("");
+    setDraftText("");
+  }, [activeCategory]);
+
   const notes = useMemo(() => {
     if (!Array.isArray(diary)) return [];
 
@@ -70,6 +76,12 @@ const ActiveDiaryCategory = React.memo(function ActiveDiaryCategory({
     return <h5>Keine Notizen in dieser Kategorie</h5>;
   }
 
+  const onCancelEdit = () => {
+    setEdit(false);
+    setEditId("");
+    setDraftText("");
+  };
+
   const onEdit = (e) => {
     setEdit((edit) => !edit);
 
@@ -77,12 +89,6 @@ const ActiveDiaryCategory = React.memo(function ActiveDiaryCategory({
     const note = notes.find((n) => n._id === diaryId);
     setDraftText(note?.text);
     setEditId(diaryId.toString());
-  };
-
-  const onCancelEdit = (e) => {
-    setEdit(false);
-    setEditId("");
-    setDraftText("");
   };
 
   const onSubmit = (e) => {
