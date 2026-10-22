@@ -131,60 +131,6 @@ function Diary() {
         <div className={`${fractionTheme}-bg`}>
           <div className="container-fluid dark-bg pt-3">
             <div className="row">
-              {/* Links: Filter */}
-              <div className="col-lg-3 col-xl-3 "></div>
-              <div className="col-lg-8 col-xl-8">
-                <div className="row align-items-center mb-2 ">
-                  <div className="col-lg-4 col-xl-4 me-auto ">
-                    <div className="button-group">
-                      <button
-                        type="button"
-                        className={`${
-                          viewMode === "mine" ? `${fractionTheme}-active` : ""
-                        }`}
-                        onClick={handleShowMine}
-                      >
-                        Meine Einträge ({mineCount})
-                      </button>
-
-                      <button
-                        type="button"
-                        className={`${
-                          viewMode === "shared" ? `${fractionTheme}-active` : ""
-                        }`}
-                        onClick={handleShowShared}
-                      >
-                        Gemeinsame Einträge ({sharedCount})
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Rechts: Edit + Plus */}
-                  <div className="col-xl-4 d-flex justify-content-end">
-                    <div className="button-group d-flex">
-                      <button
-                        type="button"
-                        className="btn-add"
-                        onClick={handleCreate}
-                        title="Neue Notiz"
-                      >
-                        <FontAwesomeIcon icon={faPlus} />
-                      </button>
-
-                      <button
-                        type="button"
-                        className="btn-add"
-                        onClick={handleCreate}
-                        title="Filter"
-                      >
-                        <FontAwesomeIcon icon={faFilter} />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="row">
               <div className="col-xl-3 col-lg-3 col-md-12">
                 <DiarySidebar
                   diary={diary}
@@ -197,6 +143,58 @@ function Diary() {
 
               <div className="mt-2 col-xl-8 col-lg-8 col-md-12 info-div">
                 {/* TOP BAR */}
+                <div
+                  className="d-flex align-items-center justify-content-between flex-wrap"
+                  style={{ gap: "12px" }}
+                >
+                  <div
+                    className="button-group d-flex align-items-center"
+                    style={{ flexWrap: "nowrap" }}
+                  >
+                    <button
+                      type="button"
+                      className={`${
+                        viewMode === "mine" ? `${fractionTheme}-active` : ""
+                      }`}
+                      onClick={handleShowMine}
+                    >
+                      Meine Einträge ({mineCount})
+                    </button>
+
+                    <button
+                      type="button"
+                      className={`${
+                        viewMode === "shared" ? `${fractionTheme}-active` : ""
+                      }`}
+                      onClick={handleShowShared}
+                    >
+                      Gemeinsame Einträge ({sharedCount})
+                    </button>
+                  </div>
+
+                  <div
+                    className="button-group d-flex align-items-center"
+                    style={{ flexWrap: "nowrap"}}
+                  >
+                    <button
+                      type="button"
+                      className="btn-add"
+                      onClick={handleCreate}
+                      title="Neue Notiz"
+                    >
+                      <FontAwesomeIcon icon={faPlus} />
+                    </button>
+
+                    <button
+                      type="button"
+                      className="btn-add"
+                      onClick={handleCreate}
+                      title="Filter"
+                    >
+                      <FontAwesomeIcon icon={faFilter} />
+                    </button>
+                  </div>
+                </div>
 
                 {/* CONTENT */}
                 <ActiveDiaryCategory
@@ -212,8 +210,8 @@ function Diary() {
                   onClick={onClick}
                   onSubmit={onSubmit}
                   setText={setText}
-                  viewMode={viewMode} // gleich unten erklären
-                  edit={edit} // optional
+                  viewMode={viewMode}
+                  edit={edit}
                 />
               </div>
             </div>
