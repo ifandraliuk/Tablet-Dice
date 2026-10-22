@@ -106,7 +106,7 @@ function Diary() {
       setSave(false);
     }
   };
-  const userId = user?._id;
+
 
   const mineCount =
     diary?.filter((entry) => {

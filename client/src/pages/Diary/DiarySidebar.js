@@ -98,7 +98,7 @@ const DiarySidebar = React.memo(function DiarySidebar({
             <span className="diary-filter-icon">
               <FontAwesomeIcon
                 icon={icons[category]}
-                className={`${activeCategory === category ? category : ""}-icon`}
+                className={`${activeCategory === category ? fractionTheme : ""}-text`}
               />
             </span>
           </motion.button>
