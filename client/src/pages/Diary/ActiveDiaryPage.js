@@ -30,15 +30,17 @@ const ActiveDiaryCategory = React.memo(function ActiveDiaryCategory({
   const [editId, setEditId] = useState("");
   const [saveData, setSave] = useState(false);
   const [draftText, setDraftText] = useState("");
+
   const notes = useMemo(() => {
     if (!Array.isArray(diary)) return [];
+
     return diary
       .filter((note) => note.category === activeCategory)
       .filter((note) => {
         if (viewMode === "mine") {
           return note.players?.length === 1;
         }
-        return true; // "shared" / "all"
+        return true;
       });
   }, [diary, activeCategory, viewMode]);
 
@@ -59,7 +61,6 @@ const ActiveDiaryCategory = React.memo(function ActiveDiaryCategory({
     const diaryId = e.currentTarget.id;
     const note = notes.find((n) => n._id === diaryId);
     setDraftText(note?.text); // initialer Text
-    console.log(diaryId);
     setEditId(diaryId.toString());
   };
   const onCancelEdit = (e) => {

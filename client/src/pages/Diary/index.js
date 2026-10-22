@@ -106,7 +106,21 @@ function Diary() {
       setSave(false);
     }
   };
-/* TODOS:
+  const userId = user?._id;
+
+  const mineCount =
+    diary?.filter((entry) => {
+      const isActiveCategory = entry?.category === activeCategory;
+      const players = entry?.players || [];
+      return isActiveCategory && players.length === 1;
+    }).length || 0;
+
+  const sharedCount =
+    diary?.filter((entry) => {
+      const players = entry?.players || [];
+      return players.length > 1 && entry?.category === activeCategory;
+    }).length || 0;
+  /* TODOS:
   1. edit mode -switch from Note to Editor
   2. create popup for filter - options - ascending desc for date
   3. create popup for create mode
@@ -130,7 +144,7 @@ function Diary() {
                         }`}
                         onClick={handleShowMine}
                       >
-                        Meine Einträge
+                        Meine Einträge ({mineCount})
                       </button>
 
                       <button
@@ -140,7 +154,7 @@ function Diary() {
                         }`}
                         onClick={handleShowShared}
                       >
-                        Gemeinsame Einträge
+                        Gemeinsame Einträge ({sharedCount})
                       </button>
                     </div>
                   </div>
@@ -161,7 +175,7 @@ function Diary() {
                         type="button"
                         className="btn-add"
                         onClick={handleCreate}
-                        title="Neue Notiz"
+                        title="Filter"
                       >
                         <FontAwesomeIcon icon={faFilter} />
                       </button>
@@ -173,6 +187,7 @@ function Diary() {
             <div className="row">
               <div className="col-xl-3 col-lg-3 col-md-12">
                 <DiarySidebar
+                  diary={diary}
                   categories={diaryCategories}
                   activeCategory={activeCategory}
                   setCategory={setCategory}
