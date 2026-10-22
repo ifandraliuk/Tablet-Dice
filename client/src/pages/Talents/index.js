@@ -202,20 +202,31 @@ function Talents() {
                 <div className="row align-items-center">
                   {/* Linksbündige Buttons */}
                   <div className="col-auto me-auto">
-                    <div className="button-group">
+                    <div
+                      className="segmented-toggle"
+                      role="tablist"
+                      aria-label="Talent view"
+                    >
                       <button
                         type="button"
-                        className={`${
-                          viewMode === "active" ? `${fractionTheme}-active` : ""
+                        role="tab"
+                        aria-selected={viewMode === "active"}
+                        aria-pressed={viewMode === "active"}
+                        className={`segmented-toggle__button ${
+                          viewMode === "active" ? "is-active" : ""
                         }`}
                         onClick={handleShowActiveTalents}
                       >
-                        Erlente talente
+                        Erlente Talente
                       </button>
+
                       <button
                         type="button"
-                        className={`${
-                          viewMode === "all" ? `${fractionTheme}-active` : ""
+                        role="tab"
+                        aria-selected={viewMode === "all"}
+                        aria-pressed={viewMode === "all"}
+                        className={`segmented-toggle__button ${
+                          viewMode === "all" ? "is-active" : ""
                         }`}
                         onClick={handleShowAllTalents}
                       >

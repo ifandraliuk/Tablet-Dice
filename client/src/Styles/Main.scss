@@ -287,10 +287,10 @@ padding: 5px;
     border-color: azure;
     color: $infoBlack;
 }
-.btn-light:hover{
+/* .btn-light:hover{
     background-color: $infoBlack;
     color: #fff;
-}
+} */
 .btn-up {
     position: fixed;
     bottom: 0;
@@ -364,17 +364,22 @@ button {
     padding: 10px 15px ;
     
 }
+button:hover {
+  color: rgba(255, 255, 255, 0.98);
+  background: rgba(255, 255, 255, 0.06);
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
 /* button:focus{
     box-shadow: 0px 0px 15px 5px #fff;
     color: rgb(0, 0, 0);
     background-color: white,
     }
 */    
-button:hover{
+/* button:hover{
 
         color: rgb(0, 0, 0);
         background-color: white,
-}     
+}   */   
 button:disabled{
     background-color: $infoBlack;
     opacity: 50%;
@@ -698,5 +703,44 @@ h5 {
 .Schurke{
     background-color: $categoryBlue;
 }
+
+/* SEGMENTED CONTROL STYLES */
+.segmented-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  white-space: nowrap;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.segmented-toggle__button {
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.72);
+  white-space: nowrap;
+  padding: 0.7rem 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease;
+
+
+
+  &.is-active {
+    color: var(--fraction-accent, #ffffff);
+    border-bottom-color: var(--fraction-accent, #ffffff);
+  }
+}
+
+.Algor-bg { --fraction-accent: #{$algorMain}; }
+.Beltamor-bg { --fraction-accent: #{$beltamorMain}; }
+.Ethelion-bg { --fraction-accent: #{$ethelionMain}; }
+.Medorien-bg { --fraction-accent: #{$medorienMain}; }
+.Thornheim-bg { --fraction-accent: #{$thornheimMain}; }
+.Welles-bg { --fraction-accent: #{$wellesMain}; }
+.Thamor-bg { --fraction-accent: #{$thamorMain}; }
+.general-bg { --fraction-accent: #ffffff; }
 
 
