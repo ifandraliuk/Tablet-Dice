@@ -299,9 +299,9 @@ padding: 5px;
 }
 
 .btn-save{
-    background-color: $infoBlack;
+    background-color: transparent;
     padding: 2px 10px;
-    border: 2px solid;
+    border: none;
     border-color: azure;
 }
 .btn-save:hover:enabled{
@@ -309,34 +309,33 @@ padding: 5px;
 }
 
 .btn-edit{
-    background-color: $infoBlack;
+    background-color: transparent;
     padding: 2px 10px;
-    border: 2px solid;
-    border-color: azure;
+    border: none;
+
 }
 .btn-edit:hover{
-    background-color: $categoryOrange;
+    color: $categoryOrange;
 }
 .btn-edit:focus{
-    background-color: $categoryOrange;
-    color: #fff;
+    color: $categoryOrange;
+  
 }
  .btn-remove{
-    background-color: $infoBlack;
+    background-color: transparent;
     padding: 2px 10px;
-    border: 2px solid 5%;
-    border-color: $infoBlack;
+    border: none;
 
   }
 .btn-remove:hover:enabled{
-    background-color: $categoryRed;
-    border-color: azure;
+    color: $categoryRed;
+   
 }
 .btn-enchantment {
     background-color: $infoBlack;
     padding: 2px 10px;
     border: 2px solid;
-    border-color: azure;
+   
 
 }
 
@@ -355,13 +354,12 @@ padding: 5px;
 }
 button {
     border:none;
-    background-color: $infoBlack;
+    background-color: transparent;
     color: white;
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    margin-bottom: 5px;
-    padding: 10px 15px ;
+   
     
 }
 button:hover {

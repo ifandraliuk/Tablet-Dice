@@ -289,9 +289,9 @@ p {
 }
 
 .btn-save {
-  background-color: rgb(24, 24, 24);
+  background-color: transparent;
   padding: 2px 10px;
-  border: 2px solid;
+  border: none;
   border-color: azure;
 }
 
@@ -300,38 +300,33 @@ p {
 }
 
 .btn-edit {
-  background-color: rgb(24, 24, 24);
+  background-color: transparent;
   padding: 2px 10px;
-  border: 2px solid;
-  border-color: azure;
+  border: none;
 }
 
 .btn-edit:hover {
-  background-color: rgb(243, 114, 44);
+  color: rgb(243, 114, 44);
 }
 
 .btn-edit:focus {
-  background-color: rgb(243, 114, 44);
-  color: #fff;
+  color: rgb(243, 114, 44);
 }
 
 .btn-remove {
-  background-color: rgb(24, 24, 24);
+  background-color: transparent;
   padding: 2px 10px;
-  border: 2px solid 5%;
-  border-color: rgb(24, 24, 24);
+  border: none;
 }
 
 .btn-remove:hover:enabled {
-  background-color: rgb(249, 65, 68);
-  border-color: azure;
+  color: rgb(249, 65, 68);
 }
 
 .btn-enchantment {
   background-color: rgb(24, 24, 24);
   padding: 2px 10px;
   border: 2px solid;
-  border-color: azure;
 }
 
 .btn-enchantment:hover {
@@ -352,13 +347,11 @@ p {
 
 button {
   border: none;
-  background-color: rgb(24, 24, 24);
+  background-color: transparent;
   color: white;
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  margin-bottom: 5px;
-  padding: 10px 15px;
 }
 
 button:hover {

@@ -186,94 +186,74 @@ function Diary() {
 
               <div className="mt-2 col-xl-8 col-lg-8 col-md-12 info-div">
                 {/* TOP BAR */}
-                <div
-                  className="d-flex align-items-center justify-content-between flex-wrap"
-                  style={{ gap: "12px" }}
-                >
-                  <div className="row align-items-center mb-2 ">
-                    <div className="col-lg-4 col-xl-4 me-auto ">
-                      <div
-                        className="segmented-toggle"
-                        role="tablist"
-                        aria-label="Diary view"
+                <div className="d-flex align-items-center justify-content-between w-100" style={{ gap: "12px" }}>
+                  <div className="segmented-toggle" role="tablist" aria-label="Diary view">
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={viewMode === "mine"}
+                      aria-pressed={viewMode === "mine"}
+                      className={`segmented-toggle__button ${viewMode === "mine" ? "is-active" : ""}`}
+                      onClick={handleShowMine}
+                    >
+                      Meine Einträge ({mineCount})
+                    </button>
+
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={viewMode === "shared"}
+                      aria-pressed={viewMode === "shared"}
+                      className={`segmented-toggle__button ${viewMode === "shared" ? "is-active" : ""}`}
+                      onClick={handleShowShared}
+                    >
+                      Gemeinsame Einträge ({sharedCount})
+                    </button>
+                  </div>
+
+                  <div className="d-flex align-items-center" style={{ flexWrap: "nowrap", marginLeft: "auto" }}>
+                    <button
+                      type="button"
+                      className="btn-add"
+                      onClick={handleCreate}
+                      title="Neue Notiz"
+                    >
+                      <FontAwesomeIcon icon={faPlus} />
+                    </button>
+
+                    <div className="filter-popup-wrap">
+                      <button
+                        type="button"
+                        className="btn-add"
+                        onClick={() => setShowFilterPopup((v) => !v)}
+                        title="Filter"
                       >
-                        <button
-                          type="button"
-                          role="tab"
-                          aria-selected={viewMode === "mine"}
-                          aria-pressed={viewMode === "mine"}
-                          className={`segmented-toggle__button ${
-                            viewMode === "mine" ? "is-active" : ""
-                          }`}
-                          onClick={handleShowMine}
-                        >
-                          Meine Einträge ({mineCount})
-                        </button>
+                        <FontAwesomeIcon icon={faFilter} />
+                      </button>
 
-                        <button
-                          type="button"
-                          role="tab"
-                          aria-selected={viewMode === "shared"}
-                          aria-pressed={viewMode === "shared"}
-                          className={`segmented-toggle__button ${
-                            viewMode === "shared" ? "is-active" : ""
-                          }`}
-                          onClick={handleShowShared}
-                        >
-                          Gemeinsame Einträge ({sharedCount})
-                        </button>
-                      </div>
-                    </div>
+                      {showFilterPopup && (
+                        <div className="filter-sort-popup">
+                          <label className="filter-sort-option">
+                            <input
+                              type="radio"
+                              name="diarySort"
+                              checked={sortDirection === "desc"}
+                              onChange={() => handleSortChange("desc")}
+                            />
+                            Absteigend
+                          </label>
 
-                    <div className="col-xl-4 d-flex justify-content-end">
-                      <div
-                        className="button-group d-flex align-items-center"
-                        style={{ flexWrap: "nowrap" }}
-                      >
-                        <button
-                          type="button"
-                          className="btn-add"
-                          onClick={handleCreate}
-                          title="Neue Notiz"
-                        >
-                          <FontAwesomeIcon icon={faPlus} />
-                        </button>
-
-                        <div className="filter-popup-wrap">
-                          <button
-                            type="button"
-                            className="btn-add"
-                            onClick={() => setShowFilterPopup((v) => !v)}
-                            title="Filter"
-                          >
-                            <FontAwesomeIcon icon={faFilter} />
-                          </button>
-
-                          {showFilterPopup && (
-                            <div className="filter-sort-popup">
-                              <label className="filter-sort-option">
-                                <input
-                                  type="radio"
-                                  name="diarySort"
-                                  checked={sortDirection === "desc"}
-                                  onChange={() => handleSortChange("desc")}
-                                />
-                                Absteigend
-                              </label>
-
-                              <label className="filter-sort-option">
-                                <input
-                                  type="radio"
-                                  name="diarySort"
-                                  checked={sortDirection === "asc"}
-                                  onChange={() => handleSortChange("asc")}
-                                />
-                                Aufsteigend
-                              </label>
-                            </div>
-                          )}
+                          <label className="filter-sort-option">
+                            <input
+                              type="radio"
+                              name="diarySort"
+                              checked={sortDirection === "asc"}
+                              onChange={() => handleSortChange("asc")}
+                            />
+                            Aufsteigend
+                          </label>
                         </div>
-                      </div>
+                      )}
                     </div>
                   </div>
                 </div>

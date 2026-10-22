@@ -89,7 +89,7 @@ function Note(props) {
               </button>
             </OverlayTrigger>
 
-            <div className="button-group">
+            <div >
               {isEditing ? (
                 <button type="button" className="btn-save" id={note._id}>
                   <FontAwesomeIcon icon={faFloppyDisk} />
