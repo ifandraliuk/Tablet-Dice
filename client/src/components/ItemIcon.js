@@ -19,7 +19,9 @@ function ItemIcon({ animationDelay, item, specialAmount, enchantment, large, isE
     ? `/color_icons/empty.svg`
     : `/color_icons/${categoryName}/${genusName}/${itemInfo?._id}.svg`;
 
-  const size = large ? 72 : 42;
+  const size = large
+    ? "clamp(100px, 20vw, 200px)"
+    : "clamp(28px, 4vw, 52px)";
 
   const handleImageError = (event) => {
     event.target.src = `/color_icons/${categoryName}/${genusName}/${genusName}.svg`;

@@ -32,7 +32,7 @@ function Items({items, addItem, itemSelected, getDetails}) {
             <tr key={item._id}>
               <td className="pb-0">
 
-                <ItemIcon item={item} enchantment={null}/>
+                <ItemIcon large={true} item={item} enchantment={null}/>
               </td>
               <td>{item.name}</td>
               <td>{item.type}</td>
