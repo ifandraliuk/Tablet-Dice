@@ -8,10 +8,11 @@ import {
   getMyDiary,
   removeDiary,
 } from "../../features/diary/diarySlice";
-import Note from "./Note"; // Pfad ggf. anpassen
+import Note from "./Note";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMarker, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Editor from "./Editor";
+
 const ActiveDiaryCategory = React.memo(function ActiveDiaryCategory({
   diary,
   activeCategory,
@@ -31,12 +32,14 @@ const ActiveDiaryCategory = React.memo(function ActiveDiaryCategory({
   const [saveData, setSave] = useState(false);
   const [draftText, setDraftText] = useState("");
   const [submitMessage, setSubmitMessage] = useState("");
+  const [editedNoteId, setEditedNoteId] = useState("");
 
   useEffect(() => {
     if (!submitMessage) return;
 
     const timer = setTimeout(() => {
       setSubmitMessage("");
+      setEditedNoteId("");
     }, 2500);
 
     return () => clearTimeout(timer);
@@ -66,63 +69,50 @@ const ActiveDiaryCategory = React.memo(function ActiveDiaryCategory({
   if (notes.length === 0) {
     return <h5>Keine Notizen in dieser Kategorie</h5>;
   }
+
   const onEdit = (e) => {
     setEdit((edit) => !edit);
 
     const diaryId = e.currentTarget.id;
     const note = notes.find((n) => n._id === diaryId);
-    setDraftText(note?.text); // initialer Text
+    setDraftText(note?.text);
     setEditId(diaryId.toString());
   };
+
   const onCancelEdit = (e) => {
     setEdit(false);
     setEditId("");
     setDraftText("");
   };
+
   const onSubmit = (e) => {
-    console.log("submit");
     e.preventDefault();
+
     const players = share;
-    console.log(players);
+
     if (draftText.length > 0 && saveData) {
       const data = {
         text: draftText,
         players: players,
         category: activeCategory,
       };
-      //  if (edit) {
-      console.log("edit note");
-      console.log(data);
-      console.log(editId);
+
       dispatch(editDiary({ id: editId, data: data }));
+      setEditedNoteId(editId);
       setSubmitMessage("Notiz erfolgreich bearbeitet.");
       setEditId("");
       setEdit(false);
-    } /*  else {
-        console.log("posting a diary note");
-        dispatch(postDiary(data));
-      } */
-    document.getElementById("journal").reset();
-    /*       if (activeCategory?.length > 0) {
-        document.getElementById(activeCategory).focus();
-      } */
+    }
+
+    document.getElementById("journal")?.reset();
     setText("");
     shareWith([user._id]);
     setSave(false);
   };
+
   return (
     <div className="">
       <div className="row mt-2"></div>
-
-      {submitMessage && (
-        <div
-          className="diary-submit-success"
-          role="status"
-          aria-live="polite"
-        >
-          {submitMessage}
-        </div>
-      )}
 
       {notes.map((note) =>
         editId === note._id ? (
@@ -133,8 +123,6 @@ const ActiveDiaryCategory = React.memo(function ActiveDiaryCategory({
             draftText={draftText}
             user={user}
             userList={userList}
-            //    onEdit={onEdit}
-            //    onCancelEdit={onCancelEdit}
             edit={true}
             editId={editId}
             share={share}
@@ -153,6 +141,9 @@ const ActiveDiaryCategory = React.memo(function ActiveDiaryCategory({
             editId={editId}
             onRemove={onRemove}
             onEdit={onEdit}
+            submitMessage={
+              submitMessage && editedNoteId === note._id ? submitMessage : ""
+            }
           />
         ),
       )}
