@@ -289,17 +289,6 @@ p {
   height: 3em;
 }
 
-.btn-save {
-  background-color: rgb(24, 24, 24);
-  padding: 2px 10px;
-  border: 2px solid;
-  border-color: azure;
-}
-
-.btn-save:hover:enabled {
-  background-color: rgb(67, 170, 139);
-}
-
 .btn-edit {
   background-color: rgb(24, 24, 24);
   padding: 2px 10px;
@@ -316,17 +305,7 @@ p {
   color: #fff;
 }
 
-.btn-remove {
-  background-color: rgb(24, 24, 24);
-  padding: 2px 10px;
-  border: 2px solid 5%;
-  border-color: rgb(24, 24, 24);
-}
 
-.btn-remove:hover:enabled {
-  background-color: rgb(249, 65, 68);
-  border-color: azure;
-}
 
 .btn-enchantment {
   background-color: rgb(24, 24, 24);

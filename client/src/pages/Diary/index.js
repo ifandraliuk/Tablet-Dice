@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import "../../Styles/Diary.css";
 import Note from "./Note";
 import Editor from "./Editor";
+import NotePopup from "./NotePopup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMarker,
@@ -48,11 +49,23 @@ function Diary() {
   const [edit, setEdit] = useState(false);
   const [editId, setEditId] = useState("");
   const [showFilterPopup, setShowFilterPopup] = useState(false);
+  const [isCreatePopupOpen, setIsCreatePopupOpen] = useState(false);
 
   const [sortDirection, setSortDirection] = useState(() => {
     return localStorage.getItem(SORT_KEY) || "desc";
   });
-
+const modules = {
+  toolbar: [
+    [{ header: [4] }],
+    [{ size: ["small", false, "large"] }],
+    ["bold", "italic", "underline"],
+    [{ list: "ordered" }, { list: "bullet" }],
+    [{ indent: "-1" }, { indent: "+1" }],
+    [{ align: [] }],
+    ["clean"],
+    ["link", "image"],
+  ],
+};
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -82,8 +95,31 @@ function Diary() {
   const handleToggleEdit = () => setEdit((v) => !v);
   const handleCreate = () => {
     setEdit(false);
-    setText(""); // falls du text state hast
-    setEditId(null); // falls du editId nutzt
+    setText("");
+    setEditId(null);
+    setIsCreatePopupOpen(true);
+  };
+
+  const closeCreatePopup = () => {
+    setIsCreatePopupOpen(false);
+  };
+
+  const handleCreatePopupSave = () => {
+    const noteText = String(text ?? "").trim();
+
+    if (!noteText) return;
+
+    dispatch(
+      postDiary({
+        text: noteText,
+        players: share,
+        category: activeCategory,
+      })
+    );
+
+    setText("");
+    shareWith([user._id]);
+    closeCreatePopup();
   };
 
   const onClick = (e) => {
@@ -257,6 +293,23 @@ function Diary() {
                     </div>
                   </div>
                 </div>
+
+                {isCreatePopupOpen && (
+                  <NotePopup
+                  modules={modules}
+                    closeCreatePopup={closeCreatePopup}
+                    text={text}
+                    setText={setText}
+                    user={user}
+                    userList={userList}
+                    share={share}
+                    setSave={setSave}
+                    activeCategory={activeCategory}
+                    onClick={onClick}
+                    onRemove={onRemove}
+                    handleCreatePopupSave={handleCreatePopupSave}
+                  />
+                )}
 
                 {/* CONTENT */}
                 <ActiveDiaryCategory

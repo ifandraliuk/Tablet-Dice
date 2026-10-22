@@ -27,22 +27,54 @@ const modules = {
   ],
 };
 
-const Editor = ({
-  note, // user text input
+function Editor({
+  note = {},
+  draftText = "",
   setDraftText,
-  draftText,
-  user, // user id for sharing options
-  userList, // list of all users
-  edit, // edit mode is active or not
+  user,
+  userList,
+  edit,
   editId,
-  onCancelEdit,
-  share, // note shared with users
-  setSave, // save note
-  activeCategory, // chosen category
-  onClick, // share with users
+  share = [],
+  setSave,
+  activeCategory,
+  onClick,
   onSubmit,
   onRemove,
-}) => {
+  onCancelEdit,
+}) {
+  const safePlayers = Array.isArray(note?.players) ? note.players : [];
+  const safeShare = Array.isArray(share) ? share : [];
+  const safeUserList = Array.isArray(userList) ? userList : [];
+
+  const createdAtValue = note?.createdAt;
+  const createdAtDate =
+    createdAtValue && !Number.isNaN(new Date(createdAtValue).getTime())
+      ? new Date(createdAtValue)
+      : null;
+
+  const createdLabel = createdAtDate
+    ? new Intl.DateTimeFormat("de-DE", {
+        dateStyle: "medium",
+        timeStyle: "short",
+      }).format(createdAtDate)
+    : "Ohne Datum";
+
+  const dateText = createdAtDate
+    ? createdAtDate.toLocaleDateString("de-DE", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      })
+    : "";
+
+  const timeText = createdAtDate
+    ? createdAtDate.toLocaleTimeString("de-DE", {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : "";
+
   const [shareActive, setShare] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [shareDraft, setShareDraft] = useState([]);
@@ -69,22 +101,17 @@ const Editor = ({
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
     );
   };
+
   return (
     <div>
       <div>
-        <div className="col-lg-11 d-flex align-items-center justify-content-between mb-2">
-          <h2 className={`${activeCategory}-icon`}>
-            {" "}
-            {new Intl.DateTimeFormat("de-DE", {
-              dateStyle: "medium",
-              timeStyle: "short",
-            }).format(new Date(note.createdAt))}
-          </h2>
+        <div className="col-lg-11 d-flex align-items-center justify-content-end mb-2">
+         {/*  <h2 className={`note-date ${activeCategory}-icon`}>{createdLabel}</h2> */}
 
-          <div className="button-group d-flex">
-            <button className="btn-edit" title="Teilen" onClick={openShare}>
+          <div className="d-flex">
+            <button title="Teilen" onClick={openShare}>
               <FontAwesomeIcon icon={faUserGroup} />
-              {`${note.players.length ?? 1} `}
+              {`${safePlayers.length ?? 1} `}
               <FontAwesomeIcon icon={faPlus} />
             </button>
             <button
@@ -126,7 +153,7 @@ const Editor = ({
       </div>
     </div>
   );
-};
+}
 
 export default Editor;
 /*            {shareActive && (

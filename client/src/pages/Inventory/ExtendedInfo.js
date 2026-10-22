@@ -19,6 +19,7 @@ import {
 import { getUsers } from "../../features/diary/diarySlice";
 import { buttonImpackt } from "../../data/Animations";
 import MotionButton from "../../components/MotionButton";
+
 function ExtendedInfo({
   minimized,
   dbButtons,
@@ -103,26 +104,30 @@ function ExtendedInfo({
       },
     },
   };
+
   return (
     <motion.div
-      variants={!isOpen ? exitAnimation : {}}
-      animate="animate"
-      className="blur-bg"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="extended-info-backdrop"
+      onClick={() => setIsOpen(false)}
     >
       <motion.div
         variants={isOpen ? openAnimation : closeAnimation}
         initial="initial"
         animate="animate"
         onAnimationComplete={() => {
-          // Callback triggered after animation completes
           if (!isOpen) {
             hideInfo(false);
           }
         }}
         key="extended-container"
-        className="info-container container overflow-auto"
+        className="extended-info-modal container overflow-auto"
+        onClick={(e) => e.stopPropagation()}
       >
-        <motion.div key="form" className="row border ">
+        <motion.div key="form" className="row">
           <motion.div
             key="col1"
             id="col1"
