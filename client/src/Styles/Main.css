@@ -368,12 +368,12 @@ button {
     color: rgb(0, 0, 0);
     background-color: white,
     }
+*/
+button:hover {
+  color: rgb(0, 0, 0);
+  background-color: white;
+}
 
-button:hover{
-        box-shadow: 0px 0px 10px 5px #fff;
-        color: rgb(0, 0, 0);
-        background-color: white,
-}     */
 button:disabled {
   background-color: rgb(24, 24, 24);
   opacity: 50%;
@@ -644,38 +644,31 @@ h5 {
 
 .Algor-active {
   background-color: #cc4749;
-  box-shadow: 0px 0px 15px 5px #962424;
 }
 
 .Beltamor-active {
   background-color: #308fe8;
-  box-shadow: 0px 0px 15px 5px #00509d;
 }
 
 .Ethelion-active {
   background-color: #2B9348;
-  box-shadow: 0px 0px 15px 5px #229680;
 }
 
 .Medorien-active {
   background-color: #cb6327;
-  box-shadow: 0px 0px 15px 5px #cf7900;
 }
 
 .Thornheim-active {
   background-color: #95ecff;
-  box-shadow: 0px 0px 15px 5px #99ccff;
   color: black;
 }
 
 .Thamor-active {
   background-color: #c9a7ff;
-  box-shadow: 0px 0px 15px 5px #c9a7ff;
 }
 
 .Welles-active {
   background-color: rgb(245, 235, 130);
-  box-shadow: 0px 0px 15px 5px #fdeb27;
   color: rgb(22, 22, 20);
 }
 

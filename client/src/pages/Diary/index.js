@@ -37,6 +37,7 @@ function Diary() {
   const [saveData, setSave] = useState(false);
   const [edit, setEdit] = useState(false);
   const [editId, setEditId] = useState("");
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
@@ -54,38 +55,6 @@ function Diary() {
     setEdit(false);
     setText(""); // falls du text state hast
     setEditId(null); // falls du editId nutzt
-  };
-  const onEdit = (e) => {
-    setEdit((edit) => !edit);
-    const diaryId = e.currentTarget.id;
-    console.log(diaryId);
-    setEditId(diaryId.toString());
-    let playerIds = [];
-    const toEdit = diary.find((d) => d._id === diaryId.toString());
-    console.log(toEdit);
-    if (!toEdit) {
-      return false;
-    }
-    setText(toEdit.text);
-    if (toEdit.category) {
-      setCategory(toEdit.category);
-    } else {
-      setCategory("");
-    }
-    toEdit.players?.map((player) => playerIds.push(player._id));
-    shareWith(playerIds);
-    /*    if(!toEdit){
-      return false
-    }
-    
-    if(toEdit.category){
-      setCategory(toEdit.category)
-    } else {
-      setCategory("")
-    }
-    setText(toEdit.text)
-    //setEditPlayers(toEdit.players)
-    shareWith(toEdit.players) */
   };
 
   const onClick = (e) => {
@@ -108,7 +77,7 @@ function Diary() {
   const onSubmit = (e) => {
     console.log("submit");
     e.preventDefault();
-
+    
     const players = share;
     console.log(players);
     if (text.length > 0 && saveData) {
@@ -220,7 +189,14 @@ function Diary() {
                   activeCategory={activeCategory}
                   editId={editId}
                   onRemove={onRemove}
-                  onEdit={onEdit}
+                  shareWith={shareWith}
+                  user={user}
+                  userList={userList}
+                  share={share}
+                  setSave={setSave}
+                  onClick={onClick}
+                  onSubmit={onSubmit}
+                  setText={setText}
                   viewMode={viewMode} // gleich unten erklären
                   edit={edit} // optional
                 />

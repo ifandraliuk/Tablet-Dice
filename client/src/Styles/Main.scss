@@ -369,12 +369,12 @@ button {
     color: rgb(0, 0, 0);
     background-color: white,
     }
-    
+*/    
 button:hover{
-        box-shadow: 0px 0px 10px 5px #fff;
+
         color: rgb(0, 0, 0);
         background-color: white,
-}     */
+}     
 button:disabled{
     background-color: $infoBlack;
     opacity: 50%;
@@ -630,43 +630,42 @@ h5 {
 
 .Algor-active{
     background-color: $algorMain;
-    -webkit-box-shadow: 0px 0px 15px 5px #962424; 
-    box-shadow: 0px 0px 15px 5px #962424;
+ //   -webkit-box-shadow: 0px 0px 15px 5px #962424; 
+   // box-shadow: 0px 0px 15px 5px #962424;
 }
 .Beltamor-active{
     background-color: $beltamorMain;
-    -webkit-box-shadow: 0px 0px 15px 5px #00509d; 
-    box-shadow: 0px 0px 15px 5px #00509d;
+  //  -webkit-box-shadow: 0px 0px 15px 5px #00509d; 
+  //  box-shadow: 0px 0px 15px 5px #00509d;
 }
 .Ethelion-active{
     background-color: $ethelionMain;
-    -webkit-box-shadow: 0px 0px 15px 5px #229680; 
-    box-shadow: 0px 0px 15px 5px #229680;
+  //  -webkit-box-shadow: 0px 0px 15px 5px #229680; 
+//    box-shadow: 0px 0px 15px 5px #229680;
 }
 
 .Medorien-active{
     background-color: $medorienMain;
-    -webkit-box-shadow: 0px 0px 15px 5px #d67d00; 
-    box-shadow: 0px 0px 15px 5px #cf7900;
+//    -webkit-box-shadow: 0px 0px 15px 5px #d67d00; 
+ //   box-shadow: 0px 0px 15px 5px #cf7900;
     
 }
 .Thornheim-active{
     background-color: $thornheimMain;
-    -webkit-box-shadow: 0px 0px 15px 5px #99ccff; 
-    box-shadow: 0px 0px 15px 5px #99ccff;
+ //   -webkit-box-shadow: 0px 0px 15px 5px #99ccff; 
+ //   box-shadow: 0px 0px 15px 5px #99ccff;
     color: black;
 }
 
 .Thamor-active{
     background-color: $thamorMain;
-    -webkit-box-shadow: 0px 0px 15px 5px $thamorMain; 
-    box-shadow: 0px 0px 15px 5px $thamorMain;
+ //   -webkit-box-shadow: 0px 0px 15px 5px $thamorMain; 
+ //   box-shadow: 0px 0px 15px 5px $thamorMain;
     
 }
 .Welles-active{
     background-color: $wellesMain;
-    -webkit-box-shadow: 0px 0px 15px 5px #ffed29; 
-    box-shadow: 0px 0px 15px 5px #fdeb27;
+
     color: $darkBlack
 }
 
