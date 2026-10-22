@@ -14,7 +14,6 @@ function Note(props) {
   // lokaler Text fürs Editieren (damit nicht alle Notes neu schreiben)
   const [draftText, setDraftText] = useState(note.text);
   const isEditing = editId === note._id;
-  const onSave = () => {};
 
   const popover = (
     <Popover id={`players-popover-${note._id}`}>
@@ -62,8 +61,9 @@ function Note(props) {
                 className="share-chip"
                 title="Geteilte Nutzer anzeigen"
               >
+                 <span className="share-chip-count">{players.length} </span>
                 <FontAwesomeIcon icon={faUserGroup} />
-                <span className="share-chip-count">{players.length}</span>
+               
               </button>
             </OverlayTrigger>
             <div className="button-group">
@@ -72,7 +72,7 @@ function Note(props) {
                   type="button"
                   className="btn-save"
                   id={note._id}
-                  onClick={onSave}
+               
                 >
                   <FontAwesomeIcon icon={faFloppyDisk} />
                 </button>

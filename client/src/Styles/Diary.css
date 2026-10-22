@@ -1,9 +1,4 @@
 @charset "UTF-8";
-.diary-page {
-  /* Icon bekommt fixe Breite, damit es immer sauber rechts steht */
-  /* Text darf nicht umbrechen und soll links “reinlaufen” */
-  /* For mobile phones: */
-}
 .diary-page .diary-filter-btn {
   /* Button sitzt rechts, daher wächst er nach links */
   align-self: flex-end;
@@ -17,6 +12,9 @@
   color: white;
   background: rgb(24, 24, 24);
 }
+.diary-page {
+  /* Icon bekommt fixe Breite, damit es immer sauber rechts steht */
+}
 .diary-page .diary-filter-icon {
   width: 24px;
   display: inline-flex;
@@ -24,8 +22,14 @@
   align-items: center;
   font-size: 1.4rem;
 }
+.diary-page {
+  /* Text darf nicht umbrechen und soll links “reinlaufen” */
+}
 .diary-page .diary-filter-text {
   display: inline-block;
+}
+.diary-page {
+  /* For mobile phones: */
 }
 .diary-page [class*=col-] {
   width: 100%;
@@ -382,4 +386,32 @@
 }
 .diary-page .Sonstiges-icon {
   color: rgb(87, 117, 144);
+}
+.diary-submit-success {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0.5rem 0.9rem;
+  margin: 0 0 1rem 0;
+  border-radius: 10px;
+  background: rgba(52, 168, 83, 0.15);
+  border: 1px solid rgba(52, 168, 83, 0.45);
+  color: #dff7e7;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+  animation: diarySuccessIn 0.2s ease-out;
+}
+
+@keyframes diarySuccessIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }/*# sourceMappingURL=Diary.css.map */

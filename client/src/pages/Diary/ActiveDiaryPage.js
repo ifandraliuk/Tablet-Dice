@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Spinner from "react-bootstrap/Spinner";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -30,6 +30,17 @@ const ActiveDiaryCategory = React.memo(function ActiveDiaryCategory({
   const [editId, setEditId] = useState("");
   const [saveData, setSave] = useState(false);
   const [draftText, setDraftText] = useState("");
+  const [submitMessage, setSubmitMessage] = useState("");
+
+  useEffect(() => {
+    if (!submitMessage) return;
+
+    const timer = setTimeout(() => {
+      setSubmitMessage("");
+    }, 2500);
+
+    return () => clearTimeout(timer);
+  }, [submitMessage]);
 
   const notes = useMemo(() => {
     if (!Array.isArray(diary)) return [];
@@ -71,7 +82,6 @@ const ActiveDiaryCategory = React.memo(function ActiveDiaryCategory({
   const onSubmit = (e) => {
     console.log("submit");
     e.preventDefault();
-    debugger;
     const players = share;
     console.log(players);
     if (draftText.length > 0 && saveData) {
@@ -85,6 +95,7 @@ const ActiveDiaryCategory = React.memo(function ActiveDiaryCategory({
       console.log(data);
       console.log(editId);
       dispatch(editDiary({ id: editId, data: data }));
+      setSubmitMessage("Notiz erfolgreich bearbeitet.");
       setEditId("");
       setEdit(false);
     } /*  else {
@@ -102,6 +113,16 @@ const ActiveDiaryCategory = React.memo(function ActiveDiaryCategory({
   return (
     <div className="">
       <div className="row mt-2"></div>
+
+      {submitMessage && (
+        <div
+          className="diary-submit-success"
+          role="status"
+          aria-live="polite"
+        >
+          {submitMessage}
+        </div>
+      )}
 
       {notes.map((note) =>
         editId === note._id ? (
