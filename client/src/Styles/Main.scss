@@ -740,4 +740,47 @@ h5 {
 .Thamor-bg { --fraction-accent: #{$thamorMain}; }
 .general-bg { --fraction-accent: #ffffff; }
 
+.extended-info-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.extended-info-modal {
+  width: min(960px, 92vw);
+  max-height: 88vh;
+  overflow: auto;
+  background: #1d1d1d;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.extended-info-modal .row {
+  margin: 0;
+}
+
+.extended-info-modal .border-pattern.left {
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.extended-info-modal button {
+  transition: background-color 0.18s ease, transform 0.18s ease;
+}
+
+.extended-info-modal button:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.extended-info-modal .btn-save,
+.extended-info-modal .btn-remove,
+.extended-info-modal .btn-edit {
+  border-radius: 10px;
+}
+
 
