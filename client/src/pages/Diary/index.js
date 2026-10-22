@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "../../Styles/Diary.css";
 import Note from "./Note";
 import Editor from "./Editor";
@@ -25,21 +25,37 @@ import { pageTransition } from "../../data/Animations";
 import { motion } from "framer-motion";
 import DiarySidebar from "./DiarySidebar";
 import ActiveDiaryCategory from "./ActiveDiaryPage";
+
 function Diary() {
   const { diary, userList } = useSelector((state) => state.diaries);
   const { fractionTheme } = useSelector((state) => state.player);
   const { user } = useSelector((state) => state.auth);
-  const [viewMode, setViewMode] = useState("mine"); // "mine" | "shared"
+
+  const VIEW_MODE_KEY = "diary-view-mode";
+  const CATEGORY_KEY = "diary-active-category";
+  const SORT_KEY = "diary-sort-direction";
+
+  const [viewMode, setViewMode] = useState(() => {
+    return localStorage.getItem(VIEW_MODE_KEY) || "mine";
+  });
 
   const [text, setText] = useState([]);
   const [share, shareWith] = useState([user._id]);
-  const [activeCategory, setCategory] = useState("Personen");
+  const [activeCategory, setCategory] = useState(() => {
+    return localStorage.getItem(CATEGORY_KEY) || "Personen";
+  });
   const [saveData, setSave] = useState(false);
   const [edit, setEdit] = useState(false);
   const [editId, setEditId] = useState("");
+  const [showFilterPopup, setShowFilterPopup] = useState(false);
+
+  const [sortDirection, setSortDirection] = useState(() => {
+    return localStorage.getItem(SORT_KEY) || "desc";
+  });
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   useEffect(() => {
     console.log("getting userList...");
     dispatch(getUsers());
@@ -48,6 +64,19 @@ function Diary() {
       navigate("/");
     }
   }, [navigate, user, dispatch]);
+
+  useEffect(() => {
+    localStorage.setItem(VIEW_MODE_KEY, viewMode);
+  }, [viewMode]);
+
+  useEffect(() => {
+    localStorage.setItem(CATEGORY_KEY, activeCategory);
+  }, [activeCategory]);
+
+  useEffect(() => {
+    localStorage.setItem(SORT_KEY, sortDirection);
+  }, [sortDirection]);
+
   const handleShowMine = () => setViewMode("mine");
   const handleShowShared = () => setViewMode("shared");
   const handleToggleEdit = () => setEdit((v) => !v);
@@ -77,7 +106,7 @@ function Diary() {
   const onSubmit = (e) => {
     console.log("submit");
     e.preventDefault();
-    
+
     const players = share;
     console.log(players);
     if (text.length > 0 && saveData) {
@@ -97,9 +126,9 @@ function Diary() {
         console.log("posting a diary note");
         dispatch(postDiary(data));
       }
-      document.getElementById("journal").reset();
+      document.getElementById("journal")?.reset();
       if (activeCategory?.length > 0) {
-        document.getElementById(activeCategory).focus();
+        document.getElementById(activeCategory)?.focus();
       }
       setText("");
       shareWith([user._id]);
@@ -107,12 +136,26 @@ function Diary() {
     }
   };
 
+  const handleSortChange = (direction) => {
+    setSortDirection(direction);
+    setShowFilterPopup(false);
+  };
+
+  const sortedDiary = useMemo(() => {
+    if (!Array.isArray(diary)) return [];
+
+    return [...diary].sort((a, b) => {
+      const aTime = new Date(a?.createdAt || 0).getTime();
+      const bTime = new Date(b?.createdAt || 0).getTime();
+
+      return sortDirection === "asc" ? aTime - bTime : bTime - aTime;
+    });
+  }, [diary, sortDirection]);
 
   const mineCount =
     diary?.filter((entry) => {
-      const isActiveCategory = entry?.category === activeCategory;
       const players = entry?.players || [];
-      return isActiveCategory && players.length === 1;
+      return entry?.category === activeCategory && players.length === 1;
     }).length || 0;
 
   const sharedCount =
@@ -185,20 +228,46 @@ function Diary() {
                       <FontAwesomeIcon icon={faPlus} />
                     </button>
 
-                    <button
-                      type="button"
-                      className="btn-add"
-                      onClick={handleCreate}
-                      title="Filter"
-                    >
-                      <FontAwesomeIcon icon={faFilter} />
-                    </button>
+                    <div className="filter-popup-wrap">
+                      <button
+                        type="button"
+                        className="btn-add"
+                        onClick={() => setShowFilterPopup((v) => !v)}
+                        title="Filter"
+                      >
+                        <FontAwesomeIcon icon={faFilter} />
+                      </button>
+
+                      {showFilterPopup && (
+                        <div className="filter-sort-popup">
+                          <label className="filter-sort-option">
+                            <input
+                              type="radio"
+                              name="diarySort"
+                              checked={sortDirection === "desc"}
+                              onChange={() => handleSortChange("desc")}
+                            />
+                            Absteigend
+                          </label>
+
+                          <label className="filter-sort-option">
+                            <input
+                              type="radio"
+                              name="diarySort"
+                              checked={sortDirection === "asc"}
+                              onChange={() => handleSortChange("asc")}
+                            />
+                            Aufsteigend
+                          </label>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 
                 {/* CONTENT */}
                 <ActiveDiaryCategory
-                  diary={diary}
+                  diary={sortedDiary}
                   activeCategory={activeCategory}
                   editId={editId}
                   onRemove={onRemove}
