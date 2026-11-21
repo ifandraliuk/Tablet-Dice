@@ -221,6 +221,10 @@ function InventoryPage() {
     setShowInfo((prev) => !prev);
   };
 
+  const addItemToInventory = (itemId) => {
+    dispatch(addToInventory({ id: itemId }));
+  };
+
   const splitStack = (amount, id) => {
     const data = {
       amount: amount,
@@ -369,13 +373,17 @@ function InventoryPage() {
                   />
                 </div>
               </div>
-              <div className="col-lg-5 col-md-12 col-sm-12 ">
+              <div
+                className={`${
+                  activeDb ? "col-lg-10" : "col-lg-5"
+                } col-md-12 col-sm-12`}
+              >
                 {activeDb ? (
                   <ItemsView
                     iFilter={iFilter}
                     setCustomInfo={setCustomInfo}
                     setShowInfo={show}
-                    toPlayer={toPlayer}
+                    addItemToInventory={addItemToInventory}
                   />
                 ) : (
                   <>
@@ -494,14 +502,16 @@ function InventoryPage() {
                   </>
                 )}
               </div>
-              <div className="col-lg-5 col-md-12 col-sm-12  h-auto">
-                <Equipment
-                  err={equipmentError}
-                  armor={armor}
-                  uclass={userclass?.name}
-                  setShowInfo={show}
-                />
-              </div>
+              {!activeDb && (
+                <div className="col-lg-5 col-md-12 col-sm-12 h-auto">
+                  <Equipment
+                    err={equipmentError}
+                    armor={armor}
+                    uclass={userclass?.name}
+                    setShowInfo={show}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>

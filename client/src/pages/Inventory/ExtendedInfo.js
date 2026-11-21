@@ -18,6 +18,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { getUsers } from "../../features/diary/diarySlice";
 import { buttonImpackt } from "../../data/Animations";
+import { getOriginAccentStyle } from "../../data/OriginColors";
 import MotionButton from "../../components/MotionButton";
 
 function ExtendedInfo({
@@ -101,16 +102,17 @@ function ExtendedInfo({
         transition={{ duration: 0.2 }}
         key="extended-container"
         className="extended-info-modal container overflow-auto"
+        style={getOriginAccentStyle(fractionTheme)}
         onClick={(e) => e.stopPropagation()}
       >
-        <motion.div key="form" className="row">
+        <motion.div key="form" className="row extended-info-layout">
           <motion.div
             key="col1"
             id="col1"
-            className="col-lg-4 col-md-12 col-xs-12 "
+            className="col-lg-3 col-md-4 col-12 extended-info-sidebar"
           >
-            <motion.div key="row-col1" className="row">
-              <motion.div key="large-icon" className="col-lg-12">
+            <motion.div key="row-col1" className="extended-info-sidebar__content">
+              <motion.div key="large-icon" className="extended-info-sidebar__icon">
                 <ItemIcon
                   item={extendedItemInfo}
                   enchantment={enchantment}
@@ -118,8 +120,8 @@ function ExtendedInfo({
                 />
               </motion.div>
               {!minimized && (
-                <div className="row">
-                  <div className="col-lg-6 col-md-4 col-sm-6">
+                <div className="extended-info-actions">
+                  <div className="extended-info-action">
                     <motion.button
                       variants={buttonImpackt}
                       whileHover="whileHover"
@@ -130,7 +132,7 @@ function ExtendedInfo({
                       <FontAwesomeIcon icon={faPlus} />{" "}
                     </motion.button>
                   </div>
-                  <div className="col-lg-6 col-md-4 col-sm-6 ">
+                  <div className="extended-info-action">
                     <motion.button
                       variants={buttonImpackt}
                       whileHover="whileHover"
@@ -141,7 +143,7 @@ function ExtendedInfo({
                       <FontAwesomeIcon icon={faMinus} />
                     </motion.button>
                   </div>
-                  <div className="col-lg-6 col-md-4 col-sm-6 ">
+                  <div className="extended-info-action">
                     <motion.button
                       variants={buttonImpackt}
                       whileHover="whileHover"
@@ -152,7 +154,7 @@ function ExtendedInfo({
                       <FontAwesomeIcon icon={faShareNodes} />
                     </motion.button>
                   </div>
-                  <div className="col-lg-6 col-md-4 col-sm-6 ">
+                  <div className="extended-info-action">
                     <motion.button
                       variants={buttonImpackt}
                       whileHover="whileHover"
@@ -163,7 +165,7 @@ function ExtendedInfo({
                       <FontAwesomeIcon icon={faPaste} />
                     </motion.button>
                   </div>
-                  <div className="col-lg-6 col-md-4 col-sm-6 ">
+                  <div className="extended-info-action">
                     <motion.button
                       variants={buttonImpackt}
                       whileHover="whileHover"
@@ -173,7 +175,7 @@ function ExtendedInfo({
                       <FontAwesomeIcon icon={faTrash} />
                     </motion.button>
                   </div>
-                  <div className="col-lg-6 col-md-4 col-sm-6 ">
+                  <div className="extended-info-action">
                     {(category === "Ressource" && genus !== "Sattel") || (category === "Waffe" && genus === "Werkzeug") ? (
                       <button disabled>
                         <FontAwesomeIcon icon={faPerson} />
@@ -200,10 +202,21 @@ function ExtendedInfo({
                   </div>
                 </div>
               )}
-              {dbButtons && <MotionButton name={extendedItemInfo?._id} icon={faPlus} onClick={toPlayer} />}
+              {dbButtons && (
+                <div className="extended-info-add-action">
+                  <MotionButton
+                    name={extendedItemInfo?._id}
+                    icon={faPlus}
+                    onClick={toPlayer}
+                  />
+                </div>
+              )}
             </motion.div>
           </motion.div>
-          <div id="col2" className="col-lg-8 col-md-12 border-pattern left">
+          <div
+            id="col2"
+            className="col-lg-9 col-md-8 col-12 border-pattern left extended-info-content"
+          >
             {contentToShow === "info" && (
               <motion.div
                 name="info-content"
@@ -212,7 +225,7 @@ function ExtendedInfo({
                 className="row"
               >
                 <div className="col-lg-10 col-md-8">
-                  <h2>{name} {_id}</h2>
+                  <h2>{name}</h2>
                 </div>
                 <div className="col-lg-2 col-md-4">
                   <button
@@ -231,8 +244,7 @@ function ExtendedInfo({
                     ×
                   </button>
                 </div>
-                <div className="col-lg-6 col-md-12">
-                 
+                <div className="col-12 col-md-auto extended-info-info-column">
                   <ul>
                     {category !== "Ressource" && (
                       <li>
@@ -254,7 +266,7 @@ function ExtendedInfo({
                     </li>
                   </ul>
                 </div>
-                <div className="col-lg-6 col-md-12  col-sm-12 ">
+                <div className="col-12 col-md-auto extended-info-info-column">
                   <ul>
                     <li>
                       Preis: <strong className={`${fractionTheme}-text`}>{price}</strong>
@@ -295,25 +307,30 @@ function ExtendedInfo({
                 )}
 
                 {showMaterials && (
-                  <h3>
-                    {production ? `Herstellung (${production})` : "Materialen"}
-                  </h3>
+                  <>
+                    <h3 className="col-12 extended-info-materials-heading">
+                      {production ? `Herstellung (${production})` : "Materialen"}
+                    </h3>
+                    <div className="col-12 extended-info-materials">
+                      {material.map((material) => {
+                        const item = material.element;
+                        const amount = material.amount;
+                        const name = item?.name;
+                        return (
+                          <div
+                            className="extended-info-material"
+                            key={item?._id}
+                          >
+                            <ItemIcon item={item} specialAmount={amount} />
+                            <strong className={`${fractionTheme}-text`}>
+                              {name}
+                            </strong>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </>
                 )}
-
-                {showMaterials &&
-                  material.map((material) => {
-                    console.log(material && typeof material[0] !== "string");
-                    const item = material.element;
-                    const amount = material.amount;
-                    const name = item?.name;
-                    console.log(item, amount, name);
-                    return (
-                      <div className="col col-lg-6 col-md-4" key={item?._id}>
-                        <ItemIcon item={item} specialAmount={amount} />
-                        <strong className={`${fractionTheme}-text`}>{name}</strong>
-                      </div>
-                    );
-                  })}
               </motion.div>
             )}
             {contentToShow === "share" && (
