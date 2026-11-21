@@ -27,7 +27,9 @@ const ActiveTalentRow = React.memo(function TalentRow({
     >
       <td>{el.talent.name}</td>
       <td className={`${el.talent.category}`}>
-        <FontAwesomeIcon icon={icons[el.talent.category]} /> {el.talent.category}
+        <span className="talent-category-label">
+          <FontAwesomeIcon icon={icons[el.talent.category]} /> {el.talent.category}
+        </span>
       </td>
       <td>{el.talent.dice}</td>
 

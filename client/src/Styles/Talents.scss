@@ -11,29 +11,39 @@
         border: none;
     }
     .Nahkampf{
-        background-color: $categoryRed;   
+        --talent-category-color: #{$categoryRed};
     }
     .Fernkampf {
-        background-color: $categoryOrange;
+        --talent-category-color: #{$categoryOrange};
+    }
+    td.Fernkampf {
+        background: transparent;
     }
     .Natur {
-        background-color: $categoryGreen;
+        --talent-category-color: #{$categoryGreen};
     }
     .Wissen {
-        background-color: $categoryJungle;
+        --talent-category-color: #{$categoryJungle};
     }    
     .Handwerk {
-        background: $categoryYellowOrange;
+        --talent-category-color: #{$categoryYellowOrange};
         
     }
     .Heimlichkeit {
-        background-color: $categoryBlue;
+        --talent-category-color: #{$categoryBlue};
     }
     .Gesellschaft {
-        background-color: $categoryYellow;
+        --talent-category-color: #{$categoryYellow};
     }
     .category {
         text-transform: uppercase;
+    }
+
+    .talent-category-label {
+        display: inline-block;
+        padding-bottom: 0.1rem;
+        border-bottom: 2px solid var(--talent-category-color);
+        line-height: 1.4;
     }
 
     .talent{
@@ -41,4 +51,3 @@
         
     }
 }
-

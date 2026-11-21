@@ -17,7 +17,9 @@ const AllTalentRow = React.memo(function AllTalentRow({
       <td>{talent.name}</td>
 
       <td className={`${talent.category}`}>
-        <FontAwesomeIcon icon={icons[talent.category]} /> {talent.category}
+        <span className="talent-category-label">
+          <FontAwesomeIcon icon={icons[talent.category]} /> {talent.category}
+        </span>
       </td>
 
       <td>{talent.dice}</td>

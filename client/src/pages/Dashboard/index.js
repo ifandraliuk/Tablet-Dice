@@ -38,7 +38,6 @@ import {
   getArmor,
   getCategoryBoni,
   getUserWeapons,
-  reset as inventoryReset,
   updateEquipmentStats,
 } from "../../features/inventory/inventorySlice";
 import ExtendedInfo from "../Inventory/ExtendedInfo";
@@ -109,7 +108,6 @@ function Dashboard() {
     }
     return () => {
       dispatch(reset());
-      dispatch(inventoryReset());
     };
   }, [dispatch, user, navigate]);
   const checkActionVisibility = () => {

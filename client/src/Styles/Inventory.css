@@ -5,6 +5,28 @@
   position: relative;
   overflow: hidden;
 }
+.inventory-page .inventory-equipment__character {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+.inventory-page .inventory-equipment__character .userclass-img {
+  width: 100%;
+  max-width: 220px;
+  height: auto;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+.inventory-page .inventory-equipment .small-icon {
+  box-sizing: border-box;
+  border: 1px solid rgba(245, 240, 227, 0.65);
+}
+.inventory-page .inventory-equipment__weapons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 0;
+}
 .inventory-page #curr-weight {
   width: 50px;
   height: 0px;
