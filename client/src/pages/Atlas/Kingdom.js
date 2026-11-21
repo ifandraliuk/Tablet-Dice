@@ -14,6 +14,8 @@ function Kingdom({ kingdom, showMap }) {
   const { activeKingdomName, kingdomCategory } = useSelector(
     (state) => state.atlas
   );
+  const isActiveKingdom = activeKingdomName === kingdom.name;
+  const isGeneralActive = !isActiveKingdom || kingdomCategory === "general";
   const dispatch = useDispatch();
 
   const setActive = (e) => {
@@ -42,16 +44,8 @@ function Kingdom({ kingdom, showMap }) {
               content="Allgemein"
               name="general"
               onClick={setActive}
-              theme={
-                activeKingdomName === kingdom.name &&
-                kingdomCategory === "general"
-                  ? kingdom.name
-                  : ""
-              }
-              ariaPressed={
-                activeKingdomName === kingdom.name &&
-                kingdomCategory === "general"
-              }
+              ariaPressed={isGeneralActive}
+              className="atlas-tab-button"
               icon={faBook}
             />
           </div>
@@ -61,16 +55,11 @@ function Kingdom({ kingdom, showMap }) {
               name="habitat"
               icon={faMountain}
               onClick={(e) => setActive(e)}
-              theme={
-                activeKingdomName === kingdom.name &&
-                kingdomCategory === "habitat"
-                  ? kingdom.name
-                  : ""
-              }
               ariaPressed={
                 activeKingdomName === kingdom.name &&
                 kingdomCategory === "habitat"
               }
+              className="atlas-tab-button"
             />
           </div>
           <div className="col-auto">
@@ -82,19 +71,14 @@ function Kingdom({ kingdom, showMap }) {
                 setActive(e);
                 showMap();
               }}
-              theme={
-                activeKingdomName === kingdom.name && kingdomCategory === "map"
-                  ? kingdom.name
-                  : ""
-              }
               ariaPressed={
                 activeKingdomName === kingdom.name && kingdomCategory === "map"
               }
+              className="atlas-tab-button"
             />
           </div>
         </div>
-        {activeKingdomName === kingdom.name &&
-        kingdomCategory === "general" ? (
+        {isGeneralActive ? (
           <div className="row m-2">
             <div className="col">
               <h2>Hauptstadt</h2>
