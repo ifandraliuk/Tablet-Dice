@@ -32,6 +32,18 @@
         color: var(--fraction-accent, white);
     }
 
+    .bestiaria-card__identity {
+        min-width: 0;
+    }
+
+    .bestiaria-card__meta {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.15rem;
+    }
+
     .bestiaria-card__kind {
         color: rgba(255, 255, 255, 0.7);
         font-size: 0.9rem;
@@ -87,11 +99,11 @@
         display: inline-flex;
         align-items: center;
         gap: 0.35rem;
-        margin-top: 0.5rem;
+        margin: 0;
         padding: 0.2rem 0.55rem;
         border: 1px solid rgba(245, 240, 227, 0.2);
         border-radius: 999px;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
     }
 
     .bestiaria-card__status--positive {

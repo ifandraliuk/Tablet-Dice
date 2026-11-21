@@ -104,11 +104,16 @@ const BestienList = memo(function BestienList({
         {creatureList.map((creature) => (
           <article className="bestiaria-card" key={creature._id}>
             <header className="bestiaria-card__header">
-              <div>
+              <div className="bestiaria-card__identity">
                 <h3 className="bestiaria-card__name">{creature.name}</h3>
-                <span className="bestiaria-card__kind">
-                  Gattung: {creature.art}
-                </span>
+                <div className="bestiaria-card__meta">
+                  <span className="bestiaria-card__kind">
+                    Gattung: {creature.art}
+                  </span>
+                  {creature.status && (
+                    <BestiaryStatus status={creature.status} />
+                  )}
+                </div>
               </div>
               <button
                 type="button"
@@ -132,7 +137,6 @@ const BestienList = memo(function BestienList({
                   src={`${creature.register}/${creature._id}.png`}
                   alt={creature.name}
                 />
-                {creature.status && <BestiaryStatus status={creature.status} />}
               </div>
               <div className="bestiaria-card__details">
                 <div className="bestiaria-card__description">

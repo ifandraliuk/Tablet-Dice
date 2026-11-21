@@ -31,15 +31,15 @@ const BestiariumFilters = memo(({
         />
       </div>
       <div className="col-12 col-md-6 col-xl">
-        <label className="form-label mb-1" htmlFor="bestiariumArt">
-          Art:
+        <label className="form-label mb-1" htmlFor="bestiariumGroup">
+          Gruppe:
         </label>
         <select
-          id="bestiariumArt"
+          id="bestiariumGroup"
           className="form-select dark-filter-control w-100"
           value={selectedArt}
           onChange={(event) => onArtChange(event.target.value)}
-          aria-label="Nach Art filtern"
+          aria-label="Nach Gruppe filtern"
         >
           <option value="creature">Kreatur</option>
           <option value="humanoid">Humanoid</option>
