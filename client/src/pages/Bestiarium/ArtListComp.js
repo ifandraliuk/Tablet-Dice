@@ -1,17 +1,30 @@
 import React, { memo } from "react";
-import MotionButton from "../../components/MotionButton";
 
-const ArtListComp = memo(({ arts, filter, fractionTheme }) => {
-
+const ArtListComp = memo(({ arts, filter, selectedArt }) => {
   return (
-    <div className="row">
+    <div
+      className="bestiaria-art-filters"
+      role="group"
+      aria-label="Nach Gattung filtern"
+    >
+      <button
+        type="button"
+        className={!selectedArt ? "is-active" : ""}
+        aria-pressed={!selectedArt}
+        onClick={() => filter("")}
+      >
+        Alle
+      </button>
       {arts?.map((art) => (
-        <MotionButton
-          name={art}
+        <button
+          type="button"
           key={art}
-          onClick={(e) => filter(e.currentTarget.name)}
-          content={art}
-        />
+          className={selectedArt === art ? "is-active" : ""}
+          aria-pressed={selectedArt === art}
+          onClick={() => filter(art)}
+        >
+          {art}
+        </button>
       ))}
     </div>
   );

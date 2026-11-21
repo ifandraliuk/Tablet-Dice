@@ -18,80 +18,88 @@ const BestienList = memo(function BestienList({
     
   if (creatureList.length > 0) {
     return (
-      <div className="bestiaria ">
-        {creatureList?.map((creature) => {
-          const habitat = creature?.habitat;
-          
-           return (
-            <div className="row info " key={creature._id}>
-
-              <div className="row ">
-              <div className="col-auto">
-                <button
-                      id={creature._id}
-                      className={fractionTheme}
-                      onClick={(e) => {
-                        setCompanionId(e.currentTarget.id);
-                        setOnPopup((popup) => !popup);
-                      }}
-                    >
-                      <FontAwesomeIcon icon={faPaw} />
-                      <FontAwesomeIcon icon={faPlus} />
-                    </button>             
+      <div className="bestiaria">
+        {creatureList.map((creature) => (
+          <article className="bestiaria-card" key={creature._id}>
+            <header className="bestiaria-card__header">
+              <div>
+                <h3 className="bestiaria-card__name">{creature.name}</h3>
+                <span className="bestiaria-card__kind">
+                  Gattung: {creature.art}
+                </span>
               </div>
-              <div className="col-3 ">
-                <h3>{creature.name}</h3>
-                <strong>{` (Gattung: ${creature.art})`}</strong>
-              </div>
-
-              </div>
-              <div className="col-3 mt-3">
+              <button
+                type="button"
+                className={`bestiaria-card__tame ${fractionTheme}`}
+                aria-label={`${creature.name} als Begleiter gewinnen`}
+                title="Als Begleiter gewinnen"
+                onClick={() => {
+                  setCompanionId(creature._id);
+                  setOnPopup(true);
+                }}
+              >
+                <FontAwesomeIcon icon={faPaw} />
+                <FontAwesomeIcon icon={faPlus} />
+                <span>Begleiter gewinnen</span>
+              </button>
+            </header>
+            <div className="bestiaria-card__content">
+              <div className="bestiaria-card__visual">
                 <img
-                  className="img-creature"
+                  className="bestiaria-card__image"
                   src={`${creature.register}/${creature._id}.png`}
-                  alt="creature"
+                  alt={creature.name}
                 />
-                <h5
-                  className={creature.status}
-                >{`Status: ${creature.status}`}</h5>
+                <span className={`bestiaria-card__status ${creature.status}`}>
+                  Status: {creature.status}
+                </span>
               </div>
-
-              <div className="col-9 p-2 border-left">
-                <h5>Beschreibung:</h5>
-                <p>{creature.description}</p>
-                <h5>Fertigkeiten:</h5>
-                <p>{creature.ability}</p>
-                <ul>
-                  <li>
-                    Trefferpunkte: <strong>{creature.hitpoints}</strong>
-                  </li>
-                  <li>
-                    Rüstung: <strong>{creature.armor}</strong>
-                  </li>
-                  <li>
-                    Schaden: <strong>{creature.damage}</strong>
-                  </li>
-                  <li>
-                    Trefferchance: <strong>{creature.hitchance}</strong>
-                  </li>
-                </ul>
-                <h5>Habitate:</h5>
-                <ul>
-                  {habitat?.map((h) => (
-                    <li className="row" key={h._id}>
-                      {h.name}
-                    </li>
-                  ))}
-                </ul>
+              <div className="bestiaria-card__details">
+                <div className="bestiaria-card__description">
+                  <h4>Beschreibung</h4>
+                  <p>{creature.description}</p>
+                  <h4>Fertigkeiten</h4>
+                  <p>{creature.ability}</p>
+                </div>
+                <dl className="bestiaria-card__attributes">
+                  <div>
+                    <dt>Trefferpunkte</dt>
+                    <dd>{creature.hitpoints}</dd>
+                  </div>
+                  <div>
+                    <dt>Rüstung</dt>
+                    <dd>{creature.armor}</dd>
+                  </div>
+                  <div>
+                    <dt>Schaden</dt>
+                    <dd>{creature.damage}</dd>
+                  </div>
+                  <div>
+                    <dt>Trefferchance</dt>
+                    <dd>{creature.hitchance}</dd>
+                  </div>
+                </dl>
+                {creature.habitat?.length > 0 && (
+                  <div className="bestiaria-card__habitats">
+                    <h4>Habitate</h4>
+                    <ul>
+                      {creature.habitat.map((habitat) => (
+                        <li key={habitat._id}>{habitat.name}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             </div>
-          );
-        })}
+          </article>
+        ))}
       </div>
     );
   } else {
     return (
-      <div>Es wurden noch keine Tiere zu dieser Art hinzugefügt...</div>
+      <p className="bestiaria-empty">
+        Es wurden noch keine Tiere zu dieser Art hinzugefügt.
+      </p>
     );
   }
 });

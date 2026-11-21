@@ -6,12 +6,15 @@ function CompanionPopup({ companion, setOnPopup, companionOnClick }) {
 
   return (
     <div className="blur-bg">
-      <div className="popup border ">
+      <div className="popup bestiarium-popup">
         <div className="row ">
           <div className="col-auto ms-auto">
             <button
+              type="button"
+              className="bestiarium-popup__close"
+              aria-label="Fenster schließen"
               onClick={() => {
-                setOnPopup((onPopup) => !onPopup);
+                setOnPopup(false);
                 setName("");
               }}
             >
@@ -24,20 +27,26 @@ function CompanionPopup({ companion, setOnPopup, companionOnClick }) {
             <h3>Glückwunsch!</h3>
           </div>
         </div>
-        <p className="text-align-center p-3 ">
-          {`Du hast erfolgreich das Zurtrauen eines Begleiters "${companion.name}" gewonnen.`}
+        <p className="text-center p-3">
+          {`Du hast das Vertrauen von "${companion.name}" gewonnen.`}
         </p>
-        <div className="row">
-          <div className="col-auto ms-auto me-auto">
-           Name: <input
-              id="amount"
+        <div className="bestiarium-popup__form">
+            <label htmlFor="companion-name">Name:</label>
+            <input
+              className="bestiarium-popup__input"
+              id="companion-name"
               name="name"
               type="text"
               onChange={(e) => setName(e.target.value)}
               defaultValue=""
             />            
-             <button className="btn-light" onClick={() => companionOnClick(name)}>Zähmen</button>
-          </div>
+             <button
+               type="button"
+               className="bestiarium-popup__submit"
+               onClick={() => companionOnClick(name)}
+             >
+               Zähmen
+             </button>
         </div>
       </div>
     </div>

@@ -63,16 +63,16 @@ const Bestiaria = () => {
             companionOnClick={companionOnClick}
           />
         )}
-        <div className="dark-bg container-fluid g-5">
-          <div className="row">
-            <div className="col-2">
+        <div className="dark-bg container-fluid g-5 bestiarium-page">
+          <div className="row g-3">
+            <div className="col-12 col-lg-3">
               <ArtListComp
                 arts={artList}
                 filter={setArtFilter}
-                fractionTheme={fractionTheme}
+                selectedArt={art}
               />
             </div>
-            <div className="col-9">
+            <div className="col-12 col-lg-9">
               <BestienList
                 creatures={bestiaria}
                 artFilter={art}
