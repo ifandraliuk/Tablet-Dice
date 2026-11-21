@@ -67,6 +67,7 @@ const BestiaryStatus = ({ status }) => {
 
 const BestienList = memo(function BestienList({
   creatures,
+  artFilter,
   gattungFilter,
   habitatFilter,
   statusFilter,
@@ -77,6 +78,7 @@ const BestienList = memo(function BestienList({
 }) {
   const normalizedNameFilter = nameFilter.trim().toLocaleLowerCase();
   const creatureList = creatures.filter((creature) => {
+    const matchesArt = creature.register === artFilter;
     const matchesGattung =
       !gattungFilter || creature.art === gattungFilter;
     const matchesHabitat =
@@ -87,7 +89,13 @@ const BestienList = memo(function BestienList({
       !normalizedNameFilter ||
       creature.name?.toLocaleLowerCase().includes(normalizedNameFilter);
 
-    return matchesGattung && matchesHabitat && matchesStatus && matchesName;
+    return (
+      matchesArt &&
+      matchesGattung &&
+      matchesHabitat &&
+      matchesStatus &&
+      matchesName
+    );
   });
 
   if (creatureList.length > 0) {

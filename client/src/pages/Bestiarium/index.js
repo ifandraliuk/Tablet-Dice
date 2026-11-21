@@ -14,7 +14,8 @@ const Bestiaria = () => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const { fractionTheme, isSuccess } = useSelector((state) => state.player);
-  const { bestiaria, artList } = useSelector((state) => state.bestiaria);
+  const { bestiaria } = useSelector((state) => state.bestiaria);
+  const [selectedArt, setSelectedArt] = useState("creature");
   const [gattung, setGattungFilter] = useState("");
   const [habitat, setHabitatFilter] = useState("");
   const [status, setStatusFilter] = useState("");
@@ -46,15 +47,23 @@ const Bestiaria = () => {
       setOnPopup(false);
     }
   };
+  const visibleCreatures = bestiaria.filter(
+    (creature) => creature.register === selectedArt
+  );
   const habitatList = [
     ...new Set(
-      bestiaria.flatMap((creature) =>
+      visibleCreatures.flatMap((creature) =>
         creature.habitat?.map((entry) => entry.name).filter(Boolean) || []
       )
     ),
   ].sort((first, second) => first.localeCompare(second, "de"));
   const statusList = [
-    ...new Set(bestiaria.map((creature) => creature.status).filter(Boolean)),
+    ...new Set(
+      visibleCreatures.map((creature) => creature.status).filter(Boolean)
+    ),
+  ].sort((first, second) => first.localeCompare(second, "de"));
+  const gattungList = [
+    ...new Set(visibleCreatures.map((creature) => creature.art).filter(Boolean)),
   ].sort((first, second) => first.localeCompare(second, "de"));
 
   return (
@@ -78,13 +87,20 @@ const Bestiaria = () => {
           <div className="row g-3">
             <div className="col-12">
               <BestiariumFilters
-                arts={artList}
+                gattungen={gattungList}
                 habitats={habitatList}
                 statuses={statusList}
+                selectedArt={selectedArt}
                 selectedGattung={gattung}
                 selectedHabitat={habitat}
                 selectedStatus={status}
                 searchText={searchText}
+                onArtChange={(nextArt) => {
+                  setSelectedArt(nextArt);
+                  setGattungFilter("");
+                  setHabitatFilter("");
+                  setStatusFilter("");
+                }}
                 onGattungChange={setGattungFilter}
                 onHabitatChange={setHabitatFilter}
                 onStatusChange={setStatusFilter}
@@ -92,6 +108,7 @@ const Bestiaria = () => {
               />
               <BestienList
                 creatures={bestiaria}
+                artFilter={selectedArt}
                 gattungFilter={gattung}
                 habitatFilter={habitat}
                 statusFilter={status}
