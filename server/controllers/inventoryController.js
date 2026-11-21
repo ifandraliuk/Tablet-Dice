@@ -17,9 +17,9 @@ const getInventory = asyncHandler(async (req, res) => {
     },
   });
   if (!user) {
-    res.status(500).json({ message: "User nicht gefunden" });
+    return res.status(404).json({ message: "User nicht gefunden" });
   } else {
-    const inventory = user.inventory ? user.inventory : {};
+    const inventory = user.inventory || [];
     res.status(200).json({ data: inventory });
   }
 });
@@ -290,11 +290,11 @@ const getArmor = asyncHandler(async (req, res) => {
 
 const getMoney = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user.id);
-  const money = user?.money;
-  if (!money || !user) {
-    res.status(400).json("no money");
+  if (!user) {
+    return res.status(404).json({ message: "User nicht gefunden" });
   }
-  res.status(200).json(money);
+
+  return res.status(200).json(user.money?.length ? user.money : [0, 0, 0]);
 });
 
 // @desc update money balance

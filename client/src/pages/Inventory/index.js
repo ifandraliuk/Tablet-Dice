@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../../Styles/Inventory.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -54,6 +54,7 @@ function InventoryPage() {
     (state) => state.player
   );
   const [showInfo, setShowInfo] = useState(false);
+  const inventoryPageMounted = useRef(false);
 
   const { userclass } = player;
   const { user } = useSelector((state) => state.auth);
@@ -77,19 +78,27 @@ function InventoryPage() {
   console.log(customInfo);
 
   useEffect(() => {
-    if (!user || isError) {
+    if (inventoryPageMounted.current && isError) {
+      navigate("/");
+    }
+  }, [isError, navigate]);
+
+  useEffect(() => {
+    inventoryPageMounted.current = true;
+    if (!user) {
       navigate("/");
       dispatch(reset());
     } else {
-      //load users inventory for the first time
+      dispatch(reset());
       dispatch(getInventory());
       dispatch(getUserMoney());
     }
     return () => {
+      inventoryPageMounted.current = false;
       dispatch(reset());
       dispatch(playerReset());
     };
-  }, [user, isError, dispatch, navigate, message]);
+  }, [user, dispatch, navigate]);
 
   useEffect(() => {
     dispatch(updateTotalWeight());

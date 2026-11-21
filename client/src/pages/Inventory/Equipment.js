@@ -72,7 +72,7 @@ const Equipment = memo(({ setShowInfo, err }) => {
         </div>
       </div>
       {err && <div className={`${err.variant}-alert`}>{err.msg}</div>}
-      <div className="row justify-content-center">
+      <div className="row justify-content-center inventory-equipment">
         <div className="col-auto ">
           {["Kopf", "Brust", "Hüfte", "Beine"].map((name, i) => {
             // console.log("kopf");
@@ -105,11 +105,14 @@ const Equipment = memo(({ setShowInfo, err }) => {
             }
           })}
         </div>
-        <div className="col-lg-4 ">
-          <img
-            className="userclass-img"
-            src={`/classes_img/${profession?._id}.svg`}
-          />
+        <div className="col-lg-4 inventory-equipment__character">
+          {profession?._id && (
+            <img
+              className="userclass-img"
+              src={`/classes_img/${profession._id}.svg`}
+              alt={`${profession.name} Klasse`}
+            />
+          )}
         </div>
         <div className="col-auto ">
           {["Rücken", "Hals", "Arme", "Füße"].map((name, i) => {
@@ -141,7 +144,8 @@ const Equipment = memo(({ setShowInfo, err }) => {
             }
           })}
         </div>
-        <div className="row  w-auto justify-content-center">
+      </div>
+      <div className="row w-100 justify-content-center inventory-equipment__weapons">
           {["Fernkampf", "Haupthand", "Nebenhand", "Finger"].map((name, i) => {
             let equippedItem;
             if (name === "Haupthand") {
@@ -186,7 +190,6 @@ const Equipment = memo(({ setShowInfo, err }) => {
               );
             }
           })}
-        </div>
       </div>
     </div>
   );

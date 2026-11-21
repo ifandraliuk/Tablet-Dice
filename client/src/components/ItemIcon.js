@@ -24,7 +24,17 @@ function ItemIcon({ animationDelay, item, specialAmount, enchantment, large, isE
     : "clamp(28px, 4vw, 52px)";
 
   const handleImageError = (event) => {
-    event.target.src = `/color_icons/${categoryName}/${genusName}/${genusName}.svg`;
+    const image = event.currentTarget;
+    const genericIcon = `/color_icons/${categoryName}/${genusName}/${genusName}.svg`;
+
+    if (categoryName && genusName && !image.dataset.genericFallback) {
+      image.dataset.genericFallback = "true";
+      image.src = genericIcon;
+      return;
+    }
+
+    image.onerror = null;
+    image.src = "/color_icons/empty.svg";
   };
 
   return (
