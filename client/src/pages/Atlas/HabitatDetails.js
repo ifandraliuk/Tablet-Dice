@@ -51,8 +51,8 @@ const HabitatDetails = () => {
                 name="ressource"
                 icon={faLeaf}
                 onClick={(e) => onHabitatCategory(e)}
-                theme={habitatCategory === "ressource" ? activeKingdomName : ""}
                 ariaPressed={habitatCategory === "ressource"}
+                className="atlas-tab-button"
               />
             </div>
             <div className="col-auto">
@@ -61,8 +61,8 @@ const HabitatDetails = () => {
                 name="creature"
                 icon={faPaw}
                 onClick={(e) => onHabitatCategory(e)}
-                theme={habitatCategory === "creature" ? activeKingdomName : ""}
                 ariaPressed={habitatCategory === "creature"}
+                className="atlas-tab-button"
               />
             </div>
             <div className="col-auto">
@@ -71,8 +71,8 @@ const HabitatDetails = () => {
                 name="human"
                 icon={faPersonWalking}
                 onClick={(e) => onHabitatCategory(e)}
-                theme={habitatCategory === "human" ? activeKingdomName : ""}
                 ariaPressed={habitatCategory === "human"}
+                className="atlas-tab-button"
               />
             </div>
             <div className="col-auto">

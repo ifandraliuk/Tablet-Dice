@@ -79,8 +79,31 @@
         padding: 0;
     }
 
-    .atlas-habitat-navigation button[aria-pressed="true"] {
-        box-shadow: 0 0 0 2px var(--fraction-accent, rgba(245, 240, 227, 0.65));
+    .atlas-tab-button {
+        padding: 0.65rem 0.85rem;
+        border: 0;
+        border-bottom: 2px solid transparent;
+        background: transparent;
+        color: rgba(245, 240, 227, 0.72);
+        font-weight: 600;
+        transition: color 0.18s ease, border-color 0.18s ease;
+    }
+
+    .atlas-tab-button:hover,
+    .atlas-tab-button:focus-visible {
+        color: var(--fraction-accent, #f5f0e3);
+        background: transparent;
+    }
+
+    .atlas-tab-button[aria-pressed="true"] {
+        border-bottom-color: var(--fraction-accent, #f5f0e3);
+        background: transparent;
+        color: var(--fraction-accent, #f5f0e3);
+    }
+
+    .atlas-tab-button:focus-visible {
+        outline: 2px solid var(--fraction-accent, #f5f0e3);
+        outline-offset: 2px;
     }
 
     .atlas-habitat-list {

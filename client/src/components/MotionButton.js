@@ -9,6 +9,7 @@ const MotionButton = ({
   onRepeat,
   disabled,
   ariaPressed,
+  className = "",
 }) => {
 
   const buttonVariants = {
@@ -52,7 +53,7 @@ const MotionButton = ({
       animate={onRepeat ? "repeatAnimation" : "animate"}
       whileHover="whileHover"
       whileFocus=""
-      className={`${theme}-active  disabled`}
+      className={`${theme}-active disabled ${className}`}
       disabled
     //  className={"btn-light"}
     
@@ -72,7 +73,7 @@ const MotionButton = ({
       animate={onRepeat ? "repeatAnimation" : "animate"}
       whileHover="whileHover"
       whileFocus=""
-      className={`${theme}-active `}
+      className={`${theme}-active ${className}`}
     //  className={"btn-light"}
     
     >
