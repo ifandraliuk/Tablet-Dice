@@ -14,11 +14,31 @@
         margin-bottom: 1rem;
     }
 
-    .inventory-content-panel {
+    .inventory-content-panel,
+    .inventory-equipment-panel {
         box-sizing: border-box;
-        border: 1px solid rgba(245, 240, 227, 0.1);
+        border: 1px solid rgba(245, 240, 227, 0.16);
         border-radius: 0.65rem;
         padding: 1rem;
+        background: rgba(18, 18, 17, 0.52);
+        box-shadow: inset 0 1px rgba(255, 255, 255, 0.025);
+    }
+
+    .inventory-list-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.6rem;
+        border-bottom: 1px solid rgba(245, 240, 227, 0.14);
+    }
+
+    .inventory-list-header h2 {
+        margin: 0;
+        color: var(--fraction-accent, #f5f0e3);
+        font-size: var(--heading-2-size);
+        text-transform: uppercase;
     }
 
     .inventory-category-switch {
@@ -66,16 +86,18 @@
         display: flex;
         justify-content: flex-end;
         gap: 0.25rem;
-        margin: 0.5rem 0;
+        margin: 0;
     }
 
     .inventory-list-view-switch__button {
-        padding: 0.35rem 0.7rem;
+        min-height: 1.5rem;
+        padding: 0.1rem 0.55rem;
         border: 1px solid rgba(245, 240, 227, 0.18);
         border-radius: 999px;
         background: transparent;
         color: rgba(245, 240, 227, 0.72);
-        font-size: 0.85rem;
+        font-size: 0.78rem;
+        line-height: 1;
         cursor: pointer;
     }
 
@@ -114,7 +136,7 @@
         border-left: 2px solid var(--item-rarity-accent, rgba(245, 240, 227, 0.35));
         border-bottom-color: var(--item-rarity-accent, rgba(245, 240, 227, 0.35));
         border-radius: 0 0.45rem 0 0.45rem;
-        background: rgba(24, 24, 24, 0.72);
+        background: rgba(24, 24, 24, 0.82);
         color: #f5f0e3;
         text-align: left;
         cursor: pointer;
@@ -127,7 +149,7 @@
         border-right-color: transparent;
         border-bottom-color: var(--item-rarity-accent, rgba(245, 240, 227, 0.5));
         border-left-color: var(--item-rarity-accent, rgba(245, 240, 227, 0.5));
-        background: rgba(40, 40, 40, 0.9);
+        background: rgba(40, 40, 40, 0.96);
     }
 
     .inventory-item--rarity-primitive { --item-rarity-accent: #7f7f7f; }
@@ -260,15 +282,6 @@
         }
     }
 
-    .inventory-equipment-panel {
-        box-sizing: border-box;
-        padding: 1rem;
-        border: 1px solid rgba(245, 240, 227, 0.16);
-        border-radius: 0.65rem;
-        background: rgba(18, 18, 17, 0.52);
-        box-shadow: inset 0 1px rgba(255, 255, 255, 0.025);
-    }
-
     .inventory-equipment-panel__header {
         display: flex;
         flex-wrap: wrap;
@@ -379,7 +392,7 @@
         height: 72px;
         padding: 0.3rem;
         border-left-width: 1px;
-        background: rgba(24, 24, 24, 0.72);
+        background: rgba(24, 24, 24, 0.82);
     }
 
     .inventory-equipment__slot::after {
@@ -477,8 +490,22 @@
             gap: 0.25rem;
         }
 
+        .inventory-content-panel,
         .inventory-equipment-panel {
             padding: 0.75rem;
+        }
+
+        .inventory-list-header {
+            flex-wrap: wrap;
+        }
+
+        .inventory-list-header h2 {
+            flex: 1 1 100%;
+        }
+
+        .inventory-list-view-switch {
+            width: 100%;
+            justify-content: flex-end;
         }
 
         .inventory-equipment-summary {
@@ -671,6 +698,8 @@
         min-width: 620px;
         margin-bottom: 0;
         text-align: left;
+        border-spacing: 0 0.4rem;
+        background: transparent;
     }
 
     .inventory-items-category {
@@ -693,6 +722,9 @@
     .inventory-items-table td {
         padding: 0.55rem 0.75rem;
         vertical-align: middle;
+        background: rgba(24, 24, 24, 0.72);
+        border-top: 1px solid rgba(245, 240, 227, 0.1);
+        border-bottom: 1px solid rgba(245, 240, 227, 0.1);
     }
 
     .inventory-items-table__action {
@@ -716,8 +748,18 @@
         transition: background-color 0.15s ease;
     }
 
-    .inventory-items-table__row:hover {
-        background: rgba(249, 199, 79, 0.1);
+    .inventory-items-table__row td:first-child {
+        border-left: 2px solid var(--item-rarity-accent, rgba(245, 240, 227, 0.2));
+        border-radius: 0.4rem 0 0 0.4rem;
+    }
+
+    .inventory-items-table__row td:last-child {
+        border-right: 1px solid rgba(245, 240, 227, 0.1);
+        border-radius: 0 0.4rem 0.4rem 0;
+    }
+
+    .inventory-items-table__row:hover td {
+        background: rgba(40, 40, 40, 0.9);
     }
 
     .inventory-items-table__item {
@@ -775,6 +817,12 @@
     .inventory-items-table__add:hover {
         color: rgba(255, 255, 255, 0.98);
         background: rgba(255, 255, 255, 0.06);
+    }
+
+    .inventory-items-table__add:focus-visible {
+        outline: 2px solid var(--fraction-accent, #ffffff);
+        outline-offset: 2px;
+        border-radius: 0.3rem;
     }
 
     .items-view__pagination {
@@ -878,7 +926,7 @@
             gap: 0.25rem 0.75rem;
             padding: 0.65rem;
             border: 1px solid rgba(245, 240, 227, 0.16);
-            border-left: 2px solid var(--fraction-accent, rgba(245, 240, 227, 0.35));
+            border-left: 2px solid var(--item-rarity-accent, var(--fraction-accent, rgba(245, 240, 227, 0.35)));
             border-radius: 0 0.45rem 0 0.45rem;
             background: rgba(24, 24, 24, 0.82);
             text-align: left;
@@ -893,8 +941,14 @@
             min-width: 0;
             padding: 0.3rem 0;
             border: 0;
+            border-radius: 0;
+            background: transparent;
             text-align: left;
             overflow-wrap: anywhere;
+        }
+
+        .inventory-items-table__row:hover td {
+            background: transparent;
         }
 
         .inventory-items-table td:not(.inventory-items-table__item-cell)::before {
@@ -911,6 +965,10 @@
         .inventory-items-table__item-cell,
         .inventory-items-table__action {
             grid-column: 1 / -1;
+        }
+
+        .inventory-items-table__row td:first-child {
+            border-left: 0;
         }
 
         .inventory-items-table__item {

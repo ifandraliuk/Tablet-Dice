@@ -308,13 +308,11 @@ function InventoryPage() {
   };
 
   const equipItem = (itemId) => {
-    dispatch(equip({ invId: itemId }));
-    //dispatch(getUserWeapons())
+    return dispatch(equip({ invId: itemId })).unwrap();
   };
 
   const unEquipItem = (id) => {
-    dispatch(unequip({ id: id }));
-  //  dispatch(getUserWeapons())
+    return dispatch(unequip({ id: id })).unwrap();
   };
 
   const onClickFilter = (e) => {
@@ -387,10 +385,39 @@ function InventoryPage() {
               <div
                 className={
                   activeDb
-                    ? "col-12"
+                    ? "col-12 inventory-content-panel"
                     : "col-lg-6 col-md-12 inventory-content-panel"
                 }
               >
+                <header className="inventory-list-header">
+                  <h2 id="inventory-list-title">
+                    {activeDb ? "Gegenstandskatalog" : "Rucksack"}
+                  </h2>
+                  {!activeDb && (
+                    <div
+                      className="inventory-list-view-switch"
+                      role="group"
+                      aria-label="Darstellung der Inventarliste"
+                    >
+                      <button
+                        type="button"
+                        className={`inventory-list-view-switch__button${inventoryListView === "compact" ? " is-active" : ""}`}
+                        aria-pressed={inventoryListView === "compact"}
+                        onClick={() => setInventoryListView("compact")}
+                      >
+                        Kompakt
+                      </button>
+                      <button
+                        type="button"
+                        className={`inventory-list-view-switch__button${inventoryListView === "details" ? " is-active" : ""}`}
+                        aria-pressed={inventoryListView === "details"}
+                        onClick={() => setInventoryListView("details")}
+                      >
+                        Details
+                      </button>
+                    </div>
+                  )}
+                </header>
                 <div
                   className="inventory-category-switch"
                   role="group"
@@ -523,28 +550,6 @@ function InventoryPage() {
                   />
                 ) : (
                   <>
-                    <div
-                      className="inventory-list-view-switch"
-                      role="group"
-                      aria-label="Darstellung der Inventarliste"
-                    >
-                      <button
-                        type="button"
-                        className={`inventory-list-view-switch__button${inventoryListView === "compact" ? " is-active" : ""}`}
-                        aria-pressed={inventoryListView === "compact"}
-                        onClick={() => setInventoryListView("compact")}
-                      >
-                        Kompakt
-                      </button>
-                      <button
-                        type="button"
-                        className={`inventory-list-view-switch__button${inventoryListView === "details" ? " is-active" : ""}`}
-                        aria-pressed={inventoryListView === "details"}
-                        onClick={() => setInventoryListView("details")}
-                      >
-                        Details
-                      </button>
-                    </div>
                     <Slot
                       setShowInfo={show}
                       filter={inventoryCategory === "all" ? "" : inventoryCategory}

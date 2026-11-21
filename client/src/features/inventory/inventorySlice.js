@@ -300,6 +300,24 @@ export const equip = createAsyncThunk(
   }
 );
 
+export const previewEquip = createAsyncThunk(
+  "inventory/equip/preview",
+  async (data, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await inventoryService.previewEquip(data, token);
+    } catch (error) {
+      const msg =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(msg);
+    }
+  }
+);
+
 export const unequip = createAsyncThunk(
   "inventory/unequip/put",
   async (data, thunkAPI) => {
@@ -683,7 +701,7 @@ export const inventorySlice = createSlice({
       .addCase(equip.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload.message;
+        state.message = action.payload || action.error.message;
       })
       //unequip
       //equip item to the user
@@ -719,7 +737,7 @@ export const inventorySlice = createSlice({
       .addCase(unequip.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload.message;
+        state.message = action.payload || action.error.message;
       });
   },
 });

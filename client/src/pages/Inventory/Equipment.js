@@ -54,7 +54,7 @@ const Equipment = memo(({ setShowInfo, err }) => {
 
   return (
     <section
-      className="container w-auto inventory-equipment-panel"
+      className="inventory-equipment-panel"
       aria-labelledby="inventory-equipment-title"
     >
       <header className="inventory-equipment-panel__header">

@@ -675,7 +675,7 @@ const getSearchedItems = asyncHandler(async (req, res) => {
 // @route PUT /inventory/equip
 // @access Public
 const equipItem = asyncHandler(async (req, res) => {
-  const { invId } = req.body;
+  const { invId, preview = false } = req.body;
   const slotsPossible = [
     "Kopf",
     "Beine",
@@ -702,14 +702,21 @@ const equipItem = asyncHandler(async (req, res) => {
       model: "Userclass",
     });
   if (!invId) {
-    res.status(500).json({ message: "Id des Items nicht eingegeben" });
+    return res.status(400).json({ message: "Id des Items nicht eingegeben" });
   }
   if (!user) {
-    res.status(500).json({ message: "Spieler nicht gefunden" });
+    return res.status(404).json({ message: "Spieler nicht gefunden" });
   }
   // get slot name from the item
-  const inventory = user.inventory;
-  const slot = inventory.find((el) => el._id.toString() === invId)?.item;
+  const inventory = user.inventory || [];
+  const inventoryEntry = inventory.find((el) => el._id.toString() === invId);
+  if (!inventoryEntry?.item) {
+    return res.status(404).json({ message: "Gegenstand nicht im Inventar gefunden" });
+  }
+  const slot = inventoryEntry.item;
+  if (preview && inventoryEntry.status === "Ausgerüstet") {
+    return res.status(400).json({ message: "Dieser Gegenstand ist bereits ausgerüstet" });
+  }
   const slotGenus = slot.genus;
   const slotCategory = slot.category;
   let replacedFlag = false; // slot item was replaced
@@ -950,9 +957,30 @@ const equipItem = asyncHandler(async (req, res) => {
       }
     }
   } else {
-    res
-      .status(500)
+    return res
+      .status(400)
       .json({ message: "Falsche Kategorie. Waffe oder Rüstung sind passend" });
+  }
+  if (preview) {
+    if (!equipmentAllowed) {
+      return res.status(400).json({ message: "Dieser Gegenstand kann nicht ausgerüstet werden" });
+    }
+
+    const replacedIds = [toReplaceId, additionalId].filter(Boolean).map(String);
+    const replaces = inventory.filter((entry) =>
+      replacedIds.includes(entry._id.toString())
+    );
+    return res.status(200).json({
+      item: { name: slot.name },
+      slotGenus,
+      replaces: replaces.map((entry) => ({
+        _id: entry._id,
+        item: {
+          name: entry.item?.name,
+          genus: entry.item?.genus,
+        },
+      })),
+    });
   }
   if (equipmentAllowed) {
     const userName = user.name;

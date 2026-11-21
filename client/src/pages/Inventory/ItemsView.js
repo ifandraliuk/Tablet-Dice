@@ -180,8 +180,6 @@ const ItemsView = ({
         <GenusList handleActiveGenus={handleActiveGenus} />
       </div> */}
       <div className="col-12">
-        <h2 className="inventory-items-category">
-        </h2>
         <div className="row g-3 align-items-end items-view__filters">
           <div className="col-12 col-md">
             <label className="form-label mb-1" htmlFor="itemSearch">
@@ -235,6 +233,25 @@ const ItemsView = ({
             </select>
           </div>
           <div className="col-12 col-md">
+            <label className="form-label mb-1" htmlFor="rarityFilter">
+              Wertigkeit:
+            </label>
+            <select
+              id="rarityFilter"
+              className="form-select dark-filter-control w-100"
+              value={rarity}
+              onChange={handleSortChange}
+              aria-label="Sortierung nach Rarity"
+            >
+              <option key="none"></option>
+              {Object.keys(itemNames?.rarity).map((rarity) => (
+                <option key={rarity} value={rarity}>
+                  {rarity}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="col-12 col-md">
             <label className="form-label mb-1" htmlFor="productionFilter">
               Herstellungsort:
             </label>
@@ -257,25 +274,6 @@ const ItemsView = ({
                 Herstellungsorte konnten nicht geladen werden.
               </small>
             )}
-          </div>
-          <div className="col-12 col-md">
-            <label className="form-label mb-1" htmlFor="rarityFilter">
-              Wertigkeit:
-            </label>
-            <select
-              id="rarityFilter"
-              className="form-select dark-filter-control w-100"
-              value={rarity}
-              onChange={handleSortChange}
-              aria-label="Sortierung nach Rarity"
-            >
-              <option key="none"></option>
-              {Object.keys(itemNames?.rarity).map((rarity) => (
-                <option key={rarity} value={rarity}>
-                  {rarity}
-                </option>
-              ))}
-            </select>
           </div>
           <div className="col-12 col-md-auto d-flex justify-content-end">
             <button
@@ -310,7 +308,11 @@ const ItemsView = ({
                 {visibleItems.map((item) => (
                     <tr
                       key={item._id}
-                      className="inventory-items-table__row"
+                      className={`inventory-items-table__row inventory-item--rarity-${
+                        itemNames?.rarity?.[
+                          item.enchantment?.rarity ?? item.rarity
+                        ] || "unknown"
+                      }`}
                       onClick={() => {
                         setShowInfo(item._id);
                         setCustomInfo(item);
