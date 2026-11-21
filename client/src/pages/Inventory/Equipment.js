@@ -17,6 +17,16 @@ import {
 } from "../../features/inventory/inventorySlice";
 import { getProfession } from "../../features/player/playerSlice";
 import ItemIcon from "../../components/ItemIcon";
+import { itemNames } from "../../data/ConstVariables";
+
+const getEquipmentTileClass = (equippedItem) => {
+  const item = equippedItem?.item ?? equippedItem;
+  const rarity =
+    itemNames?.rarity?.[equippedItem?.enchantment?.rarity ?? item?.rarity] ??
+    "unknown";
+
+  return `inventory-item inventory-equipment__slot inventory-item--rarity-${rarity}`;
+};
 
 const Equipment = memo(({ setShowInfo, err }) => {
   //console.log("re-rendering equipment");
@@ -72,16 +82,15 @@ const Equipment = memo(({ setShowInfo, err }) => {
         </div>
       </div>
       {err && <div className={`${err.variant}-alert`}>{err.msg}</div>}
-      <div className="row justify-content-center inventory-equipment">
-        <div className="col-auto ">
+      <div className="inventory-equipment">
+        <div className="inventory-equipment__slots inventory-equipment__slots--left">
           {["Kopf", "Brust", "Hüfte", "Beine"].map((name, i) => {
-            // console.log("kopf");
             const equippedItem = equipped?.find(
               (el) => el.item?.genus === name
             );
             if (equippedItem) {
               return (
-                <motion.div className="row pb-4" key={name}>
+                <motion.div className={getEquipmentTileClass(equippedItem)} key={name}>
                   <EquippedItem
                     equippedItem={{ ...equippedItem }}
                     category={name}
@@ -92,8 +101,8 @@ const Equipment = memo(({ setShowInfo, err }) => {
               );
             } else {
               return (
-                <motion.div className="col-auto pb-4 " key={name}>
-                     <ItemIcon
+                <motion.div className={getEquipmentTileClass()} key={name}>
+                  <ItemIcon
                     equippedItem={{ ...equippedItem }}
                     category={name}
                     delayValue={i}
@@ -105,22 +114,27 @@ const Equipment = memo(({ setShowInfo, err }) => {
             }
           })}
         </div>
-        <div className="col-lg-4 inventory-equipment__character">
+        <div className="inventory-equipment__character">
           {profession?._id && (
             <img
               className="userclass-img"
               src={`/classes_img/${profession._id}.svg`}
               alt={`${profession.name} Klasse`}
+              onError={(event) => {
+                event.currentTarget.hidden = true;
+              }}
             />
           )}
         </div>
-        <div className="col-auto ">
+        <div className="inventory-equipment__slots inventory-equipment__slots--right">
           {["Rücken", "Hals", "Arme", "Füße"].map((name, i) => {
             const equippedItem = equipped?.find((el) => el.item.genus === name);
-            // console.log("rücken");
             if (equippedItem) {
               return (
-                <motion.div className="row pb-4" key={name}>
+                <motion.div
+                  className={getEquipmentTileClass(equippedItem)}
+                  key={name}
+                >
                   <EquippedItem
                     equippedItem={{ ...equippedItem }}
                     category={name}
@@ -131,7 +145,7 @@ const Equipment = memo(({ setShowInfo, err }) => {
               );
             } else {
               return (
-                <motion.div className="col-auto pb-4" key={name}>
+                <motion.div className={getEquipmentTileClass()} key={name}>
                   <ItemIcon
                     equippedItem={{ ...equippedItem }}
                     category={name}
@@ -167,7 +181,10 @@ const Equipment = memo(({ setShowInfo, err }) => {
             const keyFor = `${name}-${equippedItem?._id ?? "empty"}`;
             if (equippedItem) {
               return (
-                <motion.div className="col-auto pb-4" key={keyFor}>
+                <motion.div
+                  className={getEquipmentTileClass(equippedItem)}
+                  key={keyFor}
+                >
                   <EquippedItem
                     equippedItem={equippedItem}
                     category={name}
@@ -178,7 +195,7 @@ const Equipment = memo(({ setShowInfo, err }) => {
               );
             } else {
               return (
-                <motion.div className="col-auto pb-4" key={keyFor}>
+                <motion.div className={getEquipmentTileClass()} key={keyFor}>
                   <ItemIcon
                     item={equippedItem}
                     category={name}

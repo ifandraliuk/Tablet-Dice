@@ -383,9 +383,9 @@ function InventoryPage() {
                 Gegenstände hinzufügen
               </button>
             </div>
-            <div className="row">
+            <div className="row g-3 inventory-layout">
               <div
-                className={activeDb ? "col-12" : "col-lg-5 col-md-12 col-sm-12"}
+                className={activeDb ? "col-12" : "col-lg-6 col-md-12"}
               >
                 <div
                   className="inventory-category-switch"
@@ -661,7 +661,7 @@ function InventoryPage() {
                 )}
               </div>
               {!activeDb && (
-                <div className="col-lg-5 col-md-12 col-sm-12 h-auto">
+                <div className="col-lg-6 col-md-12 h-auto">
                   <Equipment
                     err={equipmentError}
                     armor={armor}

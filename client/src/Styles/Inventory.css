@@ -272,27 +272,85 @@
   border-top: 1px solid rgba(245, 240, 227, 0.2);
   font-weight: 700;
 }
+.inventory-page .inventory-equipment {
+  display: grid;
+  grid-template-columns: minmax(52px, 1fr) minmax(180px, 360px) minmax(52px, 1fr);
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.inventory-page .inventory-equipment__slots {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.inventory-page .inventory-equipment__slots--left {
+  align-items: flex-end;
+}
+.inventory-page .inventory-equipment__slots--right {
+  align-items: flex-start;
+}
+.inventory-page .inventory-equipment__slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  width: 72px;
+  height: 72px;
+  padding: 0.3rem;
+  border-left-width: 1px;
+  background: rgba(24, 24, 24, 0.72);
+}
+.inventory-page .inventory-equipment__slot .small-icon {
+  width: 52px !important;
+  height: 52px !important;
+  border: 0;
+}
 .inventory-page .inventory-equipment__character {
   display: flex;
+  align-items: center;
   justify-content: center;
-  align-items: flex-start;
+  width: 100%;
+  min-width: 0;
+  min-height: 360px;
 }
 .inventory-page .inventory-equipment__character .userclass-img {
   width: 100%;
-  max-width: 220px;
-  height: auto;
+  max-width: 360px;
+  max-height: min(65vh, 480px);
   -o-object-fit: contain;
      object-fit: contain;
-}
-.inventory-page .inventory-equipment .small-icon {
-  box-sizing: border-box;
-  border: 1px solid rgba(245, 240, 227, 0.65);
 }
 .inventory-page .inventory-equipment__weapons {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   margin: 0;
+}
+@media (max-width: 575.98px) {
+  .inventory-page .inventory-equipment {
+    grid-template-columns: minmax(44px, 1fr) minmax(110px, 1.5fr) minmax(44px, 1fr);
+    gap: 0.25rem;
+  }
+  .inventory-page .inventory-equipment__character {
+    min-height: 280px;
+  }
+  .inventory-page .inventory-equipment__character .userclass-img {
+    max-height: min(50vh, 340px);
+  }
+  .inventory-page .inventory-equipment__slots {
+    gap: 0.5rem;
+  }
+  .inventory-page .inventory-equipment__slot {
+    width: 64px;
+    height: 64px;
+  }
+  .inventory-page .inventory-equipment__slot .small-icon {
+    width: 48px !important;
+    height: 48px !important;
+  }
 }
 .inventory-page #searchbar {
   height: 50px;
