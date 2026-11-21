@@ -144,6 +144,37 @@
         border-left-width: 1px;
     }
 
+    .inventory-items--compact .inventory-item::after {
+        position: absolute;
+        bottom: calc(100% + 0.35rem);
+        left: 50%;
+        z-index: 4;
+        width: max-content;
+        max-width: min(14rem, 80vw);
+        padding: 0.3rem 0.55rem;
+        transform: translate(-50%, 0.2rem);
+        border: 1px solid rgba(245, 240, 227, 0.25);
+        border-radius: 0.3rem;
+        background: rgb(24, 24, 24);
+        color: #f5f0e3;
+        content: attr(data-item-name);
+        font-size: 0.8rem;
+        font-weight: 600;
+        line-height: 1.25;
+        opacity: 0;
+        pointer-events: none;
+        visibility: hidden;
+        white-space: normal;
+        transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+
+    .inventory-items--compact .inventory-item:hover::after,
+    .inventory-items--compact .inventory-item:focus-visible::after {
+        transform: translate(-50%, 0);
+        opacity: 1;
+        visibility: visible;
+    }
+
     .inventory-items--compact .inventory-item__amount {
         position: absolute;
         top: 0.2rem;
@@ -457,6 +488,37 @@
         border-top: 1px solid rgba(245, 240, 227, 0.2);
         font-weight: 700;
     }
+
+    .inventory-money-editor__field label {
+        display: block;
+        margin-bottom: 0.25rem;
+        color: inherit;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-align: left;
+    }
+
+    .inventory-money-editor__field input {
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 2.4rem;
+        padding: 0.35rem 0.5rem;
+        border: 1px solid rgba(245, 240, 227, 0.25);
+        border-radius: 0.35rem;
+        background: rgba(24, 24, 24, 0.92);
+        color: #f5f0e3;
+        text-align: left;
+    }
+
+    .inventory-money-editor__field input:focus {
+        border-color: var(--fraction-accent, rgba(245, 240, 227, 0.65));
+        color: #f5f0e3;
+    }
+
+    .inventory-money-editor__actions {
+        padding-top: 0.5rem !important;
+    }
+
     #searchbar{
         height: 50px;
         border:none;

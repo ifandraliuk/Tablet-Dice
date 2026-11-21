@@ -9,6 +9,7 @@ const MotionButton = ({
   onRepeat,
   disabled,
   ariaPressed,
+  ariaLabel,
   className = "",
 }) => {
 
@@ -48,6 +49,7 @@ const MotionButton = ({
     type="button"
       name={name}
       aria-pressed={ariaPressed}
+      aria-label={ariaLabel}
       variants={buttonVariants}
       initial="init"
       animate={onRepeat ? "repeatAnimation" : "animate"}
@@ -68,6 +70,7 @@ const MotionButton = ({
       name={name}
       onClick={onClick}
       aria-pressed={ariaPressed}
+      aria-label={ariaLabel}
       variants={buttonVariants}
       initial="init"
       animate={onRepeat ? "repeatAnimation" : "animate"}

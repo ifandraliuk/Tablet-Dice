@@ -11,10 +11,9 @@ import {
   faCoins,
   faPaw,
   faPlus,
-  faMinus,
   faPen,
-  faX,
   faCircleInfo,
+  faX,
 } from "@fortawesome/free-solid-svg-icons";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -47,6 +46,7 @@ import Slot from "./Slot";
 import ExtendedInfo from "./ExtendedInfo";
 import MotionButton from "../../components/MotionButton";
 import ItemsView from "./ItemsView";
+import MathButtonGroup from "../../components/MathButtonGroup";
 
 const INVENTORY_CATEGORY_KEY = "inventory-active-category";
 const CATALOG_CATEGORY_KEY = "inventory-catalog-category";
@@ -546,117 +546,107 @@ function InventoryPage() {
                       filter={inventoryCategory === "all" ? "" : inventoryCategory}
                       viewMode={inventoryListView}
                     />
-                    <div className="row ">
-                      <div className="col-auto pe-1 mt-2">
-                        <FontAwesomeIcon icon={faCoins} />
+                    {!activeEditMoney ? (
+                      <div className="row">
+                        <div className="col-auto pe-1 mt-2">
+                          <FontAwesomeIcon icon={faCoins} />
+                        </div>
+                        <div
+                          className="col-auto p-0 mt-2"
+                          style={{ color: "#FF9D00" }}
+                        >{`${money ? money[0] : 0} Gold`}</div>
+                        <div
+                          className="col-auto p-0 mt-2"
+                          style={{ color: "grey" }}
+                        >{`, ${money ? money[1] : 0} Silber`}</div>
+                        <div
+                          className="col-auto p-0 mt-2"
+                          style={{ color: "#B34219" }}
+                        >
+                          {`, ${money ? money[2] : 0} Kupfer`}
+                        </div>
+                        <div className="col">
+                          <MotionButton
+                            name="active-money"
+                            icon={faPen}
+                            ariaLabel="Geld bearbeiten"
+                            onClick={() => setActiveEditMoney(true)}
+                          />
+                        </div>
                       </div>
-                      <div
-                        className="col-auto p-0 mt-2"
-                        style={{ color: "#FF9D00" }}
-                      >{`${money ? money[0] : 0} Gold`}</div>
-                      <div
-                        className="col-auto p-0 mt-2"
-                        style={{ color: "grey" }}
-                      >{`, ${money ? money[1] : 0} Silber`}</div>
-                      <div
-                        className="col-auto p-0 mt-2"
-                        style={{ color: "#B34219" }}
-                      >
-                        {`, ${money ? money[2] : 0} Kupfer`}
-                      </div>
-                      <div className="col">
-                        <MotionButton
-                          name="active-money"
-                          icon={faPen}
-                          onClick={() => setActiveEditMoney((prev) => !prev)}
-                        />
-                      </div>
-                      {activeEditMoney && (
-                        <div className="">
-                          {moneyError?.length > 0 && (
-                            <div className="alert alert-danger col-12 mt-2">
-                              {moneyError}
-                            </div>
-                          )}
-                          <div className="row p-0 align-items-center">
-                            <div
-                              className="col-lg-2 p-1"
-                              style={{ color: "#FF9D00" }}
-                            >
-                              <input
-                                type="number"
-                                value={goldInput}
-                                min="0"
-                                onChange={(e) => setGoldInput(e.target.value)}
-                                style={{
-                                  width: "50%",
-                                  marginLeft: "5px",
-                                  padding: "2px",
-                                }}
-                              />
-                              <FontAwesomeIcon icon={faCoins} />
-                            </div>
+                    ) : (
+                      <div>
+                        {moneyError?.length > 0 && (
+                          <div className="alert alert-danger col-12 mt-2">
+                            {moneyError}
+                          </div>
+                        )}
+                        <div className="row p-0 align-items-end inventory-money-editor">
+                          <div
+                            className="col-4 col-lg-2 p-1 inventory-money-editor__field"
+                            style={{ color: "#FF9D00" }}
+                          >
+                            <label htmlFor="inventory-gold">Gold</label>
+                            <input
+                              id="inventory-gold"
+                              type="number"
+                              value={goldInput}
+                              min="0"
+                              onChange={(e) => setGoldInput(e.target.value)}
+                            />
+                          </div>
 
-                            <div
-                              className="col-lg-2 p-1"
-                              style={{ color: "grey" }}
-                            >
-                              <input
-                                type="number"
-                                value={silverInput}
-                                min="0"
-                                onChange={(e) => setSilverInput(e.target.value)}
-                                style={{
-                                  width: "50%",
-                                  marginLeft: "5px",
-                                  padding: "2px",
-                                }}
-                              />
-                              <FontAwesomeIcon icon={faCoins} />
-                            </div>
+                          <div
+                            className="col-4 col-lg-2 p-1 inventory-money-editor__field"
+                            style={{ color: "grey" }}
+                          >
+                            <label htmlFor="inventory-silver">Silber</label>
+                            <input
+                              id="inventory-silver"
+                              type="number"
+                              value={silverInput}
+                              min="0"
+                              onChange={(e) => setSilverInput(e.target.value)}
+                            />
+                          </div>
 
-                            <div
-                              className="col-lg-2 p-1"
-                              style={{ color: "#B34219" }}
-                            >
-                              <input
-                                type="number"
-                                min="0"
-                                value={copperInput}
-                                onChange={(e) => setCopperInput(e.target.value)}
-                                style={{
-                                  width: "50%",
-                                  marginLeft: "5px",
-                                  padding: "2px",
-                                }}
-                              />
-                              <FontAwesomeIcon icon={faCoins} />
-                            </div>
+                          <div
+                            className="col-4 col-lg-2 p-1 inventory-money-editor__field"
+                            style={{ color: "#B34219" }}
+                          >
+                            <label htmlFor="inventory-copper">Kupfer</label>
+                            <input
+                              id="inventory-copper"
+                              type="number"
+                              min="0"
+                              value={copperInput}
+                              onChange={(e) => setCopperInput(e.target.value)}
+                            />
+                          </div>
 
-                            <div className="col-auto p-1 d-flex align-items-center justify-content-around">
-                              <button
-                                onClick={() => handleUpdateMoney(true)}
-                                aria-label="Add Money"
-                              >
-                                <FontAwesomeIcon icon={faPlus} />
-                              </button>
-                              <button
-                                onClick={() => handleUpdateMoney(false)}
-                                aria-label="Subtract Money"
-                              >
-                                <FontAwesomeIcon icon={faMinus} />
-                              </button>
-                              <button
-                                onClick={() => setActiveEditMoney(false)}
-                                aria-label="Cancel Edit"
-                              >
-                                <FontAwesomeIcon icon={faX} />
-                              </button>
-                            </div>
+                          <div className="col-12 col-lg-auto p-1 inventory-money-editor__actions">
+                            <MathButtonGroup
+                              add={() => handleUpdateMoney(true)}
+                              subtract={() => handleUpdateMoney(false)}
+                              onReset={() => {
+                                setActiveEditMoney(false);
+                                setGoldInput("");
+                                setSilverInput("");
+                                setCopperInput("");
+                                setMoneyError("");
+                              }}
+                              className="resource-adjustment-buttons"
+                              resetIcon={faX}
+                              labels={{
+                                add: "Münzen hinzufügen",
+                                subtract: "Münzen abziehen",
+                                reset: "Geldbearbeitung abbrechen",
+                              }}
+                            />
                           </div>
                         </div>
-                      )}
-                    </div>
+                      </div>
+                    )}
                   </>
                 )}
               </div>

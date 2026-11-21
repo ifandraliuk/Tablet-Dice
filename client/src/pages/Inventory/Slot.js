@@ -61,6 +61,7 @@ function Slot({ modus, setCustomInfo, filter, setShowInfo, viewMode = "compact" 
             layout
             key={entry._id}
             className={`inventory-item inventory-item--rarity-${rarityClass}`}
+            data-item-name={viewMode === "compact" ? itemName : undefined}
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.2, delay: Math.min(index * 0.025, 0.3) }}
