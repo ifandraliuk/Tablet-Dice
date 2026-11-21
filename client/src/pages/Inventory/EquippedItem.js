@@ -2,11 +2,15 @@ import React from "react";
 import { motion } from "framer-motion";
 import ItemIcon from "../../components/ItemIcon";
 
-function EquippedItem({ equippedItem, setShowInfo, delayValue }) {
+function EquippedItem({ equippedItem, setShowInfo, delayValue, category }) {
       const {_id, item, enchantment} = equippedItem
       return (
-        <motion.div
+        <motion.button
+        type="button"
+        className="inventory-equipment__item-button"
         id={_id}
+        aria-label={`${category}: ${item?.name ?? "Gegenstand"}. Details öffnen`}
+        title={`${category}: ${item?.name ?? "Gegenstand"}`}
           initial={{ translateY: -90 }}
           animate={{ translateY: 0 }}
           transition={{
@@ -25,7 +29,7 @@ function EquippedItem({ equippedItem, setShowInfo, delayValue }) {
             item={item}
             enchantment={enchantment}
           />
-        </motion.div>
+        </motion.button>
       );
     
 }

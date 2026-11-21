@@ -90,7 +90,11 @@ const Equipment = memo(({ setShowInfo, err }) => {
             );
             if (equippedItem) {
               return (
-                <motion.div className={getEquipmentTileClass(equippedItem)} key={name}>
+                <motion.div
+                  className={getEquipmentTileClass(equippedItem)}
+                  data-slot-label={`Slot: ${name}`}
+                  key={name}
+                >
                   <EquippedItem
                     equippedItem={{ ...equippedItem }}
                     category={name}
@@ -101,7 +105,13 @@ const Equipment = memo(({ setShowInfo, err }) => {
               );
             } else {
               return (
-                <motion.div className={getEquipmentTileClass()} key={name}>
+                <motion.div
+                  className={getEquipmentTileClass()}
+                  data-slot-label={`Slot: ${name}`}
+                  role="img"
+                  aria-label={`Leerer Ausrüstungsslot: ${name}`}
+                  key={name}
+                >
                   <ItemIcon
                     equippedItem={{ ...equippedItem }}
                     category={name}
@@ -133,6 +143,7 @@ const Equipment = memo(({ setShowInfo, err }) => {
               return (
                 <motion.div
                   className={getEquipmentTileClass(equippedItem)}
+                  data-slot-label={`Slot: ${name}`}
                   key={name}
                 >
                   <EquippedItem
@@ -145,7 +156,13 @@ const Equipment = memo(({ setShowInfo, err }) => {
               );
             } else {
               return (
-                <motion.div className={getEquipmentTileClass()} key={name}>
+                <motion.div
+                  className={getEquipmentTileClass()}
+                  data-slot-label={`Slot: ${name}`}
+                  role="img"
+                  aria-label={`Leerer Ausrüstungsslot: ${name}`}
+                  key={name}
+                >
                   <ItemIcon
                     equippedItem={{ ...equippedItem }}
                     category={name}
@@ -183,6 +200,7 @@ const Equipment = memo(({ setShowInfo, err }) => {
               return (
                 <motion.div
                   className={getEquipmentTileClass(equippedItem)}
+                  data-slot-label={`Slot: ${name}`}
                   key={keyFor}
                 >
                   <EquippedItem
@@ -195,7 +213,13 @@ const Equipment = memo(({ setShowInfo, err }) => {
               );
             } else {
               return (
-                <motion.div className={getEquipmentTileClass()} key={keyFor}>
+                <motion.div
+                  className={getEquipmentTileClass()}
+                  data-slot-label={`Slot: ${name}`}
+                  role="img"
+                  aria-label={`Leerer Ausrüstungsslot: ${name}`}
+                  key={keyFor}
+                >
                   <ItemIcon
                     item={equippedItem}
                     category={name}
