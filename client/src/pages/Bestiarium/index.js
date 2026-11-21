@@ -9,12 +9,15 @@ import { pageTransition } from "../../data/Animations";
 import { motion } from "framer-motion";
 import CompanionPopup from "./CompanionPopup";
 import { addCompanion } from "../../features/companion/companionSlice";
+import { getKingdom } from "../../features/atlas/atlasSlice";
+import HabitatInfoModal from "./HabitatInfoModal";
 const Bestiaria = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const { fractionTheme, isSuccess } = useSelector((state) => state.player);
   const { bestiaria } = useSelector((state) => state.bestiaria);
+  const { kingdom } = useSelector((state) => state.atlas);
   const [selectedArt, setSelectedArt] = useState("creature");
   const [gattung, setGattungFilter] = useState("");
   const [habitat, setHabitatFilter] = useState("");
@@ -22,9 +25,11 @@ const Bestiaria = () => {
   const [searchText, setSearchText] = useState("");
   const [companionId, setCompanionId] = useState("");
   const [onPopup, setOnPopup] = useState(false);
+  const [selectedHabitat, setSelectedHabitat] = useState(null);
   useEffect(() => {
     console.log("getting creatures...");
     dispatch(getBestiaria());
+    dispatch(getKingdom());
 
     if (!user) {
       navigate("/");
@@ -46,6 +51,17 @@ const Bestiaria = () => {
     if (isSuccess) {
       setOnPopup(false);
     }
+  };
+  const onHabitatClick = (habitat) => {
+    const habitatKingdom = kingdom.find((entry) =>
+      entry.habitat?.some(
+        (kingdomHabitat) => kingdomHabitat._id === habitat._id
+      )
+    );
+    setSelectedHabitat({
+      ...habitat,
+      kingdomName: habitatKingdom?.name,
+    });
   };
   const visibleCreatures = bestiaria.filter(
     (creature) => creature.register === selectedArt
@@ -90,6 +106,12 @@ const Bestiaria = () => {
             companionOnClick={companionOnClick}
           />
         )}
+        {selectedHabitat && (
+          <HabitatInfoModal
+            habitat={selectedHabitat}
+            onHide={() => setSelectedHabitat(null)}
+          />
+        )}
         <div className="dark-bg container-fluid g-5 bestiarium-page">
           <div className="row g-3">
             <div className="col-12">
@@ -121,6 +143,7 @@ const Bestiaria = () => {
                 habitatFilter={habitat}
                 statusFilter={status}
                 nameFilter={searchText}
+                onHabitatClick={onHabitatClick}
                 setOnPopup={setOnPopup}
                 setCompanionId={setCompanionId}
                 fractionTheme={fractionTheme}

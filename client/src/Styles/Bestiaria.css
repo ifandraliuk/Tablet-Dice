@@ -201,11 +201,23 @@
   list-style: none;
 }
 .bestiarium-page .bestiaria-card__habitats li {
-  padding: 0.2rem 0.55rem;
   border-radius: 999px;
+  font-size: 0.85rem;
+}
+.bestiarium-page .bestiaria-card__habitat-button {
+  padding: 0.2rem 0.55rem;
+  border: 0;
+  border-radius: inherit;
   background: rgba(255, 255, 255, 0.06);
   color: rgba(255, 255, 255, 0.82);
-  font-size: 0.85rem;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+.bestiarium-page .bestiaria-card__habitat-button:hover,
+.bestiarium-page .bestiaria-card__habitat-button:focus-visible {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--fraction-accent, white);
+  outline: 1px solid var(--fraction-accent, rgba(245, 240, 227, 0.55));
+  outline-offset: 1px;
 }
 .bestiarium-page .bestiaria-empty {
   margin: 0;
@@ -268,6 +280,37 @@
   background: rgba(255, 255, 255, 0.12);
   outline: 1px solid var(--fraction-accent, rgba(245, 240, 227, 0.55));
 }
+.bestiarium-habitat-modal .modal-content {
+  border: 1px solid var(--fraction-accent, rgba(245, 240, 227, 0.45));
+  border-radius: 0.75rem;
+  background: rgba(24, 24, 24, 0.98);
+  color: #f5f0e3;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65);
+}
+.bestiarium-habitat-modal .modal-header {
+  border-bottom-color: rgba(245, 240, 227, 0.15);
+}
+.bestiarium-habitat-modal .modal-title {
+  color: var(--fraction-accent, #f5f0e3);
+}
+.bestiarium-habitat-modal .btn-close {
+  filter: invert(1);
+}
+.bestiarium-habitat-modal__content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  align-items: start;
+  gap: 1rem;
+}
+.bestiarium-habitat-modal__image {
+  display: block;
+  width: 100%;
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+.bestiarium-habitat-modal__content p {
+  margin: 0;
+}
 @media (max-width: 767.98px) {
   .bestiarium-page .bestiaria-card__content {
     grid-template-columns: minmax(0, 1fr);
@@ -288,5 +331,8 @@
     padding: 0.75rem 0 0;
     border-top: 1px solid var(--fraction-accent, rgba(245, 240, 227, 0.55));
     border-left: 0;
+  }
+  .bestiarium-habitat-modal__content {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

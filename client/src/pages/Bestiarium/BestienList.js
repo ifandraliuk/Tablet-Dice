@@ -72,6 +72,7 @@ const BestienList = memo(function BestienList({
   habitatFilter,
   statusFilter,
   nameFilter,
+  onHabitatClick,
   setOnPopup,
   setCompanionId,
   fractionTheme,
@@ -207,7 +208,16 @@ const BestienList = memo(function BestienList({
                     <h4>Habitate</h4>
                     <ul>
                       {creature.habitat.map((habitat) => (
-                        <li key={habitat._id}>{habitat.name}</li>
+                        <li key={habitat._id}>
+                          <button
+                            type="button"
+                            className="bestiaria-card__habitat-button"
+                            onClick={() => onHabitatClick(habitat)}
+                            aria-label={`Informationen zum Habitat ${habitat.name} anzeigen`}
+                          >
+                            {habitat.name}
+                          </button>
+                        </li>
                       ))}
                     </ul>
                   </div>
