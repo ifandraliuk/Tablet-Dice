@@ -1,4 +1,6 @@
 import React, { memo } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRefresh } from "@fortawesome/free-solid-svg-icons";
 
 const BestiariumFilters = memo(({
   gattungen,
@@ -14,6 +16,7 @@ const BestiariumFilters = memo(({
   onHabitatChange,
   onStatusChange,
   onSearchChange,
+  onReset,
 }) => {
   return (
     <div className="row g-3 align-items-end bestiaria-filters">
@@ -101,6 +104,17 @@ const BestiariumFilters = memo(({
             </option>
           ))}
         </select>
+      </div>
+      <div className="col-12 col-md-6 col-xl-auto d-flex justify-content-end">
+        <button
+          type="button"
+          className="filter-reset-button"
+          aria-label="Filter zurücksetzen"
+          title="Filter zurücksetzen"
+          onClick={onReset}
+        >
+          <FontAwesomeIcon icon={faRefresh} aria-hidden="true" />
+        </button>
       </div>
     </div>
   );

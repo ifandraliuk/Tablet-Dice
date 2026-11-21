@@ -9,6 +9,7 @@ import {
   faAnglesRight,
   faCheck,
   faPlus,
+  faRefresh,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   setPagination,
@@ -180,6 +181,13 @@ const ItemsView = ({
       dispatch(getItem(data));
     }
   };
+  const resetFilters = () => {
+    setSearchText("");
+    serRarirtyFilter("none");
+    setSelectedType("");
+    setSelectedProduction("");
+    dispatch(selectedGenus({ genus: genuses[0] || "Alle" }));
+  };
   return (
     <div className="row items-view">
       {/*       <div className="col-lg-4" >
@@ -199,6 +207,7 @@ const ItemsView = ({
               className="form-control dark-filter-control w-100"
               type="search"
               placeholder="Search items..."
+              value={searchText}
               onChange={handleSearch}
             />
           </div>
@@ -282,6 +291,17 @@ const ItemsView = ({
                 </option>
               ))}
             </select>
+          </div>
+          <div className="col-12 col-md-auto d-flex justify-content-end">
+            <button
+              type="button"
+              className="filter-reset-button"
+              aria-label="Filter zurücksetzen"
+              title="Filter zurücksetzen"
+              onClick={resetFilters}
+            >
+              <FontAwesomeIcon icon={faRefresh} aria-hidden="true" />
+            </button>
           </div>
         </div>
         {visibleItems.length > 0 ? (

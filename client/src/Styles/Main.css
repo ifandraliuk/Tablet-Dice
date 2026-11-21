@@ -26,6 +26,26 @@ p {
   color: #f5f0e3;
   background-color: rgb(24, 24, 24);
 }
+.filter-reset-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  padding: 0;
+  border: 1px solid rgba(245, 240, 227, 0.28);
+  border-radius: 0.4rem;
+  background: rgba(24, 24, 24, 0.72);
+  color: rgba(245, 240, 227, 0.8);
+  transition: border-color 0.18s ease, background-color 0.18s ease, color 0.18s ease;
+}
+.filter-reset-button:hover,
+.filter-reset-button:focus-visible {
+  border-color: var(--fraction-accent, rgba(245, 240, 227, 0.65));
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--fraction-accent, white);
+  outline: none;
+}
 .resource-adjustment-buttons button {
   display: inline-flex;
   align-items: center;

@@ -65,6 +65,13 @@ const Bestiaria = () => {
   const gattungList = [
     ...new Set(visibleCreatures.map((creature) => creature.art).filter(Boolean)),
   ].sort((first, second) => first.localeCompare(second, "de"));
+  const resetFilters = () => {
+    setSelectedArt("creature");
+    setGattungFilter("");
+    setHabitatFilter("");
+    setStatusFilter("");
+    setSearchText("");
+  };
 
   return (
     <motion.div
@@ -105,6 +112,7 @@ const Bestiaria = () => {
                 onHabitatChange={setHabitatFilter}
                 onStatusChange={setStatusFilter}
                 onSearchChange={setSearchText}
+                onReset={resetFilters}
               />
               <BestienList
                 creatures={bestiaria}
