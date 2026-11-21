@@ -81,6 +81,7 @@ const HabitatDetails = () => {
                 name="back"
                 icon={faReply}
                 onClick={onBack}
+                className="atlas-tab-button"
               />
             </div>
           </div>
