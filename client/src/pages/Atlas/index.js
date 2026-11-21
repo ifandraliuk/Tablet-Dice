@@ -18,6 +18,7 @@ const Atlas = () => {
   const { kingdom, habitatView, kingdomCategory, isError, message } =
     useSelector((state) => state.atlas);
   const [showInfo, setShowInfo] = useState(false);
+  const [selectedKingdom, setSelectedKingdom] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
@@ -46,13 +47,45 @@ const Atlas = () => {
           {habitatView ? (
             <HabitatDetails />
           ) : (
-            kingdom?.map((kingdom) => (
-              <Kingdom
-                key={kingdom._id}
-                kingdom={kingdom}
-                showMap={showMap}
-              />
-            ))
+            <>
+              <nav className="atlas-kingdom-filter" aria-label="Königreich auswählen">
+                <button
+                  type="button"
+                  className={`atlas-kingdom-filter__button ${
+                    selectedKingdom === null ? "is-active" : ""
+                  }`}
+                  aria-pressed={selectedKingdom === null}
+                  onClick={() => setSelectedKingdom(null)}
+                >
+                  Alle
+                </button>
+                {kingdom?.map((entry) => (
+                  <button
+                    key={entry._id}
+                    type="button"
+                    className={`atlas-kingdom-filter__button atlas-kingdom--${entry.name} ${
+                      selectedKingdom === entry.name ? "is-active" : ""
+                    }`}
+                    aria-pressed={selectedKingdom === entry.name}
+                    onClick={() => setSelectedKingdom(entry.name)}
+                  >
+                    {entry.name}
+                  </button>
+                ))}
+              </nav>
+              {kingdom
+                ?.filter(
+                  (entry) =>
+                    selectedKingdom === null || entry.name === selectedKingdom
+                )
+                .map((entry) => (
+                  <Kingdom
+                    key={entry._id}
+                    kingdom={entry}
+                    showMap={showMap}
+                  />
+                ))}
+            </>
           )}
         </div>
 
