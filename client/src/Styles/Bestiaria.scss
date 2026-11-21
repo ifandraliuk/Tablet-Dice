@@ -66,8 +66,8 @@
 
     .bestiaria-card__content {
         display: grid;
-        grid-template-columns: minmax(140px, 22%) minmax(0, 1fr);
-        gap: 1rem;
+        grid-template-columns: minmax(140px, 220px) minmax(0, 1fr);
+        gap: 0.75rem;
     }
 
     .bestiaria-card__visual {
@@ -92,7 +92,7 @@
 
     .bestiaria-card__details {
         min-width: 0;
-        padding-left: 1rem;
+        padding-left: 0.75rem;
         border-left: 1px solid var(--fraction-accent, rgba(245, 240, 227, 0.55));
     }
 
