@@ -279,7 +279,7 @@ const ItemsView = ({
             </label>
             <select
               id="rarityFilter"
-              className="form-select w-100"
+              className="form-select dark-filter-control w-100"
               value={rarity}
               onChange={handleSortChange}
               aria-label="Sortierung nach Rarity"
