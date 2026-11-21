@@ -10,6 +10,8 @@ import {
 
 const initialState = {
   data: [],
+  productionOptions: [],
+  productionOptionsError: "",
   n: 0,
   m: 10,
   genuses: [],
@@ -57,6 +59,20 @@ export const searchInCategory = createAsyncThunk(
         error.toString();
       console.log(error.message);
       return thunkAPI.rejectWithValue(msg);
+    }
+  }
+);
+export const getProductions = createAsyncThunk(
+  "items/getProductions",
+  async (data, thunkAPI) => {
+    try {
+      return await itemService.getProductions(data);
+    } catch (error) {
+      const message =
+        (error.response && error.response.data && error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
     }
   }
 );
@@ -154,6 +170,16 @@ export const itemSlice = createSlice({
         state.isError = true;
         state.message = action.payload;
         state.loaded = false;
+      })
+      .addCase(getProductions.pending, (state) => {
+        state.productionOptionsError = "";
+      })
+      .addCase(getProductions.fulfilled, (state, action) => {
+        state.productionOptions = action.payload;
+      })
+      .addCase(getProductions.rejected, (state, action) => {
+        state.productionOptions = [];
+        state.productionOptionsError = action.payload;
       });
   },
 });

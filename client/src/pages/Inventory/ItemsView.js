@@ -16,6 +16,7 @@ import {
   selectedGenus,
   getGenuses,
   searchInCategory,
+  getProductions,
 } from "../../features/item/itemSlice";
 import MotionButton from "../../components/MotionButton";
 const ItemsView = ({
@@ -25,9 +26,16 @@ const ItemsView = ({
   addItemToInventory,
 }) => {
   const dispatch = useDispatch();
-  const { data, activeGenus, activeCategory, genuses, n, m } = useSelector(
-    (state) => state.items
-  );
+  const {
+    data,
+    activeGenus,
+    activeCategory,
+    genuses,
+    n,
+    m,
+    productionOptions,
+    productionOptionsError,
+  } = useSelector((state) => state.items);
   const inventory = useSelector((state) => state.inventory.inventory);
   const { fractionTheme } = useSelector((state) => state.player);
   const displayedCategory = iFilter || activeCategory || "Rüstung";
@@ -43,12 +51,14 @@ const ItemsView = ({
         .sort((a, b) => a.localeCompare(b, "de")),
     [data]
   );
+  const [selectedProduction, setSelectedProduction] = useState("");
   const visibleItems = data
     .filter((item) => item.status !== "Ausgerüstet")
     .filter((item) => !selectedType || item.type === selectedType);
 
   useEffect(() => {
     setSelectedType("");
+    setSelectedProduction("");
   }, [iFilter, activeGenus]);
   const forward = () => {
     const nextN = parseInt(n) + 10;
@@ -80,7 +90,8 @@ const ItemsView = ({
         genus: activeGenus,
         searchText: searchText,
         n: n,
-        rarity:  rarity !== "" ? rarity : "none"
+        rarity: rarity !== "" ? rarity : "none",
+        production: selectedProduction,
       };
       dispatch(searchInCategory(data)); 
       
@@ -93,6 +104,17 @@ const ItemsView = ({
     dispatch(getGenuses({ filter: iFilter }));
   }, [dispatch, iFilter]);
 
+  useEffect(() => {
+    if (activeGenus) {
+      dispatch(
+        getProductions({
+          category: displayedCategory,
+          genus: activeGenus,
+        })
+      );
+    }
+  }, [dispatch, displayedCategory, activeGenus]);
+
 
   useEffect(() => {
     console.log("useEffect request");
@@ -104,7 +126,8 @@ const ItemsView = ({
         genus: activeGenus ? activeGenus : "Kopf",
         n: n,
         m: m,
-        rarity: rarity !== "" ? rarity : "none"
+        rarity: rarity !== "" ? rarity : "none",
+        production: selectedProduction,
       };
 
       dispatch(getItem(data));
@@ -114,11 +137,21 @@ const ItemsView = ({
         genus: activeGenus,
         searchText: searchText,
         n: n,
-        rarity: rarity !== "" ? rarity : "none"
+        rarity: rarity !== "" ? rarity : "none",
+        production: selectedProduction,
       };
       dispatch(searchInCategory(data)); // Dispatch search action
     }
-  }, [dispatch, n, m, activeCategory, activeGenus, searchText, rarity]);
+  }, [
+    dispatch,
+    n,
+    m,
+    activeCategory,
+    activeGenus,
+    searchText,
+    rarity,
+    selectedProduction,
+  ]);
 
 
 
@@ -131,6 +164,7 @@ const ItemsView = ({
         genus: activeGenus,
         searchText: e.target.value,
         n: n,
+        production: selectedProduction,
       };
       dispatch(searchInCategory(data)); // Dispatch search action
     } else {
@@ -140,6 +174,7 @@ const ItemsView = ({
         genus: activeGenus,
         n: n,
         m: m,
+        production: selectedProduction,
       };
       setSearchText("");
       dispatch(getItem(data));
@@ -155,7 +190,7 @@ const ItemsView = ({
           {displayedCategory}
         </h2>
         <div className="row g-3 align-items-end items-view__filters">
-          <div className="col-12 col-md-3">
+          <div className="col-12 col-md">
             <label className="form-label mb-1" htmlFor="itemSearch">
               Suche:
             </label>
@@ -167,7 +202,7 @@ const ItemsView = ({
               onChange={handleSearch}
             />
           </div>
-          <div className="col-12 col-md-3">
+          <div className="col-12 col-md">
             <label className="form-label mb-1" htmlFor="genusFilter">
               Gattung:
             </label>
@@ -178,6 +213,7 @@ const ItemsView = ({
               onChange={handleActiveGenus}
               aria-label="Sortierung nach Genus"
             >
+              <option value="Alle">Alle</option>
               {genuses?.map((genus) => (
                 <option key={genus} value={genus}>
                   {genus}
@@ -185,7 +221,7 @@ const ItemsView = ({
               ))}
             </select>
           </div>
-          <div className="col-12 col-md-3">
+          <div className="col-12 col-md">
             <label className="form-label mb-1" htmlFor="typeFilter">
               Typ:
             </label>
@@ -204,7 +240,31 @@ const ItemsView = ({
               ))}
             </select>
           </div>
-          <div className="col-12 col-md-3">
+          <div className="col-12 col-md">
+            <label className="form-label mb-1" htmlFor="productionFilter">
+              Herstellungsort:
+            </label>
+            <select
+              id="productionFilter"
+              className="form-select w-100"
+              value={selectedProduction}
+              onChange={(event) => setSelectedProduction(event.target.value)}
+              aria-label="Nach Herstellungsort filtern"
+            >
+              <option value="">Alle Herstellungsorte</option>
+              {productionOptions.map((production) => (
+                <option key={production} value={production}>
+                  {production}
+                </option>
+              ))}
+            </select>
+            {productionOptionsError && (
+              <small className="text-danger" role="alert">
+                Herstellungsorte konnten nicht geladen werden.
+              </small>
+            )}
+          </div>
+          <div className="col-12 col-md">
             <label className="form-label mb-1" htmlFor="rarityFilter">
               Wertigkeit:
             </label>

@@ -30,6 +30,9 @@ const itemSchema = mongoose.Schema({
         type: String,
         required: [true, 'Bitte die Gattung eingeben! (Schwert, Axt, Werkzeug)']
     },
+    production: {
+        type: String,
+    },
     type: {
         type: String,
         required: [true, 'Bitte den Itemstyp eingeben! (1-hand)']

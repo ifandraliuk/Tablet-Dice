@@ -172,6 +172,7 @@ const findItem = asyncHandler(async (req, res) => {
 const getSearchInCategory = asyncHandler(async (req, res) => {
   console.log("backend get search in category");
   const { category, genus, n = 0, searchText = "", rarity = "none" } = req.params;
+  const { production } = req.query;
 
   const skipCount = parseInt(n, 10) || 0;
   const limitCount = 10;
@@ -186,9 +187,10 @@ const getSearchInCategory = asyncHandler(async (req, res) => {
   const filter =
     searchText && searchText !== ""
       ? { category, ...(safe ? { name: { $regex: safe, $options: "i" } } : {}) }
-      : { category, genus };
+      : { category, ...(genus !== "Alle" ? { genus } : {}) };
 
   if (rarity && rarity !== "none"  && rarity !== "") filter.rarity = rarity;
+  if (production) filter.production = production;
   console.log(filter);
 
   const items = await Item.find(filter)
@@ -204,6 +206,7 @@ console.log(items.length)
 const getItem = asyncHandler(async (req, res) => {
   console.log("backend get item");
   const { n, m, category, genus,rarity = "" } = req.params;
+  const { production } = req.query;
   console.log(req.params);
   const skipCount = parseInt(n) || 0; // Default to 0 if not provided
   const limitCount = 10; // Default to 10 if not provided
@@ -220,7 +223,12 @@ const getItem = asyncHandler(async (req, res) => {
     legendär: 9,
     einzigartig: 10,
   };
-  const search = rarity && rarity !== "none"  && rarity !== "" ? { category: category, genus: genus, rarity: rarity } : { category: category, genus: genus }
+  const search = {
+    category,
+    ...(genus !== "Alle" ? { genus } : {}),
+    ...(rarity && rarity !== "none" && rarity !== "" ? { rarity } : {}),
+    ...(production ? { production } : {}),
+  };
   const items = await Item.find(search)
     .skip(parseInt(skipCount))
     .limit(parseInt(limitCount))
@@ -231,6 +239,17 @@ const getItem = asyncHandler(async (req, res) => {
   items.sort((a, b) => rarityOrder[a.rarity] - rarityOrder[b.rarity]);
   console.log(items.length);
   res.status(200).json({ data: items, n: parseInt(n), m: parseInt(m) });
+});
+
+const getProductions = asyncHandler(async (req, res) => {
+  const { category, genus } = req.params;
+  const productions = await Item.distinct("production", {
+    category,
+    ...(genus !== "Alle" ? { genus } : {}),
+    production: { $type: "string", $ne: "" },
+  });
+  productions.sort((a, b) => a.localeCompare(b, "de"));
+  res.status(200).json(productions);
 });
 
 const rename = asyncHandler(async (req, res) => {
@@ -249,6 +268,7 @@ module.exports = {
   setItem,
   getSearchInCategory,
   getItem,
+  getProductions,
   findItem,
   updateItem,
   rename,
