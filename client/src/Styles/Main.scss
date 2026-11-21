@@ -1,4 +1,49 @@
 @import './Variables.scss';
+.creature-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0.2rem 0.55rem;
+    border: 1px solid rgba(245, 240, 227, 0.2);
+    border-radius: 999px;
+    font-size: 0.8rem;
+}
+.creature-status--positive {
+    border-color: rgba(74, 180, 112, 0.45);
+    background: rgba(74, 180, 112, 0.12);
+    color: #b7e4c7;
+}
+.creature-status--caution {
+    border-color: rgba(243, 210, 138, 0.45);
+    background: rgba(243, 210, 138, 0.1);
+    color: #f3d28a;
+}
+.creature-status--blue {
+    border-color: rgba(102, 178, 255, 0.45);
+    background: rgba(102, 178, 255, 0.1);
+    color: #8fc8ff;
+}
+.creature-status--magic {
+    border-color: rgba(190, 130, 255, 0.45);
+    background: rgba(190, 130, 255, 0.1);
+    color: #d1a6ff;
+}
+.creature-status--muted {
+    border-color: rgba(180, 190, 200, 0.35);
+    background: rgba(180, 190, 200, 0.08);
+    color: #c3cbd2;
+}
+.creature-status--danger {
+    border-color: rgba(249, 101, 101, 0.45);
+    background: rgba(249, 101, 101, 0.1);
+    color: #ff9a9a;
+}
+.creature-status--default {
+    border-color: var(--fraction-accent, rgba(245, 240, 227, 0.35));
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--fraction-accent, #f5f0e3);
+}
 body { 
     overflow-x: hidden;
     //overflow-y: auto;

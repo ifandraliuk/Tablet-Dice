@@ -1,10 +1,6 @@
 import {
   faDice,
-  faCircleCheck,
-  faCircleExclamation,
-  faCircleInfo,
   faHeart,
-  faLock,
   faPaw,
   faPlus,
   faShield,
@@ -13,75 +9,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { memo } from "react";
-
-const getStatusPresentation = (status) => {
-  const normalizedStatus = status.trim().toLocaleLowerCase();
-
-  if (
-    ["frei", "verfügbar", "passiv", "friedlich", "neutral"].includes(
-      normalizedStatus
-    )
-  ) {
-    return {
-      className: "bestiaria-card__status--positive",
-      icon: faCircleCheck,
-    };
-  }
-
-  if (["belegt", "vorsichtig", "fernkampf"].includes(normalizedStatus)) {
-    return {
-      className: "bestiaria-card__status--caution",
-      icon: faCircleExclamation,
-    };
-  }
-
-  if (["gesperrt", "inaktiv"].includes(normalizedStatus)) {
-    return {
-      className: "bestiaria-card__status--muted",
-      icon: faLock,
-    };
-  }
-
-  if (["flieht", "schurke"].includes(normalizedStatus)) {
-    return {
-      className: "bestiaria-card__status--blue",
-      icon: faCircleInfo,
-    };
-  }
-
-  if (normalizedStatus === "magier") {
-    return {
-      className: "bestiaria-card__status--magic",
-      icon: faCircleInfo,
-    };
-  }
-
-  if (["aggressiv", "feindlich", "krieger"].includes(normalizedStatus)) {
-    return {
-      className: "bestiaria-card__status--danger",
-      icon: faCircleExclamation,
-    };
-  }
-
-  return {
-    className: "bestiaria-card__status--default",
-    icon: faCircleInfo,
-  };
-};
-
-const BestiaryStatus = ({ status }) => {
-  const statusPresentation = getStatusPresentation(status);
-
-  return (
-    <span
-      className={`bestiaria-card__status ${statusPresentation.className}`}
-      aria-label={`Status: ${status}`}
-    >
-      <FontAwesomeIcon icon={statusPresentation.icon} aria-hidden="true" />
-      {status}
-    </span>
-  );
-};
+import CreatureStatus from "../../components/CreatureStatus";
 
 const BestienList = memo(function BestienList({
   creatures,
@@ -130,7 +58,7 @@ const BestienList = memo(function BestienList({
                     Gattung: {creature.art}
                   </span>
                   {creature.status && (
-                    <BestiaryStatus status={creature.status} />
+                    <CreatureStatus status={creature.status} />
                   )}
                 </div>
               </div>
