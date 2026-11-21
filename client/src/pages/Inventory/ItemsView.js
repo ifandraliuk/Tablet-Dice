@@ -335,9 +335,9 @@ const ItemsView = ({
                         <div className="inventory-items-table__item">
                           <ItemIcon item={item} enchantment={item.enchantment} />
                           <span>
-                            <span className="inventory-items-table__name">
+                            <strong className="inventory-items-table__name">
                               {item.name}
-                            </span>
+                            </strong>
                             <span
                               className={`inventory-items-table__genus ${fractionTheme}-text`}
                             >

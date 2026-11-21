@@ -50,6 +50,7 @@ import ItemsView from "./ItemsView";
 
 const INVENTORY_CATEGORY_KEY = "inventory-active-category";
 const CATALOG_CATEGORY_KEY = "inventory-catalog-category";
+const INVENTORY_LIST_VIEW_KEY = "inventory-list-view";
 const INVENTORY_CATEGORIES = ["Rüstung", "Waffe", "Ressource", "Begleiter"];
 
 function InventoryPage() {
@@ -89,6 +90,11 @@ function InventoryPage() {
       : "Rüstung";
   });
   const [activeDb, setActiveDb] = useState(false);
+  const [inventoryListView, setInventoryListView] = useState(() => {
+    return localStorage.getItem(INVENTORY_LIST_VIEW_KEY) === "details"
+      ? "details"
+      : "compact";
+  });
   const [customInfo, setCustomInfo] = useState({});
   const [newMoney, updateBalance] = useState(money);
   const [moneyError, setMoneyError] = useState("");
@@ -120,6 +126,10 @@ function InventoryPage() {
   useEffect(() => {
     localStorage.setItem(CATALOG_CATEGORY_KEY, catalogCategory);
   }, [catalogCategory]);
+
+  useEffect(() => {
+    localStorage.setItem(INVENTORY_LIST_VIEW_KEY, inventoryListView);
+  }, [inventoryListView]);
 
   useEffect(() => {
     inventoryPageMounted.current = true;
@@ -509,9 +519,32 @@ function InventoryPage() {
                   />
                 ) : (
                   <>
+                    <div
+                      className="inventory-list-view-switch"
+                      role="group"
+                      aria-label="Darstellung der Inventarliste"
+                    >
+                      <button
+                        type="button"
+                        className={`inventory-list-view-switch__button${inventoryListView === "compact" ? " is-active" : ""}`}
+                        aria-pressed={inventoryListView === "compact"}
+                        onClick={() => setInventoryListView("compact")}
+                      >
+                        Kompakt
+                      </button>
+                      <button
+                        type="button"
+                        className={`inventory-list-view-switch__button${inventoryListView === "details" ? " is-active" : ""}`}
+                        aria-pressed={inventoryListView === "details"}
+                        onClick={() => setInventoryListView("details")}
+                      >
+                        Details
+                      </button>
+                    </div>
                     <Slot
                       setShowInfo={show}
                       filter={inventoryCategory === "all" ? "" : inventoryCategory}
+                      viewMode={inventoryListView}
                     />
                     <div className="row ">
                       <div className="col-auto pe-1 mt-2">
