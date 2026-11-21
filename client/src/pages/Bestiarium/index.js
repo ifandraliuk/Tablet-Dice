@@ -17,6 +17,7 @@ const Bestiaria = () => {
   const { bestiaria, artList } = useSelector((state) => state.bestiaria);
   const [gattung, setGattungFilter] = useState("");
   const [habitat, setHabitatFilter] = useState("");
+  const [status, setStatusFilter] = useState("");
   const [searchText, setSearchText] = useState("");
   const [companionId, setCompanionId] = useState("");
   const [onPopup, setOnPopup] = useState(false);
@@ -52,6 +53,9 @@ const Bestiaria = () => {
       )
     ),
   ].sort((first, second) => first.localeCompare(second, "de"));
+  const statusList = [
+    ...new Set(bestiaria.map((creature) => creature.status).filter(Boolean)),
+  ].sort((first, second) => first.localeCompare(second, "de"));
 
   return (
     <motion.div
@@ -76,17 +80,21 @@ const Bestiaria = () => {
               <BestiariumFilters
                 arts={artList}
                 habitats={habitatList}
+                statuses={statusList}
                 selectedGattung={gattung}
                 selectedHabitat={habitat}
+                selectedStatus={status}
                 searchText={searchText}
                 onGattungChange={setGattungFilter}
                 onHabitatChange={setHabitatFilter}
+                onStatusChange={setStatusFilter}
                 onSearchChange={setSearchText}
               />
               <BestienList
                 creatures={bestiaria}
                 gattungFilter={gattung}
                 habitatFilter={habitat}
+                statusFilter={status}
                 nameFilter={searchText}
                 setOnPopup={setOnPopup}
                 setCompanionId={setCompanionId}

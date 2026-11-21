@@ -13,6 +13,7 @@ const BestienList = memo(function BestienList({
   creatures,
   gattungFilter,
   habitatFilter,
+  statusFilter,
   nameFilter,
   setOnPopup,
   setCompanionId,
@@ -25,11 +26,12 @@ const BestienList = memo(function BestienList({
     const matchesHabitat =
       !habitatFilter ||
       creature.habitat?.some((entry) => entry.name === habitatFilter);
+    const matchesStatus = !statusFilter || creature.status === statusFilter;
     const matchesName =
       !normalizedNameFilter ||
       creature.name?.toLocaleLowerCase().includes(normalizedNameFilter);
 
-    return matchesGattung && matchesHabitat && matchesName;
+    return matchesGattung && matchesHabitat && matchesStatus && matchesName;
   });
 
   if (creatureList.length > 0) {
@@ -66,9 +68,18 @@ const BestienList = memo(function BestienList({
                   src={`${creature.register}/${creature._id}.png`}
                   alt={creature.name}
                 />
-                <span className={`bestiaria-card__status ${creature.status}`}>
-                  Status: {creature.status}
-                </span>
+                {creature.status && (
+                  <span
+                    className={`bestiaria-card__status ${
+                      creature.status.toLocaleLowerCase() === "frei"
+                        ? "bestiaria-card__status--free"
+                        : ""
+                    }`}
+                    aria-label={`Status: ${creature.status}`}
+                  >
+                    {creature.status}
+                  </span>
+                )}
               </div>
               <div className="bestiaria-card__details">
                 <div className="bestiaria-card__description">

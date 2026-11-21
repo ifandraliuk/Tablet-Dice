@@ -3,16 +3,19 @@ import React, { memo } from "react";
 const BestiariumFilters = memo(({
   arts,
   habitats,
+  statuses,
   selectedGattung,
   selectedHabitat,
+  selectedStatus,
   searchText,
   onGattungChange,
   onHabitatChange,
+  onStatusChange,
   onSearchChange,
 }) => {
   return (
     <div className="row g-3 align-items-end bestiaria-filters">
-      <div className="col-12 col-md-4">
+      <div className="col-12 col-md-6 col-xl-3">
         <label className="form-label mb-1" htmlFor="bestiariumSearch">
           Suche:
         </label>
@@ -25,7 +28,7 @@ const BestiariumFilters = memo(({
           onChange={(event) => onSearchChange(event.target.value)}
         />
       </div>
-      <div className="col-12 col-md-4">
+      <div className="col-12 col-md-6 col-xl-3">
         <label className="form-label mb-1" htmlFor="bestiariumGattung">
           Gattung:
         </label>
@@ -44,7 +47,7 @@ const BestiariumFilters = memo(({
           ))}
         </select>
       </div>
-      <div className="col-12 col-md-4">
+      <div className="col-12 col-md-6 col-xl-3">
         <label className="form-label mb-1" htmlFor="bestiariumHabitat">
           Habitat:
         </label>
@@ -59,6 +62,25 @@ const BestiariumFilters = memo(({
           {habitats.map((name) => (
             <option key={name} value={name}>
               {name}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="col-12 col-md-6 col-xl-3">
+        <label className="form-label mb-1" htmlFor="bestiariumStatus">
+          Status:
+        </label>
+        <select
+          id="bestiariumStatus"
+          className="form-select dark-filter-control w-100"
+          value={selectedStatus}
+          onChange={(event) => onStatusChange(event.target.value)}
+          aria-label="Nach Status filtern"
+        >
+          <option value="">Alle Status</option>
+          {statuses.map((status) => (
+            <option key={status} value={status}>
+              {status}
             </option>
           ))}
         </select>

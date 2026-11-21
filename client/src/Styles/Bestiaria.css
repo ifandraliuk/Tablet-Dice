@@ -72,8 +72,14 @@
 .bestiarium-page .bestiaria-card__status {
   display: inline-block;
   margin-top: 0.5rem;
+  padding: 0.2rem 0.55rem;
+  border: 1px solid rgba(245, 240, 227, 0.2);
+  border-radius: 999px;
   color: rgba(255, 255, 255, 0.75);
   font-size: 0.85rem;
+}
+.bestiarium-page .bestiaria-card__status--free {
+  color: #b7e4c7;
 }
 .bestiarium-page .bestiaria-card__details {
   min-width: 0;
