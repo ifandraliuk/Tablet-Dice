@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import ItemIcon from "../../components/ItemIcon";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { toast } from "react-toastify";
 import {
   faCoins,
   faLeftLong,
@@ -17,7 +18,6 @@ import {
   faX,
 } from "@fortawesome/free-solid-svg-icons";
 import { getUsers } from "../../features/diary/diarySlice";
-import { previewEquip } from "../../features/inventory/inventorySlice";
 import { buttonImpackt } from "../../data/Animations";
 import { itemNames } from "../../data/ConstVariables";
 import { getOriginAccentStyle } from "../../data/OriginColors";
@@ -42,7 +42,6 @@ function ExtendedInfo({
   const [contentToShow, setContentToShow] = useState("info");
   const [isOpen, setIsOpen] = useState(true);
   const [inputValue, setInputValue] = useState(0);
-  const [equipmentPreview, setEquipmentPreview] = useState(null);
   const [equipmentActionError, setEquipmentActionError] = useState("");
   const [equipmentActionLoading, setEquipmentActionLoading] = useState(false);
   const closeButtonRef = useRef(null);
@@ -126,37 +125,22 @@ function ExtendedInfo({
     !((category === "Ressource" && genus !== "Sattel") ||
       (category === "Waffe" && genus === "Werkzeug"));
 
-  const equipSelectedItem = async () => {
-    setEquipmentActionLoading(true);
-    setEquipmentActionError("");
-    try {
-      await equipItem(extendedItemInfo._id);
-      setEquipmentPreview(null);
-      setShowInfo(false);
-    } catch (error) {
-      setEquipmentActionError(
-        typeof error === "string"
-          ? error
-          : error.message || "Ausrüsten ist fehlgeschlagen."
-      );
-    } finally {
-      setEquipmentActionLoading(false);
-    }
-  };
-
   const handleEquipmentAction = async () => {
     setEquipmentActionError("");
-    setEquipmentPreview(null);
     if (equippedItem) {
       setEquipmentActionLoading(true);
       try {
         await unEquipItem(extendedItemInfo._id);
+        toast.success(`${name} wurde abgelegt.`);
         setShowInfo(false);
       } catch (error) {
-        setEquipmentActionError(
+        const message =
           typeof error === "string"
             ? error
-            : error.message || "Ablegen ist fehlgeschlagen."
+            : error.message || "Ablegen ist fehlgeschlagen.";
+        toast.error(message);
+        setEquipmentActionError(
+          message
         );
       } finally {
         setEquipmentActionLoading(false);
@@ -166,20 +150,24 @@ function ExtendedInfo({
 
     setEquipmentActionLoading(true);
     try {
-      const preview = await dispatch(
-        previewEquip({ invId: extendedItemInfo._id })
-      ).unwrap();
-      if (preview.replaces.length > 0) {
-        setEquipmentPreview(preview);
-      } else {
-        await equipItem(extendedItemInfo._id);
-        setShowInfo(false);
-      }
+      const result = await equipItem(extendedItemInfo._id);
+      const replacementCount =
+        Number(Boolean(result.unequipItem)) +
+        Number(Boolean(result.additionalUnequip));
+      toast.success(
+        replacementCount > 0
+          ? `${name} ausgerüstet. ${replacementCount === 1 ? "Ein Gegenstand wurde" : "Gegenstände wurden"} in den Rucksack gelegt.`
+          : `${name} wurde ausgerüstet.`
+      );
+      setShowInfo(false);
     } catch (error) {
-      setEquipmentActionError(
+      const message =
         typeof error === "string"
           ? error
-          : error.message || "Ausrüsten ist fehlgeschlagen."
+          : error.message || "Ausrüsten ist fehlgeschlagen.";
+      toast.error(message);
+      setEquipmentActionError(
+        message
       );
     } finally {
       setEquipmentActionLoading(false);
@@ -332,49 +320,6 @@ function ExtendedInfo({
                   </div>
                 </div>
               )}
-              {equipmentActionError && (
-                <p className="extended-info-equipment-error" role="alert">
-                  {equipmentActionError}
-                </p>
-              )}
-              {equipmentPreview && (
-                <div
-                  className="extended-info-equip-preview"
-                  role="group"
-                  aria-label="Vorschau des Ausrüstungswechsels"
-                >
-                  <strong>{equipmentPreview.item.name} ausrüsten?</strong>
-                  <p>
-                    {equipmentPreview.replaces.length === 1
-                      ? "Dieser Gegenstand kommt zurück in den Rucksack:"
-                      : "Diese Gegenstände kommen zurück in den Rucksack:"}
-                  </p>
-                  <ul>
-                    {equipmentPreview.replaces.map((entry) => (
-                      <li key={entry._id}>
-                        {entry.item?.name || "Unbekannter Gegenstand"}
-                        {entry.item?.genus ? ` · ${entry.item.genus}` : ""}
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="extended-info-equip-preview__actions">
-                    <button
-                      type="button"
-                      onClick={equipSelectedItem}
-                      disabled={equipmentActionLoading}
-                    >
-                      Jetzt ausrüsten
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setEquipmentPreview(null)}
-                      disabled={equipmentActionLoading}
-                    >
-                      Abbrechen
-                    </button>
-                  </div>
-                </div>
-              )}
               {dbButtons && (
                 <div className="extended-info-add-action">
                   <MotionButton
@@ -390,6 +335,12 @@ function ExtendedInfo({
             id="col2"
             className="col-lg-9 col-md-8 col-12 extended-info-content"
           >
+            <>
+              {equipmentActionError && (
+                <p className="extended-info-equipment-error" role="alert">
+                  {equipmentActionError}
+                </p>
+              )}
             {contentToShow === "info" && (
               <motion.div
                 name="info-content"
@@ -562,6 +513,8 @@ function ExtendedInfo({
                   </div>
                 )}
               </motion.div>
+            )}
+              </>
             )}
           </div>
         </motion.div>

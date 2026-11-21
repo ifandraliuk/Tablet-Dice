@@ -19,6 +19,7 @@ import { AnimatePresence } from "framer-motion";
 import Navbar from "./components/Nav";
 import Atlas from "./pages/Atlas";
 import { getFraction } from "./features/player/playerSlice";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   console.log("APP rendered");
@@ -35,6 +36,12 @@ function App() {
 
   return (
     <div className="g-0">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        theme="dark"
+        toastClassName="app-toast"
+      />
       <div className={`${fractionTheme}-bg`}>
         <div className="container-fluid">
           <div className="row dark-bg">
