@@ -239,7 +239,7 @@ function Slot({
                   max={creature?.hitpoints}
                 />
               </div>
-              <div className="row">
+              <div className="row companion-health-controls">
                 <div className="col-auto">
                   <input
                     type="number"
@@ -281,20 +281,18 @@ function Slot({
                 <></>
               )}
               <h4>Schaden</h4>
-              <div className="row">
-                <div className="col-auto">{info}</div>
-                <div className="col">
-                  <img
-                    name="damage"
-                    alt="icon"
-                    src={`/icons/common/swordxhdpi.png`}
-                  />
-                    {` ${creature?.damage}`}
-                  </div>
-                </div>
+              <p className="companion-damage-description">{info}</p>
+              <div className="companion-damage-value">
+                <img
+                  name="damage"
+                  alt=""
+                  src={`/icons/common/swordxhdpi.png`}
+                />
+                <span>{creature?.damage}</span>
               </div>
             </div>
           </div>
+        </div>
         {selectedItemInfo && (
           <ExtendedInfo
             customItemInfo={selectedItemInfo}
@@ -311,14 +309,14 @@ function Slot({
     } else
       return (
         <div className="slot ">
-          <div className="row">
-            <div className="col-12 col-lg-3">
+          <div className="companion-slot-state-row">
+            <div className="companion-slot-state">
               <h3>{category}</h3>
               <span className="companion-slot-status companion-slot-status--free">
                 Frei
               </span>
             </div>
-            <div className="col-12 col-lg-9 companion-slot-description">
+            <div className="companion-slot-description">
               <p>{info}</p>
             </div>
           </div>
@@ -327,17 +325,17 @@ function Slot({
   } else
     return (
       <div className="slot disabled">
-        <div className="row">
-          <div className="col-12 col-lg-3">
-            <h3 className="disabled">{category}</h3>
+        <div className="companion-slot-state-row">
+          <div className="companion-slot-state">
+            <h3>{category}</h3>
             <span className="companion-slot-status companion-slot-status--locked">
               Gesperrt
             </span>
-            <div className="alert error">
-              Erfordert {charismaValue} Charismapunkte
-            </div>
+            <p className="companion-slot-requirement">
+              Freigeschaltet ab {charismaValue} Charisma
+            </p>
           </div>
-          <div className="col-12 col-lg-9 companion-slot-description">
+          <div className="companion-slot-description">
             <p>{info}</p>
           </div>
         </div>

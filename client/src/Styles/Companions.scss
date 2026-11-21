@@ -26,20 +26,16 @@
         background-color: rgba(24, 24, 24, 0.72);
     }
 
-    .companions-stall-heading {
+    .companions-section-heading {
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
         gap: 0.5rem;
-        margin-bottom: 0.75rem;
-    }
-
-    .companions-stall-heading h3 {
-        margin: 0;
-    }
-
-    .companions-section-heading {
         margin: 0.5rem 0 1rem;
+    }
+
+    .companions-section-heading h3 {
+        margin: 0;
     }
 
     .companions-info-button {
@@ -212,13 +208,65 @@
         padding-left: 1rem;
     }
 
+    .companion-slot-state-row {
+        display: grid;
+        grid-template-columns: 250px minmax(0, 1fr);
+        gap: 1rem;
+        margin: 0;
+    }
+
+    .companion-slot-state-row > * {
+        width: auto;
+        max-width: none;
+        padding: 0;
+    }
+
+    .companion-slot-state-row > .companion-slot-description {
+        padding-left: 0.75rem;
+    }
+
+    .companion-slot-state {
+        min-width: 0;
+    }
+
+    .companion-slot-state h3 {
+        margin: 0 0 0.5rem;
+    }
+
+    .companion-slot-requirement {
+        margin: 0.5rem 0 0;
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 0.85rem;
+    }
+
     .companion-health-progress {
         margin-bottom: 0.75rem;
         padding-bottom: 0.25rem;
     }
 
+    .companion-health-controls {
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.75rem;
+    }
+
     .companion-slot-description p {
         margin-bottom: 0;
+    }
+
+    .companion-damage-description {
+        margin-bottom: 0.4rem;
+    }
+
+    .companion-damage-value {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .companion-damage-value img {
+        width: 2rem;
+        height: 2rem;
+        object-fit: contain;
     }
     .disabled{
         color: $mainGrey !important;
@@ -437,6 +485,15 @@
     .companions-page .companion-slot-active-row {
         grid-template-columns: minmax(0, 1fr);
         gap: 0.75rem;
+    }
+
+    .companions-page .companion-slot-state-row {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0.75rem;
+    }
+
+    .companions-page .companion-slot-state-row > .companion-slot-description {
+        padding: 0.75rem 0.5rem;
     }
 
     .companions-page .companion-slot-active-row > .companion-active-info {

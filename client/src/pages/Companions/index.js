@@ -27,6 +27,7 @@ function Companions() {
   const [msg, setMsg] = useState({ id: "", text: "" });
   const [pendingAssignment, setPendingAssignment] = useState(null);
   const [showStallInfo, setShowStallInfo] = useState(false);
+  const [showSlotsInfo, setShowSlotsInfo] = useState(false);
   const dispatch = useDispatch();
   const { companions, slotsAllowed, equipable } =  useSelector(
     (state) => state.companion
@@ -94,48 +95,57 @@ function Companions() {
     dispatch(unequipCompanionItem(data))
   }
   return (
-    <div className={`${fractionTheme}-bg`}>
-      <div className="dark-bg container-fluid g-5">
-        <div className="companions-page">
-          <motion.div
-            variants={pageTransition}
-            initial="init"
-            animate="animate"
-            exit="exit"
-          >
-            <div className="container-fluid g-5">
-              <div className="row">
-                <div className="col-12 col-lg-8">
-                  <h3 className="companions-section-heading">Begleiter-Slots</h3>
-                  <AnimatePresence wait>
-                    {slots?.map((category, i) => (
-                      <motion.div
-                        key={category}
-                        layout
-                        initial={{ opacity: 0, scale: 0 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, y: -100 }}
-                        transition={{ duration: 0.5 }}
-                      >
-                        <Slot
-                          key={category}
-                          category={category}
-                          data={slotInfo[i]}
-                          slotFilter={equipable}
-                          usedBy={companions?.filter(
-                            (c) => c.status === category
-                          )}
-                          slotOnClick={slotOnClick}
-                          equipItem={equipItem}
-                          clearSlot={clearSlot}
-                          unlocked={i + 1 <= slotsAllowed ? true : false}
-                        />
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
+    <motion.div
+      variants={pageTransition}
+      initial="init"
+      animate="animate"
+      exit="exit"
+    >
+      <div className={`${fractionTheme}-bg`}>
+        <div className="dark-bg container-fluid g-5 companions-page">
+            <div className="row">
+              <div className="col-12 col-lg-8">
+                <div className="companions-section-heading">
+                  <h3>Begleiter-Slots</h3>
+                  <button
+                    type="button"
+                    className="companions-info-button"
+                    aria-label="Informationen zu den Begleiter-Slots"
+                    title="Informationen zu den Begleiter-Slots"
+                    onClick={() => setShowSlotsInfo(true)}
+                  >
+                    <FontAwesomeIcon icon={faCircleInfo} />
+                  </button>
                 </div>
-                <div className="col-12 col-lg-4">
-                  <div className="companions-stall-heading">
+                <AnimatePresence wait>
+                  {slots?.map((category, i) => (
+                    <motion.div
+                      key={category}
+                      layout
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, y: -100 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <Slot
+                        key={category}
+                        category={category}
+                        data={slotInfo[i]}
+                        slotFilter={equipable}
+                        usedBy={companions?.filter(
+                          (c) => c.status === category
+                        )}
+                        slotOnClick={slotOnClick}
+                        equipItem={equipItem}
+                        clearSlot={clearSlot}
+                        unlocked={i + 1 <= slotsAllowed ? true : false}
+                      />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+              <div className="col-12 col-lg-4">
+                  <div className="companions-section-heading">
                     <h3>Stall</h3>
                     <button
                       type="button"
@@ -147,49 +157,46 @@ function Companions() {
                       <FontAwesomeIcon icon={faCircleInfo} />
                     </button>
                   </div>
-                  <AnimatePresence wait>
-                    {companions?.map(
-                      (companion, i) =>
-                        companion.status === "Stall" && (
-                          <motion.div
-                            layout
-                            key={companion._id}
-                            initial={{
-                              scale: 0,
-                              x: -100,
-                            }}
-                            animate={{
-                              scale: 1,
-                              x: 0,
-                            }}
-                            exit={{
-                              opacity: 0,
+                <AnimatePresence wait>
+                  {companions?.map(
+                    (companion, i) =>
+                      companion.status === "Stall" && (
+                        <motion.div
+                          layout
+                          key={companion._id}
+                          initial={{
+                            scale: 0,
+                            x: -100,
+                          }}
+                          animate={{
+                            scale: 1,
+                            x: 0,
+                          }}
+                          exit={{
+                            opacity: 0,
 
-                              transition: {
-                                duration: i * 0.2,
-                              },
-                            }}
-                          >
-                            <Companion
-                              data={companion}
-                              slots={slots}
-                              slotOnClick={slotOnClick}
-                              fractionTheme={fractionTheme}
-                              slotsAllowed={slotsAllowed}
-                              companions={companions}
-                              msg={msg}
-                            />
-                          </motion.div>
-                        )
-                    )}
-                  </AnimatePresence>
-                </div>
+                            transition: {
+                              duration: i * 0.2,
+                            },
+                          }}
+                        >
+                          <Companion
+                            data={companion}
+                            slots={slots}
+                            slotOnClick={slotOnClick}
+                            fractionTheme={fractionTheme}
+                            slotsAllowed={slotsAllowed}
+                            companions={companions}
+                            msg={msg}
+                          />
+                        </motion.div>
+                      )
+                  )}
+                </AnimatePresence>
               </div>
             </div>
-          </motion.div>
         </div>
-      </div>
-      <Modal
+        <Modal
         show={Boolean(pendingAssignment)}
         onHide={() => setPendingAssignment(null)}
         centered
@@ -232,8 +239,40 @@ function Companions() {
             Begleiter ersetzen
           </Button>
         </Modal.Footer>
-      </Modal>
-      <Modal
+        </Modal>
+        <Modal
+          show={showSlotsInfo}
+          onHide={() => setShowSlotsInfo(false)}
+          centered
+          className="companions-info-modal"
+          style={getOriginAccentStyle(fractionTheme)}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Informationen zu den Begleiter-Slots</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>
+              Hier siehst du die Slots deiner aktiven Begleiter. Ein freier
+              Slot kann über eine passende Begleiterkarte im Stall belegt
+              werden. Für einen bereits belegten Slot wirst du vor dem
+              Ersetzen um Bestätigung gebeten.
+            </p>
+            <p>
+              Gesperrte Slots werden mit der nötigen Charisma-Stufe
+              gekennzeichnet. Die Beschreibung jedes Slots erklärt seine
+              Funktion:
+            </p>
+            <ul>
+              {slots.map((slot, i) => (
+                <li key={slot}>
+                  <strong>{slot}</strong> – ab {slotInfo[i].charismaValue}{" "}
+                  Charisma. {slotInfo[i].info}
+                </li>
+              ))}
+            </ul>
+          </Modal.Body>
+        </Modal>
+        <Modal
         show={showStallInfo}
         onHide={() => setShowStallInfo(false)}
         centered
@@ -264,8 +303,9 @@ function Companions() {
             bisherige Begleiter kommt dann zurück in den Stall.
           </p>
         </Modal.Body>
-      </Modal>
-    </div>
+        </Modal>
+      </div>
+    </motion.div>
   );
 }
 

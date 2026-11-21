@@ -5,6 +5,7 @@
   margin-bottom: 1rem;
   padding-bottom: 1rem;
 }
+
 .companions-page .companion-list {
   margin: 0.85rem 0.35rem;
   padding: 0.75rem 0.85rem;
@@ -20,18 +21,15 @@
 .companions-page .companion-list:hover {
   background-color: rgba(24, 24, 24, 0.72);
 }
-.companions-page .companions-stall-heading {
+.companions-page .companions-section-heading {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 0.5rem;
-  margin-bottom: 0.75rem;
-}
-.companions-page .companions-stall-heading h3 {
-  margin: 0;
-}
-.companions-page .companions-section-heading {
   margin: 0.5rem 0 1rem;
+}
+.companions-page .companions-section-heading h3 {
+  margin: 0;
 }
 .companions-page .companions-info-button {
   display: inline-flex;
@@ -179,12 +177,54 @@
   border-left: 1px solid var(--fraction-accent, rgba(245, 240, 227, 0.55));
   padding-left: 1rem;
 }
+.companions-page .companion-slot-state-row {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 1rem;
+  margin: 0;
+}
+.companions-page .companion-slot-state-row > * {
+  width: auto;
+  max-width: none;
+  padding: 0;
+}
+.companions-page .companion-slot-state-row > .companion-slot-description {
+  padding-left: 0.75rem;
+}
+.companions-page .companion-slot-state {
+  min-width: 0;
+}
+.companions-page .companion-slot-state h3 {
+  margin: 0 0 0.5rem;
+}
+.companions-page .companion-slot-requirement {
+  margin: 0.5rem 0 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.85rem;
+}
 .companions-page .companion-slot-description p {
   margin-bottom: 0;
+}
+.companions-page .companion-damage-description {
+  margin-bottom: 0.4rem;
+}
+.companions-page .companion-damage-value {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.companions-page .companion-damage-value img {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
 }
 .companions-page .companion-health-progress {
   margin-bottom: 0.75rem;
   padding-bottom: 0.25rem;
+}
+.companions-page .companion-health-controls {
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
 }
 .companions-page .disabled {
   color: #7c7c7c !important;
@@ -407,6 +447,13 @@
   .companions-page .companion-slot-active-row {
     grid-template-columns: minmax(0, 1fr);
     gap: 0.75rem;
+  }
+  .companions-page .companion-slot-state-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+  .companions-page .companion-slot-state-row > .companion-slot-description {
+    padding: 0.75rem 0.5rem;
   }
   .companions-page .companion-slot-active-row > .companion-active-info {
     margin-top: 0.75rem;
