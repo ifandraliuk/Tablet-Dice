@@ -14,6 +14,13 @@
         margin-bottom: 1rem;
     }
 
+    .inventory-content-panel {
+        box-sizing: border-box;
+        border: 1px solid rgba(245, 240, 227, 0.1);
+        border-radius: 0.65rem;
+        padding: 1rem;
+    }
+
     .inventory-category-switch {
         margin-bottom: 0.75rem;
     }
@@ -253,13 +260,98 @@
         }
     }
 
+    .inventory-equipment-panel {
+        box-sizing: border-box;
+        padding: 1rem;
+        border: 1px solid rgba(245, 240, 227, 0.16);
+        border-radius: 0.65rem;
+        background: rgba(18, 18, 17, 0.52);
+        box-shadow: inset 0 1px rgba(255, 255, 255, 0.025);
+    }
+
+    .inventory-equipment-panel__header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 0.25rem 1rem;
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.6rem;
+        border-bottom: 1px solid rgba(245, 240, 227, 0.14);
+    }
+
+    .inventory-equipment-panel__header h2 {
+        margin: 0;
+        color: var(--fraction-accent, #f5f0e3);
+    }
+
+    .inventory-equipment-panel__header > span {
+        color: rgba(245, 240, 227, 0.58);
+        font-size: 0.78rem;
+    }
+
+    .inventory-equipment-summary {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.6rem 1rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .inventory-equipment-summary__category {
+        display: flex;
+        align-items: baseline;
+        gap: 0.45rem;
+        font-size: 0.85rem;
+    }
+
+    .inventory-equipment-summary__category > span {
+        color: rgba(245, 240, 227, 0.62);
+    }
+
+    .inventory-equipment-summary__category strong,
+    .inventory-equipment-stat strong {
+        color: inherit;
+        font-weight: 700;
+    }
+
+    .inventory-equipment-summary__stats {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 0.35rem;
+    }
+
+    .inventory-equipment-stat {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.25rem 0.45rem;
+        border: 1px solid rgba(245, 240, 227, 0.1);
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.18);
+        font-size: 0.75rem;
+        white-space: nowrap;
+    }
+
+    .inventory-equipment-stat > span {
+        color: rgba(245, 240, 227, 0.68);
+    }
+
+    .inventory-equipment-stat--armor { color: #f5f0e3; }
+    .inventory-equipment-stat--magic { color: #c77dff; }
+    .inventory-equipment-stat--heat { color: #f9c74f; }
+    .inventory-equipment-stat--cold { color: #8ecae6; }
+    .inventory-equipment-stat--water { color: #4ea8de; }
+
     .inventory-equipment {
         display: grid;
-        grid-template-columns: minmax(52px, 1fr) minmax(180px, 360px) minmax(52px, 1fr);
+        grid-template-columns: minmax(56px, 1fr) minmax(140px, 360px) minmax(56px, 1fr);
         align-items: center;
         gap: 0.5rem;
         width: 100%;
-        max-width: 800px;
         margin: 0 auto;
     }
 
@@ -366,10 +458,36 @@
         margin: 0;
     }
 
+    .inventory-equipment__weapon-group {
+        margin-top: 0.5rem;
+        padding-top: 0.75rem;
+        border-top: 1px solid rgba(245, 240, 227, 0.14);
+    }
+
+    .inventory-equipment__weapon-group h3 {
+        margin: 0 0 0.5rem;
+        color: rgba(245, 240, 227, 0.78);
+        font-size: 0.8rem;
+        text-align: center;
+    }
+
     @media (max-width: 575.98px) {
         .inventory-equipment {
-            grid-template-columns: minmax(44px, 1fr) minmax(110px, 1.5fr) minmax(44px, 1fr);
+            grid-template-columns: minmax(44px, 1fr) minmax(90px, 1.5fr) minmax(44px, 1fr);
             gap: 0.25rem;
+        }
+
+        .inventory-equipment-panel {
+            padding: 0.75rem;
+        }
+
+        .inventory-equipment-summary {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .inventory-equipment-summary__stats {
+            justify-content: flex-start;
         }
 
         .inventory-equipment__character {

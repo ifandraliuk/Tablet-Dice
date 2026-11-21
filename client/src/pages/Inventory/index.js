@@ -385,7 +385,11 @@ function InventoryPage() {
             </div>
             <div className="row g-3 inventory-layout">
               <div
-                className={activeDb ? "col-12" : "col-lg-6 col-md-12"}
+                className={
+                  activeDb
+                    ? "col-12"
+                    : "col-lg-6 col-md-12 inventory-content-panel"
+                }
               >
                 <div
                   className="inventory-category-switch"

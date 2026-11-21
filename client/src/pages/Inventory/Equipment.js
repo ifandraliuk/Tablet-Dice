@@ -53,32 +53,69 @@ const Equipment = memo(({ setShowInfo, err }) => {
   };
 
   return (
-    <div className="container w-auto">
-      <div className="row justify-content-center ">
-        <div className="col-auto">
-          Rüstungsklasse:{" "}
+    <section
+      className="container w-auto inventory-equipment-panel"
+      aria-labelledby="inventory-equipment-title"
+    >
+      <header className="inventory-equipment-panel__header">
+        <h2 id="inventory-equipment-title">Ausrüstung</h2>
+        <span>Angelegte Gegenstände und Schutzwerte</span>
+      </header>
+      <div
+        className="inventory-equipment-summary"
+        role="group"
+        aria-label="Rüstungs- und Widerstandswerte"
+      >
+        <div className="inventory-equipment-summary__category">
+          <span>Rüstungsklasse</span>
           <strong className={`${fractionTheme}-text`}>{armorCategory}</strong>
         </div>
-      </div>
-      <div className="row justify-content-center ">
-        <div className="col-auto ">
-          <FontAwesomeIcon icon={faShield} /> {armor}
-        </div>
-        <div className="col-auto  violet-text">
-          <FontAwesomeIcon icon={faShieldHalved} />
-          {getArmorBonusValue("Magie") ? getArmorBonusValue("Magie") : 0}
-        </div>
-        <div className="col-auto  yellow-text">
-          <FontAwesomeIcon icon={faSun} />{" "}
-          {getArmorBonusValue("Hitze") ? getArmorBonusValue("Hitze") : 0}
-        </div>
-        <div className="col-auto  cyan-text">
-          <FontAwesomeIcon icon={faSnowflake} />{" "}
-          {getArmorBonusValue("Kälte") ? getArmorBonusValue("Kälte") : 0}
-        </div>
-        <div className="col-auto  blue-text">
-          <FontAwesomeIcon icon={faCloudRain} />{" "}
-          {getArmorBonusValue("Wasser") ? getArmorBonusValue("Wasser") : 0}
+        <div className="inventory-equipment-summary__stats">
+          <div
+            className="inventory-equipment-stat inventory-equipment-stat--armor"
+            role="group"
+            aria-label={`Rüstung: ${armor}`}
+          >
+            <FontAwesomeIcon icon={faShield} aria-hidden="true" />
+            <span>Rüstung</span>
+            <strong>{armor}</strong>
+          </div>
+          <div
+            className="inventory-equipment-stat inventory-equipment-stat--magic"
+            role="group"
+            aria-label={`Magie: ${getArmorBonusValue("Magie") ?? 0}`}
+          >
+            <FontAwesomeIcon icon={faShieldHalved} aria-hidden="true" />
+            <span>Magie</span>
+            <strong>{getArmorBonusValue("Magie") ?? 0}</strong>
+          </div>
+          <div
+            className="inventory-equipment-stat inventory-equipment-stat--heat"
+            role="group"
+            aria-label={`Hitze: ${getArmorBonusValue("Hitze") ?? 0}`}
+          >
+            <FontAwesomeIcon icon={faSun} aria-hidden="true" />
+            <span>Hitze</span>
+            <strong>{getArmorBonusValue("Hitze") ?? 0}</strong>
+          </div>
+          <div
+            className="inventory-equipment-stat inventory-equipment-stat--cold"
+            role="group"
+            aria-label={`Kälte: ${getArmorBonusValue("Kälte") ?? 0}`}
+          >
+            <FontAwesomeIcon icon={faSnowflake} aria-hidden="true" />
+            <span>Kälte</span>
+            <strong>{getArmorBonusValue("Kälte") ?? 0}</strong>
+          </div>
+          <div
+            className="inventory-equipment-stat inventory-equipment-stat--water"
+            role="group"
+            aria-label={`Wasser: ${getArmorBonusValue("Wasser") ?? 0}`}
+          >
+            <FontAwesomeIcon icon={faCloudRain} aria-hidden="true" />
+            <span>Wasser</span>
+            <strong>{getArmorBonusValue("Wasser") ?? 0}</strong>
+          </div>
         </div>
       </div>
       {err && <div className={`${err.variant}-alert`}>{err.msg}</div>}
@@ -176,7 +213,12 @@ const Equipment = memo(({ setShowInfo, err }) => {
           })}
         </div>
       </div>
-      <div className="row w-100 justify-content-center inventory-equipment__weapons">
+      <section
+        className="inventory-equipment__weapon-group"
+        aria-labelledby="inventory-weapons-title"
+      >
+        <h3 id="inventory-weapons-title">Waffen und Ringe</h3>
+        <div className="row w-100 justify-content-center inventory-equipment__weapons">
           {["Fernkampf", "Haupthand", "Nebenhand", "Finger"].map((name, i) => {
             let equippedItem;
             if (name === "Haupthand") {
@@ -231,8 +273,9 @@ const Equipment = memo(({ setShowInfo, err }) => {
               );
             }
           })}
-      </div>
-    </div>
+        </div>
+      </section>
+    </section>
   );
 });
 

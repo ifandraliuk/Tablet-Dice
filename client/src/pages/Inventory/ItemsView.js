@@ -195,7 +195,6 @@ const ItemsView = ({
       </div> */}
       <div className="col-12">
         <h2 className="inventory-items-category">
-          {displayedCategory}
         </h2>
         <div className="row g-3 align-items-end items-view__filters">
           <div className="col-12 col-md">
