@@ -3,24 +3,14 @@ import { useSelector, useDispatch } from "react-redux";
 import MotionButton from "../../components/MotionButton";
 import HabitatInfo from "./KingdomHabitat";
 import Fraction from "../../components/Fraction";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBook,
   faGlobe,
-  faLeaf,
   faMountain,
 } from "@fortawesome/free-solid-svg-icons";
 import { setKingdomCategory } from "../../features/atlas/atlasSlice";
 
-
-function Kingdom({
-  fractionTheme,
-  kingdom,
-  showMap,
-  setActiveKingdom,
-  activeKingdom,
-  setActiveHabitat,
-}) {
+function Kingdom({ kingdom, showMap }) {
   const { activeKingdomName, kingdomCategory } = useSelector(
     (state) => state.atlas
   );
@@ -29,18 +19,13 @@ function Kingdom({
   const setActive = (e) => {
     const kingdomName = kingdom.name;
     const category = e.currentTarget.name;
-    const data = {
-      name: kingdomName,
-      category: category,
-    };
-    console.log(data);
-    dispatch(setKingdomCategory(data));
+    dispatch(setKingdomCategory({ name: kingdomName, category }));
   };
   return (
     
-    <div key={kingdom.name} className="row info-div mb-4">
+    <div key={kingdom.name} className={`row info-div mb-4 atlas-kingdom atlas-kingdom--${kingdom.name}`}>
       
-      <div className="col-4">
+      <div className="col-12 col-md-4 atlas-kingdom__identity">
         <div className="row justify-content-end">
           <div className="col-7">
             <h1>{kingdom.name}</h1>
@@ -50,7 +35,7 @@ function Kingdom({
           </div>
         </div>
       </div>
-      <div className="col-8 border-pattern left repeat">
+      <div className="col-12 col-md-8 atlas-kingdom-panel">
         <div className="row m-2">
           <div className="col-auto">
             <MotionButton
@@ -60,8 +45,12 @@ function Kingdom({
               theme={
                 activeKingdomName === kingdom.name &&
                 kingdomCategory === "general"
-                  ? fractionTheme
+                  ? kingdom.name
                   : ""
+              }
+              ariaPressed={
+                activeKingdomName === kingdom.name &&
+                kingdomCategory === "general"
               }
               icon={faBook}
             />
@@ -75,8 +64,12 @@ function Kingdom({
               theme={
                 activeKingdomName === kingdom.name &&
                 kingdomCategory === "habitat"
-                  ? fractionTheme
+                  ? kingdom.name
                   : ""
+              }
+              ariaPressed={
+                activeKingdomName === kingdom.name &&
+                kingdomCategory === "habitat"
               }
             />
           </div>
@@ -85,18 +78,23 @@ function Kingdom({
               content="Karte"
               name="map"
               icon={faGlobe}
-              onClick={(e) => {setActive(e); showMap(e)}}
+              onClick={(e) => {
+                setActive(e);
+                showMap();
+              }}
               theme={
                 activeKingdomName === kingdom.name && kingdomCategory === "map"
-                  ? fractionTheme
+                  ? kingdom.name
                   : ""
+              }
+              ariaPressed={
+                activeKingdomName === kingdom.name && kingdomCategory === "map"
               }
             />
           </div>
         </div>
-        {activeKingdomName !== kingdom.name ||
-        (activeKingdomName === kingdom.name &&
-          kingdomCategory === "general") ? (
+        {activeKingdomName === kingdom.name &&
+        kingdomCategory === "general" ? (
           <div className="row m-2">
             <div className="col">
               <h2>Hauptstadt</h2>

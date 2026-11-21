@@ -3,6 +3,96 @@
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
   gap: 0.75rem;
 }
+.atlas-page .atlas-kingdom--Algor {
+  --fraction-accent: #cc4749;
+}
+.atlas-page .atlas-kingdom--Beltamor {
+  --fraction-accent: #308fe8;
+}
+.atlas-page .atlas-kingdom--Ethelion {
+  --fraction-accent: #2B9348;
+}
+.atlas-page .atlas-kingdom--Medorien {
+  --fraction-accent: #cb6327;
+}
+.atlas-page .atlas-kingdom--Thornheim {
+  --fraction-accent: #95ecff;
+}
+.atlas-page .atlas-kingdom--Thamor {
+  --fraction-accent: #c9a7ff;
+}
+.atlas-page .atlas-kingdom--Welles {
+  --fraction-accent: rgb(245, 235, 130);
+}
+.atlas-page .atlas-kingdom-panel,
+.atlas-page .atlas-habitat-panel {
+  min-width: 0;
+  padding: 1rem 1.25rem;
+  border-left: 1px solid var(--fraction-accent, rgba(245, 240, 227, 0.55));
+}
+.atlas-page .atlas-kingdom-panel {
+  background: rgba(24, 24, 24, 0.42);
+}
+.atlas-page .atlas-kingdom__identity {
+  margin-bottom: 1rem;
+}
+.atlas-page .atlas-habitat-summary {
+  margin-bottom: 1.5rem;
+  padding-top: 0.5rem;
+}
+.atlas-page .atlas-habitat-summary__visual,
+.atlas-page .atlas-habitat-visual {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+.atlas-page .atlas-habitat-summary__visual img {
+  max-height: 250px;
+  object-fit: cover;
+}
+.atlas-page .atlas-habitat-summary__details {
+  padding-left: 1rem;
+  border-left: 1px solid var(--fraction-accent, rgba(245, 240, 227, 0.55));
+}
+.atlas-page .atlas-habitat-summary__details h1 {
+  margin-top: 0;
+}
+.atlas-page .atlas-habitat-summary__details p {
+  color: rgba(245, 240, 227, 0.82);
+}
+.atlas-page .atlas-habitat-layout {
+  align-items: flex-start;
+}
+.atlas-page .atlas-habitat-visual .img-habitat {
+  max-height: 360px;
+  object-fit: contain;
+}
+.atlas-page .atlas-habitat-panel {
+  background: rgba(24, 24, 24, 0.78);
+}
+.atlas-page .atlas-habitat-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+}
+.atlas-page .atlas-habitat-navigation > div {
+  width: auto;
+  padding: 0;
+}
+.atlas-page .atlas-habitat-navigation button[aria-pressed="true"] {
+  box-shadow: 0 0 0 2px var(--fraction-accent, rgba(245, 240, 227, 0.65));
+}
+.atlas-page .atlas-habitat-list {
+  padding: 0;
+}
+.atlas-page .atlas-creatures-message {
+  margin: 0.75rem 0;
+  color: rgba(245, 240, 227, 0.78);
+}
+.atlas-page .atlas-creatures-message--error {
+  color: #ff9a9a;
+}
 .atlas-page .atlas-creature-card {
   display: grid;
   grid-template-columns: 6rem minmax(0, 1fr);
@@ -11,7 +101,7 @@
   min-width: 0;
   padding: 0.8rem;
   border: 1px solid rgba(245, 240, 227, 0.16);
-  border-left: 3px solid var(--fraction-accent, rgba(245, 240, 227, 0.45));
+  border-left: 1px solid var(--fraction-accent, rgba(245, 240, 227, 0.55));
   border-radius: 0.6rem;
   background: rgba(24, 24, 24, 0.88);
   color: #f5f0e3;
@@ -62,10 +152,21 @@
   color: #f5f0e3;
   font-weight: 500;
 }
-.atlas-page .atlas-creatures-empty {
-  color: rgba(245, 240, 227, 0.72);
-}
 @media (max-width: 640px) {
+  .atlas-page .atlas-kingdom-panel,
+  .atlas-page .atlas-habitat-panel {
+    padding: 0.85rem;
+  }
+  .atlas-page .atlas-habitat-summary__details {
+    margin-top: 0.75rem;
+    padding: 0.85rem 0 0;
+    border-top: 1px solid var(--fraction-accent, rgba(245, 240, 227, 0.55));
+    border-left: 0;
+  }
+  .atlas-page .atlas-habitat-summary__visual img,
+  .atlas-page .atlas-habitat-visual .img-habitat {
+    max-height: 220px;
+  }
   .atlas-page .atlas-creature-card__image {
     width: 5rem;
     height: 5rem;

@@ -1,6 +1,15 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion } from "framer-motion";
-const MotionButton = ({ name, onClick, content, icon, theme, onRepeat, disabled }) => {
+const MotionButton = ({
+  name,
+  onClick,
+  content,
+  icon,
+  theme,
+  onRepeat,
+  disabled,
+  ariaPressed,
+}) => {
 
   const buttonVariants = {
     init: {
@@ -37,6 +46,7 @@ const MotionButton = ({ name, onClick, content, icon, theme, onRepeat, disabled 
         <motion.button
     type="button"
       name={name}
+      aria-pressed={ariaPressed}
       variants={buttonVariants}
       initial="init"
       animate={onRepeat ? "repeatAnimation" : "animate"}
@@ -56,6 +66,7 @@ const MotionButton = ({ name, onClick, content, icon, theme, onRepeat, disabled 
     type="button"
       name={name}
       onClick={onClick}
+      aria-pressed={ariaPressed}
       variants={buttonVariants}
       initial="init"
       animate={onRepeat ? "repeatAnimation" : "animate"}

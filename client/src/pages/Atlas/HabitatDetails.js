@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { motion } from "framer-motion";
 import {
   faLeaf,
   faPaw,
@@ -31,20 +30,21 @@ const HabitatDetails = () => {
     dispatch(setHabitatCategory({ category }));
   };
   return (
-    <div className=" container-fluid">
-      <div className="row mb-4">
-        <div className="col-4">
+    <div
+      className={`container-fluid atlas-habitat-view atlas-kingdom--${activeKingdomName}`}
+    >
+      <div className="row mb-4 atlas-habitat-layout">
+        <div className="col-12 col-md-4 atlas-habitat-visual">
           <img
             alt=""
             className="img-habitat"
             src={`habitat/${activeKingdomName}/${activeHabitat._id}.png`}
           />
-          
         </div>
 
-        <div className="col-8 dark-bg border-pattern left repeat">
-        <h1>{activeHabitat.name}</h1>
-          <div className="row">
+        <div className="col-12 col-md-8 dark-bg atlas-habitat-panel">
+          <h1>{activeHabitat.name}</h1>
+          <div className="row atlas-habitat-navigation">
             <div className="col-auto">
               <MotionButton
                 content="Ressourcen"
@@ -52,6 +52,7 @@ const HabitatDetails = () => {
                 icon={faLeaf}
                 onClick={(e) => onHabitatCategory(e)}
                 theme={habitatCategory === "ressource" ? activeKingdomName : ""}
+                ariaPressed={habitatCategory === "ressource"}
               />
             </div>
             <div className="col-auto">
@@ -60,7 +61,8 @@ const HabitatDetails = () => {
                 name="creature"
                 icon={faPaw}
                 onClick={(e) => onHabitatCategory(e)}
-                theme={habitatCategory === "creatured" ? activeKingdomName : ""}
+                theme={habitatCategory === "creature" ? activeKingdomName : ""}
+                ariaPressed={habitatCategory === "creature"}
               />
             </div>
             <div className="col-auto">
@@ -70,31 +72,27 @@ const HabitatDetails = () => {
                 icon={faPersonWalking}
                 onClick={(e) => onHabitatCategory(e)}
                 theme={habitatCategory === "human" ? activeKingdomName : ""}
+                ariaPressed={habitatCategory === "human"}
               />
             </div>
             <div className="col-auto">
               <MotionButton
-                content="Zurück"
+                content="Zurück zu Habitaten"
                 name="back"
                 icon={faReply}
                 onClick={onBack}
               />
             </div>
           </div>
-          <div className="container">
+          <div className="container-fluid atlas-habitat-list">
             <div className="row">
-              {
-                habitatCategory === 'ressource' ?
-                (
-                  <RessourceList />
-                ) : habitatCategory === 'creature' ?
-                (
-                  <CreatureList  />
-                ) : habitatCategory === 'human' ?
-                (
-                  <HumanoidList />
-                ) : null
-              }
+              {habitatCategory === "ressource" ? (
+                <RessourceList />
+              ) : habitatCategory === "creature" ? (
+                <CreatureList />
+              ) : habitatCategory === "human" ? (
+                <HumanoidList />
+              ) : null}
             </div>
           </div>
         </div>

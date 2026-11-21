@@ -1,29 +1,20 @@
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { getHabitat } from "../../features/habitats/habitatSlice";
-import { motion } from "framer-motion";
-import {
-  faLeaf,
-  faPaw,
-  faPersonWalking,
-} from "@fortawesome/free-solid-svg-icons";
+import React from "react";
+import { useDispatch } from "react-redux";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import MotionButton from "../../components/MotionButton";
 import { setActiveHabitat } from "../../features/atlas/atlasSlice";
-
 
 const HabitatInfo = ({ habitat, kingdom }) => {
   const { name } = habitat;
   const dispatch = useDispatch();
-  const habitatActive = (e) => {
-    const id = e.currentTarget.name
-    console.log(id)
-    dispatch(setActiveHabitat({id}))
-  }
+  const habitatActive = () => {
+    dispatch(setActiveHabitat({ id: habitat._id }));
+  };
 
   return (
-    <div className="container">
-      <div className="row mb-4">
-        <div className="col-4">
+    <article className={`container atlas-habitat-summary atlas-kingdom--${kingdom}`}>
+      <div className="row mb-4 atlas-habitat-summary__layout">
+        <div className="col-12 col-md-4 atlas-habitat-summary__visual">
           <img
             alt=""
             className="img-habitat"
@@ -31,32 +22,22 @@ const HabitatInfo = ({ habitat, kingdom }) => {
           />
         </div>
 
-        <div className="col-8 ">
+        <div className="col-12 col-md-8 atlas-habitat-summary__details">
           <h1>{name}</h1>
-
-          <h2>Beschreibung</h2>
           <p>{habitat.description}</p>
           <div className="row">
             <div className="col-auto">
               <MotionButton
-                content="Flora & Fauna"
+                content="Habitat ansehen"
                 name={habitat._id}
-                icon={faLeaf}
-                onClick={(e) =>
-                  habitatActive(e)
-                }
-                /*                       theme={
-                        activeKingdom.name === kingdom.name &&
-                        activeKingdom.category === "map"
-                          ? fractionTheme
-                          : ""
-                      } */
+                icon={faArrowRight}
+                onClick={habitatActive}
               />
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </article>
   );
 };
 

@@ -15,20 +15,9 @@ import MapPopUp from "./MapPopUp";
 const Atlas = () => {
   const { user } = useSelector((state) => state.auth);
   const { fractionTheme } = useSelector((state) => state.player);
-  const { kingdom, habitatView,kingdomCategory, isError, message } = useSelector(
-    (state) => state.atlas
-  );
+  const { kingdom, habitatView, kingdomCategory, isError, message } =
+    useSelector((state) => state.atlas);
   const [showInfo, setShowInfo] = useState(false);
-  const [habitatCategoryActive, setHabitatCategoryActive] = useState({
-    kingdom: "",
-    category: "",
-    habitat: {},
-  });
-
-  const [activeKingdom, setActiveKingdom] = useState({
-    name: "Beltamor",
-    category: "general",
-  });
   const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
@@ -41,10 +30,7 @@ const Atlas = () => {
       dispatch(getKingdom());
     }
   }, [user, navigate, isError, dispatch, message]);
-  const showMap=(e)=>{
-    console.log(e.currentTarget.name)
-    setShowInfo(prev=>!prev)
-  }
+  const showMap = () => setShowInfo(true);
   return (
     <motion.div
       variants={pageTransition}
@@ -52,17 +38,20 @@ const Atlas = () => {
       animate="animate"
       exit="exit"
     >
-      {kingdomCategory === "map" && showInfo ? (      
-         <MapPopUp hideInfo={setShowInfo}
-          />
-        ) : null}
+      {kingdomCategory === "map" && showInfo ? (
+        <MapPopUp hideInfo={setShowInfo} />
+      ) : null}
       <div className={`${fractionTheme}-bg`}>
         <div className="dark-bg container-fluid g-5 atlas-page">
           {habitatView ? (
-            <HabitatDetails categoryActive={setHabitatCategoryActive} />
+            <HabitatDetails />
           ) : (
             kingdom?.map((kingdom) => (
-              <Kingdom key={kingdom._id} fractionTheme={fractionTheme} kingdom={kingdom}  showMap={showMap}/>
+              <Kingdom
+                key={kingdom._id}
+                kingdom={kingdom}
+                showMap={showMap}
+              />
             ))
           )}
         </div>

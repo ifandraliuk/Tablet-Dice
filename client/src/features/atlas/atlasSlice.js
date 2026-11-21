@@ -3,10 +3,13 @@ import atlasService from "./atlasService";
 
 const initialState = {
   kingdom: [],
-  activeKingdomName: "Belltamor",
+  activeKingdomName: "Beltamor",
   kingdomCategory: "general",
   activeHabitat: {},
   activeCreatures: [],
+  creaturesRequestId: null,
+  creaturesLoading: false,
+  creaturesError: "",
   activeMap:'',
   habitatView: false,
   habitatCategory: "ressource",
@@ -103,6 +106,9 @@ export const atlasSlice = createSlice({
       return {
         ...state,
         activeCreatures: [],
+        creaturesRequestId: null,
+        creaturesLoading: false,
+        creaturesError: "",
       };
     },
   },
@@ -121,16 +127,27 @@ export const atlasSlice = createSlice({
         state.isError = true;
         state.message = action.payload;
       })
-      .addCase(getHabitatCreature.pending, (state) => {
-        state.isLoading = true;
+      .addCase(getHabitatCreature.pending, (state, action) => {
+        state.creaturesRequestId = action.meta.requestId;
+        state.creaturesLoading = true;
+        state.creaturesError = "";
+        state.activeCreatures = [];
       })
       .addCase(getHabitatCreature.fulfilled, (state, action) => {
-        state.isLoading = false;
+        if (state.creaturesRequestId !== action.meta.requestId) return;
+        state.creaturesRequestId = null;
+        state.creaturesLoading = false;
         state.isSuccess = true;
         state.activeCreatures = action.payload;
       })
       .addCase(getHabitatCreature.rejected, (state, action) => {
-        state.isLoading = false;
+        if (state.creaturesRequestId !== action.meta.requestId) return;
+        state.creaturesRequestId = null;
+        state.creaturesLoading = false;
+        state.creaturesError =
+          action.payload ||
+          action.error.message ||
+          "Die Habitatdaten konnten nicht geladen werden.";
         state.isError = true;
         state.message = action.payload;
       });

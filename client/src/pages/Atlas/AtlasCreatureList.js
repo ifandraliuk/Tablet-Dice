@@ -9,9 +9,12 @@ import {
 } from "../../features/atlas/atlasSlice";
 
 function AtlasCreatureList({ register }) {
-  const { activeHabitat, activeCreatures } = useSelector(
-    (state) => state.atlas
-  );
+  const {
+    activeHabitat,
+    activeCreatures,
+    creaturesLoading,
+    creaturesError,
+  } = useSelector((state) => state.atlas);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -27,10 +30,30 @@ function AtlasCreatureList({ register }) {
     };
   }, [activeHabitat._id, dispatch, register]);
 
+  if (creaturesLoading) {
+    return (
+      <p className="atlas-creatures-message" role="status">
+        {register === "humanoid" ? "Humanoide" : "Tiere"} werden geladen …
+      </p>
+    );
+  }
+
+  if (creaturesError) {
+    return (
+      <p
+        className="atlas-creatures-message atlas-creatures-message--error"
+        role="alert"
+      >
+        {creaturesError}
+      </p>
+    );
+  }
+
   if (!activeCreatures.length) {
     return (
-      <p className="atlas-creatures-empty">
-        Für dieses Habitat sind keine {register === "humanoid" ? "Humanoiden" : "Tiere"} eingetragen.
+      <p className="atlas-creatures-message">
+        Für dieses Habitat sind keine{" "}
+        {register === "humanoid" ? "Humanoiden" : "Tiere"} eingetragen.
       </p>
     );
   }
