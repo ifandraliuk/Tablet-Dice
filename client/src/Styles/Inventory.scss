@@ -2,6 +2,58 @@
 @import './Variables.scss';
 
 .inventory-page{
+    .inventory-mode-switch,
+    .inventory-category-switch {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem 0.75rem;
+        border-bottom: 1px solid rgba(245, 240, 227, 0.14);
+    }
+
+    .inventory-mode-switch {
+        margin-bottom: 1rem;
+    }
+
+    .inventory-category-switch {
+        margin-bottom: 0.75rem;
+    }
+
+    .inventory-mode-switch__button,
+    .inventory-category-switch__button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.65rem 0.85rem;
+        border: 0;
+        border-bottom: 2px solid transparent;
+        background: transparent;
+        color: rgba(245, 240, 227, 0.72);
+        font-weight: 600;
+        cursor: pointer;
+        transition: color 0.18s ease, border-color 0.18s ease;
+    }
+
+    .inventory-mode-switch__button:hover,
+    .inventory-category-switch__button:hover {
+        color: #f5f0e3;
+    }
+
+    .inventory-mode-switch__button.is-active,
+    .inventory-category-switch__button.is-active {
+        border-bottom-color: currentColor;
+    }
+
+    .inventory-mode-switch__button:focus-visible,
+    .inventory-category-switch__button:focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 2px;
+    }
+
+    .inventory-category-switch__button {
+        font-size: 0.95rem;
+    }
+
     .inventory-equipment__character {
         display: flex;
         justify-content: center;

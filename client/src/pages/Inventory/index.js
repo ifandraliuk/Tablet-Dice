@@ -206,11 +206,7 @@ function InventoryPage() {
     setCustomInfo({});
   };
 
-  const showDb = () => {
-    setActiveDb((prev) => !prev);
-  };
-
-  const activeInventoryFilter = iFilter || (activeDb ? "Rüstung" : "");
+  const activeInventoryFilter = iFilter || (activeDb ? "Rüstung" : "all");
 
   const addOne = (id) => {
     const data = {
@@ -314,85 +310,105 @@ function InventoryPage() {
       <div className="inventory-page">
         <div className={`${fractionTheme}-bg`}>
           <div className="container-fluid dark-bg g-5">
-            <div className="row">
-              <div className="col-lg-auto col-md-12 col-sm-12">
-                {["Rüstung", "Waffe", "Ressource", "Begleiter"].map(
-                  (buttonName, i) => (
-                    <div key={buttonName} className="row">
-                      <MotionButton
-                        name={buttonName}
-                        onClick={onClickFilter}
-                        icon={
-                          i === 0
-                            ? faShield
-                            : i === 1
-                            ? faHammer
-                            : i === 2
-                            ? faSeedling
-                            : i === 3
-                            ? faPaw
-                            : faRefresh
-                        }
-                        theme={
-                          activeInventoryFilter === buttonName
-                            ? `${fractionTheme}`
-                            : ""
-                        }
-                      />
-                    </div>
-                  )
-                )}
-                {!activeDb && (
-                  <div key="all" className="row">
-                    <MotionButton
-                      name="all"
-                      onClick={onClickFilter}
-                      icon={faRefresh}
-                      theme={iFilter === "all" ? `${fractionTheme}` : ""}
-                    />
-                  </div>
-                )}
-                <div className="row">
-                  <div id="weight-progressbar">
-                    <motion.div
-                      id="curr-weight"
-                      initial={{
-                        height: 0,
-                        backgroundColor: "rgb(22, 22, 20)",
-                      }}
-                      animate={{
-                        height: (totalWeight / capacity) * 100 + "%",
-                        backgroundColor:
-                          parseInt((totalWeight / capacity) * 100) < 50
-                            ? "rgb(67, 170, 139)"
-                            : (totalWeight / capacity) * 100 > 50 &&
-                              (totalWeight / capacity) * 100 < 75
-                            ? ["rgb(67, 170, 139)", "rgb(243, 114, 44)"]
-                            : [
-                                "rgb(67, 170, 139)",
-                                "rgb(243, 114, 44)",
-                                "rgb(249, 65, 68)",
-                              ],
-                      }}
-                      transition={{ delay: 1, duration: 0.8 }}
-                    >
-                      {`${totalWeight.toFixed(2)} / ${capacity}`}
-                    </motion.div>
-                  </div>
-                </div>
-                <div className="row mt-2">
-                  <MotionButton
-                    onClick={showDb}
-                    icon={activeDb ? faMinus : faPlus}
-                    theme={activeDb ? fractionTheme : ""}
-                  />
-                </div>
-              </div>
-              <div
-                className={`${
-                  activeDb ? "col-lg-10" : "col-lg-5"
-                } col-md-12 col-sm-12`}
+            <div className="inventory-mode-switch" role="group" aria-label="Inventaransicht">
+              <button
+                type="button"
+                className={`inventory-mode-switch__button${!activeDb ? ` is-active ${fractionTheme}-text` : ""}`}
+                aria-pressed={!activeDb}
+                onClick={() => setActiveDb(false)}
               >
+                Mein Inventar
+              </button>
+              <button
+                type="button"
+                className={`inventory-mode-switch__button${activeDb ? ` is-active ${fractionTheme}-text` : ""}`}
+                aria-pressed={activeDb}
+                onClick={() => setActiveDb(true)}
+              >
+                <FontAwesomeIcon icon={faPlus} aria-hidden="true" />
+                Gegenstände hinzufügen
+              </button>
+            </div>
+            <div className="row">
+              {!activeDb && (
+                <div className="col-lg-auto col-md-12 col-sm-12">
+                  <div className="row">
+                    <div id="weight-progressbar">
+                      <motion.div
+                        id="curr-weight"
+                        initial={{
+                          height: 0,
+                          backgroundColor: "rgb(22, 22, 20)",
+                        }}
+                        animate={{
+                          height: (totalWeight / capacity) * 100 + "%",
+                          backgroundColor:
+                            parseInt((totalWeight / capacity) * 100) < 50
+                              ? "rgb(67, 170, 139)"
+                              : (totalWeight / capacity) * 100 > 50 &&
+                                (totalWeight / capacity) * 100 < 75
+                              ? ["rgb(67, 170, 139)", "rgb(243, 114, 44)"]
+                              : [
+                                  "rgb(67, 170, 139)",
+                                  "rgb(243, 114, 44)",
+                                  "rgb(249, 65, 68)",
+                                ],
+                        }}
+                        transition={{ delay: 1, duration: 0.8 }}
+                      >
+                        {`${totalWeight.toFixed(2)} / ${capacity}`}
+                      </motion.div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div
+                className={activeDb ? "col-12" : "col-lg-5 col-md-12 col-sm-12"}
+              >
+                <div
+                  className="inventory-category-switch"
+                  role="group"
+                  aria-label="Inventarkategorie"
+                >
+                  {["Rüstung", "Waffe", "Ressource", "Begleiter"].map(
+                    (category, i) => (
+                  <button
+                    key={category}
+                    type="button"
+                    name={category}
+                    className={`inventory-category-switch__button${activeInventoryFilter === category ? ` is-active ${fractionTheme}-text` : ""}`}
+                    aria-pressed={activeInventoryFilter === category}
+                    onClick={onClickFilter}
+                  >
+                    <FontAwesomeIcon
+                      icon={
+                        i === 0
+                          ? faShield
+                          : i === 1
+                          ? faHammer
+                          : i === 2
+                          ? faSeedling
+                          : faPaw
+                      }
+                      aria-hidden="true"
+                    />
+                    {category}
+                  </button>
+                    )
+                  )}
+                  {!activeDb && (
+                    <button
+                      type="button"
+                      name="all"
+                      className={`inventory-category-switch__button${activeInventoryFilter === "all" ? ` is-active ${fractionTheme}-text` : ""}`}
+                      aria-pressed={activeInventoryFilter === "all"}
+                      onClick={onClickFilter}
+                    >
+                      <FontAwesomeIcon icon={faRefresh} aria-hidden="true" />
+                      Alle
+                    </button>
+                  )}
+                </div>
                 {activeDb ? (
                   <ItemsView
                     iFilter={iFilter}
@@ -449,7 +465,7 @@ function InventoryPage() {
                                   width: "50%",
                                   marginLeft: "5px",
                                   padding: "2px",
-                                }} // Reduced width and padding
+                                }}
                               />
                               <FontAwesomeIcon icon={faCoins} />
                             </div>
@@ -467,7 +483,7 @@ function InventoryPage() {
                                   width: "50%",
                                   marginLeft: "5px",
                                   padding: "2px",
-                                }} // Reduced width and padding
+                                }}
                               />
                               <FontAwesomeIcon icon={faCoins} />
                             </div>
@@ -485,7 +501,7 @@ function InventoryPage() {
                                   width: "50%",
                                   marginLeft: "5px",
                                   padding: "2px",
-                                }} // Reduced width and padding
+                                }}
                               />
                               <FontAwesomeIcon icon={faCoins} />
                             </div>
