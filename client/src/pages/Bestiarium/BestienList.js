@@ -17,14 +17,18 @@ import { memo } from "react";
 const getStatusPresentation = (status) => {
   const normalizedStatus = status.trim().toLocaleLowerCase();
 
-  if (["frei", "verfügbar", "passiv", "friedlich"].includes(normalizedStatus)) {
+  if (
+    ["frei", "verfügbar", "passiv", "friedlich", "neutral"].includes(
+      normalizedStatus
+    )
+  ) {
     return {
       className: "bestiaria-card__status--positive",
       icon: faCircleCheck,
     };
   }
 
-  if (["belegt", "neutral", "vorsichtig"].includes(normalizedStatus)) {
+  if (["belegt", "vorsichtig", "fernkampf"].includes(normalizedStatus)) {
     return {
       className: "bestiaria-card__status--caution",
       icon: faCircleExclamation,
@@ -38,7 +42,21 @@ const getStatusPresentation = (status) => {
     };
   }
 
-  if (["aggressiv", "feindlich"].includes(normalizedStatus)) {
+  if (["flieht", "schurke"].includes(normalizedStatus)) {
+    return {
+      className: "bestiaria-card__status--blue",
+      icon: faCircleInfo,
+    };
+  }
+
+  if (normalizedStatus === "magier") {
+    return {
+      className: "bestiaria-card__status--magic",
+      icon: faCircleInfo,
+    };
+  }
+
+  if (["aggressiv", "feindlich", "krieger"].includes(normalizedStatus)) {
     return {
       className: "bestiaria-card__status--danger",
       icon: faCircleExclamation,
