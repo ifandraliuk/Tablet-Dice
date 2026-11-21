@@ -47,6 +47,9 @@ import ExtendedInfo from "./ExtendedInfo";
 import MotionButton from "../../components/MotionButton";
 import ItemsView from "./ItemsView";
 
+const INVENTORY_CATEGORY_KEY = "inventory-active-category";
+const INVENTORY_CATEGORIES = ["Rüstung", "Waffe", "Ressource", "Begleiter"];
+
 function InventoryPage() {
   const { inventory, armor, totalWeight, capacity, money, isError, message } =
     useSelector((state) => state.inventory);
@@ -58,7 +61,10 @@ function InventoryPage() {
 
   const { userclass } = player;
   const { user } = useSelector((state) => state.auth);
-  const [iFilter, setInventoryFilter] = useState("");
+  const [iFilter, setInventoryFilter] = useState(() => {
+    const savedCategory = localStorage.getItem(INVENTORY_CATEGORY_KEY);
+    return INVENTORY_CATEGORIES.includes(savedCategory) ? savedCategory : "";
+  });
   const [activeDb, setActiveDb] = useState(false);
   const [customInfo, setCustomInfo] = useState({});
   const [newMoney, updateBalance] = useState(money);
@@ -82,6 +88,10 @@ function InventoryPage() {
       navigate("/");
     }
   }, [isError, navigate]);
+
+  useEffect(() => {
+    localStorage.setItem(INVENTORY_CATEGORY_KEY, iFilter || "all");
+  }, [iFilter]);
 
   useEffect(() => {
     inventoryPageMounted.current = true;
@@ -370,13 +380,13 @@ function InventoryPage() {
                   role="group"
                   aria-label="Inventarkategorie"
                 >
-                  {["Rüstung", "Waffe", "Ressource", "Begleiter"].map(
+                  {INVENTORY_CATEGORIES.map(
                     (category, i) => (
                   <button
                     key={category}
                     type="button"
                     name={category}
-                    className={`inventory-category-switch__button${activeInventoryFilter === category ? ` is-active ${fractionTheme}-text` : ""}`}
+                    className={`inventory-category-switch__button${activeInventoryFilter === category ? " is-active" : ""}`}
                     aria-pressed={activeInventoryFilter === category}
                     onClick={onClickFilter}
                   >
@@ -400,7 +410,7 @@ function InventoryPage() {
                     <button
                       type="button"
                       name="all"
-                      className={`inventory-category-switch__button${activeInventoryFilter === "all" ? ` is-active ${fractionTheme}-text` : ""}`}
+                      className={`inventory-category-switch__button${activeInventoryFilter === "all" ? " is-active" : ""}`}
                       aria-pressed={activeInventoryFilter === "all"}
                       onClick={onClickFilter}
                     >
