@@ -14,7 +14,6 @@ The items are sorted out of the users inventory.
 
  */
 function Slot({
-  i,
   category,
   data,
   usedBy,
@@ -77,25 +76,27 @@ function Slot({
 
       return (
         <>
-        <div className="slot">
-          <div className="row">
-            <div className="col-12 col-lg-auto">
-              <div className="slot-number">{i}</div>
-              <button
-                id="Stall"
-                name={_id}
-                className="slot-number btn-remove mt-2"
-                onClick={(e) => {
-                  slotOnClick(e.currentTarget.id, e.currentTarget.name);
-                  localStorage.removeItem(category);
-                  setCurrentHP(-1);
-                }}
-              >
-                X
-              </button>
-            </div>
-            <div className="col-12 col-lg-3">
-              <h3 className="">{category}</h3>
+        <div className="slot companion-slot--active">
+          <div className="row companion-slot-active-row">
+            <div className="companion-slot-visual">
+              <div className="companion-slot-heading">
+                <h3>{category}</h3>
+                <button
+                  type="button"
+                  id="Stall"
+                  name={_id}
+                  className="companion-release-button"
+                  aria-label={`${name} zurück in den Stall stellen`}
+                  title="In den Stall zurückstellen"
+                  onClick={(e) => {
+                    slotOnClick(e.currentTarget.id, e.currentTarget.name);
+                    localStorage.removeItem(category);
+                    setCurrentHP(-1);
+                  }}
+                >
+                  X
+                </button>
+              </div>
               <img
                 className="img-creature img-fluid companion-active-image"
                 src={`creature/${creature?._id}.png`}
@@ -215,7 +216,7 @@ function Slot({
                   ))}
               </section>
             </div>
-            <div className="col-12 col-lg-5 border-pattern left repeat info-div">
+            <div className="col-12 col-lg-8 companion-active-info">
               <h3 className="companion-name">
                 {name}
                 {creature?.name && (
@@ -231,11 +232,13 @@ function Slot({
                 armor={creature?.armor}
                 slot1={usedBy[0]?.slot1}
               />
-              <ProgressBar
-                color={creature?.status}
-                current={currentHP < 0 ? creature?.hitpoints : currentHP}
-                max={creature?.hitpoints}
-              />
+              <div className="companion-health-progress">
+                <ProgressBar
+                  color={creature?.status}
+                  current={currentHP < 0 ? creature?.hitpoints : currentHP}
+                  max={creature?.hitpoints}
+                />
+              </div>
               <div className="row">
                 <div className="col-auto">
                   <input
@@ -309,16 +312,13 @@ function Slot({
       return (
         <div className="slot ">
           <div className="row">
-            <div className="col-12 col-lg-auto">
-              <div className="slot-number disabled">{i}</div>
-            </div>
             <div className="col-12 col-lg-3">
-              <h3 className="">{category}</h3>
+              <h3>{category}</h3>
               <span className="companion-slot-status companion-slot-status--free">
                 Frei
               </span>
             </div>
-            <div className="col-12 col-lg-3 border-pattern left repeat">
+            <div className="col-12 col-lg-9 companion-slot-description">
               <p>{info}</p>
             </div>
           </div>
@@ -328,9 +328,6 @@ function Slot({
     return (
       <div className="slot disabled">
         <div className="row">
-          <div className="col-12 col-lg-auto">
-            <div className="slot-number disabled">{i}</div>
-          </div>
           <div className="col-12 col-lg-3">
             <h3 className="disabled">{category}</h3>
             <span className="companion-slot-status companion-slot-status--locked">
@@ -340,7 +337,7 @@ function Slot({
               Erfordert {charismaValue} Charismapunkte
             </div>
           </div>
-          <div className="col-12 col-lg-3 border-pattern left repeat">
+          <div className="col-12 col-lg-9 companion-slot-description">
             <p>{info}</p>
           </div>
         </div>

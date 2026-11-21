@@ -8,6 +8,8 @@ import { slots, slotInfo } from "../../data/ConstVariables";
 import Slot from "./Slot";
 import { Button, Modal } from "react-bootstrap";
 import { getOriginAccentStyle } from "../../data/OriginColors";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import {
   updateCompanionStatus,
   equipToCompanion,
@@ -24,6 +26,7 @@ function Companions() {
 
   const [msg, setMsg] = useState({ id: "", text: "" });
   const [pendingAssignment, setPendingAssignment] = useState(null);
+  const [showStallInfo, setShowStallInfo] = useState(false);
   const dispatch = useDispatch();
   const { companions, slotsAllowed, equipable } =  useSelector(
     (state) => state.companion
@@ -103,6 +106,7 @@ function Companions() {
             <div className="container-fluid g-5">
               <div className="row">
                 <div className="col-12 col-lg-8">
+                  <h3 className="companions-section-heading">Begleiter-Slots</h3>
                   <AnimatePresence wait>
                     {slots?.map((category, i) => (
                       <motion.div
@@ -115,7 +119,6 @@ function Companions() {
                       >
                         <Slot
                           key={category}
-                          i={i + 1}
                           category={category}
                           data={slotInfo[i]}
                           slotFilter={equipable}
@@ -132,14 +135,18 @@ function Companions() {
                   </AnimatePresence>
                 </div>
                 <div className="col-12 col-lg-4">
-                  <div className="row">
-                    <div className="col-auto ms-auto me-auto ">
-                      <h3>Stall</h3>
-                    </div>
+                  <div className="companions-stall-heading">
+                    <h3>Stall</h3>
+                    <button
+                      type="button"
+                      className="companions-info-button"
+                      aria-label="Informationen zur Stallzuweisung"
+                      title="Informationen zur Stallzuweisung"
+                      onClick={() => setShowStallInfo(true)}
+                    >
+                      <FontAwesomeIcon icon={faCircleInfo} />
+                    </button>
                   </div>
-                  <p className="companion-assignment-hint">
-                    Angezeigt werden nur passende, freigeschaltete Slots.
-                  </p>
                   <AnimatePresence wait>
                     {companions?.map(
                       (companion, i) =>
@@ -225,6 +232,38 @@ function Companions() {
             Begleiter ersetzen
           </Button>
         </Modal.Footer>
+      </Modal>
+      <Modal
+        show={showStallInfo}
+        onHide={() => setShowStallInfo(false)}
+        centered
+        className="companions-info-modal"
+        style={getOriginAccentStyle(fractionTheme)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Informationen zum Stall</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>
+            Im Stall stehen deine aktuell nicht zugewiesenen Begleiter. Über
+            die Aktion auf einer Karte kannst du einen Begleiter einem
+            passenden, freigeschalteten Slot zuweisen.
+          </p>
+          <p>Welche Slots angezeigt werden, richtet sich nach dem Begleiter:</p>
+          <ul>
+            <li>Schulterpet: bis zu 60 Lebenspunkte</li>
+            <li>Reittier: mehr als 80 Lebenspunkte</li>
+            <li>Begleiter 1: für alle Begleiter geeignet</li>
+            <li>Begleiter 2: nur für Humanoide</li>
+            <li>Drache: nur für Drachen</li>
+          </ul>
+          <p>
+            Slots werden erst angezeigt, wenn sie durch ausreichend Charisma
+            freigeschaltet sind. Ist ein passender Slot bereits belegt, kannst
+            du ihn trotzdem auswählen. Vor dem Ersetzen wirst du gefragt; der
+            bisherige Begleiter kommt dann zurück in den Stall.
+          </p>
+        </Modal.Body>
       </Modal>
     </div>
   );

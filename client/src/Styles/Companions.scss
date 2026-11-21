@@ -4,10 +4,17 @@
 .companions-page{
     color:white;
 
+    .slot {
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+    }
+
     .companion-list {
-        background-color: $transparentBlack;
-        margin: 0.7em;
-        padding: 0.5em;
+        margin: 0.85rem 0.35rem;
+        padding: 0.75rem 0.85rem;
+        border-radius: 0.65rem;
+        background-color: rgba(24, 24, 24, 0.5);
+        transition: background-color 0.18s ease;
     }
     .empty-slot{
         min-height: 3em;
@@ -16,7 +23,45 @@
         width: 3em;
     }
     .companion-list:hover{
-        background-color: $infoBlack;
+        background-color: rgba(24, 24, 24, 0.72);
+    }
+
+    .companions-stall-heading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .companions-stall-heading h3 {
+        margin: 0;
+    }
+
+    .companions-section-heading {
+        margin: 0.5rem 0 1rem;
+    }
+
+    .companions-info-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.72);
+        transition: color 0.18s ease, background-color 0.18s ease;
+    }
+
+    .companions-info-button:hover,
+    .companions-info-button:focus-visible {
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--fraction-accent, white);
+        outline: 1px solid var(--fraction-accent, rgba(245, 240, 227, 0.65));
+        outline-offset: 1px;
     }
 
     .companion-card__heading {
@@ -40,8 +85,38 @@
     }
 
     .companion-active-image {
+        display: block;
+        width: 100%;
+        max-width: 220px;
         border: none;
         border-radius: 0.75rem;
+    }
+
+    .companion-slot-active-row {
+        display: grid;
+        grid-template-columns: 250px minmax(0, 1fr);
+        gap: 1rem;
+        margin: 0;
+    }
+
+    .companion-slot-active-row > * {
+        width: auto;
+        max-width: none;
+        padding: 0;
+    }
+
+    .companion-slot-visual {
+        min-width: 0;
+    }
+
+    .companion-active-info {
+        margin-top: 0;
+        padding: 0.5rem 0.75rem;
+        background-color: $transparentBlack;
+    }
+
+    .companion-slot-active-row > .companion-active-info {
+        padding: 0.5rem 0.75rem;
     }
 
     .companion-attributes {
@@ -95,16 +170,55 @@
         padding: 0.2em;
     }
 
-    .slot-number{
-        border: 2px solid;
-        background-color: $infoBlack;
-        width: 2em;
-        height:2em;
-        border-radius: 20%;
-        text-align: center;
-        
-        padding: 0.2em;
+    .companion-slot-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
 
+    .companion-slot-heading h3 {
+        margin: 0;
+    }
+
+    .companion-release-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 2rem;
+        width: 2rem;
+        height: 2rem;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.65);
+        line-height: 1;
+        transition: color 0.18s ease, background-color 0.18s ease;
+    }
+
+    .companion-release-button:hover,
+    .companion-release-button:focus-visible {
+        background: rgba(255, 255, 255, 0.08);
+        color: #f99191;
+        outline: 1px solid rgba(249, 65, 68, 0.7);
+        outline-offset: 1px;
+    }
+
+    .companion-active-info,
+    .companion-slot-description {
+        border-left: 1px solid var(--fraction-accent, rgba(245, 240, 227, 0.55));
+        padding-left: 1rem;
+    }
+
+    .companion-health-progress {
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.25rem;
+    }
+
+    .companion-slot-description p {
+        margin-bottom: 0;
     }
     .disabled{
         color: $mainGrey !important;
@@ -164,11 +278,6 @@
         color: rgba(255, 255, 255, 0.7);
     }
 
-    .companion-assignment-hint {
-        color: rgba(255, 255, 255, 0.75);
-        font-size: 0.9rem;
-    }
-
     .companion-slot-status {
         display: inline-block;
         margin: 0 0 0.5rem;
@@ -219,8 +328,9 @@
 
     .companion-equipment__slot-type {
         color: rgba(255, 255, 255, 0.7);
-        font-size: 0.75rem;
+        font-size: 0.65rem;
         font-weight: 500;
+        white-space: nowrap;
     }
 
     .companion-equipment__slot-content {
@@ -323,7 +433,31 @@
     }
 }
 
-.companions-slot-confirm-modal {
+@media (max-width: 991.98px) {
+    .companions-page .companion-slot-active-row {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0.75rem;
+    }
+
+    .companions-page .companion-slot-active-row > .companion-active-info {
+        margin-top: 0.75rem;
+        padding: 0.75rem 0.5rem;
+        border-top: 1px solid var(--fraction-accent, rgba(245, 240, 227, 0.55));
+        border-left: 0;
+    }
+
+    .companions-page .companion-active-info,
+    .companions-page .companion-slot-description {
+        margin-top: 0.75rem;
+        padding-top: 0.75rem;
+        padding-left: calc(var(--bs-gutter-x, 1.5rem) * 0.5);
+        border-top: 1px solid var(--fraction-accent, rgba(245, 240, 227, 0.55));
+        border-left: 0;
+    }
+}
+
+.companions-slot-confirm-modal,
+.companions-info-modal {
     .modal-content {
         border: 1px solid var(--diary-origin-border, rgba(249, 199, 79, 0.45));
         border-radius: 0.75rem;

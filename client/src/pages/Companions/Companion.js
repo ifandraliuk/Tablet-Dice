@@ -23,7 +23,7 @@ function Companion({
   });
 
   return (
-    <div className="companion-list border-pattern repeat">
+    <div className="companion-list">
       <div className="row">
         <div className="col-12">
           <div className="companion-card__heading">
