@@ -28,7 +28,7 @@ const getEquipmentTileClass = (equippedItem) => {
   return `inventory-item inventory-equipment__slot inventory-item--rarity-${rarity}`;
 };
 
-const Equipment = memo(({ setShowInfo, err }) => {
+const Equipment = memo(({ setShowInfo, onSelectEmptySlot, selectedSlot, err }) => {
   //console.log("re-rendering equipment");
   const dispatch = useDispatch();
   const equipped = useSelector((state) =>
@@ -142,12 +142,14 @@ const Equipment = memo(({ setShowInfo, err }) => {
               );
             } else {
               return (
-                <motion.div
-                  className={getEquipmentTileClass()}
+                <motion.button
+                  type="button"
+                  className={`${getEquipmentTileClass()} inventory-equipment__slot-button${selectedSlot === name ? " is-selecting" : ""}`}
                   data-slot-label={`Slot: ${name}`}
-                  role="img"
-                  aria-label={`Leerer Ausrüstungsslot: ${name}`}
                   key={name}
+                  aria-label={`Leeren ${name}-Slot auswählen`}
+                  aria-pressed={selectedSlot === name}
+                  onClick={() => onSelectEmptySlot(name)}
                 >
                   <ItemIcon
                     equippedItem={{ ...equippedItem }}
@@ -156,7 +158,7 @@ const Equipment = memo(({ setShowInfo, err }) => {
                     setShowInfo={false}
                     isEmpty={true}
                   />
-                </motion.div>
+                </motion.button>
               );
             }
           })}
@@ -193,12 +195,14 @@ const Equipment = memo(({ setShowInfo, err }) => {
               );
             } else {
               return (
-                <motion.div
-                  className={getEquipmentTileClass()}
+                <motion.button
+                  type="button"
+                  className={`${getEquipmentTileClass()} inventory-equipment__slot-button${selectedSlot === name ? " is-selecting" : ""}`}
                   data-slot-label={`Slot: ${name}`}
-                  role="img"
-                  aria-label={`Leerer Ausrüstungsslot: ${name}`}
                   key={name}
+                  aria-label={`Leeren ${name}-Slot auswählen`}
+                  aria-pressed={selectedSlot === name}
+                  onClick={() => onSelectEmptySlot(name)}
                 >
                   <ItemIcon
                     equippedItem={{ ...equippedItem }}
@@ -207,7 +211,7 @@ const Equipment = memo(({ setShowInfo, err }) => {
                     setShowInfo={false}
                     isEmpty={true}
                   />
-                </motion.div>
+                </motion.button>
               );
             }
           })}
@@ -255,12 +259,14 @@ const Equipment = memo(({ setShowInfo, err }) => {
               );
             } else {
               return (
-                <motion.div
-                  className={getEquipmentTileClass()}
+                <motion.button
+                  type="button"
+                  className={`${getEquipmentTileClass()} inventory-equipment__slot-button${selectedSlot === name ? " is-selecting" : ""}`}
                   data-slot-label={`Slot: ${name}`}
-                  role="img"
-                  aria-label={`Leerer Ausrüstungsslot: ${name}`}
                   key={keyFor}
+                  aria-label={`Leeren ${name}-Slot auswählen`}
+                  aria-pressed={selectedSlot === name}
+                  onClick={() => onSelectEmptySlot(name)}
                 >
                   <ItemIcon
                     item={equippedItem}
@@ -269,7 +275,7 @@ const Equipment = memo(({ setShowInfo, err }) => {
                     setShowInfo={false}
                     isEmpty={true}
                   />
-                </motion.div>
+                </motion.button>
               );
             }
           })}

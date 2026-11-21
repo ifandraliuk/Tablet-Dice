@@ -4,7 +4,42 @@ import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import { itemNames } from "../../data/ConstVariables";
 
-function Slot({ modus, setCustomInfo, filter, setShowInfo, viewMode = "compact" }) {
+const RANGED_WEAPON_GENUSES = ["Wurfwaffe", "Armbrust", "Bogen", "Schusswaffe"];
+
+const matchesEquipmentSlot = (entry, slotName) => {
+  const item = entry.item ?? entry;
+  if (slotName === "Fernkampf") {
+    return item.category === "Waffe" && RANGED_WEAPON_GENUSES.includes(item.genus);
+  }
+  if (slotName === "Haupthand") {
+    return (
+      item.category === "Waffe" &&
+      !RANGED_WEAPON_GENUSES.includes(item.genus) &&
+      item.genus !== "Werkzeug"
+    );
+  }
+  if (slotName === "Nebenhand") {
+    return (
+      (item.category === "Rüstung" && item.genus === "Schild") ||
+      (item.category === "Waffe" &&
+        !RANGED_WEAPON_GENUSES.includes(item.genus) &&
+        item.genus !== "Werkzeug" &&
+        item.type !== "zweihändig")
+    );
+  }
+  return item.category === "Rüstung" && item.genus === slotName;
+};
+
+function Slot({
+  modus,
+  setCustomInfo,
+  filter,
+  setShowInfo,
+  viewMode = "compact",
+  equipmentSlotSelection,
+  onSelectEquipmentItem,
+  equipmentSelectionLoading = false,
+}) {
   const inventory = useSelector((state) => state.inventory.inventory);
   const items = useSelector((state) => state.items.data);
   const filteredData = useSelector((state) => state.items.filteredData);
@@ -15,7 +50,19 @@ function Slot({ modus, setCustomInfo, filter, setShowInfo, viewMode = "compact" 
       return false;
     }
 
-    if (filter && filter !== "all" && entry.item?.category !== filter) {
+    if (
+      !equipmentSlotSelection &&
+      filter &&
+      filter !== "all" &&
+      entry.item?.category !== filter
+    ) {
+      return false;
+    }
+
+    if (
+      equipmentSlotSelection &&
+      !matchesEquipmentSlot(entry, equipmentSlotSelection)
+    ) {
       return false;
     }
 
@@ -30,7 +77,9 @@ function Slot({ modus, setCustomInfo, filter, setShowInfo, viewMode = "compact" 
     const hasItems = data.some((entry) => entry.status !== "Ausgerüstet");
     return (
       <p className="inventory-list-empty">
-        {hasItems
+        {equipmentSlotSelection
+          ? `Keine passenden Gegenstände für den Slot „${equipmentSlotSelection}“ im Rucksack.`
+          : hasItems
           ? "Keine Gegenstände in dieser Kategorie."
           : "Dein Inventar ist noch leer. Über „Gegenstände hinzufügen“ kannst du Items aufnehmen."}
       </p>
@@ -38,6 +87,10 @@ function Slot({ modus, setCustomInfo, filter, setShowInfo, viewMode = "compact" 
   }
 
   const openItem = (entry) => {
+    if (equipmentSlotSelection) {
+      onSelectEquipmentItem(entry);
+      return;
+    }
     setShowInfo(entry._id);
     setCustomInfo?.(entry);
   };
@@ -68,7 +121,12 @@ function Slot({ modus, setCustomInfo, filter, setShowInfo, viewMode = "compact" 
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => openItem(entry)}
-            aria-label={`${itemName}, Menge ${amount}. Details öffnen`}
+            disabled={Boolean(equipmentSlotSelection && equipmentSelectionLoading)}
+            aria-label={
+              equipmentSlotSelection
+                ? `${itemName}, für ${equipmentSlotSelection} ausrüsten`
+                : `${itemName}, Menge ${amount}. Details öffnen`
+            }
           >
             <ItemIcon
               animationDelay={index * 0.1}

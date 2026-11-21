@@ -389,34 +389,37 @@ function ExtendedInfo({
                   </div>
                 )}
 
-                {showMaterials && (
-                  <>
-                    <h3 className="col-12 extended-info-materials-heading">
-                      {production ? `Herstellung · ${production}` : "Materialien"}
-                    </h3>
-                    <div className="col-12 extended-info-materials">
-                      {material.map((material) => {
-                        const item = material.element;
-                        const amount = material.amount;
-                        const name = item?.name;
-                        return (
-                          <div
-                            className="extended-info-material"
-                            key={item?._id}
-                          >
-                            <ItemIcon item={item} specialAmount={amount} />
-                            <div className="extended-info-material__details">
-                              <strong className={`${fractionTheme}-text`}>
-                                {name}
-                              </strong>
-                              <span>Menge: {amount}</span>
-                            </div>
+                <section
+                  className="col-12 extended-info-materials-section"
+                  hidden={!showMaterials}
+                >
+                  <h3 className="extended-info-materials-heading">
+                    {production ? `Herstellung · ${production}` : "Materialien"}
+                  </h3>
+                  <div className="extended-info-materials">
+                    {material.map((material) => {
+                      const materialItem = material.element;
+                      const amount = material.amount;
+                      return (
+                        <div
+                          className="extended-info-material"
+                          key={materialItem?._id}
+                        >
+                          <ItemIcon
+                            item={materialItem}
+                            specialAmount={amount}
+                          />
+                          <div className="extended-info-material__details">
+                            <strong className={`${fractionTheme}-text`}>
+                              {materialItem?.name}
+                            </strong>
+                            <span>Menge: {amount}</span>
                           </div>
-                        );
-                      })}
-                    </div>
-                  </>
-                )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </section>
               </motion.div>
             )}
             {contentToShow === "share" && (
@@ -515,7 +518,7 @@ function ExtendedInfo({
               </motion.div>
             )}
               </>
-            )}
+          
           </div>
         </motion.div>
       </motion.div>

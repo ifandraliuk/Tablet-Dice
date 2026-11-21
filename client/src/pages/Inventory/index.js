@@ -41,6 +41,7 @@ import {
 import { reset as playerReset } from "../../features/player/playerSlice";
 import Equipment from "./Equipment";
 import { motion } from "framer-motion";
+import { toast } from "react-toastify";
 import { buttonImpackt, pageTransition } from "../../data/Animations";
 import Slot from "./Slot";
 import ExtendedInfo from "./ExtendedInfo";
@@ -68,6 +69,8 @@ function InventoryPage() {
     (state) => state.player
   );
   const [showInfo, setShowInfo] = useState(false);
+  const [equipmentSlotSelection, setEquipmentSlotSelection] = useState(null);
+  const [equipmentSelectionLoading, setEquipmentSelectionLoading] = useState(false);
   const inventoryPageMounted = useRef(false);
 
   const { userclass } = player;
@@ -130,6 +133,23 @@ function InventoryPage() {
   useEffect(() => {
     localStorage.setItem(INVENTORY_LIST_VIEW_KEY, inventoryListView);
   }, [inventoryListView]);
+
+  useEffect(() => {
+    if (!equipmentSlotSelection) return undefined;
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape" && !equipmentSelectionLoading) {
+        setEquipmentSlotSelection(null);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [equipmentSelectionLoading, equipmentSlotSelection]);
+
+  useEffect(() => {
+    if (activeDb) {
+      setEquipmentSlotSelection(null);
+    }
+  }, [activeDb]);
 
   useEffect(() => {
     inventoryPageMounted.current = true;
@@ -315,6 +335,31 @@ function InventoryPage() {
     return dispatch(unequip({ id: id })).unwrap();
   };
 
+  const equipItemFromSlotSelection = async (entry) => {
+    if (equipmentSelectionLoading) return;
+    setEquipmentSelectionLoading(true);
+    try {
+      const result = await equipItem(entry._id);
+      const replacementCount =
+        Number(Boolean(result.unequipItem)) +
+        Number(Boolean(result.additionalUnequip));
+      toast.success(
+        replacementCount > 0
+          ? `${entry.item?.name ?? "Gegenstand"} ausgerüstet. ${replacementCount === 1 ? "Ein Gegenstand wurde" : "Gegenstände wurden"} in den Rucksack gelegt.`
+          : `${entry.item?.name ?? "Gegenstand"} wurde ausgerüstet.`
+      );
+      setEquipmentSlotSelection(null);
+    } catch (error) {
+      toast.error(
+        typeof error === "string"
+          ? error
+          : error.message || "Ausrüsten ist fehlgeschlagen."
+      );
+    } finally {
+      setEquipmentSelectionLoading(false);
+    }
+  };
+
   const onClickFilter = (e) => {
     e.preventDefault();
     const filterName = e.currentTarget.name;
@@ -418,7 +463,7 @@ function InventoryPage() {
                     </div>
                   )}
                 </header>
-                <div
+                {!equipmentSlotSelection && <div
                   className="inventory-category-switch"
                   role="group"
                   aria-label="Inventarkategorie"
@@ -461,7 +506,7 @@ function InventoryPage() {
                       Alle
                     </button>
                   )}
-                </div>
+                </div>}
                 {!activeDb && (
                   <div className="inventory-weight">
                     <div
@@ -550,10 +595,31 @@ function InventoryPage() {
                   />
                 ) : (
                   <>
+                    {equipmentSlotSelection && (
+                      <div className="inventory-slot-selection" role="status">
+                        <div>
+                          <strong>{equipmentSlotSelection}-Slot auswählen</strong>
+                          <span>
+                            Es werden passende Gegenstände aus deinem Rucksack
+                            angezeigt.
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          disabled={equipmentSelectionLoading}
+                          onClick={() => setEquipmentSlotSelection(null)}
+                        >
+                          Abbrechen
+                        </button>
+                      </div>
+                    )}
                     <Slot
                       setShowInfo={show}
                       filter={inventoryCategory === "all" ? "" : inventoryCategory}
                       viewMode={inventoryListView}
+                      equipmentSlotSelection={equipmentSlotSelection}
+                      onSelectEquipmentItem={equipItemFromSlotSelection}
+                      equipmentSelectionLoading={equipmentSelectionLoading}
                     />
                     {!activeEditMoney ? (
                       <div className="row">
@@ -666,6 +732,8 @@ function InventoryPage() {
                     armor={armor}
                     uclass={userclass?.name}
                     setShowInfo={show}
+                    selectedSlot={equipmentSlotSelection}
+                    onSelectEmptySlot={setEquipmentSlotSelection}
                   />
                 </div>
               )}

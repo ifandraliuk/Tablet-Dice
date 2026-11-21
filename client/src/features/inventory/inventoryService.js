@@ -146,16 +146,6 @@ const equip = async (itemData, token) => {
     return response.data
 }
 
-const previewEquip = async (itemData, token) => {
-    const config = {
-        headers:{
-            Authorization: "Bearer " + token,
-        }
-    }
-    const response = await axios.put(API_URL + "equip/", { ...itemData, preview: true }, config)
-    return response.data
-}
-
 const unequip = async (data, token) => {
     const config = {
         headers:{
@@ -195,7 +185,6 @@ const inventoryPageService = {
     splitAmount, // split given amount from the item
     shareWith, // send the item to other user
     equip, // equip item to user
-    previewEquip,
     unequip, // equip item to user
     filterInventory, // get specific category from inventory
     

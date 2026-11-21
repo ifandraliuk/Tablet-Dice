@@ -300,24 +300,6 @@ export const equip = createAsyncThunk(
   }
 );
 
-export const previewEquip = createAsyncThunk(
-  "inventory/equip/preview",
-  async (data, thunkAPI) => {
-    try {
-      const token = thunkAPI.getState().auth.user.token;
-      return await inventoryService.previewEquip(data, token);
-    } catch (error) {
-      const msg =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
-      return thunkAPI.rejectWithValue(msg);
-    }
-  }
-);
-
 export const unequip = createAsyncThunk(
   "inventory/unequip/put",
   async (data, thunkAPI) => {
