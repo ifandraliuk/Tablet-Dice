@@ -11,18 +11,27 @@ import React from "react";
 import { memo } from "react";
 const BestienList = memo(function BestienList({
   creatures,
-  artFilter,
+  gattungFilter,
+  habitatFilter,
+  nameFilter,
   setOnPopup,
   setCompanionId,
   fractionTheme,
 }) {
-  const creatureList =
-    artFilter.length === 0
-      ? creatures
-      : creatures.filter(
-          cr => cr.art === artFilter)
-        ;
-    
+  const normalizedNameFilter = nameFilter.trim().toLocaleLowerCase();
+  const creatureList = creatures.filter((creature) => {
+    const matchesGattung =
+      !gattungFilter || creature.art === gattungFilter;
+    const matchesHabitat =
+      !habitatFilter ||
+      creature.habitat?.some((entry) => entry.name === habitatFilter);
+    const matchesName =
+      !normalizedNameFilter ||
+      creature.name?.toLocaleLowerCase().includes(normalizedNameFilter);
+
+    return matchesGattung && matchesHabitat && matchesName;
+  });
+
   if (creatureList.length > 0) {
     return (
       <div className="bestiaria">
@@ -140,7 +149,9 @@ const BestienList = memo(function BestienList({
   } else {
     return (
       <p className="bestiaria-empty">
-        Es wurden noch keine Tiere zu dieser Art hinzugefügt.
+        {creatures.length === 0
+          ? "Es wurden noch keine Tiere hinzugefügt."
+          : "Keine Tiere entsprechen deiner Suche und den ausgewählten Filtern."}
       </p>
     );
   }

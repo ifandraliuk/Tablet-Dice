@@ -4,8 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { reset, getBestiaria } from "../../features/bestiaria/bestiariaSlice";
 import BestienList from "./BestienList";
-import ArtListComp from "./ArtListComp";
-import { getHabitat } from "../../features/habitats/habitatSlice";
+import BestiariumFilters from "./BestiariumFilters";
 import { pageTransition } from "../../data/Animations";
 import { motion } from "framer-motion";
 import CompanionPopup from "./CompanionPopup";
@@ -16,13 +15,14 @@ const Bestiaria = () => {
   const { user } = useSelector((state) => state.auth);
   const { fractionTheme, isSuccess } = useSelector((state) => state.player);
   const { bestiaria, artList } = useSelector((state) => state.bestiaria);
-  const [art, setArtFilter] = useState("");
+  const [gattung, setGattungFilter] = useState("");
+  const [habitat, setHabitatFilter] = useState("");
+  const [searchText, setSearchText] = useState("");
   const [companionId, setCompanionId] = useState("");
   const [onPopup, setOnPopup] = useState(false);
   useEffect(() => {
     console.log("getting creatures...");
     dispatch(getBestiaria());
-    dispatch(getHabitat());
 
     if (!user) {
       navigate("/");
@@ -45,7 +45,14 @@ const Bestiaria = () => {
       setOnPopup(false);
     }
   };
-  console.log(art);
+  const habitatList = [
+    ...new Set(
+      bestiaria.flatMap((creature) =>
+        creature.habitat?.map((entry) => entry.name).filter(Boolean) || []
+      )
+    ),
+  ].sort((first, second) => first.localeCompare(second, "de"));
+
   return (
     <motion.div
       variants={pageTransition}
@@ -65,17 +72,22 @@ const Bestiaria = () => {
         )}
         <div className="dark-bg container-fluid g-5 bestiarium-page">
           <div className="row g-3">
-            <div className="col-12 col-lg-3">
-              <ArtListComp
+            <div className="col-12">
+              <BestiariumFilters
                 arts={artList}
-                filter={setArtFilter}
-                selectedArt={art}
+                habitats={habitatList}
+                selectedGattung={gattung}
+                selectedHabitat={habitat}
+                searchText={searchText}
+                onGattungChange={setGattungFilter}
+                onHabitatChange={setHabitatFilter}
+                onSearchChange={setSearchText}
               />
-            </div>
-            <div className="col-12 col-lg-9">
               <BestienList
                 creatures={bestiaria}
-                artFilter={art}
+                gattungFilter={gattung}
+                habitatFilter={habitat}
+                nameFilter={searchText}
                 setOnPopup={setOnPopup}
                 setCompanionId={setCompanionId}
                 fractionTheme={fractionTheme}

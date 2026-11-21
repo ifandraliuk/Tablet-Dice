@@ -3,37 +3,13 @@
 .bestiarium-page {
     color: white;
 
-    .bestiaria-art-filters {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
+    .bestiaria-filters {
+        margin-bottom: 0.25rem;
     }
 
-    .bestiaria-art-filters button {
-        width: 100%;
-        padding: 0.5rem 0.75rem;
-        border: 0;
-        border-left: 2px solid var(--fraction-accent, rgba(245, 240, 227, 0.55));
-        border-radius: 0 0.4rem 0.4rem 0;
-        background: rgba(24, 24, 24, 0.72);
+    .bestiaria-filters .form-select option {
         color: #f5f0e3;
-        text-align: left;
-        transition: background-color 0.18s ease, color 0.18s ease;
-    }
-
-    .bestiaria-art-filters button:hover,
-    .bestiaria-art-filters button:focus-visible {
-        background: rgba(255, 255, 255, 0.08);
-        color: white;
-        outline: 1px solid var(--fraction-accent, rgba(245, 240, 227, 0.55));
-        outline-offset: 1px;
-    }
-
-    .bestiaria-art-filters button.is-active {
-        border-left-color: var(--fraction-accent, white);
-        background: rgba(255, 255, 255, 0.1);
-        color: white;
-        font-weight: 700;
+        background-color: rgb(24, 24, 24);
     }
 
     .bestiaria-card {
@@ -280,16 +256,6 @@
 }
 
 @media (max-width: 767.98px) {
-    .bestiarium-page .bestiaria-art-filters {
-        flex-direction: row;
-        flex-wrap: wrap;
-        margin-bottom: 1rem;
-    }
-
-    .bestiarium-page .bestiaria-art-filters button {
-        width: auto;
-    }
-
     .bestiarium-page .bestiaria-card__content {
         grid-template-columns: minmax(0, 1fr);
         gap: 0.75rem;
