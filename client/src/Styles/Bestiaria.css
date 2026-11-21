@@ -104,7 +104,7 @@
 }
 .bestiarium-page .bestiaria-card__details h4 {
   margin: 0 0 0.35rem;
-  font-size: 1rem;
+  font-size: clamp(1em, 0.5em + 1vw, 1.2em);
 }
 .bestiarium-page .bestiaria-card__details p {
   margin: 0 0 0.75rem;
