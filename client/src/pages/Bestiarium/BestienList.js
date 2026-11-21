@@ -118,16 +118,20 @@ const BestienList = memo(function BestienList({
               <button
                 type="button"
                 className={`bestiaria-card__tame ${fractionTheme}`}
-                aria-label={`${creature.name} als Begleiter gewinnen`}
-                title="Als Begleiter gewinnen"
+                aria-label={`${creature.name}: Tier zähmen`}
+                title="Tier zähmen"
                 onClick={() => {
                   setCompanionId(creature._id);
                   setOnPopup(true);
                 }}
               >
                 <FontAwesomeIcon icon={faPaw} />
-                <FontAwesomeIcon icon={faPlus} />
-                <span>Begleiter gewinnen</span>
+                <FontAwesomeIcon
+                  className="bestiaria-card__tame-plus"
+                  icon={faPlus}
+                  aria-hidden="true"
+                />
+                <span>Tier zähmen</span>
               </button>
             </header>
             <div className="bestiaria-card__content">

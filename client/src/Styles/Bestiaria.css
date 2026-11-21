@@ -47,18 +47,31 @@
   min-height: 2.25rem;
   gap: 0.4rem;
   padding: 0.45rem 0.65rem;
-  border: 0;
+  border: 1px solid var(--fraction-accent, rgba(245, 240, 227, 0.45));
   border-radius: 0.45rem;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.04);
   color: #f5f0e3;
-  transition: color 0.18s ease, background-color 0.18s ease;
+  transition: color 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+}
+.bestiarium-page .bestiaria-card__tame > svg:first-child {
+  color: var(--fraction-accent, white);
+}
+.bestiarium-page .bestiaria-card__tame-plus {
+  margin-left: -0.3rem;
+  color: var(--fraction-accent, white);
+  font-size: 0.65rem;
 }
 .bestiarium-page .bestiaria-card__tame:hover,
 .bestiarium-page .bestiaria-card__tame:focus-visible {
-  background: rgba(255, 255, 255, 0.12);
-  color: var(--fraction-accent, white);
-  outline: 1px solid var(--fraction-accent, rgba(245, 240, 227, 0.65));
-  outline-offset: 1px;
+  border-color: var(--fraction-accent, rgba(245, 240, 227, 0.85));
+  background: var(--fraction-accent, rgba(245, 240, 227, 0.12));
+  color: #181818;
+  outline: 2px solid var(--fraction-accent, rgba(245, 240, 227, 0.65));
+  outline-offset: 2px;
+}
+.bestiarium-page .bestiaria-card__tame:hover > svg,
+.bestiarium-page .bestiaria-card__tame:focus-visible > svg {
+  color: inherit;
 }
 .bestiarium-page .bestiaria-card__tame span {
   font-size: 0.85rem;
