@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from "react-redux";
 import AbilityCard from "../../components/AbilityCard";
 import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion";
-import MotionButton from "../../components/MotionButton";
 
 
 function Abilities() {
@@ -63,20 +62,25 @@ function Abilities() {
   return (
     <div className="container">
       <h2>Fertigkeiten</h2>
-      <div className="row ">
-        {specializations.map((el) => (
-          <div key={el} className="col-auto m-0" >
-            <MotionButton 
-              name={el}
-              content={el}
+      <div className="row">
+        <div className="segmented-toggle" role="tablist" aria-label="Fertigkeiten">
+          {specializations.map((specialization) => (
+            <button
+              key={specialization}
+              type="button"
+              role="tab"
+              aria-selected={filterCategory === specialization}
+              aria-pressed={filterCategory === specialization}
+              className={`segmented-toggle__button ${
+                filterCategory === specialization ? "is-active" : ""
+              }`}
+              name={specialization}
               onClick={onCategory}
-              theme={filterCategory === el ? fractionTheme : ""}
-            />
-          </div>
-        ))}     
-        <div className="col-auto m-0">
-
-          </div> 
+            >
+              {specialization}
+            </button>
+          ))}
+        </div>
       </div>
       <div className="row justify-content-center">
         <AnimatePresence>

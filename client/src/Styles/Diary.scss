@@ -101,9 +101,9 @@
   align-items: center;
   gap: 0.35rem;
   padding: 0.25rem 0.45rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 999px;
-  background: rgba(24, 24, 24, 0.55);
+  border: none;
+  border-radius: 0;
+  background: transparent;
 }
 
 .share-chip-count {

@@ -32,4 +32,30 @@
 .dashboard-page .general-container {
   background-color: rgba(24, 24, 24, 0.8);
   margin-top: 3.5em;
-}/*# sourceMappingURL=Dashboard.css.map */
+}
+.dashboard-page .bar-adjustment-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  width: 30%;
+  min-width: 18rem;
+  max-width: 100%;
+}
+.dashboard-page .bar-adjustment-type {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 7rem;
+}
+.dashboard-page .bar-adjustment-value {
+  flex: 0 0 4.5rem;
+  width: 4.5rem;
+  min-width: 0;
+  text-align: center;
+}
+.dashboard-page .bar-adjustment-buttons {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+/*# sourceMappingURL=Dashboard.css.map */

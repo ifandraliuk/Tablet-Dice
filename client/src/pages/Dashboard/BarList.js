@@ -46,39 +46,38 @@ function BarList() {
           attributes[name] > 0 && <Bar category={name} key={name} />
       )}
 
-      <div className="row mb-2 mt-2">
-        <div className="col-auto pe-0">
-          <select
-            className="text-capitalize"
-            value={damage.type}
-            name="type"
-            onChange={onChange}
-          >
-            {bar.map(
-              (name) =>
-                attributes &&
-                attributes[name] > 0 && (
-                  <option id={name} key={name}>
-                    {germanAttr[name]}
-                  </option>
-                )
-            )}
-          </select>
-        </div>
-        <div className="row">
-          <div className="col-auto">
-            <input
-              type="number"
-              value={damage.val}
-              name="val"
-              onChange={onChange}
-            ></input>
-          </div>
-          <div className="col">
-            <MathButtonGroup add={add} subtract={subtract} onReset={onReset} />
-          </div>
-        </div>
-        <div className=""></div>
+      <div className="bar-adjustment-controls mt-2 mb-2">
+        <select
+          className="form-select dark-filter-control bar-adjustment-type"
+          value={damage.type}
+          name="type"
+          onChange={onChange}
+          aria-label="Ressource anpassen"
+        >
+          {bar.map(
+            (name) =>
+              attributes &&
+              attributes[name] > 0 && (
+                <option id={name} key={name}>
+                  {germanAttr[name]}
+                </option>
+              )
+          )}
+        </select>
+        <input
+          type="number"
+          className="form-control dark-filter-control bar-adjustment-value"
+          value={damage.val}
+          name="val"
+          onChange={onChange}
+          aria-label={`Wert für ${damage.type}`}
+        />
+        <MathButtonGroup
+          add={add}
+          subtract={subtract}
+          onReset={onReset}
+          className="bar-adjustment-buttons resource-adjustment-buttons"
+        />
       </div>
     </div>
   );

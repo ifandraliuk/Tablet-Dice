@@ -196,7 +196,7 @@ const ItemsView = ({
             </label>
             <input
               id="itemSearch"
-              className="form-control w-100"
+              className="form-control dark-filter-control w-100"
               type="search"
               placeholder="Search items..."
               onChange={handleSearch}
@@ -208,7 +208,7 @@ const ItemsView = ({
             </label>
             <select
               id="genusFilter"
-              className="form-select w-100"
+              className="form-select dark-filter-control w-100"
               value={activeGenus}
               onChange={handleActiveGenus}
               aria-label="Sortierung nach Genus"
@@ -227,7 +227,7 @@ const ItemsView = ({
             </label>
             <select
               id="typeFilter"
-              className="form-select w-100"
+              className="form-select dark-filter-control w-100"
               value={selectedType}
               onChange={(event) => setSelectedType(event.target.value)}
               aria-label="Nach Typ filtern"
@@ -246,7 +246,7 @@ const ItemsView = ({
             </label>
             <select
               id="productionFilter"
-              className="form-select w-100"
+              className="form-select dark-filter-control w-100"
               value={selectedProduction}
               onChange={(event) => setSelectedProduction(event.target.value)}
               aria-label="Nach Herstellungsort filtern"

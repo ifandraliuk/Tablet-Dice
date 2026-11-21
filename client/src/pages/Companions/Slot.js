@@ -121,6 +121,7 @@ function Slot({
                   <MathButtonGroup
                     add={add}
                     subtract={subtract}
+                    className="resource-adjustment-buttons"
                     onReset={() => {
                       setCurrentHP(creature?.hitpoints);
                       localStorage.setItem(category, creature?.hitpoints);

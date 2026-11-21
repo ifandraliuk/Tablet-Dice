@@ -79,29 +79,9 @@
   font-weight: 700;
 }
 
-.inventory-page .items-view__filters .form-control,
-.inventory-page .items-view__filters .form-select {
-  color: #f5f0e3;
-  background-color: rgba(24, 24, 24, 0.92);
-  border: 1px solid rgba(245, 240, 227, 0.28);
-  box-shadow: none;
-}
-
-.inventory-page .items-view__filters .form-control::placeholder {
-  color: rgba(245, 240, 227, 0.5);
-}
-
 .inventory-page .items-view__filters .form-select option {
   color: #f5f0e3;
   background-color: rgb(24, 24, 24);
-}
-
-.inventory-page .items-view__filters .form-control:focus,
-.inventory-page .items-view__filters .form-select:focus {
-  color: #f5f0e3;
-  background-color: rgba(24, 24, 24, 0.98);
-  border-color: var(--fraction-accent, rgba(245, 240, 227, 0.65));
-  box-shadow: 0 0 0 0.2rem rgba(245, 240, 227, 0.08);
 }
 
 .inventory-page .inventory-items-table th {

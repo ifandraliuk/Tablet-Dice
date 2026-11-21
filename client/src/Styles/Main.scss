@@ -7,6 +7,64 @@ body {
 p{
     text-align: justify;
 }
+.form-control.dark-filter-control,
+.form-select.dark-filter-control {
+    color: #f5f0e3;
+    background-color: rgba(24, 24, 24, 0.92);
+    border: 1px solid rgba(245, 240, 227, 0.28);
+    box-shadow: none;
+}
+.form-control.dark-filter-control::placeholder {
+    color: rgba(245, 240, 227, 0.5);
+}
+.form-control.dark-filter-control:focus,
+.form-select.dark-filter-control:focus {
+    color: #f5f0e3;
+    background-color: rgba(24, 24, 24, 0.98);
+    border-color: var(--fraction-accent, rgba(245, 240, 227, 0.65));
+    box-shadow: 0 0 0 0.2rem rgba(245, 240, 227, 0.08);
+}
+.form-select.dark-filter-control option {
+    color: #f5f0e3;
+    background-color: rgb(24, 24, 24);
+}
+.resource-adjustment-buttons button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.35rem;
+    height: 2.35rem;
+    padding: 0;
+    border: 1px solid rgba(245, 240, 227, 0.2);
+    border-radius: 0.4rem;
+    background: rgba(24, 24, 24, 0.72);
+    transition: border-color 0.18s ease, background-color 0.18s ease, color 0.18s ease;
+}
+.resource-adjustment-buttons {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+.button-group.resource-adjustment-buttons button:first-child,
+.button-group.resource-adjustment-buttons button:last-child {
+    border: 1px solid rgba(245, 240, 227, 0.2);
+    border-radius: 0.4rem;
+}
+.resource-adjustment-buttons .btn-save:hover {
+    color: #90be6d;
+    border-color: rgba(144, 190, 109, 0.65);
+    background: rgba(144, 190, 109, 0.1);
+}
+.resource-adjustment-buttons .btn-edit:hover {
+    color: #f3722c;
+    border-color: rgba(243, 114, 44, 0.65);
+    background: rgba(243, 114, 44, 0.1);
+}
+.resource-adjustment-buttons .btn-remove:hover {
+    color: #f94144;
+    border-color: rgba(249, 65, 68, 0.65);
+    background: rgba(249, 65, 68, 0.1);
+}
 .required-asterisk {
     color: $categoryRed;
     margin-left: 5px;
