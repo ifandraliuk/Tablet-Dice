@@ -120,63 +120,31 @@
   display: flex;
   min-width: 0;
   flex-direction: column;
-  gap: 0.12rem;
 }
 
 .diary-share-modal .diary-share-player__name {
-  color: #f5f0e3;
-  line-height: 1.2;
+  font-weight: 600;
 }
 
 .diary-share-modal .diary-share-player__meta {
-  color: rgba(249, 199, 79, 0.8);
-  font-size: 0.84rem;
-  line-height: 1.2;
+  color: rgba(245, 240, 227, 0.72);
+  font-size: 0.82rem;
 }
 
 .diary-share-modal .diary-share-button {
   border: 1px solid var(--diary-share-border);
-  border-radius: 5px;
-  padding: 0.45rem 0.9rem;
-  color: #f5f0e3;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  border-radius: 6px;
 }
 
 .diary-share-modal .diary-share-button--cancel {
-  background: rgba(255, 255, 255, 0.06);
+  background: transparent;
 }
 
 .diary-share-modal .diary-share-button--confirm {
-  color: #181818;
+  color: #1b1b1b;
   background: var(--diary-share-color);
-  border-color: var(--diary-share-color);
-}
-
-.diary-share-modal .diary-share-button:hover {
-  border-color: var(--diary-share-color);
-  background: var(--diary-share-hover);
-  color: #fff;
 }
 
 .diary-share-modal .diary-share-button--confirm:hover {
-  color: #181818;
-  background: #f4b942;
-}
-
-.diary-share-modal .diary-share-button--delete {
-  color: #fff;
-  background: #a93636;
-  border-color: #c94b4b;
-}
-
-.diary-share-modal .diary-share-button--delete:hover {
-  color: #fff;
-  background: #c13e3e;
-  border-color: #e05a5a;
-}
-
-@media (max-width: 575.98px) {
-  .diary-share-modal .modal-dialog {
-    margin: 0.75rem;
-  }
+  background: var(--diary-share-hover);
 }

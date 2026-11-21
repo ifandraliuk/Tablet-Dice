@@ -101,7 +101,7 @@ function ExtendedInfo({
         exit={{ opacity: 0, scale: 0.96, y: 10 }}
         transition={{ duration: 0.2 }}
         key="extended-container"
-        className="extended-info-modal container overflow-auto"
+        className="extended-info-modal overflow-auto"
         style={getOriginAccentStyle(fractionTheme)}
         onClick={(e) => e.stopPropagation()}
       >
@@ -143,7 +143,9 @@ function ExtendedInfo({
                       <FontAwesomeIcon icon={faMinus} />
                     </motion.button>
                   </div>
-                  <div className="extended-info-action">
+                  <div
+                    className={`extended-info-action${contentToShow === "share" ? " is-active" : ""}`}
+                  >
                     <motion.button
                       variants={buttonImpackt}
                       whileHover="whileHover"
@@ -215,7 +217,7 @@ function ExtendedInfo({
           </motion.div>
           <div
             id="col2"
-            className="col-lg-9 col-md-8 col-12 border-pattern left extended-info-content"
+            className="col-lg-9 col-md-8 col-12 border-pattern left extended-info-content "
           >
             {contentToShow === "info" && (
               <motion.div
@@ -282,7 +284,7 @@ function ExtendedInfo({
 
                 <br />
                 {dice && (
-                  <div className="col-lg-12 col-md-12 col-sm-12 ">
+                  <div className="col-12 extended-info-extra-column">
                     <ul>
                       <li>
                         {category === "Waffe"
@@ -297,7 +299,7 @@ function ExtendedInfo({
                 )}
 
                 {bonuses && (
-                  <div className="col-lg-12 col-md-12 col-sm-12 ">
+                  <div className="col-12 extended-info-extra-column">
                     <ul>
                       <li>
                         Bonus: <strong className={`${fractionTheme}-text`}>{bonuses}</strong>
@@ -334,78 +336,94 @@ function ExtendedInfo({
               </motion.div>
             )}
             {contentToShow === "share" && (
-              <div name="share-content" className="row">
-                <div className="col-lg-10 col-md-8">
-                  <h2>{name}</h2>
-                </div>
-                <div className="col-lg-2 col-md-4">
+              <div name="share-content" className="extended-info-share">
+                <div className="extended-info-share-header">
+                  <div>
+                    <span className="extended-info-mode-label">Teilen</span>
+                    <h2>{name}</h2>
+                  </div>
                   <button
+                    type="button"
                     id="info"
+                    aria-label="Zurück zu den Item-Details"
                     onClick={(e) => setContentToShow(e.currentTarget.id)}
                   >
                     <FontAwesomeIcon icon={faLeftLong} />
                   </button>
                 </div>
-                <strong className={`${fractionTheme}-text`}>Wähle eine Person zum Teilen aus:</strong>
-                {userList &&
-                  userList.map(
-                    (user) =>
-                      user.name !== userName && (
-                        <div key={user.id} className="col-4">
-                          <motion.button
-                            id={user.id}
-                            onClick={(e) =>
-                              shareItem(extendedItemInfo._id, e.target.id)
-                            }
-                            variants={buttonImpackt}
-                            whileHover="whileHover"
-                            whileTap="whileTap"
-                          >
-                            {user.name}
-                          </motion.button>
-                        </div>
-                      )
-                  )}
+                <strong className={`${fractionTheme}-text extended-info-share-prompt`}>
+                  Wähle eine Person zum Teilen aus:
+                </strong>
+                <div className="extended-info-share-list">
+                  {userList &&
+                    userList
+                      .filter((user) => user.name !== userName)
+                      .slice()
+                      .sort((a, b) => a.name.localeCompare(b.name, "de"))
+                      .map((user) => (
+                        <motion.button
+                          key={user.id}
+                          type="button"
+                          onClick={() =>
+                            shareItem(extendedItemInfo._id, user.id)
+                          }
+                          variants={buttonImpackt}
+                          whileHover="whileHover"
+                          whileTap="whileTap"
+                        >
+                          {user.name}
+                        </motion.button>
+                      ))}
+                </div>
               </div>
             )}
             {contentToShow === "split" && (
               <motion.div
-                name="share-content"
-                className="row"
+                name="split-content"
+                className="extended-info-share extended-info-share--split"
                 initial={{ y: 50, opacity: 0 }}
                 animate={{ y: 0, opacity: 1, transition: { duration: 0.5 } }}
               >
-                <div className="col-lg-10 col-md-8">
-                  <h2>{name}</h2>
-                </div>
-                <div className="col-lg-2 col-md-4">
+                <div className="extended-info-share-header">
+                  <div>
+                    <span className="extended-info-mode-label">Aufteilen</span>
+                    <h2>{name}</h2>
+                  </div>
                   <button
+                    type="button"
                     id="info"
+                    aria-label="Zurück zu den Item-Details"
                     onClick={(e) => setContentToShow(e.currentTarget.id)}
                   >
                     <FontAwesomeIcon icon={faLeftLong} />
                   </button>
                 </div>
                 {extendedItemInfo.amount > 1 ? (
-                  <div>
-                    <strong className={`${fractionTheme}-text`}>
-                      Wie viele Gegegnstände soll die neue Stapel haben?
+                  <div className="extended-info-split-form">
+                    <strong className={`${fractionTheme}-text extended-info-share-prompt`}>
+                      Wie viele Gegenstände soll der neue Stapel enthalten?
                     </strong>
-                    <input
-                      type="number"
-                      value={inputValue}
-                      onChange={handleInputChange}
-                    />
-                    <button
-                      id={extendedItemInfo._id}
-                      className="btn-save ms-1"
-                      onClick={(e) => splitStack(inputValue, e.target.id)}
-                    >
-                      Aufteilen
-                    </button>
+                    <div className="extended-info-split-controls">
+                      <input
+                        type="number"
+                        value={inputValue}
+                        onChange={handleInputChange}
+                        aria-label="Anzahl der Gegenstände im neuen Stapel"
+                      />
+                      <button
+                        type="button"
+                        id={extendedItemInfo._id}
+                        className="extended-info-split-submit"
+                        onClick={(e) =>
+                          splitStack(inputValue, e.currentTarget.id)
+                        }
+                      >
+                        Aufteilen
+                      </button>
+                    </div>
                   </div>
                 ) : (
-                  <div className="alert error">
+                  <div className="extended-info-split-error">
                     Du kannst diese Stapel nicht aufteilen, die ist schon klein
                     genug.
                   </div>
