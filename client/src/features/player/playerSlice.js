@@ -30,7 +30,7 @@ const initialState = {
   },
   playerDataLoaded: false,
   abilityCategory: "", // filter players abilities
-  fractionTheme: "", // main theme color based on his/her fraction
+  fractionTheme: localStorage.getItem("fraction") || "", // main theme color based on his/her fraction
   equipped: equippedItems ? equippedItems : [], // equipped items
   bonis: [], // all active bonis
   setboni: "",
@@ -65,7 +65,9 @@ export const getFraction = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
-      return await playerService.getFraction(token);
+      const fraction = await playerService.getFraction(token);
+      localStorage.setItem("fraction", fraction);
+      return fraction;
     } catch (error) {
       const msg =
         (error.response &&

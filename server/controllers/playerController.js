@@ -69,13 +69,18 @@ const getGeneral = asyncHandler(async (req, res) => {
 
 const getFraction= asyncHandler(async (req, res) => {
   const user = await User.findById(req.user.id);
-  if (!user || !user?.level || !user?.pointsLeft) {
+  if (!user) {
     res.status(500).json({ message: "Spieler nicht gefunden" });
+    return;
   }
-  const origin = user.general?.origin.split(" ");
-  console.log(origin);
-  const originName = origin ? origin[origin.length - 1] : "";
-  console.log(originName);
+
+  const origin = user.general?.origin?.trim().split(/\s+/);
+  const originName = origin?.[origin.length - 1];
+  if (!originName) {
+    res.status(404).json({ message: "Herkunft nicht gefunden" });
+    return;
+  }
+
   res.status(200).json(originName);
 });
 
