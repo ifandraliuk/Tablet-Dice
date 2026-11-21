@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { decreaseBar } from "../../features/player/playerSlice";
 import { useSelector, useDispatch } from "react-redux";
 import AbilityCard from "../../components/AbilityCard";
@@ -10,20 +9,39 @@ import MotionButton from "../../components/MotionButton";
 
 function Abilities() {
   const { profession, fractionTheme } = useSelector((state) => state.player);
+  const { user } = useSelector((state) => state.auth);
   const {_id, abilities} = profession
-  //const abilities = player?.userclass.abilities;
-  const spec = [];
-  const counts = {};
-  // count the amount of cards for each specialization
-  abilities?.map((ability) => {
-    return spec.push(ability.specialization);
-  });
-  spec.forEach(function (x) {
-    counts[x] = (counts[x] || 0) + 1;
-  });
-  console.log(counts)
-  const [filterCategory, setCategory] = useState(spec ? spec[0] : "");
+  const specializations = [
+    ...new Set(abilities?.map((ability) => ability.specialization).filter(Boolean)),
+  ];
+  const storageKey =
+    user?._id && _id
+      ? `dashboardAbilitySpecialization:${user._id}:${_id}`
+      : null;
+  const [filterCategory, setCategory] = useState("");
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const availableSpecializations = [
+      ...new Set(abilities?.map((ability) => ability.specialization).filter(Boolean)),
+    ];
+    if (availableSpecializations.length === 0) {
+      setCategory("");
+      return;
+    }
+
+    const savedCategory = storageKey
+      ? localStorage.getItem(storageKey)
+      : null;
+    const selectedCategory = availableSpecializations.includes(savedCategory)
+      ? savedCategory
+      : availableSpecializations[0];
+
+    setCategory(selectedCategory);
+    if (storageKey && selectedCategory !== savedCategory) {
+      localStorage.setItem(storageKey, selectedCategory);
+    }
+  }, [storageKey, abilities]);
 
   const useAbility = (e) => {
     console.log(e.target.name);
@@ -36,13 +54,17 @@ function Abilities() {
   };
 
   const onCategory = (e) => {
-    setCategory(e.currentTarget.name);
+    const selectedCategory = e.currentTarget.name;
+    setCategory(selectedCategory);
+    if (storageKey) {
+      localStorage.setItem(storageKey, selectedCategory);
+    }
   };
   return (
     <div className="container">
       <h2>Fertigkeiten</h2>
       <div className="row ">
-        {Object.keys(counts).map((el) => (
+        {specializations.map((el) => (
           <div key={el} className="col-auto m-0" >
             <MotionButton 
               name={el}
