@@ -43,12 +43,89 @@
 .inventory-page .inventory-category-switch__button {
   font-size: 0.95rem;
 }
+.inventory-page .inventory-weight {
+  position: relative;
+  margin: 0.75rem 0 1rem;
+  padding-right: 2.25rem;
+}
 .inventory-page #weight-progressbar {
-  width: 50px;
+  width: 100%;
+  height: 1.5rem;
   background-color: rgb(24, 24, 24);
-  height: 300px;
   position: relative;
   overflow: hidden;
+  border: 1px solid rgba(245, 240, 227, 0.2);
+  border-radius: 999px;
+}
+.inventory-page #curr-weight {
+  width: 0;
+  height: 100%;
+  background-color: rgb(144, 190, 109);
+  position: absolute;
+  inset: 0 auto 0 0;
+}
+.inventory-page .inventory-weight__label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+}
+.inventory-page .inventory-weight__info {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  transform: translateY(-50%);
+  border: 1px solid rgba(245, 240, 227, 0.25);
+  border-radius: 50%;
+  background: rgba(24, 24, 24, 0.8);
+  color: rgba(245, 240, 227, 0.85);
+}
+.inventory-page .inventory-weight__info:hover,
+.inventory-page .inventory-weight__info:focus-visible {
+  border-color: var(--fraction-accent, #f5f0e3);
+  color: var(--fraction-accent, #f5f0e3);
+}
+.inventory-page .inventory-weight-details {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  z-index: 5;
+  width: min(100%, 22rem);
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(245, 240, 227, 0.2);
+  border-left: 2px solid var(--fraction-accent, #f5f0e3);
+  border-radius: 0.5rem;
+  background: rgb(24, 24, 24);
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.4);
+}
+.inventory-page .inventory-weight-details__row,
+.inventory-page .inventory-weight-details__total {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.35rem 0;
+}
+.inventory-page .inventory-weight-details__row span {
+  color: rgba(245, 240, 227, 0.8);
+}
+.inventory-page .inventory-weight-details__total {
+  margin-top: 0.35rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid rgba(245, 240, 227, 0.2);
+  font-weight: 700;
 }
 .inventory-page .inventory-equipment__character {
   display: flex;
@@ -71,16 +148,6 @@
   flex-wrap: wrap;
   justify-content: center;
   margin: 0;
-}
-.inventory-page #curr-weight {
-  width: 50px;
-  height: 0px;
-  background-color: rgb(144, 190, 109);
-  text-align: center;
-  color: white;
-  position: absolute;
-  bottom: 0px;
-  left: 0px;
 }
 .inventory-page #searchbar {
   height: 50px;

@@ -14,6 +14,7 @@ import {
   faMinus,
   faPen,
   faX,
+  faCircleInfo,
 } from "@fortawesome/free-solid-svg-icons";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -48,11 +49,20 @@ import MotionButton from "../../components/MotionButton";
 import ItemsView from "./ItemsView";
 
 const INVENTORY_CATEGORY_KEY = "inventory-active-category";
+const CATALOG_CATEGORY_KEY = "inventory-catalog-category";
 const INVENTORY_CATEGORIES = ["Rüstung", "Waffe", "Ressource", "Begleiter"];
 
 function InventoryPage() {
-  const { inventory, armor, totalWeight, capacity, money, isError, message } =
-    useSelector((state) => state.inventory);
+  const {
+    inventory,
+    armor,
+    totalWeight,
+    capacity,
+    capacityDetails,
+    money,
+    isError,
+    message,
+  } = useSelector((state) => state.inventory);
   const { fractionTheme, player, equipmentError } = useSelector(
     (state) => state.player
   );
@@ -61,9 +71,22 @@ function InventoryPage() {
 
   const { userclass } = player;
   const { user } = useSelector((state) => state.auth);
-  const [iFilter, setInventoryFilter] = useState(() => {
+  const [inventoryCategory, setInventoryCategory] = useState(() => {
     const savedCategory = localStorage.getItem(INVENTORY_CATEGORY_KEY);
-    return INVENTORY_CATEGORIES.includes(savedCategory) ? savedCategory : "";
+    return savedCategory === "all" || INVENTORY_CATEGORIES.includes(savedCategory)
+      ? savedCategory
+      : "all";
+  });
+  const [catalogCategory, setCatalogCategory] = useState(() => {
+    const savedCatalogCategory = localStorage.getItem(CATALOG_CATEGORY_KEY);
+    if (INVENTORY_CATEGORIES.includes(savedCatalogCategory)) {
+      return savedCatalogCategory;
+    }
+
+    const savedInventoryCategory = localStorage.getItem(INVENTORY_CATEGORY_KEY);
+    return INVENTORY_CATEGORIES.includes(savedInventoryCategory)
+      ? savedInventoryCategory
+      : "Rüstung";
   });
   const [activeDb, setActiveDb] = useState(false);
   const [customInfo, setCustomInfo] = useState({});
@@ -74,6 +97,7 @@ function InventoryPage() {
   const [copperInput, setCopperInput] = useState("");
   console.log(newMoney);
   const [activeEditMoney, setActiveEditMoney] = useState(false);
+  const [showCapacityDetails, setShowCapacityDetails] = useState(false);
   // Local state to manage the input field for new money
   const [newMoneyInput, setNewMoneyInput] = useState("");
   const [inputError, setInputError] = useState(""); // For showing error message
@@ -90,8 +114,12 @@ function InventoryPage() {
   }, [isError, navigate]);
 
   useEffect(() => {
-    localStorage.setItem(INVENTORY_CATEGORY_KEY, iFilter || "all");
-  }, [iFilter]);
+    localStorage.setItem(INVENTORY_CATEGORY_KEY, inventoryCategory);
+  }, [inventoryCategory]);
+
+  useEffect(() => {
+    localStorage.setItem(CATALOG_CATEGORY_KEY, catalogCategory);
+  }, [catalogCategory]);
 
   useEffect(() => {
     inventoryPageMounted.current = true;
@@ -216,7 +244,11 @@ function InventoryPage() {
     setCustomInfo({});
   };
 
-  const activeInventoryFilter = iFilter || (activeDb ? "Rüstung" : "all");
+  const selectedCategory = activeDb ? catalogCategory : inventoryCategory;
+  const weightPercentage =
+    capacity > 0
+      ? Math.min(Math.max((totalWeight / capacity) * 100, 0), 100)
+      : 0;
 
   const addOne = (id) => {
     const data = {
@@ -279,9 +311,11 @@ function InventoryPage() {
     e.preventDefault();
     const filterName = e.currentTarget.name;
     if (filterName === "all") {
-      setInventoryFilter("");
+      setInventoryCategory("all");
+    } else if (activeDb) {
+      setCatalogCategory(filterName);
     } else {
-      setInventoryFilter(filterName);
+      setInventoryCategory(filterName);
     }
   };
   return (
@@ -340,38 +374,6 @@ function InventoryPage() {
               </button>
             </div>
             <div className="row">
-              {!activeDb && (
-                <div className="col-lg-auto col-md-12 col-sm-12">
-                  <div className="row">
-                    <div id="weight-progressbar">
-                      <motion.div
-                        id="curr-weight"
-                        initial={{
-                          height: 0,
-                          backgroundColor: "rgb(22, 22, 20)",
-                        }}
-                        animate={{
-                          height: (totalWeight / capacity) * 100 + "%",
-                          backgroundColor:
-                            parseInt((totalWeight / capacity) * 100) < 50
-                              ? "rgb(67, 170, 139)"
-                              : (totalWeight / capacity) * 100 > 50 &&
-                                (totalWeight / capacity) * 100 < 75
-                              ? ["rgb(67, 170, 139)", "rgb(243, 114, 44)"]
-                              : [
-                                  "rgb(67, 170, 139)",
-                                  "rgb(243, 114, 44)",
-                                  "rgb(249, 65, 68)",
-                                ],
-                        }}
-                        transition={{ delay: 1, duration: 0.8 }}
-                      >
-                        {`${totalWeight.toFixed(2)} / ${capacity}`}
-                      </motion.div>
-                    </div>
-                  </div>
-                </div>
-              )}
               <div
                 className={activeDb ? "col-12" : "col-lg-5 col-md-12 col-sm-12"}
               >
@@ -386,8 +388,8 @@ function InventoryPage() {
                     key={category}
                     type="button"
                     name={category}
-                    className={`inventory-category-switch__button${activeInventoryFilter === category ? " is-active" : ""}`}
-                    aria-pressed={activeInventoryFilter === category}
+                    className={`inventory-category-switch__button${selectedCategory === category ? " is-active" : ""}`}
+                    aria-pressed={selectedCategory === category}
                     onClick={onClickFilter}
                   >
                     <FontAwesomeIcon
@@ -410,8 +412,8 @@ function InventoryPage() {
                     <button
                       type="button"
                       name="all"
-                      className={`inventory-category-switch__button${activeInventoryFilter === "all" ? " is-active" : ""}`}
-                      aria-pressed={activeInventoryFilter === "all"}
+                      className={`inventory-category-switch__button${inventoryCategory === "all" ? " is-active" : ""}`}
+                      aria-pressed={inventoryCategory === "all"}
                       onClick={onClickFilter}
                     >
                       <FontAwesomeIcon icon={faRefresh} aria-hidden="true" />
@@ -419,16 +421,98 @@ function InventoryPage() {
                     </button>
                   )}
                 </div>
+                {!activeDb && (
+                  <div className="inventory-weight">
+                    <div
+                      id="weight-progressbar"
+                      role="progressbar"
+                      aria-label="Traglast"
+                      aria-valuemin={0}
+                      aria-valuemax={capacity > 0 ? capacity : 1}
+                      aria-valuenow={
+                        capacity > 0
+                          ? Math.min(Math.max(totalWeight, 0), capacity)
+                          : 0
+                      }
+                      aria-valuetext={`${totalWeight.toFixed(2)} von ${capacity}`}
+                    >
+                      <motion.div
+                        id="curr-weight"
+                        aria-hidden="true"
+                        initial={{ width: 0, backgroundColor: "rgb(22, 22, 20)" }}
+                        animate={{
+                          width: `${weightPercentage}%`,
+                          backgroundColor:
+                            weightPercentage < 50
+                              ? "rgb(67, 170, 139)"
+                              : weightPercentage < 75
+                              ? ["rgb(67, 170, 139)", "rgb(243, 114, 44)"]
+                              : [
+                                  "rgb(67, 170, 139)",
+                                  "rgb(243, 114, 44)",
+                                  "rgb(249, 65, 68)",
+                                ],
+                        }}
+                        transition={{ delay: 1, duration: 0.8 }}
+                      />
+                      <span className="inventory-weight__label">
+                        Traglast: {totalWeight.toFixed(2)} / {capacity}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      className="inventory-weight__info"
+                      aria-label="Zusammensetzung der Traglast anzeigen"
+                      aria-expanded={showCapacityDetails}
+                      aria-controls="inventory-weight-details"
+                      onClick={() =>
+                        setShowCapacityDetails((visible) => !visible)
+                      }
+                    >
+                      <FontAwesomeIcon icon={faCircleInfo} aria-hidden="true" />
+                    </button>
+                    {showCapacityDetails && (
+                      <div
+                        className="inventory-weight-details"
+                        id="inventory-weight-details"
+                      >
+                        <div className="inventory-weight-details__row">
+                          <span>
+                            Eigene Traglast ({capacityDetails.strength} Stärke
+                            × {capacityDetails.multiplier})
+                          </span>
+                          <strong>{capacityDetails.personalCapacity}</strong>
+                        </div>
+                        {capacityDetails.companions.map((companion, index) => (
+                          <div
+                            className="inventory-weight-details__row"
+                            key={`${companion.name}-${index}`}
+                          >
+                            <span>{companion.name}</span>
+                            <strong>{companion.capacity}</strong>
+                          </div>
+                        ))}
+                        <div className="inventory-weight-details__total">
+                          <span>Gesamte Traglast</span>
+                          <strong>{capacity}</strong>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
                 {activeDb ? (
                   <ItemsView
-                    iFilter={iFilter}
+                    iFilter={catalogCategory}
                     setCustomInfo={setCustomInfo}
                     setShowInfo={show}
                     addItemToInventory={addItemToInventory}
                   />
                 ) : (
                   <>
-                    <Slot setShowInfo={show} filter={iFilter} />
+                    <Slot
+                      setShowInfo={show}
+                      filter={inventoryCategory === "all" ? "" : inventoryCategory}
+                    />
                     <div className="row ">
                       <div className="col-auto pe-1 mt-2">
                         <FontAwesomeIcon icon={faCoins} />

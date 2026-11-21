@@ -10,6 +10,12 @@ const initialState = {
   armorCategory: "", // 1 - light armor, 2 - medium, 3 - chain armor, 4 - plate armor
   money: [],
   capacity: 0,
+  capacityDetails: {
+    strength: 0,
+    multiplier: 0,
+    personalCapacity: 0,
+    companions: [],
+  },
   totalWeight: 0,
   // different type bonis for display
   activeBonis: [],
@@ -402,7 +408,13 @@ export const inventorySlice = createSlice({
       .addCase(getLoadCapacity.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.capacity = action.payload;
+        state.capacity = action.payload.capacity;
+        state.capacityDetails = {
+          strength: action.payload.strength,
+          multiplier: action.payload.multiplier,
+          personalCapacity: action.payload.personalCapacity,
+          companions: action.payload.companions,
+        };
       })
       .addCase(getLoadCapacity.rejected, (state, action) => {
         state.isLoading = false;

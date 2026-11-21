@@ -214,8 +214,8 @@ const getLoadCapacity = asyncHandler(async (req, res) => {
     model: "Bestiarium",
   });
   const strength = user?.attributes?.strength;
-  if (!user || !strength) {
-    res.status(400).json("Stärke ofer Nutzer nicht gefunden");
+  if (!user || strength == null) {
+    return res.status(400).json("Stärke oder Nutzer nicht gefunden");
   }
   const multiplier =
     strength >= 1 && strength <= 5
@@ -228,19 +228,24 @@ const getLoadCapacity = asyncHandler(async (req, res) => {
       ? 4
       : 0;
   const userStrength = strength * multiplier;
-  const companionList = user.companions;
-  if (!companionList) {
-    res.status(200).json(userStrength);
-  }
-  let companionWeight = 0;
-  companionList.forEach((companion) => {
-    if (companion.status !== "Stall") {
-      const creatureWeight = companion.creature?.capacity;
-      companionWeight += creatureWeight;
-    }
+  const companions = (user.companions || [])
+    .filter((companion) => companion.status !== "Stall")
+    .map((companion) => ({
+      name: companion.name || companion.creature?.name || "Begleiter",
+      capacity: companion.creature?.capacity || 0,
+    }));
+  const companionWeight = companions.reduce(
+    (total, companion) => total + companion.capacity,
+    0
+  );
+
+  res.status(200).json({
+    capacity: userStrength + companionWeight,
+    strength,
+    multiplier,
+    personalCapacity: userStrength,
+    companions,
   });
-  const loadCapacity = userStrength + companionWeight;
-  res.status(200).json(loadCapacity);
 });
 // @desc Add item to users inventory
 // @route get /armor/
