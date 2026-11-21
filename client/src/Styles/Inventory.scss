@@ -61,6 +61,31 @@
         font-weight: 700;
     }
 
+    .items-view__filters .form-control,
+    .items-view__filters .form-select {
+        color: #f5f0e3;
+        background-color: rgba(24, 24, 24, 0.92);
+        border: 1px solid rgba(245, 240, 227, 0.28);
+        box-shadow: none;
+    }
+
+    .items-view__filters .form-control::placeholder {
+        color: rgba(245, 240, 227, 0.5);
+    }
+
+    .items-view__filters .form-select option {
+        color: #f5f0e3;
+        background-color: rgb(24, 24, 24);
+    }
+
+    .items-view__filters .form-control:focus,
+    .items-view__filters .form-select:focus {
+        color: #f5f0e3;
+        background-color: rgba(24, 24, 24, 0.98);
+        border-color: var(--fraction-accent, rgba(245, 240, 227, 0.65));
+        box-shadow: 0 0 0 0.2rem rgba(245, 240, 227, 0.08);
+    }
+
     .inventory-items-table th {
         padding: 0.65rem 0.75rem;
         font-weight: 700;
@@ -110,6 +135,25 @@
     .inventory-items-table__genus {
         font-size: 0.85rem;
     }
+
+    .inventory-items-rarity {
+        display: inline-block;
+        padding-bottom: 0.1rem;
+        border-bottom: 2px solid var(--rarity-accent, rgba(245, 240, 227, 0.35));
+        font-size: 0.85rem;
+        font-weight: 600;
+        line-height: 1.4;
+    }
+
+    .inventory-items-rarity.primitive { --rarity-accent: #7f7f7f; }
+    .inventory-items-rarity.common { --rarity-accent: #dddddd; }
+    .inventory-items-rarity.highgrade { --rarity-accent: #97cec8; }
+    .inventory-items-rarity.magical { --rarity-accent: #ff8b00; }
+    .inventory-items-rarity.extraordinary { --rarity-accent: #9172d3; }
+    .inventory-items-rarity.rare { --rarity-accent: #54e20a; }
+    .inventory-items-rarity.amazing { --rarity-accent: #f3ff00; }
+    .inventory-items-rarity.epic { --rarity-accent: #0066cc; }
+    .inventory-items-rarity.legendary { --rarity-accent: #ff0000; }
 
     .inventory-items-table__add {
         padding: 2px 10px;

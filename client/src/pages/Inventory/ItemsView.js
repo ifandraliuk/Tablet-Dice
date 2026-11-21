@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { itemNames } from "../../data/ConstVariables";
 import ItemIcon from "../../components/ItemIcon";
@@ -33,6 +33,23 @@ const ItemsView = ({
   const displayedCategory = iFilter || activeCategory || "Rüstung";
   const [rarity, serRarirtyFilter] = useState("none");
   const [searchText, setSearchText] = useState("");
+  const [selectedType, setSelectedType] = useState("");
+  const availableTypes = useMemo(
+    () =>
+      [...new Set(data
+        .filter((item) => item.status !== "Ausgerüstet")
+        .map((item) => item.type)
+        .filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b, "de")),
+    [data]
+  );
+  const visibleItems = data
+    .filter((item) => item.status !== "Ausgerüstet")
+    .filter((item) => !selectedType || item.type === selectedType);
+
+  useEffect(() => {
+    setSelectedType("");
+  }, [iFilter, activeGenus]);
   const forward = () => {
     const nextN = parseInt(n) + 10;
     const nextM = parseInt(m) + 10;
@@ -138,7 +155,7 @@ const ItemsView = ({
           {displayedCategory}
         </h2>
         <div className="row g-3 align-items-end items-view__filters">
-          <div className="col-12 col-md-4">
+          <div className="col-12 col-md-3">
             <label className="form-label mb-1" htmlFor="itemSearch">
               Suche:
             </label>
@@ -150,7 +167,7 @@ const ItemsView = ({
               onChange={handleSearch}
             />
           </div>
-          <div className="col-12 col-md-4">
+          <div className="col-12 col-md-3">
             <label className="form-label mb-1" htmlFor="genusFilter">
               Gattung:
             </label>
@@ -168,7 +185,26 @@ const ItemsView = ({
               ))}
             </select>
           </div>
-          <div className="col-12 col-md-4">
+          <div className="col-12 col-md-3">
+            <label className="form-label mb-1" htmlFor="typeFilter">
+              Typ:
+            </label>
+            <select
+              id="typeFilter"
+              className="form-select w-100"
+              value={selectedType}
+              onChange={(event) => setSelectedType(event.target.value)}
+              aria-label="Nach Typ filtern"
+            >
+              <option value="">Alle Typen</option>
+              {availableTypes.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="col-12 col-md-3">
             <label className="form-label mb-1" htmlFor="rarityFilter">
               Wertigkeit:
             </label>
@@ -188,7 +224,7 @@ const ItemsView = ({
             </select>
           </div>
         </div>
-        {data?.length > 0 ? (
+        {visibleItems.length > 0 ? (
           <div className="table-responsive mt-3">
             <table className="custom-table inventory-items-table">
               <thead>
@@ -206,9 +242,7 @@ const ItemsView = ({
                 </tr>
               </thead>
               <tbody>
-                {data
-                  .filter((item) => item.status !== "Ausgerüstet")
-                  .map((item) => (
+                {visibleItems.map((item) => (
                     <tr
                       key={item._id}
                       className="inventory-items-table__row"
@@ -233,7 +267,15 @@ const ItemsView = ({
                         </div>
                       </td>
                       <td>{item.type || "—"}</td>
-                      <td>{item.rarity || "—"}</td>
+                      <td>
+                        <span
+                          className={`inventory-items-rarity ${
+                            itemNames?.rarity?.[item.rarity] || "unknown"
+                          }`}
+                        >
+                          {item.rarity || "—"}
+                        </span>
+                      </td>
                       <td>{item.weight ?? "—"}</td>
                       <td>{item.value ?? "—"}</td>
                       <td className="inventory-items-table__action">

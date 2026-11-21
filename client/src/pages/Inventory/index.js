@@ -201,6 +201,8 @@ function InventoryPage() {
     setActiveDb((prev) => !prev);
   };
 
+  const activeInventoryFilter = iFilter || (activeDb ? "Rüstung" : "");
+
   const addOne = (id) => {
     const data = {
       invId: id,
@@ -322,7 +324,11 @@ function InventoryPage() {
                             ? faPaw
                             : faRefresh
                         }
-                        theme={iFilter === buttonName ? `${fractionTheme}` : ""}
+                        theme={
+                          activeInventoryFilter === buttonName
+                            ? `${fractionTheme}`
+                            : ""
+                        }
                       />
                     </div>
                   )
