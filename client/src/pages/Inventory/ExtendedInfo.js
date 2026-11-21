@@ -71,8 +71,7 @@ function ExtendedInfo({
   const enchantment = extendedItemInfo.enchantment
     ? extendedItemInfo.enchantment
     : {};
-  const showMaterials =
-    material && material[0].amount !== undefined ? true : false;
+  const showMaterials = material?.[0]?.amount !== undefined;
   const equippedItem = extendedItemInfo.status === "Ausgerüstet" ? true : false;
   const dispatch = useDispatch();
   useEffect(() => {

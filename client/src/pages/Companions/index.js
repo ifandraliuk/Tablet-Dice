@@ -1,18 +1,29 @@
 import React, { useEffect, useState } from "react";
 import "../../Styles/Companions.css";
 import Companion from "./Companion";
-import { AnimatePresence,  motion} from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
 import { pageTransition } from "../../data/Animations";
 import { slots, slotInfo } from "../../data/ConstVariables";
 import Slot from "./Slot";
-import { updateCompanionStatus, equipToCompanion, unequipCompanionItem, getCompanion, getSlotsAvailable, reset, getEquipable } from "../../features/companion/companionSlice";
+import { Button, Modal } from "react-bootstrap";
+import { getOriginAccentStyle } from "../../data/OriginColors";
+import {
+  updateCompanionStatus,
+  equipToCompanion,
+  unequipCompanionItem,
+  getCompanion,
+  getSlotsAvailable,
+  reset,
+  getEquipable,
+} from "../../features/companion/companionSlice";
 function Companions() {
   const {fractionTheme} = useSelector(
     (state) => state.player
   );
 
   const [msg, setMsg] = useState({ id: "", text: "" });
+  const [pendingAssignment, setPendingAssignment] = useState(null);
   const dispatch = useDispatch();
   const { companions, slotsAllowed, equipable } =  useSelector(
     (state) => state.companion
@@ -26,21 +37,38 @@ function Companions() {
       dispatch(reset());
     };
   },[dispatch])
-  const slotOnClick = (status, id) => {
-    const slotIsEmpty =
-      companions.findIndex((el) => el.status === status) < 0 ||
-      status === "Stall"
-        ? true
-        : false;
-    console.log(status, id);
-    if (slotIsEmpty) {
-      const data = {
-        id: id,
-        status: status,
-      };
-      dispatch(updateCompanionStatus(data));
-      setMsg({ id: "", text: "" });
-    } else setMsg({ id: id, text: "Der Slot ist bereits besetzt" });
+  const slotOnClick = (status, id, confirmed = false) => {
+    const assignedCompanion = companions.find(
+      (companion) => companion.status === status
+    );
+    if (
+      status !== "Stall" &&
+      assignedCompanion &&
+      assignedCompanion._id !== id &&
+      !confirmed
+    ) {
+      const newCompanion = companions.find((companion) => companion._id === id);
+      setPendingAssignment({
+        id,
+        status,
+        slot: status,
+        newCompanionName: newCompanion?.name,
+        currentCompanionName: assignedCompanion.name,
+      });
+      return;
+    }
+
+    dispatch(updateCompanionStatus({ id, status })).then((result) => {
+      if (updateCompanionStatus.fulfilled.match(result)) {
+        setPendingAssignment(null);
+        setMsg({ id: "", text: "" });
+      } else {
+        setMsg({
+          id,
+          text: result.payload || "Der Begleiter konnte nicht zugewiesen werden.",
+        });
+      }
+    });
   };
   const equipItem = (companionId, genus, itemId ) => {
         console.log(companionId, genus, itemId)
@@ -74,7 +102,7 @@ function Companions() {
           >
             <div className="container-fluid g-5">
               <div className="row">
-                <div className="col-8">
+                <div className="col-12 col-lg-8">
                   <AnimatePresence wait>
                     {slots?.map((category, i) => (
                       <motion.div
@@ -103,12 +131,15 @@ function Companions() {
                     ))}
                   </AnimatePresence>
                 </div>
-                <div className="col-4">
+                <div className="col-12 col-lg-4">
                   <div className="row">
                     <div className="col-auto ms-auto me-auto ">
                       <h3>Stall</h3>
                     </div>
                   </div>
+                  <p className="companion-assignment-hint">
+                    Angezeigt werden nur passende, freigeschaltete Slots.
+                  </p>
                   <AnimatePresence wait>
                     {companions?.map(
                       (companion, i) =>
@@ -138,6 +169,7 @@ function Companions() {
                               slotOnClick={slotOnClick}
                               fractionTheme={fractionTheme}
                               slotsAllowed={slotsAllowed}
+                              companions={companions}
                               msg={msg}
                             />
                           </motion.div>
@@ -150,6 +182,50 @@ function Companions() {
           </motion.div>
         </div>
       </div>
+      <Modal
+        show={Boolean(pendingAssignment)}
+        onHide={() => setPendingAssignment(null)}
+        centered
+        className="companions-slot-confirm-modal"
+        style={getOriginAccentStyle(fractionTheme)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Slot neu belegen?</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {pendingAssignment && (
+            <>
+              <strong>{pendingAssignment.currentCompanionName}</strong> ist
+              derzeit dem Slot <strong>{pendingAssignment.slot}</strong>{" "}
+              zugewiesen. Soll stattdessen{" "}
+              <strong>{pendingAssignment.newCompanionName}</strong> diesen Slot
+              übernehmen? Der bisherige Begleiter kommt zurück in den Stall.
+            </>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            type="button"
+            className="companions-confirm-button companions-confirm-button--cancel"
+            onClick={() => setPendingAssignment(null)}
+          >
+            Abbrechen
+          </Button>
+          <Button
+            type="button"
+            className="companions-confirm-button companions-confirm-button--replace"
+            onClick={() =>
+              slotOnClick(
+                pendingAssignment.slot,
+                pendingAssignment.id,
+                true
+              )
+            }
+          >
+            Begleiter ersetzen
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

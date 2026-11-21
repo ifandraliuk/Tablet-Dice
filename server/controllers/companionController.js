@@ -108,8 +108,6 @@ const addCompanion = asyncHandler(async (req, res) => {
 // @route PUT /companion/:id
 // @access Private
 const updateStatus = asyncHandler(async (req, res) => {
-  console.log(req.body.id, req.body.status);
-  const user = await User.findById(req.user.id);
   const slots = [
     "Schulterpet",
     "Reittier",
@@ -118,40 +116,46 @@ const updateStatus = asyncHandler(async (req, res) => {
     "Drache",
     "Stall",
   ];
-  if (!user) {
-    res.status(500).json({ message: "Spieler nicht gefunden" });
-  }
   if (!req.body.id) {
-    res.status(400).json({ message: "Kreatur wurde nicht eingegeben" });
+    return res.status(400).json({ message: "Kreatur wurde nicht eingegeben" });
   }
   if (!req.body.status || slots.findIndex((el) => el === req.body.status) < 0) {
-    res
+    return res
       .status(400)
       .json({ message: "Neuer Status wurde nicht eingegeben oder ist falsch" });
   }
-  const updated = await User.findOneAndUpdate(
-    {
-      _id: req.user.id,
-      //'talents.talent': talent._id
-      "companions._id": req.body.id,
-    },
-    {
-      $set: {
-        "companions.$.status": req.body.status,
-      },
-    },
-    { new: true }
-  ).populate({ path: "companions.creature", model: "Bestiarium" });
-  if (!updated) {
-    res.status(400).json({ message: "Status konnte nicht updated werden" });
+
+  const user = await User.findById(req.user.id)
+    .populate({ path: "companions.creature", model: "Bestiarium" })
+    .populate({ path: "companions.slot1", model: "Item" })
+    .populate({ path: "companions.slot2", model: "Item" });
+  if (!user) {
+    return res.status(404).json({ message: "Spieler nicht gefunden" });
   }
-  const companions = updated.companions;
-  console.log(companions);
-  const updatedId = companions.findIndex(
-    (el) => el._id.toString() === req.body.id
-  );
-  console.log(updatedId);
-  res.status(200).json({ id: req.body.id, updated: companions[updatedId] });
+  const selectedCompanion = user.companions.id(req.body.id);
+  if (!selectedCompanion) {
+    return res.status(404).json({ message: "Begleiter nicht gefunden" });
+  }
+
+  const displacedCompanion =
+    req.body.status === "Stall"
+      ? null
+      : user.companions.find(
+          (companion) =>
+            companion.status === req.body.status &&
+            companion._id.toString() !== req.body.id
+        );
+  if (displacedCompanion) {
+    displacedCompanion.status = "Stall";
+  }
+  selectedCompanion.status = req.body.status;
+  await user.save();
+
+  res.status(200).json({
+    id: req.body.id,
+    updated: selectedCompanion,
+    displacedId: displacedCompanion?._id.toString(),
+  });
 });
 
 // @desc update companions equipment slots

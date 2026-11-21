@@ -224,6 +224,14 @@ export const companionSlice = createSlice({
             state.isLoading = false;
             state.isSuccess = true;
             state.isError = false;
+            if (action.payload.displacedId) {
+              const displacedId = state.companions.findIndex(
+                (el) => el._id.toString() === action.payload.displacedId
+              );
+              if (displacedId >= 0) {
+                state.companions[displacedId].status = "Stall";
+              }
+            }
             const updateId = state.companions.findIndex(
               (el) => el._id.toString() === action.payload.id
             );

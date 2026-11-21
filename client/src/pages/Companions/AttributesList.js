@@ -13,35 +13,42 @@ function AttributesList({
   capacity,
   armor,
   slot1,
-  slot2,
 }) {
+  const attributes = [
+    { label: "Lebenspunkte", icon: faHeart, value: hitpoints },
+    { label: "Trefferchance", icon: faDice, value: hitchance },
+    { label: "Traglast", icon: faWeightHanging, value: capacity },
+    {
+      label: "Rüstung",
+      icon: faShield,
+      value: slot1?.value ? armor + slot1.value : armor,
+      emphasized: Boolean(slot1?.value),
+    },
+  ];
+
   return (
-    <div className="row">
-      <div className="col-auto">
-        <FontAwesomeIcon icon={faHeart} />
-        {hitpoints}
-      </div>
-      <div className="col-auto ms-auto">
-        <FontAwesomeIcon icon={faDice} />
-        {hitchance}
-      </div>
-      <div className="col-auto ms-auto me-auto">
-        <FontAwesomeIcon icon={faWeightHanging} />
-        {capacity}
-      </div>
-      {slot1?.value ? (
-        <div className="col-auto ms-auto">
-          <strong>
-            <FontAwesomeIcon icon={faShield} />
-            {armor + slot1.value}
+    <div
+      className="companion-attributes"
+      role="group"
+      aria-label="Begleiterwerte"
+    >
+      {attributes.map(({ label, icon, value, emphasized }) => (
+        <div className="companion-attribute" key={label}>
+          <FontAwesomeIcon
+            className="companion-attribute__icon"
+            icon={icon}
+            aria-hidden="true"
+          />
+          <span className="companion-attribute__label">{label}</span>
+          <strong
+            className={`companion-attribute__value ${
+              emphasized ? "companion-attribute__value--bonus" : ""
+            }`}
+          >
+            {value}
           </strong>
         </div>
-      ) : (
-        <div className="col-auto ms-auto">
-          <FontAwesomeIcon icon={faShield} />
-          {armor}
-        </div>
-      )}
+      ))}
     </div>
   );
 }

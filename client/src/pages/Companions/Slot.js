@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShield } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "framer-motion";
 import ItemIcon from "../../components/ItemIcon";
+import ExtendedInfo from "../Inventory/ExtendedInfo";
 
 /*
  * Active companion slot wit all information about it. Has also 2 equipment slots. 
@@ -26,12 +27,10 @@ function Slot({
   const { charismaValue, info } = data;
   const localHP = localStorage.getItem(category);
   const [damageDone, setDamageDone] = useState(0);
-  const [showList, setShowList] = useState(false);
+  const [selectedEquipmentSlot, setSelectedEquipmentSlot] = useState(null);
+  const [selectedItemInfo, setSelectedItemInfo] = useState(null);
   const [currentHP, setCurrentHP] = useState(localHP ? parseInt(localHP) : -1);
   const [allowedForCompanion, setAllowedForCompanion] = useState([])
-  const listVisible = () => {
-    setShowList((showList) => !showList);
-  };
   useEffect(()=>{
 
     if(unlocked){
@@ -40,6 +39,17 @@ function Slot({
       ))
     }
   },[unlocked, slotFilter, usedBy])
+  const equipmentOptions = allowedForCompanion.filter((element) =>
+    selectedEquipmentSlot === "slot1"
+      ? element.item?.genus === "Sattel"
+      : selectedEquipmentSlot === "slot2"
+        ? element.item?.genus !== "Sattel"
+        : false
+  );
+  const selectedEquipmentLabel =
+    selectedEquipmentSlot === "slot1" ? "Sattel" : "Weitere Ausrüstung";
+  const selectedEquipmentDescription =
+    selectedEquipmentSlot === "slot1" ? "den Sattel" : "weitere Ausrüstung";
   if (unlocked) {
     if (usedBy?.length === 1) {
       const { _id, creature, name } = usedBy[0];
@@ -66,9 +76,10 @@ function Slot({
       };
 
       return (
+        <>
         <div className="slot">
           <div className="row">
-            <div className="col-auto">
+            <div className="col-12 col-lg-auto">
               <div className="slot-number">{i}</div>
               <button
                 id="Stall"
@@ -83,23 +94,142 @@ function Slot({
                 X
               </button>
             </div>
-            <div className="col-3 ">
+            <div className="col-12 col-lg-3">
               <h3 className="">{category}</h3>
               <img
-                className="img-creature img-fluid"
+                className="img-creature img-fluid companion-active-image"
                 src={`creature/${creature?._id}.png`}
                 alt="creature"
               />
+              <section
+                className="companion-equipment"
+                aria-label="Begleiter-Ausrüstung"
+              >
+                <div className="companion-equipment__slots">
+                  {["slot1", "slot2"].map((slotName) => {
+                    const item = usedBy[0]?.[slotName];
+                    const slotLabel =
+                      slotName === "slot1" ? "Sattel" : "Weitere Ausrüstung";
+
+                    return (
+                      <div
+                        className="companion-equipment__slot"
+                        key={slotName}
+                      >
+                        <strong className="companion-equipment__slot-type">
+                          {slotLabel}
+                        </strong>
+                        <div className="companion-equipment__slot-content">
+                          {item ? (
+                            <button
+                              type="button"
+                              className="companion-equipment__item-preview"
+                              aria-label={`${item.name} details anzeigen`}
+                              onClick={() => {
+                                const inventoryItem = slotFilter.find(
+                                  (entry) =>
+                                    entry.item?._id?.toString() ===
+                                    item._id?.toString()
+                                );
+                                setSelectedItemInfo(inventoryItem || item);
+                              }}
+                            >
+                              <ItemIcon item={item} />
+                            </button>
+                          ) : (
+                            <ItemIcon isEmpty={true} />
+                          )}
+                          {item ? (
+                            <button
+                              type="button"
+                              id={slotName}
+                              className="companion-equipment__action companion-equipment__remove"
+                              onClick={(e) =>
+                                clearSlot(usedBy[0], e.currentTarget.id)
+                              }
+                              aria-label={`${item.name} entfernen`}
+                              title="Entfernen"
+                            >
+                              X
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              className="companion-equipment__action companion-equipment__add"
+                              aria-label={`${slotLabel} ausrüsten`}
+                              aria-expanded={
+                                selectedEquipmentSlot === slotName
+                              }
+                              onClick={() =>
+                                setSelectedEquipmentSlot((currentSlot) =>
+                                  currentSlot === slotName ? null : slotName
+                                )
+                              }
+                            >
+                              +
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                {selectedEquipmentSlot &&
+                  (equipmentOptions.length > 0 ? (
+                    <div className="companion-equipment__options">
+                      <h5 className="companion-equipment__options-title">
+                        {selectedEquipmentLabel} auswählen
+                      </h5>
+                      {equipmentOptions.map((element) => (
+                        <motion.button
+                          key={element._id}
+                          type="button"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          className="companion-equipment__option"
+                          onClick={() => {
+                            equipItem(
+                              _id,
+                              element.item?.genus,
+                              element?.item._id
+                            );
+                            setSelectedEquipmentSlot(null);
+                          }}
+                        >
+                          <ItemIcon item={element} />
+                          <span>
+                            <strong>{element.item?.name}</strong>
+                            <small>{element.item?.bonuses}</small>
+                          </span>
+                          <strong>
+                            <FontAwesomeIcon icon={faShield} />{" "}
+                            {element.item?.value}
+                          </strong>
+                        </motion.button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="alert info">
+                      {`Keine passenden Gegenstände für ${selectedEquipmentDescription} des Begleitertyps "${usedBy[0]?.creature?.art}" im Inventar gefunden.`}
+                    </div>
+                  ))}
+              </section>
             </div>
-            <div className="col-5 border-pattern left repeat info-div">
-              <h3>{name}</h3>
+            <div className="col-12 col-lg-5 border-pattern left repeat info-div">
+              <h3 className="companion-name">
+                {name}
+                {creature?.name && (
+                  <span className="companion-card__creature-type">
+                    {" "}({creature.name})
+                  </span>
+                )}
+              </h3>
               <AttributesList
                 hitpoints={creature?.hitpoints}
                 capacity={creature?.capacity}
                 hitchance={creature?.hitchance}
                 armor={creature?.armor}
                 slot1={usedBy[0]?.slot1}
-                slot2={usedBy[0]?.slot2}
               />
               <ProgressBar
                 color={creature?.status}
@@ -110,6 +240,7 @@ function Slot({
                 <div className="col-auto">
                   <input
                     type="number"
+                    className="form-control dark-filter-control w-100"
                     value={damageDone}
                     name="val"
                     onChange={(e) => {
@@ -137,10 +268,10 @@ function Slot({
                 <div>
                   <h4>Ausrüstungsbonus</h4>
                   {usedBy[0].slot1 && (
-                    <p>{`${usedBy[0].slot1?.bonuses} (${usedBy[0].slot1.name})`}</p>
+                    <p>{usedBy[0].slot1?.bonuses}</p>
                   )}
                   {usedBy[0].slot2 && (
-                    <p>{`${usedBy[0].slot2?.bonuses} (${usedBy[0].slot2.name})`}</p>
+                    <p>{usedBy[0].slot2?.bonuses}</p>
                   )}
                 </div>
               ) : (
@@ -155,99 +286,20 @@ function Slot({
                     alt="icon"
                     src={`/icons/common/swordxhdpi.png`}
                   />
-                  {` ${creature?.damage}`}
-                </div>
-              </div>
-            </div>
-            <div className="col-3">
-              <div className="row">
-                {usedBy[0]?.slot1 ? (
-                  <div className="col-6 info-div">
-                    <div className="row ">
-                      <div className="col-auto ">
-                        <ItemIcon item={usedBy[0]?.slot1} />
-                      </div>
-                      <div className="col-4">
-                        <button
-                          id="slot1"
-                          className="btn-remove"
-                          onClick={(e) =>
-                            clearSlot(usedBy[0], e.currentTarget.id)
-                          }
-                        >
-                          X
-                        </button>{" "}
-                      </div>
-                    </div>
+                    {` ${creature?.damage}`}
                   </div>
-                ) : (
-                  <div className="col-auto empty-slot">
-                    <button onClick={listVisible}>+</button>
-                  </div>
-                )}
-                {usedBy[0]?.slot2 ? (
-                  <div className="col-6 info-div">
-                    <div className="row ">
-                      <div className="col-auto ">
-                        <ItemIcon item={usedBy[0]?.slot2} />
-                      </div>
-                      <div className="col-4">
-                        <button
-                          id="slot2"
-                          className="btn-remove"
-                          onClick={(e) =>
-                            clearSlot(usedBy[0], e.currentTarget.id)
-                          }
-                        >
-                          X
-                        </button>{" "}
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="col-auto empty-slot">
-                    <button onClick={listVisible}>+</button>
-                  </div>
-                )}
-                <div>
-                  {showList && (allowedForCompanion.length > 0 ? (
-                    allowedForCompanion.map((element) => (
-                      <motion.div
-                        key={element._id}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className=" row companion-list "
-                      >
-                        <div
-                          className="col-9"
-                          onClick={() => {
-                            equipItem(
-                              _id,
-                              element.item?.genus,
-                              element?.item._id
-                            );
-                            listVisible();
-                          }}
-                        >
-                          <h4>{element.item?.name}</h4>
-                          <p>{`(${element.item?.bonuses})`}</p>
-                          <strong>
-                            <FontAwesomeIcon icon={faShield} /> +{" "}
-                            {element.item?.value}
-                          </strong>
-                        </div>
-                      </motion.div>
-                    ))
-                  ) : (
-                    <div className="alert info">
-                      {`Nichts passendes im Inventar zu Begleitertyp "${usedBy[0]?.creature?.art}" gefunden`}
-                    </div>
-                  ))}
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        {selectedItemInfo && (
+          <ExtendedInfo
+            customItemInfo={selectedItemInfo}
+            minimized={true}
+            setShowInfo={() => setSelectedItemInfo(null)}
+          />
+        )}
+        </>
       );
     } else if (usedBy?.length > 1) {
       <div className="alert error">
@@ -257,13 +309,16 @@ function Slot({
       return (
         <div className="slot ">
           <div className="row">
-            <div className="col-auto ">
+            <div className="col-12 col-lg-auto">
               <div className="slot-number disabled">{i}</div>
             </div>
-            <div className="col-3">
+            <div className="col-12 col-lg-3">
               <h3 className="">{category}</h3>
+              <span className="companion-slot-status companion-slot-status--free">
+                Frei
+              </span>
             </div>
-            <div className="col-3 border-pattern left repeat">
+            <div className="col-12 col-lg-3 border-pattern left repeat">
               <p>{info}</p>
             </div>
           </div>
@@ -273,16 +328,19 @@ function Slot({
     return (
       <div className="slot disabled">
         <div className="row">
-          <div className="col-auto ">
+          <div className="col-12 col-lg-auto">
             <div className="slot-number disabled">{i}</div>
           </div>
-          <div className="col-3">
+          <div className="col-12 col-lg-3">
             <h3 className="disabled">{category}</h3>
+            <span className="companion-slot-status companion-slot-status--locked">
+              Gesperrt
+            </span>
             <div className="alert error">
               Erfordert {charismaValue} Charismapunkte
             </div>
           </div>
-          <div className="col-3 border-pattern left repeat">
+          <div className="col-12 col-lg-3 border-pattern left repeat">
             <p>{info}</p>
           </div>
         </div>
