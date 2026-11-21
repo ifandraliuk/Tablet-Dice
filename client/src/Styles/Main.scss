@@ -603,35 +603,55 @@ div{
 }
 
 /* HEADINGS*/
-h1 {
-    text-transform: uppercase;
-    color: azure;
-    font-size: clamp(1em, calc(0.5em + 1vw), 1.5em);
-    letter-spacing: 5px;
+:root {
+    --heading-1-size: clamp(1.05rem, 1rem + 0.15vw, 1.2rem);
+    --heading-2-size: clamp(1rem, 0.96rem + 0.1vw, 1.08rem);
+    --heading-3-size: clamp(0.95rem, 0.92rem + 0.08vw, 1.02rem);
+    --heading-4-size: clamp(0.92rem, 0.9rem + 0.06vw, 0.98rem);
+    --heading-5-size: clamp(0.9rem, 0.88rem + 0.05vw, 0.95rem);
+    --heading-6-size: clamp(0.86rem, 0.84rem + 0.04vw, 0.92rem);
 }
-h2{
-    text-transform: uppercase;
+
+body h1,
+body h2,
+body h3,
+body h4,
+body h5,
+body h6 {
+    margin: 0 0 0.55em;
     color: azure;
-    font-size: clamp(1em, calc(0.5em + 1vw), 1.3em);
-    letter-spacing: 4px;
+    line-height: 1.25;
+    text-transform: uppercase;
 }
-h3{
-    text-transform: uppercase;
-    color: azure;
-    font-size: clamp(1em, calc(0.5em + 1vw), 1.2em);
-    letter-spacing: 3px;
+
+body h1 {
+    font-size: var(--heading-1-size);
+    letter-spacing: 0.045em;
 }
-h4{
-    text-transform: uppercase;
-    color: azure;
-    font-size: clamp(1em, calc(0.5em + 1vw), 1.1em);
-    letter-spacing: 3px;
+
+body h2 {
+    font-size: var(--heading-2-size);
+    letter-spacing: 0.035em;
 }
-h5 {
-    text-transform: uppercase;
-    color: azure;
-    font-size: clamp(1em, calc(0.5em + 1vw), 0.9em);
-    letter-spacing: 2px;
+
+body h3 {
+    font-size: var(--heading-3-size);
+    letter-spacing: 0.03em;
+}
+
+body h4 {
+    font-size: var(--heading-4-size);
+    letter-spacing: 0.025em;
+}
+
+body h5 {
+    font-size: var(--heading-5-size);
+    letter-spacing: 0.02em;
+}
+
+body h6 {
+    font-size: var(--heading-6-size);
+    letter-spacing: 0.015em;
 }
 .txt-info{
     color: grey;
