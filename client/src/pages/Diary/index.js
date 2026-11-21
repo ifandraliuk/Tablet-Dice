@@ -21,11 +21,12 @@ import {
   getMyDiary,
   removeDiary,
 } from "../../features/diary/diarySlice";
-import Spinner from "react-bootstrap/Spinner";
+import { Button, Modal, Spinner } from "react-bootstrap";
 import { pageTransition } from "../../data/Animations";
 import { motion } from "framer-motion";
 import DiarySidebar from "./DiarySidebar";
 import ActiveDiaryCategory from "./ActiveDiaryPage";
+import { getOriginAccentStyle } from "../../data/OriginColors";
 
 function Diary() {
   const { diary, userList } = useSelector((state) => state.diaries);
@@ -50,6 +51,7 @@ function Diary() {
   const [editId, setEditId] = useState("");
   const [showFilterPopup, setShowFilterPopup] = useState(false);
   const [isCreatePopupOpen, setIsCreatePopupOpen] = useState(false);
+  const [deleteNoteId, setDeleteNoteId] = useState(null);
 
   const [sortDirection, setSortDirection] = useState(() => {
     return localStorage.getItem(SORT_KEY) || "desc";
@@ -134,9 +136,18 @@ const modules = {
   };
 
   const onRemove = (e) => {
-    console.log("remove pressed");
-    console.log(e.currentTarget.id);
-    dispatch(removeDiary(e.currentTarget.id));
+    setDeleteNoteId(e.currentTarget.id);
+  };
+
+  const cancelRemove = () => {
+    setDeleteNoteId(null);
+  };
+
+  const confirmRemove = () => {
+    if (!deleteNoteId) return;
+
+    dispatch(removeDiary(deleteNoteId));
+    setDeleteNoteId(null);
   };
 
   const onSubmit = (e) => {
@@ -334,6 +345,37 @@ const modules = {
           </div>
         </div>
       </div>
+      <Modal
+        show={Boolean(deleteNoteId)}
+        onHide={cancelRemove}
+        centered
+        className="diary-share-modal"
+        style={getOriginAccentStyle(fractionTheme)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Eintrag löschen?</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Möchtest du diesen Tagebucheintrag wirklich löschen? Diese Aktion
+          kann nicht rückgängig gemacht werden.
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            type="button"
+            className="diary-share-button diary-share-button--cancel"
+            onClick={cancelRemove}
+          >
+            Abbrechen
+          </Button>
+          <Button
+            type="button"
+            className="diary-share-button diary-share-button--delete"
+            onClick={confirmRemove}
+          >
+            Löschen
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </motion.div>
   );
 }

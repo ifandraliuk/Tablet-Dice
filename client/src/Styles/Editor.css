@@ -163,6 +163,18 @@
   background: #f4b942;
 }
 
+.diary-share-modal .diary-share-button--delete {
+  color: #fff;
+  background: #a93636;
+  border-color: #c94b4b;
+}
+
+.diary-share-modal .diary-share-button--delete:hover {
+  color: #fff;
+  background: #c13e3e;
+  border-color: #e05a5a;
+}
+
 @media (max-width: 575.98px) {
   .diary-share-modal .modal-dialog {
     margin: 0.75rem;
