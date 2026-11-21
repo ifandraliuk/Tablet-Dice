@@ -84,17 +84,44 @@
     }
 
     .bestiaria-card__status {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
         margin-top: 0.5rem;
         padding: 0.2rem 0.55rem;
         border: 1px solid rgba(245, 240, 227, 0.2);
         border-radius: 999px;
-        color: rgba(255, 255, 255, 0.75);
         font-size: 0.85rem;
     }
 
-    .bestiaria-card__status--free {
+    .bestiaria-card__status--positive {
+        border-color: rgba(74, 180, 112, 0.45);
+        background: rgba(74, 180, 112, 0.12);
         color: #b7e4c7;
+    }
+
+    .bestiaria-card__status--caution {
+        border-color: rgba(243, 210, 138, 0.45);
+        background: rgba(243, 210, 138, 0.1);
+        color: #f3d28a;
+    }
+
+    .bestiaria-card__status--muted {
+        border-color: rgba(180, 190, 200, 0.35);
+        background: rgba(180, 190, 200, 0.08);
+        color: #c3cbd2;
+    }
+
+    .bestiaria-card__status--danger {
+        border-color: rgba(249, 101, 101, 0.45);
+        background: rgba(249, 101, 101, 0.1);
+        color: #ff9a9a;
+    }
+
+    .bestiaria-card__status--default {
+        border-color: var(--fraction-accent, rgba(245, 240, 227, 0.35));
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--fraction-accent, #f5f0e3);
     }
 
     .bestiaria-card__details {
