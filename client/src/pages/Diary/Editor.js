@@ -1,14 +1,13 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "../../Styles/Editor.css";
+import originColors, { getOriginAccentStyle } from "../../data/OriginColors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Button, Form, Modal } from "react-bootstrap";
 import {
-  faShareNodes,
   faFloppyDisk,
   faMarker,
-  faTrash,
-  faXmark,
   faUserGroup,
   faPlus,
   faCancel,
@@ -36,6 +35,8 @@ function Editor({
   edit,
   editId,
   share = [],
+  shareWith,
+  fractionTheme,
   setSave,
   activeCategory,
   onClick,
@@ -46,6 +47,10 @@ function Editor({
   const safePlayers = Array.isArray(note?.players) ? note.players : [];
   const safeShare = Array.isArray(share) ? share : [];
   const safeUserList = Array.isArray(userList) ? userList : [];
+  const selectablePlayers = safeUserList.filter((player) => {
+    const playerId = player?._id ?? player?.id;
+    return playerId && String(playerId) !== String(user?._id);
+  });
 
   const createdAtValue = note?.createdAt;
   const createdAtDate =
@@ -75,25 +80,25 @@ function Editor({
       })
     : "";
 
-  const [shareActive, setShare] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [shareDraft, setShareDraft] = useState([]);
 
-  const shareOptions = () => {
-    setShare((shareActive) => !shareActive);
-  };
   const openShare = () => {
-    setShareDraft(Array.isArray(share) ? [...share] : []);
+    const selectedPlayers = edit ? safePlayers : safeShare;
+    setShareDraft(
+      selectedPlayers.map((player) =>
+        String(player?._id ?? player?.id ?? player),
+      ),
+    );
     setShareOpen(true);
   };
 
   const cancelShare = () => {
     setShareOpen(false);
-    setShareDraft([]); // optional
   };
 
   const confirmShare = () => {
-    setShare(shareDraft);
+    shareWith(shareDraft);
     setShareOpen(false);
   };
   const toggleUser = (id) => {
@@ -121,7 +126,6 @@ function Editor({
               disabled={activeCategory?.length === 0}
               onClick={() => {
                 setSave(true);
-                // setShare(false); // <- du hast setShare als local state, das war vorher ein Bug
               }}
               title="Speichern"
             >
@@ -151,28 +155,88 @@ function Editor({
           </form>
         </div>
       </div>
+      <Modal
+        show={shareOpen}
+        onHide={cancelShare}
+        centered
+        className="diary-share-modal"
+        dialogClassName="diary-share-dialog"
+        style={getOriginAccentStyle(fractionTheme)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Notiz teilen</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectablePlayers.length === 0 ? (
+            <p className="mb-0">Keine weiteren Spieler vorhanden.</p>
+          ) : (
+            <Form>
+              {selectablePlayers.map((player) => {
+                const playerId = String(player._id ?? player.id);
+                const playerName = player.name ?? player.username ?? playerId;
+                const fallbackImage = `/race/${
+                  player.sex === "männlich" ? "m" : "w"
+                }/${player.kind || "Mensch"}.png`;
+                const originName = player.origin?.trim().split(/\s+/).pop();
+                return (
+                  <Form.Check
+                    key={playerId}
+                    id={`share-player-${playerId}`}
+                    type="checkbox"
+                    label={
+                      <span className="diary-share-player">
+                        <img
+                          className="diary-share-player__image"
+                          src={`/user/${playerId}.jpeg`}
+                          alt=""
+                          loading="lazy"
+                          style={{
+                            "--player-origin-color":
+                              originColors[originName] || "rgb(249, 199, 79)",
+                          }}
+                          onError={(event) => {
+                            event.currentTarget.onerror = null;
+                            event.currentTarget.src = fallbackImage;
+                          }}
+                        />
+                        <span className="diary-share-player__details">
+                          <span className="diary-share-player__name">
+                            {playerName}
+                          </span>
+                          <span className="diary-share-player__meta">
+                            Level {player.level ?? "?"} ·{" "}
+                            {player.userclass || "Nicht angegeben"}
+                          </span>
+                        </span>
+                      </span>
+                    }
+                    checked={shareDraft.includes(playerId)}
+                    onChange={() => toggleUser(playerId)}
+                  />
+                );
+              })}
+            </Form>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            type="button"
+            className="diary-share-button diary-share-button--cancel"
+            onClick={cancelShare}
+          >
+            Abbrechen
+          </Button>
+          <Button
+            type="button"
+            className="diary-share-button diary-share-button--confirm"
+            onClick={confirmShare}
+          >
+            Übernehmen
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }
 
 export default Editor;
-/*            {shareActive && (
-              <div className="col-3 border mt-2">
-                {userList?.map(
-                  (u) =>
-                    u.id !== user?._id && (
-                      <div className="p-2" key={u.id}>
-                        <input
-                          type="checkbox"
-                          name="users"
-                          id={u.id}
-                          onChange={onClick}
-                          checked={share?.includes(u.id)}
-                        />
-                        <label htmlFor={u.id}>{u.name}</label>
-                        <br />
-                      </div>
-                    )
-                )}
-              </div>
-            )} */

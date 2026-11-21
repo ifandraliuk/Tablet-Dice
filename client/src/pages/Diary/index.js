@@ -321,6 +321,7 @@ const modules = {
                   user={user}
                   userList={userList}
                   share={share}
+                  fractionTheme={fractionTheme}
                   setSave={setSave}
                   onClick={onClick}
                   onSubmit={onSubmit}

@@ -272,6 +272,7 @@ function InventoryPage() {
     >
       {showInfo && !activeDb && (
         <ExtendedInfo
+        setShowInfo={setShowInfo}
           key="extended-info"
           minimized={false}
           hideInfo={setShowInfo}
@@ -286,6 +287,7 @@ function InventoryPage() {
       )}
       {activeDb && showInfo && (
         <ExtendedInfo
+        setShowInfo={setShowInfo}
           key="extended-info"
           toPlayer={toPlayer}
           customItemInfo={customInfo}

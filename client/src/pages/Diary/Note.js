@@ -8,10 +8,12 @@ import {
   faMarker,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
+import { getOriginAccentStyle } from "../../data/OriginColors";
 
 function Note(props) {
   const {
     note,
+    fractionTheme,
     onEdit,
     editId,
     onRemove,
@@ -23,7 +25,11 @@ function Note(props) {
   const isEditing = editId === note._id;
 
   const popover = (
-    <Popover id={`players-popover-${note._id}`}>
+    <Popover
+      id={`players-popover-${note._id}`}
+      className="diary-players-popover"
+      style={getOriginAccentStyle(fractionTheme)}
+    >
       <Popover.Header as="h3">Geteilt mit</Popover.Header>
       <Popover.Body>
         {players.length === 0 ? (

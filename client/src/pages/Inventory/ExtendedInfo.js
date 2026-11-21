@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import ItemIcon from "../../components/ItemIcon";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,6 +21,7 @@ import { buttonImpackt } from "../../data/Animations";
 import MotionButton from "../../components/MotionButton";
 
 function ExtendedInfo({
+  setShowInfo,
   minimized,
   dbButtons,
   customItemInfo,
@@ -84,27 +85,6 @@ function ExtendedInfo({
     setInputValue(e.target.value);
   };
 
-  const exitAnimation = {
-    animate: {
-      opacity: 0,
-      transition: { duration: 0.2 },
-    },
-  };
-  const openAnimation = {
-    initial: { x: -50, y: -60 },
-    animate: { x: 0, y: 0, transition: { duration: 1 } },
-  };
-  const closeAnimation = {
-    animate: {
-      x: -50,
-      y: -60,
-      opacity: 0,
-      transition: {
-        duration: 1,
-      },
-    },
-  };
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -112,17 +92,13 @@ function ExtendedInfo({
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
       className="extended-info-backdrop"
-      onClick={() => setIsOpen(false)}
+      onClick={() => setShowInfo(false)}
     >
       <motion.div
-        variants={isOpen ? openAnimation : closeAnimation}
-        initial="initial"
-        animate="animate"
-        onAnimationComplete={() => {
-          if (!isOpen) {
-            hideInfo(false);
-          }
-        }}
+        initial={{ opacity: 0, scale: 0.96, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.96, y: 10 }}
+        transition={{ duration: 0.2 }}
         key="extended-container"
         className="extended-info-modal container overflow-auto"
         onClick={(e) => e.stopPropagation()}
@@ -236,19 +212,27 @@ function ExtendedInfo({
                 className="row"
               >
                 <div className="col-lg-10 col-md-8">
-                  <h2>{name}</h2>
+                  <h2>{name} {_id}</h2>
                 </div>
                 <div className="col-lg-2 col-md-4">
                   <button
-                    onClick={() => {
-                      setIsOpen(false);
+                    type="button"
+                    className="btn-close"
+                    onClick={() => setShowInfo(false)}
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      color: "#fff",
+                      fontSize: "1.5rem",
+                      lineHeight: 1,
+                      padding: 0,
                     }}
                   >
-                    <FontAwesomeIcon icon={faX} />
+                    ×
                   </button>
                 </div>
                 <div className="col-lg-6 col-md-12">
-                  <p>{_id}</p>
+                 
                   <ul>
                     {category !== "Ressource" && (
                       <li>

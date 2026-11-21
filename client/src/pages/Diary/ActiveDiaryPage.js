@@ -22,6 +22,7 @@ const ActiveDiaryCategory = React.memo(function ActiveDiaryCategory({
   user,
   userList,
   share,
+  fractionTheme,
   onClick,
   viewMode,
   emptyText = "Du hast noch keine Notizen",
@@ -132,6 +133,8 @@ const ActiveDiaryCategory = React.memo(function ActiveDiaryCategory({
             edit={true}
             editId={editId}
             share={share}
+            shareWith={shareWith}
+            fractionTheme={fractionTheme}
             setSave={setSave}
             activeCategory={activeCategory}
             onClick={onClick}
@@ -144,6 +147,7 @@ const ActiveDiaryCategory = React.memo(function ActiveDiaryCategory({
             key={note._id}
             activeCategory={activeCategory}
             note={note}
+            fractionTheme={fractionTheme}
             editId={editId}
             onRemove={onRemove}
             onEdit={onEdit}

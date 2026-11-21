@@ -8,14 +8,25 @@ const User = require('../models/userModel')
 // @route GET diary /diary/userlist
 // @access Public
 const getUsernames = asyncHandler(async(req,res)=>{
-    const users = await User.find()
+    const users = await User.find().populate({
+        path: 'userclass',
+        select: 'name abilities'
+    })
     if(!users){
         console.log("keine Nutzer gefunden")
         res.status(200).json([])
     }
     console.log()
     let userList = []
-    users.forEach(el=>userList.push({id:el._id, name: el.name, level:el.level, userclass:el.userclass?.name, origin: el.general?.origin}))
+    users.forEach(el=>userList.push({
+        id:el._id,
+        name:el.name,
+        level:el.level,
+        userclass:el.userclass?.name,
+        origin:el.general?.origin,
+        kind:el.general?.kind,
+        sex:el.general?.sex
+    }))
     res.status(200).json(userList)
 })
 
