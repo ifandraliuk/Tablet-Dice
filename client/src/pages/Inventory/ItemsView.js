@@ -331,7 +331,7 @@ const ItemsView = ({
                         setCustomInfo(item);
                       }}
                     >
-                      <td>
+                      <td data-label="Item" className="inventory-items-table__item-cell">
                         <div className="inventory-items-table__item">
                           <ItemIcon item={item} enchantment={item.enchantment} />
                           <span>
@@ -346,8 +346,8 @@ const ItemsView = ({
                           </span>
                         </div>
                       </td>
-                      <td>{item.type || "—"}</td>
-                      <td>
+                      <td data-label="Typ">{item.type || "—"}</td>
+                      <td data-label="Wertigkeit">
                         <span
                           className={`inventory-items-rarity ${
                             itemNames?.rarity?.[item.rarity] || "unknown"
@@ -356,19 +356,21 @@ const ItemsView = ({
                           {item.rarity || "—"}
                         </span>
                       </td>
-                      <td>{item.weight ?? "—"}</td>
-                      <td>{item.value ?? "—"}</td>
-                      <td className="inventory-items-table__action">
+                      <td data-label="Gewicht">{item.weight ?? "—"}</td>
+                      <td data-label="Wert">{item.value ?? "—"}</td>
+                      <td data-label="Aktion" className="inventory-items-table__action">
                         {inventory?.some(
                           (entry) =>
                             String(entry.item?._id ?? entry.item) ===
                             String(item._id),
                         ) ? (
-                          <FontAwesomeIcon
-                            icon={faCheck}
-                            aria-label={`${item.name} ist bereits im Inventar`}
+                          <span
+                            className="inventory-items-table__owned"
                             title="Bereits im Inventar"
-                          />
+                          >
+                            <FontAwesomeIcon icon={faCheck} aria-hidden="true" />
+                            <span>Bereits im Inventar</span>
+                          </span>
                         ) : (
                           <button
                             type="button"
