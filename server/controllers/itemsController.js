@@ -193,14 +193,16 @@ const getSearchInCategory = asyncHandler(async (req, res) => {
   if (production) filter.production = production;
   console.log(filter);
 
-  const items = await Item.find(filter)
-    .sort({ rarityValue: 1, _id: 1 }) // ← WICHTIG: Sortierung VOR Pagination
-    .skip(skipCount)
-    .limit(limitCount)
-    .collation({ locale: "de", strength: 1 }) // optional (für name-Sortierung; schadet hier nicht)
-    .populate({ path: "material.element", model: "Item" });
-console.log(items.length)
-  res.status(200).json({ data: items });
+  const [items, totalCount] = await Promise.all([
+    Item.find(filter)
+      .sort({ rarityValue: 1, _id: 1 })
+      .skip(skipCount)
+      .limit(limitCount)
+      .collation({ locale: "de", strength: 1 })
+      .populate({ path: "material.element", model: "Item" }),
+    Item.countDocuments(filter),
+  ]);
+  res.status(200).json({ data: items, totalCount });
 });
 
 const getItem = asyncHandler(async (req, res) => {
@@ -229,16 +231,23 @@ const getItem = asyncHandler(async (req, res) => {
     ...(rarity && rarity !== "none" && rarity !== "" ? { rarity } : {}),
     ...(production ? { production } : {}),
   };
-  const items = await Item.find(search)
-    .skip(parseInt(skipCount))
-    .limit(parseInt(limitCount))
-    .populate({
-      path: "material.element",
-      model: "Item",
-    });
+  const [items, totalCount] = await Promise.all([
+    Item.find(search)
+      .skip(parseInt(skipCount))
+      .limit(parseInt(limitCount))
+      .populate({
+        path: "material.element",
+        model: "Item",
+      }),
+    Item.countDocuments(search),
+  ]);
   items.sort((a, b) => rarityOrder[a.rarity] - rarityOrder[b.rarity]);
-  console.log(items.length);
-  res.status(200).json({ data: items, n: parseInt(n), m: parseInt(m) });
+  res.status(200).json({
+    data: items,
+    n: parseInt(n),
+    m: parseInt(m),
+    totalCount,
+  });
 });
 
 const getProductions = asyncHandler(async (req, res) => {

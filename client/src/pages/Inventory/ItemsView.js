@@ -19,7 +19,6 @@ import {
   searchInCategory,
   getProductions,
 } from "../../features/item/itemSlice";
-import MotionButton from "../../components/MotionButton";
 const ItemsView = ({
   setShowInfo,
   iFilter,
@@ -29,6 +28,8 @@ const ItemsView = ({
   const dispatch = useDispatch();
   const {
     data,
+    totalCount,
+    isLoading,
     activeGenus,
     activeCategory,
     genuses,
@@ -56,6 +57,11 @@ const ItemsView = ({
   const visibleItems = data
     .filter((item) => item.status !== "Ausgerüstet")
     .filter((item) => !selectedType || item.type === selectedType);
+  const pageNumber = Math.floor(Number(n) / 10) + 1;
+  const pageStart = data.length > 0 ? Number(n) + 1 : 0;
+  const pageEnd = Math.min(Number(n) + data.length, totalCount);
+  const hasPreviousPage = Number(n) > 0;
+  const hasNextPage = Number(n) + data.length < totalCount;
 
   useEffect(() => {
     setSelectedType("");
@@ -64,16 +70,12 @@ const ItemsView = ({
   const forward = () => {
     const nextN = parseInt(n) + 10;
     const nextM = parseInt(m) + 10;
-    console.log("next pages", nextN, nextM);
-
     dispatch(setPagination({ n: nextN, m: nextM }));
   };
 
   const back = () => {
     const backN = parseInt(n) - 10;
     const backM = parseInt(m) - 10;
-    console.log("back pages", backN, backM);
-
     dispatch(setPagination({ n: backN, m: backM }));
   };
 
@@ -99,6 +101,11 @@ const ItemsView = ({
         dispatch(setPagination({ n: 0, m: 10 }));// Dispatch search action
     // Wenn du hier direkt neu laden willst:
     // fetchItems({ sort: e.target.value, n, m, search: searchTerm, ... })
+  };
+
+  const handleProductionChange = (e) => {
+    setSelectedProduction(e.target.value);
+    if (Number(n) !== 0) dispatch(setPagination({ n: 0, m: 10 }));
   };
 
   useEffect(() => {
@@ -157,29 +164,8 @@ const ItemsView = ({
 
 
   const handleSearch = (e) => {
-    const searchText = e.target.value;
-    setSearchText(searchText);
-    if (searchText?.length > 0) {
-      const data = {
-        category: activeCategory,
-        genus: activeGenus,
-        searchText: e.target.value,
-        n: n,
-        production: selectedProduction,
-      };
-      dispatch(searchInCategory(data)); // Dispatch search action
-    } else {
-      // reset search
-      const data = {
-        category: activeCategory, //iFilter
-        genus: activeGenus,
-        n: n,
-        m: m,
-        production: selectedProduction,
-      };
-      setSearchText("");
-      dispatch(getItem(data));
-    }
+    setSearchText(e.target.value);
+    if (Number(n) !== 0) dispatch(setPagination({ n: 0, m: 10 }));
   };
   const resetFilters = () => {
     setSearchText("");
@@ -256,7 +242,7 @@ const ItemsView = ({
               id="productionFilter"
               className="form-select dark-filter-control w-100"
               value={selectedProduction}
-              onChange={(event) => setSelectedProduction(event.target.value)}
+              onChange={handleProductionChange}
               aria-label="Nach Herstellungsort filtern"
             >
               <option value="">Alle Herstellungsorte</option>
@@ -395,23 +381,44 @@ const ItemsView = ({
             Keine Items in dieser Kategorie gefunden. Wähle eine andere aus.
           </p>
         )}
-        <div className="row mt-3">
-          <div className="col-6">
-            {n > 0 && (
-              <MotionButton
-                icon={faAnglesLeft}
-                text={n}
-                onClick={back}
-                theme=""
-              />
+        <div className="items-view__pagination" aria-label="Katalogseitennavigation">
+          <button
+            type="button"
+            className="items-view__pagination-button"
+            onClick={back}
+            disabled={!hasPreviousPage || isLoading}
+            aria-label="Vorherige Ergebnisse"
+          >
+            <FontAwesomeIcon icon={faAnglesLeft} aria-hidden="true" />
+            <span>Zurück</span>
+          </button>
+          <p className="items-view__pagination-status" aria-live="polite">
+            {selectedType ? (
+              <>
+                Seite {pageNumber} · {visibleItems.length} passende Items auf
+                dieser Seite
+              </>
+            ) : totalCount > 0 ? (
+              <>
+                Ergebnisse {pageStart}–{pageEnd} von {totalCount}
+                <span className="items-view__pagination-page">
+                  Seite {pageNumber} von {Math.ceil(totalCount / 10)}
+                </span>
+              </>
+            ) : (
+              "Keine Ergebnisse"
             )}
-            <MotionButton
-              icon={faAnglesRight}
-              text={m}
-              onClick={forward}
-              theme=""
-            />
-          </div>
+          </p>
+          <button
+            type="button"
+            className="items-view__pagination-button"
+            onClick={forward}
+            disabled={!hasNextPage || isLoading}
+            aria-label="Weitere Ergebnisse"
+          >
+            <span>Weiter</span>
+            <FontAwesomeIcon icon={faAnglesRight} aria-hidden="true" />
+          </button>
         </div>
       </div>
     </div>

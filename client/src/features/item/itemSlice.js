@@ -10,6 +10,7 @@ import {
 
 const initialState = {
   data: [],
+  totalCount: 0,
   productionOptions: [],
   productionOptionsError: "",
   n: 0,
@@ -138,14 +139,14 @@ export const itemSlice = createSlice({
         state.isSuccess = false;
       })
       .addCase(getItem.fulfilled, (state, action) => {
-        const { data, n, m } = action.payload;
+        const { data, n, m, totalCount } = action.payload;
         state.filteredData = [];
         state.isLoading = false;
         state.isSuccess = true;
         state.data = data;
         state.m = m;
         state.n = n;
-        state.totalCount = state.data.length;
+        state.totalCount = totalCount;
         console.log("frontent fullfilled:", n, m);
       })
       .addCase(getItem.rejected, (state, action) => {
@@ -163,7 +164,7 @@ export const itemSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.data = action.payload.data;
-        state.totalCount = action.payload.data.length;
+        state.totalCount = action.payload.totalCount;
       })
       .addCase(searchInCategory.rejected, (state, action) => {
         state.isLoading = false;
