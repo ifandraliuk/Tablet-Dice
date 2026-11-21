@@ -1,4 +1,11 @@
-import { faPaw, faPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faDice,
+  faHeart,
+  faPaw,
+  faPlus,
+  faShield,
+  faWeightHanging,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { memo } from "react";
@@ -63,22 +70,57 @@ const BestienList = memo(function BestienList({
                 </div>
                 <dl className="bestiaria-card__attributes">
                   <div>
-                    <dt>Trefferpunkte</dt>
+                    <dt>
+                      <FontAwesomeIcon
+                        className="bestiaria-card__attribute-icon"
+                        icon={faWeightHanging}
+                        aria-hidden="true"
+                      />
+                      Traglast
+                    </dt>
+                    <dd>{creature.capacity ?? "–"}</dd>
+                  </div>
+                  <div>
+                    <dt>
+                      <FontAwesomeIcon
+                        className="bestiaria-card__attribute-icon"
+                        icon={faHeart}
+                        aria-hidden="true"
+                      />
+                      Trefferpunkte
+                    </dt>
                     <dd>{creature.hitpoints}</dd>
                   </div>
                   <div>
-                    <dt>Rüstung</dt>
+                    <dt>
+                      <FontAwesomeIcon
+                        className="bestiaria-card__attribute-icon"
+                        icon={faShield}
+                        aria-hidden="true"
+                      />
+                      Rüstung
+                    </dt>
                     <dd>{creature.armor}</dd>
                   </div>
                   <div>
-                    <dt>Schaden</dt>
-                    <dd>{creature.damage}</dd>
-                  </div>
-                  <div>
-                    <dt>Trefferchance</dt>
+                    <dt>
+                      <FontAwesomeIcon
+                        className="bestiaria-card__attribute-icon"
+                        icon={faDice}
+                        aria-hidden="true"
+                      />
+                      Trefferchance
+                    </dt>
                     <dd>{creature.hitchance}</dd>
                   </div>
                 </dl>
+                <section className="bestiaria-card__damage">
+                  <h4>Schaden</h4>
+                  <div className="bestiaria-card__damage-value">
+                    <img src="/icons/common/swordxhdpi.png" alt="" />
+                    <p>{creature.damage}</p>
+                  </div>
+                </section>
                 {creature.habitat?.length > 0 && (
                   <div className="bestiaria-card__habitats">
                     <h4>Habitate</h4>

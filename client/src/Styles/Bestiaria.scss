@@ -147,13 +147,48 @@
     }
 
     .bestiaria-card__attributes dt {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
         color: rgba(255, 255, 255, 0.7);
         font-size: 0.8rem;
+    }
+
+    .bestiaria-card__attribute-icon {
+        flex: 0 0 1rem;
+        width: 1rem;
+        height: 1rem;
+        color: rgba(255, 255, 255, 0.8);
+        object-fit: contain;
     }
 
     .bestiaria-card__attributes dd {
         margin: 0;
         font-weight: 700;
+    }
+
+    .bestiaria-card__damage {
+        margin-bottom: 0.75rem;
+    }
+
+    .bestiaria-card__damage-value {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.4rem;
+    }
+
+    .bestiaria-card__damage-value img {
+        flex: 0 0 2rem;
+        width: 2rem;
+        height: 2rem;
+        object-fit: contain;
+    }
+
+    .bestiaria-card__damage-value p {
+        min-width: 0;
+        margin: 0;
+        white-space: pre-line;
+        overflow-wrap: anywhere;
     }
 
     .bestiaria-card__habitats ul {
