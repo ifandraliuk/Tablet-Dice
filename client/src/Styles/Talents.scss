@@ -2,6 +2,17 @@
 
 .talents-page{
 
+    .dashboard-attribute-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 7rem), 1fr));
+        gap: 0.5rem;
+    }
+
+    .dashboard-attribute-grid > .dashboard-attribute {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
     .sort-btn{
         margin-left:2px;
         padding:0;

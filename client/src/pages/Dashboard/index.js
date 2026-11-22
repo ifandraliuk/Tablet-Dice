@@ -255,16 +255,12 @@ function Dashboard() {
             {/*second column */}
             <main className="dashboard-main">
               <div className="row m-1">
-                <div className="row">
-                  <div className="col-lg-12 col-md-12">
-                    {attributes ? (
-                      <div className="dashboard-attributes">
-                        <AttributeList />
-                      </div>
-                    ) : (
-                      <Spinner animation="border" />
-                    )}
-                  </div>
+                <div className="dashboard-attributes px-0">
+                  {attributes ? (
+                    <AttributeList />
+                  ) : (
+                    <Spinner animation="border" />
+                  )}
                 </div>
                 <ul className="dashboard-action-economy" aria-label="Aktionen">
                   <li className="is-action">

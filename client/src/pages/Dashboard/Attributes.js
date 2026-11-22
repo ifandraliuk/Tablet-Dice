@@ -41,7 +41,7 @@ function Attributes() {
       ) : (
         <h3>Attribute</h3>
       )}
-      <div className="row info-div border-pattern-top dashboard-attribute-grid">
+      <div className="row info-div attribute-grid dashboard-attribute-grid">
         {keys?.map(
           (key) =>
           attributes[key] > 0 && (
