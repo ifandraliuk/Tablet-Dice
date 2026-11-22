@@ -496,3 +496,111 @@
 .share-chip-count {
   font-size: 0.8rem;
 }
+
+.diary-page .diary-search {
+  width: min(100%, 24rem);
+  margin: 0.75rem 0;
+}
+
+.diary-page .diary-note {
+  min-width: 0;
+  margin: 0.75rem 0;
+  padding: 0.85rem;
+  border: 1px solid rgba(245, 240, 227, 0.14);
+  border-radius: 0.75rem;
+  background: rgba(24, 24, 24, 0.68);
+}
+
+.diary-page .diary-note__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(245, 240, 227, 0.12);
+}
+
+.diary-page .diary-note__date {
+  color: rgba(245, 240, 227, 0.75);
+  font-size: 0.8rem;
+}
+
+.diary-page .diary-note__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: auto;
+}
+
+.diary-page .diary-note__actions button {
+  min-width: 2rem;
+  min-height: 2rem;
+  border-radius: 0.35rem;
+}
+
+.diary-page .diary-note__text {
+  overflow-wrap: anywhere;
+}
+
+.diary-page .diary-note__text img {
+  max-width: 100%;
+  height: auto;
+}
+
+.diary-page .diary-note__text > :last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 767px) {
+  .diary-page .filter-sidebar {
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .diary-page .filter-sidebar .diary-filter-btn {
+    align-self: auto;
+    margin-bottom: 0 !important;
+  }
+
+  .diary-page .info-div {
+    min-width: 0;
+    margin-left: 0;
+  }
+
+  .diary-page .diary-toolbar {
+    flex-wrap: wrap;
+  }
+
+  .diary-page .diary-toolbar .segmented-toggle {
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
+
+  .diary-page .diary-toolbar .segmented-toggle__button {
+    white-space: normal;
+  }
+
+  .diary-page .filter-popup-wrap {
+    position: relative;
+  }
+
+  .diary-page .filter-sort-popup {
+    position: absolute;
+    z-index: 2;
+    top: 100%;
+    right: 0;
+    padding: 0.5rem;
+    border: 1px solid rgba(245, 240, 227, 0.14);
+    border-radius: 0.5rem;
+    background: rgb(24, 24, 24);
+  }
+
+  .diary-page .filter-sort-option {
+    display: block;
+    white-space: nowrap;
+  }
+}

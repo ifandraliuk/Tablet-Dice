@@ -27,6 +27,9 @@ import { motion } from "framer-motion";
 import DiarySidebar from "./DiarySidebar";
 import ActiveDiaryCategory from "./ActiveDiaryPage";
 import { getOriginAccentStyle } from "../../data/OriginColors";
+import { diaryViewForPlayers } from "./diaryView";
+import { hasDraftContent } from "./draftUtils";
+import { matchesDiarySearch } from "./diarySearch";
 
 function Diary() {
   const { diary, userList } = useSelector((state) => state.diaries);
@@ -51,6 +54,15 @@ function Diary() {
   const [editId, setEditId] = useState("");
   const [showFilterPopup, setShowFilterPopup] = useState(false);
   const [isCreatePopupOpen, setIsCreatePopupOpen] = useState(false);
+  const [createCategory, setCreateCategory] = useState(activeCategory);
+  const [createSaving, setCreateSaving] = useState(false);
+  const [createError, setCreateError] = useState("");
+  const [editDirty, setEditDirty] = useState(false);
+  const [editSaving, setEditSaving] = useState(false);
+  const [editActive, setEditActive] = useState(false);
+  const [search, setSearch] = useState("");
+  const [editResetKey, setEditResetKey] = useState(0);
+  const [pendingDiscard, setPendingDiscard] = useState(null);
   const [deleteNoteId, setDeleteNoteId] = useState(null);
 
   const [sortDirection, setSortDirection] = useState(() => {
@@ -92,36 +104,73 @@ const modules = {
     localStorage.setItem(SORT_KEY, sortDirection);
   }, [sortDirection]);
 
-  const handleShowMine = () => setViewMode("mine");
-  const handleShowShared = () => setViewMode("shared");
+  const requestDiscard = (dirty, action) => {
+    if (dirty) {
+      setPendingDiscard(() => action);
+    } else {
+      action();
+    }
+  };
+  const requestEditAction = (action) => requestDiscard(editDirty, action);
+  const navigateFromEdit = (action) => requestEditAction(() => {
+    setEditResetKey((key) => key + 1);
+    action();
+  });
+  const handleShowMine = () => {
+    if (viewMode !== "mine") navigateFromEdit(() => setViewMode("mine"));
+  };
+  const handleShowShared = () => {
+    if (viewMode !== "shared") navigateFromEdit(() => setViewMode("shared"));
+  };
+  const handleCategoryChange = (category) => {
+    if (category !== activeCategory) navigateFromEdit(() => setCategory(category));
+  };
   const handleToggleEdit = () => setEdit((v) => !v);
-  const handleCreate = () => {
+  const handleCreate = () => navigateFromEdit(() => {
     setEdit(false);
     setText("");
     setEditId(null);
+    shareWith([String(user._id)]);
+    setCreateCategory(activeCategory);
+    setCreateError("");
     setIsCreatePopupOpen(true);
-  };
+  });
 
   const closeCreatePopup = () => {
-    setIsCreatePopupOpen(false);
+    if (createSaving) return;
+    const dirty = hasDraftContent(text) ||
+      createCategory !== activeCategory ||
+      share.length > 1;
+    requestDiscard(dirty, () => setIsCreatePopupOpen(false));
   };
 
-  const handleCreatePopupSave = () => {
+  const handleCreatePopupSave = async () => {
     const noteText = String(text ?? "").trim();
 
-    if (!noteText) return;
+    if (!noteText) {
+      setCreateError("Bitte gib einen Text ein.");
+      return;
+    }
 
-    dispatch(
-      postDiary({
+    setCreateError("");
+    setCreateSaving(true);
+    try {
+      const createdNote = await dispatch(postDiary({
         text: noteText,
         players: share,
-        category: activeCategory,
-      })
-    );
-
-    setText("");
-    shareWith([user._id]);
-    closeCreatePopup();
+        category: createCategory,
+      })).unwrap();
+      setCategory(createCategory);
+      setViewMode(diaryViewForPlayers(share));
+      if (!matchesDiarySearch(noteText, search, createdNote?.createdAt)) setSearch("");
+      setText("");
+      shareWith([String(user._id)]);
+      setIsCreatePopupOpen(false);
+    } catch (error) {
+      setCreateError(typeof error === "string" ? error : "Die Notiz konnte nicht gespeichert werden.");
+    } finally {
+      setCreateSaving(false);
+    }
   };
 
   const onClick = (e) => {
@@ -202,13 +251,13 @@ const modules = {
   const mineCount =
     diary?.filter((entry) => {
       const players = entry?.players || [];
-      return entry?.category === activeCategory && players.length === 1;
+      return entry?.category === activeCategory && diaryViewForPlayers(players) === "mine";
     }).length || 0;
 
   const sharedCount =
     diary?.filter((entry) => {
       const players = entry?.players || [];
-      return players.length > 1 && entry?.category === activeCategory;
+      return diaryViewForPlayers(players) === "shared" && entry?.category === activeCategory;
     }).length || 0;
   /* TODOS:
   1. edit mode -switch from Note to Editor
@@ -226,14 +275,15 @@ const modules = {
                   diary={diary}
                   categories={diaryCategories}
                   activeCategory={activeCategory}
-                  setCategory={setCategory}
+                  setCategory={handleCategoryChange}
+                  disabled={editSaving}
                   fractionTheme={fractionTheme}
                 />
               </div>
 
               <div className="mt-2 col-xl-8 col-lg-8 col-md-12 info-div">
                 {/* TOP BAR */}
-                <div className="d-flex align-items-center justify-content-between w-100" style={{ gap: "12px" }}>
+                <div className="diary-toolbar d-flex align-items-center justify-content-between w-100" style={{ gap: "12px" }}>
                   <div className="segmented-toggle" role="tablist" aria-label="Diary view">
                     <button
                       type="button"
@@ -242,8 +292,9 @@ const modules = {
                       aria-pressed={viewMode === "mine"}
                       className={`segmented-toggle__button ${viewMode === "mine" ? "is-active" : ""}`}
                       onClick={handleShowMine}
+                      disabled={editSaving}
                     >
-                      Meine Einträge ({mineCount})
+                      Private Einträge ({mineCount})
                     </button>
 
                     <button
@@ -253,6 +304,7 @@ const modules = {
                       aria-pressed={viewMode === "shared"}
                       className={`segmented-toggle__button ${viewMode === "shared" ? "is-active" : ""}`}
                       onClick={handleShowShared}
+                      disabled={editSaving}
                     >
                       Gemeinsame Einträge ({sharedCount})
                     </button>
@@ -263,6 +315,7 @@ const modules = {
                       type="button"
                       className="btn-add"
                       onClick={handleCreate}
+                      disabled={editSaving}
                       title="Neue Notiz"
                     >
                       <FontAwesomeIcon icon={faPlus} />
@@ -305,6 +358,19 @@ const modules = {
                   </div>
                 </div>
 
+                <div className="diary-search">
+                  <input
+                    type="search"
+                    className="form-control dark-filter-control"
+                    aria-label="Einträge durchsuchen"
+                    placeholder="Text oder Datum (TT.MM.JJJJ) …"
+                    value={search}
+                    onChange={(event) => setSearch(event.target.value)}
+                    disabled={editActive}
+                    title={editActive ? "Suche ist während der Bearbeitung deaktiviert" : undefined}
+                  />
+                </div>
+
                 {isCreatePopupOpen && (
                   <NotePopup
                   modules={modules}
@@ -314,10 +380,13 @@ const modules = {
                     user={user}
                     userList={userList}
                     share={share}
-                    setSave={setSave}
-                    activeCategory={activeCategory}
-                    onClick={onClick}
-                    onRemove={onRemove}
+                    shareWith={shareWith}
+                    category={createCategory}
+                    setCategory={setCreateCategory}
+                    categories={diaryCategories}
+                    fractionTheme={fractionTheme}
+                    saving={createSaving}
+                    saveError={createError}
                     handleCreatePopupSave={handleCreatePopupSave}
                   />
                 )}
@@ -328,11 +397,19 @@ const modules = {
                   activeCategory={activeCategory}
                   editId={editId}
                   onRemove={onRemove}
-                  shareWith={shareWith}
                   user={user}
                   userList={userList}
-                  share={share}
                   fractionTheme={fractionTheme}
+                  setViewMode={setViewMode}
+                  onDirtyChange={setEditDirty}
+                  onSavingChange={setEditSaving}
+                  onEditingChange={setEditActive}
+                  search={search}
+                  onSavedText={(savedText, createdAt) => {
+                    if (!matchesDiarySearch(savedText, search, createdAt)) setSearch("");
+                  }}
+                  requestEditAction={requestEditAction}
+                  resetKey={editResetKey}
                   setSave={setSave}
                   onClick={onClick}
                   onSubmit={onSubmit}
@@ -345,6 +422,31 @@ const modules = {
           </div>
         </div>
       </div>
+      <Modal
+        show={Boolean(pendingDiscard)}
+        onHide={() => setPendingDiscard(null)}
+        centered
+        className="diary-share-modal"
+        style={getOriginAccentStyle(fractionTheme)}
+        aria-labelledby="diary-discard-title"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="diary-discard-title">Änderungen verwerfen?</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Deine Änderungen sind noch nicht gespeichert.</Modal.Body>
+        <Modal.Footer>
+          <Button type="button" className="diary-share-button diary-share-button--cancel" onClick={() => setPendingDiscard(null)}>
+            Weiter bearbeiten
+          </Button>
+          <Button type="button" className="diary-share-button diary-share-button--confirm" onClick={() => {
+            const action = pendingDiscard;
+            setPendingDiscard(null);
+            action();
+          }}>
+            Änderungen verwerfen
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <Modal
         show={Boolean(deleteNoteId)}
         onHide={cancelRemove}
@@ -369,7 +471,7 @@ const modules = {
           </Button>
           <Button
             type="button"
-            className="diary-share-button diary-share-button--delete"
+            className="diary-share-button diary-share-button--confirm"
             onClick={confirmRemove}
           >
             Löschen

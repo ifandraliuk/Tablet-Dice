@@ -17,6 +17,7 @@ const DiarySidebar = React.memo(function DiarySidebar({
   activeCategory,
   setCategory,
   fractionTheme,
+  disabled,
 }) {
   const [hoveredCategory, setHoveredCategory] = useState(null);
 
@@ -55,6 +56,10 @@ const DiarySidebar = React.memo(function DiarySidebar({
           <motion.button
             key={category}
             type="button"
+            disabled={disabled}
+            aria-label={`${category} (${count})`}
+            aria-pressed={activeCategory === category}
+            title={`${category} (${count})`}
             className={`button diary-filter-btn mb-2 ${
               activeCategory === category ? `${fractionTheme}-active` : ""
             }`}

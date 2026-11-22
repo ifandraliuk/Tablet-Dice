@@ -1,44 +1,30 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Popover from "react-bootstrap/Popover";
-import { faUserGroup } from "@fortawesome/free-solid-svg-icons";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faFloppyDisk,
-  faMarker,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faUserGroup, faMarker, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { getOriginAccentStyle } from "../../data/OriginColors";
+import NoteDate from "./NoteDate";
+import { getSharingInfo } from "./sharingInfo";
 
-function Note(props) {
-  const {
-    note,
-    fractionTheme,
-    onEdit,
-    editId,
-    onRemove,
-    activeCategory,
-    submitMessage = "",
-  } = props;
-  const { players, category, text, createdAt } = note;
-  const [draftText, setDraftText] = useState(note.text);
-  const isEditing = editId === note._id;
-
+function Note({ note, user, fractionTheme, onEdit, editId, onRemove, submitMessage = "" }) {
+  const { players, text, createdAt } = note;
+  const sharing = getSharingInfo(players, user?._id);
   const popover = (
     <Popover
       id={`players-popover-${note._id}`}
       className="diary-players-popover"
       style={getOriginAccentStyle(fractionTheme)}
     >
-      <Popover.Header as="h3">Geteilt mit</Popover.Header>
+      <Popover.Header as="h3">{sharing.heading}</Popover.Header>
       <Popover.Body>
-        {players.length === 0 ? (
-          <div>Nur du</div>
+        {sharing.players.length === 0 ? (
+          <div>{sharing.label === "Nur du" ? "Nur du" : "Keine Teilnehmer angegeben"}</div>
         ) : (
           <ul className="players-list">
-            {players.map((p) => (
-              <li key={p.id ?? p._id ?? p}>
-                {p.name ?? p.username ?? String(p)}
+            {sharing.players.map((player) => (
+              <li key={player.id ?? player._id ?? player}>
+                {player.name ?? player.username ?? String(player)}
               </li>
             ))}
           </ul>
@@ -47,102 +33,47 @@ function Note(props) {
     </Popover>
   );
 
-  useEffect(() => {
-    if (isEditing) setDraftText(note.text);
-  }, [isEditing, note.text]);
-
-  const createdAtDate = note?.createdAt ? new Date(note.createdAt) : null;
-  const dateText = createdAtDate
-    ? createdAtDate.toLocaleDateString("de-DE", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      })
-    : "";
-  const timeText = createdAtDate
-    ? createdAtDate.toLocaleTimeString("de-DE", {
-        hour: "2-digit",
-        minute: "2-digit",
-      })
-    : "";
-
   return (
-    <div className="row mt-1">
-      <div className="col-lg-11">
-        <div className="note-header d-flex align-items-center justify-content-between">
-          <div className="d-flex align-items-center ">
-            {submitMessage && (
-              <div className="diary-submit-success diary-submit-success--inline">
-                {submitMessage}
-              </div>
-            )}
-          </div>
-
-          <div className="d-flex align-items-center ">
-            <OverlayTrigger
-              trigger="click"
-              placement="bottom"
-              overlay={popover}
-              rootClose
-            >
-              <button
-                type="button"
-                className="share-chip"
-                title="Geteilte Nutzer anzeigen"
-              >
-                <span className="share-chip-count">{players.length}</span>
-                <FontAwesomeIcon icon={faUserGroup} />
-              </button>
-            </OverlayTrigger>
-
-            <div >
-              {isEditing ? (
-                <button type="button" className="btn-save" id={note._id}>
-                  <FontAwesomeIcon icon={faFloppyDisk} />
-                </button>
-              ) : editId === "" ? (
-                <button
-                  type="button"
-                  className="btn-edit"
-                  id={note._id}
-                  onClick={onEdit}
-                >
-                  <FontAwesomeIcon icon={faMarker} />
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  className="btn-edit"
-                  id={note._id}
-                  onClick={onEdit}
-                  disabled
-                >
-                  <FontAwesomeIcon icon={faMarker} />
-                </button>
-              )}
-
-              <button
-                type="button"
-                className="btn-remove"
-                id={note._id}
-                onClick={onRemove}
-              >
-                <FontAwesomeIcon icon={faTrash} />
-              </button>
-            </div>
-          </div>
+    <article className="diary-note">
+      <header className="diary-note__header">
+        <NoteDate createdAt={createdAt} />
+        <div className="diary-note__actions">
+          <OverlayTrigger trigger="click" placement="bottom" overlay={popover} rootClose>
+            <button type="button" className="share-chip" title="Freigabe anzeigen" aria-label={`Freigabe anzeigen: ${sharing.label}`}>
+              <span className="share-chip-count">{sharing.label}</span>
+              <FontAwesomeIcon icon={faUserGroup} aria-hidden="true" />
+            </button>
+          </OverlayTrigger>
+          <button
+            type="button"
+            className="btn-edit"
+            id={note._id}
+            onClick={onEdit}
+            disabled={editId !== ""}
+            title="Eintrag bearbeiten"
+            aria-label="Eintrag bearbeiten"
+          >
+            <FontAwesomeIcon icon={faMarker} aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            className="btn-remove"
+            id={note._id}
+            onClick={onRemove}
+            title="Eintrag löschen"
+            aria-label="Eintrag löschen"
+          >
+            <FontAwesomeIcon icon={faTrash} aria-hidden="true" />
+          </button>
         </div>
-
-        <div>
-          <p dangerouslySetInnerHTML={{ __html: text }} />
+      </header>
+      {submitMessage && (
+        <div className="diary-submit-success diary-submit-success--inline" role="status">
+          {submitMessage}
         </div>
-
-        <div className="note-meta">
-          {dateText && <span className="note-date">{dateText}</span>}
-          {timeText && <span className="note-time">{timeText}</span>}
-        </div>
-      </div>
-    </div>
+      )}
+      <div className="diary-note__text" dangerouslySetInnerHTML={{ __html: text }} />
+    </article>
   );
 }
 

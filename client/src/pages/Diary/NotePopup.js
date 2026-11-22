@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactQuill from "react-quill";
 import { motion } from "framer-motion";
+import ShareDialog from "./ShareDialog";
 
 const defaultModules = {
   toolbar: [
@@ -18,14 +19,19 @@ const NotePopup = ({
   user,
   userList,
   share,
-  setSave,
-  activeCategory,
-  onClick,
-  onRemove,
+  shareWith,
+  category,
+  setCategory,
+  categories,
+  fractionTheme,
+  saving,
+  saveError,
   handleCreatePopupSave,
   modules = defaultModules,
 }) => {
+  const [shareOpen, setShareOpen] = useState(false);
   return (
+    <>
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -52,6 +58,8 @@ const NotePopup = ({
         onClick={(e) => e.stopPropagation()}
         style={{
           width: "min(560px, 90vw)",
+          maxHeight: "90vh",
+          overflowY: "auto",
           background: "#1d1d1d",
           borderRadius: "12px",
           padding: "1rem",
@@ -77,6 +85,21 @@ const NotePopup = ({
           </button>
         </div>
 
+        <div className="mb-3">
+          <label htmlFor="note-category" className="form-label">Kategorie</label>
+          <select
+            id="note-category"
+            className="form-select dark-filter-control"
+            value={category}
+            onChange={(event) => setCategory(event.target.value)}
+            disabled={saving}
+          >
+            {categories.map((option) => (
+              <option key={option} value={option}>{option}</option>
+            ))}
+          </select>
+        </div>
+
         <div style={{ marginBottom: "0.75rem" }}>
           <ReactQuill
             modules={modules}
@@ -85,6 +108,11 @@ const NotePopup = ({
             style={{ background: "#101010", color: "#fff" }}
           />
         </div>
+
+        <button type="button" className="btn-add" onClick={() => setShareOpen(true)} disabled={saving}>
+          Teilen mit {Math.max(share.length - 1, 0)} {share.length === 2 ? "Mitspieler" : "Mitspielern"}
+        </button>
+        {saveError && <p role="alert">{saveError}</p>}
 
         <div
           style={{
@@ -98,6 +126,7 @@ const NotePopup = ({
             type="button"
             className="btn-cancel"
             onClick={closeCreatePopup}
+            disabled={saving}
           >
             Abbrechen
           </button>
@@ -105,15 +134,29 @@ const NotePopup = ({
           <button
             type="button"
             className="btn-save"
+            disabled={saving}
             onClick={() => {
               handleCreatePopupSave();
             }}
           >
-            Speichern
+            {saving ? "Speichern …" : "Speichern"}
           </button>
         </div>
       </motion.div>
     </motion.div>
+    <ShareDialog
+      show={shareOpen}
+      onHide={() => setShareOpen(false)}
+      selectedPlayers={share}
+      onConfirm={(players) => {
+        shareWith(players);
+        setShareOpen(false);
+      }}
+      user={user}
+      userList={userList}
+      fractionTheme={fractionTheme}
+    />
+    </>
   );
 };
 
