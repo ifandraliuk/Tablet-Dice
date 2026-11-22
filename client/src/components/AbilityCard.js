@@ -53,7 +53,7 @@ function AbilityCard(props) {
     <motion.div
       className={`ability-card${props.selected ? " ability-card--selected" : ""}`}
       variants={animateCard}
-      whileHover="hover"
+      whileHover={props.readOnly ? undefined : "hover"}
     initial="init"
     animate={toAnimate ? "animation" : ""}
     onAnimationComplete={()=>{
@@ -113,7 +113,7 @@ function AbilityCard(props) {
           </button>
         )}
       </div>
-      <div className="ability-card__actions">
+      {!props.readOnly && <div className="ability-card__actions">
         <MotionButton 
               name={_id}
               content={props.buttonText ? props.buttonText : "Verwenden"}
@@ -125,7 +125,7 @@ function AbilityCard(props) {
               hoverScale={1}
             />
 
-      </div>
+      </div>}
     </motion.div>
   );
 }

@@ -83,7 +83,7 @@ function Profession() {
         </section>
       )}
 
-      <section className="create-abilities" aria-labelledby="create-abilities-title">
+      <section className="create-abilities create-ability-cards" aria-labelledby="create-abilities-title">
         <div className="attribute-heading create-ability-heading">
           <h4 id="create-abilities-title">Fertigkeiten</h4>
           {!activeAbility && (
