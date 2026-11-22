@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import creationService from "./creationService";
 const initialState = {
-  partActive: "general",
+  partActive: "origin",
   // General info
   generalInfo: {
     age: 0,
@@ -132,6 +132,10 @@ export const creationSlice = createSlice({
     },
     setAttribute: (state, { payload }) => {
         const { id, value } = payload;
+        if (!Object.prototype.hasOwnProperty.call(state.attributes, id) || !Number.isInteger(value) || value < 0) {
+          console.warn("Invalid attribute value", id, value);
+          return;
+        }
         const difference = value - state.attributes[id];
   
         if (state.availablePoints >= difference) {
@@ -147,6 +151,8 @@ export const creationSlice = createSlice({
     resetAttributes: (state) => {
       state.attributes = initialState.attributes;
       state.availablePoints = initialState.totalPoints;
+      state.completionFlags.attributes = false;
+      state.completionFlags.complete = false;
     },
     setGeneralInfo: (state, { payload }) => {
       console.log(payload);
@@ -232,10 +238,13 @@ export const creationSlice = createSlice({
     builder
       .addCase(getProfessions.pending, (state) => {
         state.isLoading = true;
+        state.isError = false;
+        state.message = "";
       })
       .addCase(getProfessions.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
+        state.isError = false;
         state.professionList = action.payload;
       })
       .addCase(getProfessions.rejected, (state, action) => {

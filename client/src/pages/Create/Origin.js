@@ -20,7 +20,9 @@ export default function Origin() {
     <div className="container">
       <div className="row mt-2">
         <div className="alert info">
-          Du schreitest ans Fenster und denkst dabei an deine Heimat:
+          Ein Sonnenstrahl kitzelt dich wach. Ein neuer Tag beginnt und mit ihm
+          vielleicht auch ein neues Abenteuer. Doch bevor du aufbrichst: Wo bist
+          du zu Hause?
         </div>
         <div className="row">
           {originList?.map((originName) => (
@@ -28,7 +30,9 @@ export default function Origin() {
               <MotionButton
                 name={originName}
                 content={originName}
-                theme={activeOrigin === originName ? "Thornheim" : ""}
+                className="create-choice"
+                ariaPressed={activeOrigin === originName}
+                hoverScale={1}
                 onClick={(e) => dispatch(setActiveOrigin(originName))}
               />
             </div>
@@ -36,7 +40,7 @@ export default function Origin() {
         </div>
         <div className="row ">
           {activeOrigin?.length > 0 ? (
-            <div className="col-4 d-flex flex-column align-items-center">
+            <div className="col-md-4 d-flex flex-column align-items-center">
               <Fraction fraction={cuttedOrigin} />
               <button
                 className="mt-2 worldmap-button"
@@ -57,7 +61,7 @@ export default function Origin() {
           )}
 
           {activeOrigin?.length > 0 ? (
-            <div className="col-8">
+            <div className="col-md-8">
               <h4>Beschreibung</h4>
               <p className="ms-2">{countries[activeOrigin]?.descr}</p>
               <h4>Karte</h4>

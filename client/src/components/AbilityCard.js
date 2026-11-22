@@ -51,9 +51,9 @@ function AbilityCard(props) {
   const resourceName = germanAttr[type] || type;
   return (
     <motion.div
-      className="ability-card"
+      className={`ability-card${props.selected ? " ability-card--selected" : ""}`}
       variants={animateCard}
-      whileHover="hover"
+      whileHover={props.readOnly ? undefined : "hover"}
     initial="init"
     animate={toAnimate ? "animation" : ""}
     onAnimationComplete={()=>{
@@ -113,17 +113,19 @@ function AbilityCard(props) {
           </button>
         )}
       </div>
-      <div className="ability-card__actions">
+      {!props.readOnly && <div className="ability-card__actions">
         <MotionButton 
               name={_id}
               content={props.buttonText ? props.buttonText : "Verwenden"}
               onClick={props?.customClick ? props.customClick : onClick}
               theme=""
               className="ability-card__use-button"
+              ariaPressed={props.selected}
+              ariaLabel={props.selectionLabel}
               hoverScale={1}
             />
 
-      </div>
+      </div>}
     </motion.div>
   );
 }

@@ -1,5 +1,5 @@
 //import './App.css';
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import "./Styles/Main.css";
 //import 'react-toastify/dist/ReactTostify.css'
@@ -19,7 +19,7 @@ import { AnimatePresence } from "framer-motion";
 import Navbar from "./components/Nav";
 import Atlas from "./pages/Atlas";
 import Crafting from "./pages/Crafting";
-import { getFraction } from "./features/player/playerSlice";
+import { getFraction, clearFraction } from "./features/player/playerSlice";
 import { ToastContainer } from "react-toastify";
 
 function App() {
@@ -27,13 +27,26 @@ function App() {
   const location = useLocation();
   const dispatch = useDispatch();
   const { fractionTheme } = useSelector((state) => state.player);
-  console.log(fractionTheme.length);
+  const { user } = useSelector((state) => state.auth);
+  const [fractionError, setFractionError] = useState("");
+  const [fractionRetry, setFractionRetry] = useState(0);
+  const userId = user?._id;
+  const token = user?.token;
+  const isCreating = location.pathname === "/create";
   useEffect(() => {
-    if (localStorage.getItem("user") && fractionTheme?.length === 0) {
-      console.log("fraction theme loading...");
-      dispatch(getFraction());
-    }
-  }, [dispatch, fractionTheme]);
+    setFractionError("");
+    dispatch(clearFraction());
+    if (!userId || !token || isCreating) return;
+    let active = true;
+    const request = dispatch(getFraction());
+    request.unwrap().catch((error) => {
+      if (active) setFractionError(typeof error === "string" ? error : "Bitte versuche es erneut.");
+    });
+    return () => {
+      active = false;
+      request.abort();
+    };
+  }, [dispatch, userId, token, fractionRetry, isCreating]);
 
   return (
     <div className="g-0">
@@ -46,7 +59,8 @@ function App() {
       <div className={`${fractionTheme}-bg`}>
         <div className="container-fluid">
           <div className="row dark-bg">
-            {localStorage.user && <Navbar />}
+            {user && <Navbar />}
+            {user && fractionError && <div role="alert">Herkunftshintergrund konnte nicht geladen werden: {fractionError} <button type="button" onClick={() => setFractionRetry((value) => value + 1)}>Erneut versuchen</button></div>}
 
             <AnimatePresence>
               <Routes location={location} key={location.pathname}>

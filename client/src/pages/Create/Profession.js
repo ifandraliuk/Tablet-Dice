@@ -8,96 +8,111 @@ import {
   setActiveProfession,
 } from "../../features/creation/creationSlice";
 import AbilityCard from "../../components/AbilityCard";
-import ExclamationMark from "../../components/ExclamationMark";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBolt, faGhost, faStar } from "@fortawesome/free-solid-svg-icons";
+import "../../Styles/Attributes.css";
+
+const categoryStyles = {
+  Ausdauerklasse: { resource: "stamina", icon: faBolt },
+  Manaklasse: { resource: "mana", icon: faStar },
+  Spiritklasse: { resource: "spirit", icon: faGhost },
+};
 
 function Profession() {
   const dispatch = useDispatch();
-  const { activeProfession, availableAbilities, activeAbility, specs, professionList } =
+  const { activeProfession, availableAbilities, activeAbility, specs, professionList, isLoading, isError, message } =
     useSelector((state) => state.creation);
   useEffect(() => {
     if (professionList.length === 0) dispatch(getProfessions());
     dispatch(isProfessionComplete());
-  }, [activeProfession, professionList?.length, activeAbility, dispatch]);
+  }, [activeProfession, professionList.length, activeAbility, dispatch]);
 
-  const onAbilityClick = e =>{
-    console.log(e.target.name)
-    const id = e.currentTarget.name
-    dispatch(setActiveAbility(id))
-  }
+  const hasProfession = Boolean(activeProfession?.name);
+  const categoryStyle = categoryStyles[activeProfession?.category];
+
   return (
-    <div className="container">
-      <div className="row mt-2">
-        <div className="alert info">
-          Du denkst zurück an deine Ausbildung, all die Übungsstunden die du
-          verbracht hast, wie hast du dich spezialisiert?
-        </div>
-        <div className="row">
-          {professionList?.map((professionName) => (
-            <div className="col-auto" key={professionName._id}>
-              <MotionButton
-                name={professionName.name}
-                content={professionName.name}
-                theme={
-                  activeProfession._id === professionName._id ? "Thornheim" : ""
-                }
-                onClick={(e) => dispatch(setActiveProfession(professionName))}
-              />
-            </div>
-          ))}
-        </div>
-
-        <div className="row">
-          {activeProfession?.name?.length > 0 && (
-            <div className="col-xl-2 col-lg-2 col-md-12">
-              <img
-                alt="Profession"
-                style={{ width: "100%" }}
-                src={`/classes_img/${activeProfession._id}.svg`}
-              />
-            </div>
-          )}
-          {activeProfession?.name?.length > 0 && (
-            <div className="col-xl-6 col-lg-6 col-md-12 border-pattern left">
-              <div className="row m-2">
-                <h4>Beschreibung</h4>
-                <p className="ms-2">{activeProfession.description}</p>
-                <h4>Kategorie</h4>
-                <p className="Thornheim-text mt-2 ms-2">
-                  {activeProfession.category}
-                </p>
-                <h4>Spezialzierungen</h4>
-                <ul className="ms-4">
-                  {specs?.map((spec) => (
-                    <li key={spec}>{spec}</li>
-                  ))}
-                </ul>
-                <h4>Vorteile</h4>
-                <p className=" mt-2 ms-2">{activeProfession.advantages}</p>
-              </div>
-            </div>
-          )}
-        </div>
+    <div className="container create-profession">
+      <div className="alert info">
+        Du denkst zurück an deine Ausbildung und all die Übungsstunden. Wie hast du dich spezialisiert?
       </div>
-      <div className="row mt-2">
-        <div className="col-2 d-flex justify-content-end align-items-start">{activeAbility?.length> 0 ? "": <ExclamationMark />}</div>
-        <div className="col-10">
-           <h4>Wähle deine erste Fertigkeit</h4>
-
+      <h3>Deine Profession</h3>
+      <p className="create-section-hint">Wähle eine Profession, um ihre Beschreibung und Fertigkeiten zu entdecken.</p>
+      {isLoading && professionList.length === 0 && <p role="status">Professionen werden geladen …</p>}
+      {isError && professionList.length === 0 && !isLoading && (
+        <div className="create-attributes__error" role="alert">
+          Professionen konnten nicht geladen werden: {message || "Bitte versuche es erneut."}{" "}
+          <button type="button" className="btn-light" onClick={() => dispatch(getProfessions())}>Erneut versuchen</button>
         </div>
-        <div className="row">
-            {" "}
-            {availableAbilities?.map((ability) => (
-              <div className="col-3" key={ability._id}>
-                <AbilityCard
-                  ability={ability}
-                  userclass={activeProfession._id}
-                  buttonText={activeAbility === ability._id ? "Ausgewählt" : "Wählen"}
-                  customClick={onAbilityClick}
-                />
+      )}
+      <div className="create-profession__choices" aria-label="Profession auswählen">
+        {professionList.map((profession) => (
+          <MotionButton
+            key={profession._id}
+            name={profession.name}
+            content={profession.name}
+            className="create-choice"
+            ariaPressed={activeProfession._id === profession._id}
+            hoverScale={1}
+            onClick={() => {
+              if (activeProfession._id !== profession._id) dispatch(setActiveProfession(profession));
+            }}
+          />
+        ))}
+      </div>
+
+      {hasProfession && (
+        <section className="create-profession__details" aria-labelledby="create-profession-name">
+          <img alt="" src={`/classes_img/${activeProfession._id}.svg`} />
+          <div>
+            <h4 id="create-profession-name">{activeProfession.name}</h4>
+            <p>{activeProfession.description}</p>
+            <dl className="create-profession__facts">
+              <div>
+                <dt>Kategorie</dt>
+                <dd>
+                  <span className={`create-profession__category${categoryStyle ? ` create-profession__category--${categoryStyle.resource}` : ""}`}>
+                    {categoryStyle && <FontAwesomeIcon icon={categoryStyle.icon} aria-hidden="true" />}
+                    {activeProfession.category}
+                  </span>
+                </dd>
               </div>
+              <div><dt>Spezialisierungen</dt><dd>{specs.join(", ")}</dd></div>
+              <div className="create-profession__advantages"><dt>Vorteile</dt><dd>{activeProfession.advantages}</dd></div>
+            </dl>
+          </div>
+        </section>
+      )}
+
+      <section className="create-abilities create-ability-cards" aria-labelledby="create-abilities-title">
+        <div className="attribute-heading create-ability-heading">
+          <h4 id="create-abilities-title">Fertigkeiten</h4>
+          {!activeAbility && (
+            <span className="attribute-points" role="status">
+              <span className="attribute-points__icon" aria-hidden="true">!</span>
+              Wähle deine erste Fertigkeit
+            </span>
+          )}
+        </div>
+        {!hasProfession ? (
+          <p className="create-section-hint">Wähle zuerst eine Profession, um ihre verfügbaren Fertigkeiten zu sehen.</p>
+        ) : availableAbilities.length === 0 ? (
+          <p className="create-section-hint">Für diese Profession sind keine ersten Fertigkeiten verfügbar.</p>
+        ) : (
+          <div className="create-abilities__grid">
+            {availableAbilities.map((ability) => (
+              <AbilityCard
+                key={ability._id}
+                ability={ability}
+                userclass={activeProfession._id}
+                buttonText={activeAbility === ability._id ? "Ausgewählt" : "Wählen"}
+                selected={activeAbility === ability._id}
+                selectionLabel={`${ability.name} ${activeAbility === ability._id ? "ausgewählt" : "wählen"}`}
+                customClick={(event) => dispatch(setActiveAbility(event.currentTarget.name))}
+              />
             ))}
           </div>
-      </div>
+        )}
+      </section>
     </div>
   );
 }

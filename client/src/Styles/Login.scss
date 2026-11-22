@@ -1,60 +1,175 @@
-@import './Variables.scss';
+.login-page {
+  --login-accent: #f5f0e3;
+  min-height: 100vh;
+  padding: 0;
+  color: #f5f0e3;
+}
 
-.login-page{
-    position: relative;
-    .background {
-        background-image: url(~/public/dragonlangs-landscape.svg);
-        background-size: cover;
-        height: 100vh;
-    }
-    
-    .vignette {
-        background-color: rgba(0, 0, 0, 0.6);
-        height: 100vh;
-    }
-    .loading-text{
-        position: absolute;
-        left: 25%;
-        top:25%;
-    }
+.login-page .background {
+  min-height: 100vh;
+  background-image: url(~/public/dragonlangs-landscape.svg);
+  background-position: center;
+  background-size: cover;
+}
 
-    .header{
-        margin-bottom: 0;
-        border-bottom: solid 3px;
-        text-shadow: 0px 0px 8px rgb(255,255,255)
-    }
-    .content {
-        position: absolute;
-        left: 50%;
-        top:50%;
-        text-align: center;
-        transform:  translate(-50%, -50%);
-        padding: 1.1em;
-    }
-    .login-form{
-        border-right-style: solid;
-        border-bottom-style: solid;
-        border-left-style: solid;
-        margin-top: 0;
-       
-        
-    }
-    .login-btn {
-        width: 80%;
-        border-radius: 5px;
-        margin-top: 5px;
-        background-color: rgba(250, 250, 250, 0.6);
-    }
-    .register-btn{
-        width: 80%;
-        background-color: transparent;
-        border: 2px solid;
-        border-radius: 5px;
-    }
-    .register-btn:hover{
-        background-color: $categoryBlue;
-    }
-    .login-btn:hover{
-        background-color: $categoryJungle;
-    }
+.login-page .vignette {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 2rem 1rem;
+  background: linear-gradient(90deg, rgba(10, 10, 10, 0.5), rgba(10, 10, 10, 0.3)), rgba(0, 0, 0, 0.32);
+}
+
+.login-card {
+  position: relative;
+  overflow: hidden;
+  width: min(100%, 28rem);
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  border: 1px solid rgba(245, 240, 227, 0.25);
+  border-radius: 0.75rem;
+  background: rgba(24, 24, 24, 0.94);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+}
+
+.login-card__header {
+  text-align: center;
+}
+
+.login-card__eyebrow {
+  display: block;
+  margin-bottom: 1rem;
+  color: var(--login-accent);
+  font-size: 0.8rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.login-card__eyebrow::after {
+  content: "";
+  display: block;
+  width: min(100%, 12rem);
+  height: 4px;
+  margin: 0.7rem auto 0;
+  border-radius: 999px;
+  background: var(--login-origins);
+}
+
+.login-page .login-card h1 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+  line-height: 1.3;
+}
+
+.login-card__header p {
+  margin: 0.75rem 0 1.5rem;
+  color: rgba(245, 240, 227, 0.72);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.login-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.login-page .login-form label {
+  margin-bottom: 0.35rem;
+  color: #f5f0e3;
+  font-size: 0.85rem;
+}
+
+.login-page .login-form .form-control {
+  min-height: 2.8rem;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid rgba(245, 240, 227, 0.24);
+  border-radius: 0.4rem;
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  text-align: left;
+}
+
+.login-page .login-form .form-control::placeholder {
+  color: rgba(245, 240, 227, 0.5);
+}
+
+.login-page .login-form .form-control:focus {
+  border-color: var(--login-accent);
+  box-shadow: 0 0 0 0.2rem rgba(245, 240, 227, 0.15);
+}
+
+.login-form__error {
+  padding: 0.7rem 0.8rem;
+  border: 1px solid rgba(249, 101, 101, 0.45);
+  border-radius: 0.4rem;
+  background: rgba(249, 101, 101, 0.1);
+  color: #ffb6ae;
+  font-size: 0.85rem;
+}
+
+.login-page .login-btn {
+  position: relative;
+  overflow: hidden;
+  min-height: 2.8rem;
+  border: 1px solid var(--login-accent);
+  border-radius: 0.4rem;
+  background: linear-gradient(135deg, #fff, #e2ded4);
+  color: #202020;
+  font-weight: 700;
+  transition: box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.login-btn__arrow {
+  display: inline-block;
+  margin-left: 0.5rem;
+  transition: transform 0.18s ease;
+}
+
+.login-page .login-btn:hover {
+  background: linear-gradient(135deg, #fff, #eeeae1);
+  color: #202020;
+  box-shadow: 0 4px 16px rgba(245, 240, 227, 0.18);
+  transform: translateY(-2px);
+}
+
+.login-btn:hover .login-btn__arrow,
+.login-btn:focus-visible .login-btn__arrow { transform: translateX(0.2rem); }
+
+@media (prefers-reduced-motion: reduce) {
+  .login-page .login-btn,
+  .login-btn__arrow { transition: none; }
+  .login-page .login-btn:hover,
+  .login-btn:hover .login-btn__arrow,
+  .login-btn:focus-visible .login-btn__arrow { transform: none; }
+}
+
+.login-card__register {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid rgba(245, 240, 227, 0.16);
+  color: rgba(245, 240, 227, 0.7);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.login-page .register-btn {
+  min-height: 2.6rem;
+  padding: 0.5rem;
+  border: 1px solid rgba(245, 240, 227, 0.4);
+  border-radius: 0.4rem;
+  color: var(--login-accent);
+}
+
+.login-page .register-btn:hover {
+  border-color: var(--login-accent);
+  background: rgba(245, 240, 227, 0.1);
+  color: #fff;
+}
+
+.login-page button:focus-visible {
+  outline: 2px solid var(--login-accent);
+  outline-offset: 3px;
 }
