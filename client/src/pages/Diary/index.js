@@ -65,6 +65,7 @@ function Diary() {
   const [initialCreateCategory, setInitialCreateCategory] = useState(lastCategory);
   const [createSaving, setCreateSaving] = useState(false);
   const [createError, setCreateError] = useState("");
+  const [createSuccess, setCreateSuccess] = useState(false);
   const [editDirty, setEditDirty] = useState(false);
   const [editSaving, setEditSaving] = useState(false);
   const [editActive, setEditActive] = useState(false);
@@ -72,6 +73,8 @@ function Diary() {
   const [editResetKey, setEditResetKey] = useState(0);
   const [pendingDiscard, setPendingDiscard] = useState(null);
   const [deleteNoteId, setDeleteNoteId] = useState(null);
+  const [deleteSaving, setDeleteSaving] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
 
   const [sortDirection, setSortDirection] = useState(() => {
     return localStorage.getItem(SORT_KEY) || "desc";
@@ -116,6 +119,12 @@ const modules = {
     localStorage.setItem(SORT_KEY, sortDirection);
   }, [sortDirection]);
 
+  useEffect(() => {
+    if (!createSuccess) return;
+    const timer = setTimeout(() => setCreateSuccess(false), 2500);
+    return () => clearTimeout(timer);
+  }, [createSuccess]);
+
   const requestDiscard = (dirty, action) => {
     if (dirty) {
       setPendingDiscard(() => action);
@@ -151,6 +160,7 @@ const modules = {
     setCreateCategory(defaultCategory);
     setInitialCreateCategory(defaultCategory);
     setCreateError("");
+    setCreateSuccess(false);
     setIsCreatePopupOpen(true);
   });
 
@@ -184,6 +194,7 @@ const modules = {
       setText("");
       shareWith([String(user._id)]);
       setIsCreatePopupOpen(false);
+      setCreateSuccess(true);
     } catch (error) {
       setCreateError(typeof error === "string" ? error : "Die Notiz konnte nicht gespeichert werden.");
     } finally {
@@ -203,18 +214,30 @@ const modules = {
   };
 
   const onRemove = (e) => {
+    setDeleteError("");
     setDeleteNoteId(e.currentTarget.id);
   };
 
   const cancelRemove = () => {
+    if (deleteSaving) return;
     setDeleteNoteId(null);
+    setDeleteError("");
   };
 
-  const confirmRemove = () => {
-    if (!deleteNoteId) return;
-
-    dispatch(removeDiary(deleteNoteId));
-    setDeleteNoteId(null);
+  const confirmRemove = async () => {
+    if (!deleteNoteId || deleteSaving) return;
+    setDeleteError("");
+    setDeleteSaving(true);
+    try {
+      await dispatch(removeDiary(deleteNoteId)).unwrap();
+      setDeleteNoteId(null);
+    } catch (error) {
+      setDeleteError(typeof error === "string" && error.trim()
+        ? error
+        : error?.message || "Der Eintrag konnte nicht gelöscht werden. Bitte versuche es erneut.");
+    } finally {
+      setDeleteSaving(false);
+    }
   };
 
   const onSubmit = (e) => {
@@ -345,12 +368,15 @@ const modules = {
                         className="btn-add"
                         onClick={() => setShowFilterPopup((v) => !v)}
                         title="Filter"
+                        aria-expanded={showFilterPopup}
+                        aria-controls="diary-sort-popup"
                       >
                         <FontAwesomeIcon icon={faFilter} />
                       </button>
 
                       {showFilterPopup && (
-                        <div className="filter-sort-popup">
+                        <div id="diary-sort-popup" className="filter-sort-popup" role="group" aria-label="Sortierung" style={getOriginAccentStyle(fractionTheme)}>
+                          <div className="filter-sort-title">Sortierung</div>
                           <label className="filter-sort-option">
                             <input
                               type="radio"
@@ -388,6 +414,12 @@ const modules = {
                     title={editActive ? "Suche ist während der Bearbeitung deaktiviert" : "Suche nach Text oder Erstellungsdatum"}
                   />
                 </div>
+
+                {createSuccess && (
+                  <div className="diary-submit-success" role="status">
+                    Notiz erfolgreich erstellt.
+                  </div>
+                )}
 
                 {isCreatePopupOpen && (
                   <NotePopup
@@ -471,19 +503,22 @@ const modules = {
         centered
         className="diary-share-modal"
         style={getOriginAccentStyle(fractionTheme)}
+        aria-labelledby="diary-delete-title"
       >
-        <Modal.Header closeButton>
-          <Modal.Title>Eintrag löschen?</Modal.Title>
+        <Modal.Header closeButton={!deleteSaving}>
+          <Modal.Title id="diary-delete-title">Eintrag löschen?</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           Möchtest du diesen Tagebucheintrag wirklich löschen? Diese Aktion
           kann nicht rückgängig gemacht werden.
+          {deleteError && <p role="alert" className="mt-3 mb-0">{deleteError}</p>}
         </Modal.Body>
         <Modal.Footer>
           <Button
             type="button"
             className="diary-share-button diary-share-button--cancel"
             onClick={cancelRemove}
+            disabled={deleteSaving}
           >
             Abbrechen
           </Button>
@@ -491,8 +526,9 @@ const modules = {
             type="button"
             className="diary-share-button diary-share-button--confirm"
             onClick={confirmRemove}
+            disabled={deleteSaving}
           >
-            Löschen
+            {deleteSaving ? "Wird gelöscht …" : "Löschen"}
           </Button>
         </Modal.Footer>
       </Modal>

@@ -68,7 +68,7 @@ test("closes an empty editor without confirmation, including an empty Quill para
 test("protects a changed share selection even without text", () => {
   render(<Diary />);
   fireEvent.click(screen.getByTitle("Neue Notiz"));
-  fireEvent.click(screen.getByRole("button", { name: "Teilen mit 0 Mitspielern" }));
+  fireEvent.click(screen.getByRole("button", { name: "Mitspieler +: Nur du" }));
   fireEvent.click(screen.getByRole("checkbox", { name: /Freund/ }));
   fireEvent.click(screen.getByRole("button", { name: "Übernehmen" }));
   fireEvent.click(within(document.querySelector(".note-popup")).getByRole("button", { name: "Abbrechen" }));

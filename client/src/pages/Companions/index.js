@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../Styles/Companions.css";
+import "../../Styles/ThemedModal.css";
 import Companion from "./Companion";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
@@ -200,7 +201,7 @@ function Companions() {
         show={Boolean(pendingAssignment)}
         onHide={() => setPendingAssignment(null)}
         centered
-        className="companions-slot-confirm-modal"
+        className="themed-modal"
         style={getOriginAccentStyle(fractionTheme)}
       >
         <Modal.Header closeButton>
@@ -244,7 +245,7 @@ function Companions() {
           show={showSlotsInfo}
           onHide={() => setShowSlotsInfo(false)}
           centered
-          className="companions-info-modal"
+          className="themed-modal"
           style={getOriginAccentStyle(fractionTheme)}
         >
           <Modal.Header closeButton>
@@ -276,7 +277,7 @@ function Companions() {
         show={showStallInfo}
         onHide={() => setShowStallInfo(false)}
         centered
-        className="companions-info-modal"
+        className="themed-modal"
         style={getOriginAccentStyle(fractionTheme)}
       >
         <Modal.Header closeButton>

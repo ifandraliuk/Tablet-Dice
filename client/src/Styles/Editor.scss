@@ -131,20 +131,87 @@
   font-size: 0.82rem;
 }
 
-.diary-share-modal .diary-share-button {
+.note-popup {
+  --diary-share-border: var(--diary-origin-border, rgba(249, 199, 79, 0.45));
+  --diary-share-color: var(--diary-origin-color, rgb(249, 199, 79));
+  --diary-share-hover: var(--diary-origin-hover, rgba(249, 199, 79, 0.14));
+  border: 1px solid var(--diary-share-border);
+}
+
+.note-popup .diary-create-share {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.note-popup .btn-close {
+  filter: invert(1);
+  opacity: 0.75;
+}
+
+.note-popup .btn-close:hover {
+  opacity: 1;
+}
+
+.note-popup .ql-snow .ql-stroke {
+  stroke: #f5f0e3;
+}
+
+.note-popup .ql-snow .ql-fill {
+  fill: #f5f0e3;
+}
+
+.note-popup .ql-snow.ql-toolbar button:hover .ql-stroke,
+.note-popup .ql-snow.ql-toolbar button.ql-active .ql-stroke,
+.note-popup .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke {
+  stroke: var(--diary-share-color);
+}
+
+.note-popup .ql-snow.ql-toolbar button:hover .ql-fill,
+.note-popup .ql-snow.ql-toolbar button.ql-active .ql-fill {
+  fill: var(--diary-share-color);
+}
+
+.note-popup .ql-snow.ql-toolbar .ql-picker-label:hover,
+.note-popup .ql-snow.ql-toolbar .ql-picker-item:hover,
+.note-popup .ql-snow.ql-toolbar .ql-picker-item.ql-selected {
+  color: var(--diary-share-color);
+}
+
+.diary-share-modal .diary-share-button,
+.note-popup .diary-share-button {
   border: 1px solid var(--diary-share-border);
   border-radius: 6px;
 }
 
-.diary-share-modal .diary-share-button--cancel {
+.diary-share-modal .diary-share-button--cancel,
+.note-popup .diary-share-button--cancel {
   background: transparent;
 }
 
-.diary-share-modal .diary-share-button--confirm {
+.diary-share-modal .diary-share-button--confirm,
+.note-popup .diary-share-button--confirm {
   color: #1b1b1b;
   background: var(--diary-share-color);
 }
 
 .diary-share-modal .diary-share-button--confirm:hover {
   background: var(--diary-share-hover);
+}
+
+.note-popup .diary-share-button--confirm:hover:enabled {
+  color: #1b1b1b;
+  background: var(--diary-share-color);
+  filter: brightness(0.9);
+}
+
+.note-popup .diary-share-button--cancel:hover:enabled {
+  color: #f5f0e3;
+  background: var(--diary-share-hover);
+}
+
+.note-popup .diary-share-button:focus-visible {
+  outline: 2px solid var(--diary-share-color);
+  outline-offset: 2px;
+  box-shadow: none;
 }

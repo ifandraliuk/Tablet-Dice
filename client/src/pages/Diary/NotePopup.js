@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import ReactQuill from "react-quill";
+import { Button } from "react-bootstrap";
 import { motion } from "framer-motion";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUserGroup } from "@fortawesome/free-solid-svg-icons";
 import ShareDialog from "./ShareDialog";
+import { getOriginAccentStyle } from "../../data/OriginColors";
+import { getSharingInfo } from "./sharingInfo";
+import "../../Styles/Editor.css";
 
 const defaultModules = {
   toolbar: [
@@ -30,6 +36,7 @@ const NotePopup = ({
   modules = defaultModules,
 }) => {
   const [shareOpen, setShareOpen] = useState(false);
+  const sharing = getSharingInfo(share, user?._id);
   return (
     <>
     <motion.div
@@ -57,6 +64,7 @@ const NotePopup = ({
         className="note-popup"
         onClick={(e) => e.stopPropagation()}
         style={{
+          ...getOriginAccentStyle(fractionTheme),
           width: "min(560px, 90vw)",
           maxHeight: "90vh",
           overflowY: "auto",
@@ -79,14 +87,13 @@ const NotePopup = ({
             type="button"
             className="btn-close"
             onClick={closeCreatePopup}
-            style={{ background: "transparent", color: "#fff" }}
-          >
-            ×
-          </button>
+            disabled={saving}
+            aria-label="Schließen"
+          />
         </div>
 
         <div className="mb-3">
-          <label htmlFor="note-category" className="form-label">Kategorie</label>
+          <label htmlFor="note-category" className="form-label">Kategorie:</label>
           <select
             id="note-category"
             className="form-select dark-filter-control"
@@ -109,9 +116,10 @@ const NotePopup = ({
           />
         </div>
 
-        <button type="button" className="btn-add" onClick={() => setShareOpen(true)} disabled={saving}>
-          Teilen mit {Math.max(share.length - 1, 0)} {share.length === 2 ? "Mitspieler" : "Mitspielern"}
-        </button>
+        <Button type="button" className="diary-share-button diary-share-button--cancel diary-create-share" onClick={() => setShareOpen(true)} disabled={saving} title={`Freigabe bearbeiten: ${sharing.label}`} aria-label={`Mitspieler +: ${sharing.label}`}>
+          <span>Mitspieler +</span>
+          <FontAwesomeIcon icon={faUserGroup} aria-hidden="true" />
+        </Button>
         {saveError && <p role="alert">{saveError}</p>}
 
         <div
@@ -122,25 +130,25 @@ const NotePopup = ({
             marginTop: "0.5rem",
           }}
         >
-          <button
+          <Button
             type="button"
-            className="btn-cancel"
+            className="diary-share-button diary-share-button--cancel"
             onClick={closeCreatePopup}
             disabled={saving}
           >
             Abbrechen
-          </button>
+          </Button>
 
-          <button
+          <Button
             type="button"
-            className="btn-save"
+            className="diary-share-button diary-share-button--confirm"
             disabled={saving}
             onClick={() => {
               handleCreatePopupSave();
             }}
           >
             {saving ? "Speichern …" : "Speichern"}
-          </button>
+          </Button>
         </div>
       </motion.div>
     </motion.div>

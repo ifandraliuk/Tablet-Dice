@@ -1,0 +1,17 @@
+.themed-modal .modal-content {
+  border: 1px solid var(--diary-origin-border, rgba(249, 199, 79, 0.45));
+  border-radius: 0.75rem;
+  background: rgba(24, 24, 24, 0.98);
+  color: #f5f0e3;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65);
+}
+.themed-modal .modal-header,
+.themed-modal .modal-footer {
+  border-color: rgba(245, 240, 227, 0.15);
+}
+.themed-modal .modal-title {
+  color: var(--diary-origin-color, #f5f0e3);
+}
+.themed-modal .btn-close {
+  filter: invert(1);
+}

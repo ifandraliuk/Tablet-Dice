@@ -56,6 +56,24 @@ test("searches visible text case-insensitively within the selected category and 
   expect(screen.getByText("Gemeinsamer Drache")).toBeInTheDocument();
 });
 
+test("sort menu changes entry order and retains the selected direction", () => {
+  const { container, unmount } = render(<Diary />);
+  const entryTexts = () => Array.from(container.querySelectorAll(".diary-note__text")).map((entry) => entry.textContent);
+  expect(entryTexts()[0]).toContain("Der Zwerg");
+  const filter = screen.getByTitle("Filter");
+  expect(filter).toHaveAttribute("aria-expanded", "false");
+  fireEvent.click(filter);
+  expect(filter).toHaveAttribute("aria-expanded", "true");
+  expect(screen.getByRole("radio", { name: "Absteigend" })).toBeChecked();
+  fireEvent.click(screen.getByRole("radio", { name: "Aufsteigend" }));
+  expect(filter).toHaveAttribute("aria-expanded", "false");
+  expect(entryTexts()[0]).toContain("Drache");
+  unmount();
+  render(<Diary />);
+  fireEvent.click(screen.getByTitle("Filter"));
+  expect(screen.getByRole("radio", { name: "Aufsteigend" })).toBeChecked();
+});
+
 test("does not match markup and decodes HTML entities", () => {
   render(<Diary />);
   const search = screen.getByRole("searchbox", { name: "Einträge durchsuchen" });
@@ -133,7 +151,7 @@ test("uses the last concrete category when creating from the all-categories view
   fireEvent.click(screen.getByRole("button", { name: "Orte (1)" }));
   fireEvent.click(screen.getByRole("button", { name: "Alle Kategorien (4)" }));
   fireEvent.click(screen.getByTitle("Neue Notiz"));
-  expect(screen.getByLabelText("Kategorie")).toHaveValue("Orte");
+  expect(screen.getByLabelText("Kategorie:")).toHaveValue("Orte");
   fireEvent.click(screen.getByRole("button", { name: "Abbrechen" }));
   expect(screen.queryByRole("dialog", { name: "Änderungen verwerfen?" })).not.toBeInTheDocument();
   expect(localStorage.getItem("diary-last-category")).toBe("Orte");
@@ -141,7 +159,7 @@ test("uses the last concrete category when creating from the all-categories view
   render(<Diary />);
   expect(screen.getByRole("button", { name: "Alle Kategorien (4)" })).toHaveAttribute("aria-pressed", "true");
   fireEvent.click(screen.getByTitle("Neue Notiz"));
-  expect(screen.getByLabelText("Kategorie")).toHaveValue("Orte");
+  expect(screen.getByLabelText("Kategorie:")).toHaveValue("Orte");
 });
 
 test("keeps a matching date search after editing", async () => {

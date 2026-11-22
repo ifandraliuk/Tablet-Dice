@@ -106,17 +106,17 @@ test("switches to the private view after removing the last other participant", a
 
 test("selects participants when creating and retains the selection when reopening", async () => {
   render(<CreateHarness />);
-  fireEvent.click(screen.getByRole("button", { name: "Teilen mit 0 Mitspielern" }));
+  fireEvent.click(screen.getByRole("button", { name: "Mitspieler +: Nur du" }));
   const dialog = screen.getByRole("dialog", { name: "Notiz teilen" });
   fireEvent.click(within(dialog).getByRole("checkbox", { name: /Freund/ }));
   fireEvent.click(within(dialog).getByRole("button", { name: "Übernehmen" }));
-  fireEvent.click(screen.getByRole("button", { name: "Teilen mit 1 Mitspieler" }));
+  fireEvent.click(screen.getByRole("button", { name: "Mitspieler +: 1 Mitspieler" }));
   expect(screen.getByRole("checkbox", { name: /Freund/ })).toBeChecked();
 });
 
 test("filters participants by name without losing hidden selections when creating", () => {
   render(<CreateHarness />);
-  fireEvent.click(screen.getByRole("button", { name: "Teilen mit 0 Mitspielern" }));
+  fireEvent.click(screen.getByRole("button", { name: "Mitspieler +: Nur du" }));
   const search = screen.getByRole("searchbox", { name: "Mitspieler suchen" });
   fireEvent.change(search, { target: { value: "  FREUND  " } });
   fireEvent.click(screen.getByRole("checkbox", { name: /Freund/ }));
@@ -126,7 +126,7 @@ test("filters participants by name without losing hidden selections when creatin
   fireEvent.change(search, { target: { value: "unbekannt" } });
   expect(screen.getByRole("status")).toHaveTextContent("Keine Mitspieler für diese Suche gefunden.");
   fireEvent.click(screen.getByRole("button", { name: "Übernehmen" }));
-  fireEvent.click(screen.getByRole("button", { name: "Teilen mit 2 Mitspielern" }));
+  fireEvent.click(screen.getByRole("button", { name: "Mitspieler +: 2 Mitspieler" }));
   expect(screen.getByRole("searchbox", { name: "Mitspieler suchen" })).toHaveValue("");
   expect(screen.getByRole("checkbox", { name: /Freund/ })).toBeChecked();
   expect(screen.getByRole("checkbox", { name: /Andere/ })).toBeChecked();

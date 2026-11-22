@@ -1,7 +1,8 @@
-import React, { memo, useEffect } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import EquippedItem from "./EquippedItem";
 import { motion } from "framer-motion";
+import { Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faShield,
@@ -10,6 +11,7 @@ import {
   faSnowflake,
   faCloudRain,
   faShieldHalved,
+  faCircleInfo,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   getCategoryBoni,
@@ -18,6 +20,8 @@ import {
 import { getProfession } from "../../features/player/playerSlice";
 import ItemIcon from "../../components/ItemIcon";
 import { itemNames } from "../../data/ConstVariables";
+import { getOriginAccentStyle } from "../../data/OriginColors";
+import "../../Styles/ThemedModal.css";
 
 const getEquipmentTileClass = (equippedItem) => {
   const item = equippedItem?.item ?? equippedItem;
@@ -31,6 +35,7 @@ const getEquipmentTileClass = (equippedItem) => {
 const Equipment = memo(({ setShowInfo, onSelectEmptySlot, selectedSlot, err }) => {
   //console.log("re-rendering equipment");
   const dispatch = useDispatch();
+  const [showProtectionInfo, setShowProtectionInfo] = useState(false);
   const equipped = useSelector((state) =>
     state.inventory.inventory.filter((el) => el.status === "Ausgerüstet")
   );
@@ -58,7 +63,19 @@ const Equipment = memo(({ setShowInfo, onSelectEmptySlot, selectedSlot, err }) =
       aria-labelledby="inventory-equipment-title"
     >
       <header className="inventory-equipment-panel__header">
-        <h2 id="inventory-equipment-title">Ausrüstung</h2>
+        <div className="inventory-equipment-panel__heading">
+          <h2 id="inventory-equipment-title">Ausrüstung</h2>
+          <button
+            type="button"
+            className="inventory-protection-info__button"
+            aria-label="Informationen zu Rüstung und Widerständen"
+            title="Informationen zu Rüstung und Widerständen"
+            aria-haspopup="dialog"
+            onClick={() => setShowProtectionInfo(true)}
+          >
+            <FontAwesomeIcon icon={faCircleInfo} aria-hidden="true" />
+          </button>
+        </div>
         <span>Angelegte Gegenstände und Schutzwerte</span>
       </header>
       <div
@@ -118,6 +135,99 @@ const Equipment = memo(({ setShowInfo, onSelectEmptySlot, selectedSlot, err }) =
           </div>
         </div>
       </div>
+      <Modal
+        show={showProtectionInfo}
+        onHide={() => setShowProtectionInfo(false)}
+        centered
+        scrollable
+        className="themed-modal inventory-protection-modal"
+        style={getOriginAccentStyle(fractionTheme)}
+        aria-labelledby="inventory-protection-title"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="inventory-protection-title">Rüstung und Widerstände</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <section aria-labelledby="protection-armor-heading">
+            <h3 id="protection-armor-heading">Rüstungsklasse und Rüstungswert</h3>
+            <p>
+              Die Rüstungsklasse richtet sich nach dem Gesamtgewicht der ausgerüsteten
+              Gegenstände der Gattungen Kopf, Brust, Hüfte, Beine, Arme und Füße.
+              Der Rüstungswert ist die Summe ihrer Werte.
+            </p>
+            <p>
+              Plattenrüstung bietet den höchsten Rüstungswert, leichte Rüstung den
+              niedrigsten; dafür bleibt man in leichter Rüstung beweglicher.
+            </p>
+            <ul>
+              <li><strong>Leicht: 0 bis 1,6 kg.</strong> 1 Kampfaktion, 1 Paradeaktion und 1 Bonusaktion.</li>
+              <li><strong>Mittel: 1,7 bis 3,9 kg.</strong> 1 Kampfaktion und 1 Paradeaktion, keine Bonusaktion; Ausnahmen sind z. B. Dolche.</li>
+              <li><strong>Schwer (Kette): 4 bis 6,5 kg.</strong> 1 Kampfaktion, keine Parade- oder Bonusaktion; Ausnahme Schild. Heimlichkeit −1 pro Rüstungsgegenstand.</li>
+              <li><strong>Schwer (Platte): ab 6,6 kg.</strong> 1 Kampfaktion, keine Parade- oder Bonusaktion; Ausnahme Schild. Geschicklichkeit −1 und Heimlichkeit −2 pro Rüstungsgegenstand.</li>
+            </ul>
+            <p>
+              Paradeaktionen können auch zum Ausweichen genutzt werden. Die App ordnet
+              Plattenrüstung derzeit nur bis 10 kg zu. Bei schwerer Rüstung blendet das
+              Dashboard Bonusaktion und Reaktion aus.
+            </p>
+          </section>
+          <section aria-labelledby="protection-resistance-heading">
+            <h3 id="protection-resistance-heading">Widerstände und Wetter</h3>
+            <p>
+              Die Werte für Magie, Hitze, Kälte und Wasser zeigen die passenden
+              Widerstandsboni aus ausgerüsteten Gegenständen; deren Wert richtet sich
+              nach der Seltenheit des Bonus. Waffen der Gattung „Werkzeug“ werden
+              auch ohne Ausrüstung berücksichtigt.
+            </p>
+            <p>
+              Bei einer Wetterresistenzprobe würfelst du die angegebenen Würfel und
+              vergleichst ihre Summe mit dem passenden Widerstandswert. Ist der
+              Widerstand mindestens so hoch wie der Wurf, widerstehst du dem Effekt.
+              Welches Wetter auftritt, bestimmt die Spielleitung.
+            </p>
+            <details>
+              <summary>Kälte und Frost</summary>
+              <ul>
+                <li><strong>Kälte · W20:</strong> −1 auf Geschicklichkeit, Vitalität und Ausdauer; keine Regeneration im Schlaf.</li>
+                <li><strong>Frost · W20 + W12:</strong> −2 auf Geschicklichkeit, Vitalität und Ausdauer; keine Regeneration im Schlaf. Täglich eine Vitalitätsprobe: Bei Misslingen entsteht eine Pneumonie, die bis zur Heilung täglich W20 Schaden verursacht.</li>
+                <li><strong>Polarfrost · 2 W20:</strong> −4 auf Geschicklichkeit, Vitalität und Ausdauer sowie stündlich 2 W20 Schaden. Täglich eine Vitalitätsprobe gegen Pneumonie.</li>
+              </ul>
+            </details>
+            <details>
+              <summary>Hitze</summary>
+              <ul>
+                <li><strong>Trockene Hitze · W20:</strong> −1 auf Stärke, Vitalität und Ausdauer. Täglich eine Vitalitätsprobe: Bei Misslingen verursacht ein Sonnenstich einmalig W20 Schaden und −2 Intelligenz für einen Tag.</li>
+                <li><strong>Schwüle Hitze · W20:</strong> −2 auf Stärke, Vitalität und Ausdauer.</li>
+                <li><strong>Hölle · 2 W20:</strong> −4 auf Stärke, Vitalität und Ausdauer sowie stündlich 2 W20 Schaden.</li>
+              </ul>
+              <p>
+                Bei trockener und schwüler Hitze muss täglich zweimal getrunken werden,
+                um Ausdauer bzw. Mana im Schlaf zu regenerieren. Einmal trinken verhindert
+                die Regeneration; ohne Trinken sinkt die Ausdauer um 30. In der Hölle
+                sind viermal Trinken nötig; bei zweimal Trinken entfällt die Regeneration,
+                ohne Trinken sinkt die Ausdauer um 60.
+              </p>
+            </details>
+            <details>
+              <summary>Regen und Sturm</summary>
+              <ul>
+                <li><strong>Regen · W20:</strong> +5 Ausdauerverbrauch bei allen Aktionen.</li>
+                <li><strong>Gewittersturm · W20 + W12:</strong> +10 Ausdauerverbrauch bei allen Aktionen.</li>
+                <li><strong>Apokalyptischer Orkanregen · 2 W20:</strong> +15 Ausdauerverbrauch bei allen Aktionen.</li>
+              </ul>
+              <p>
+                Für die Regeneration von Vitalität, Ausdauer und Mana im Schlaf muss
+                trocken geschlafen werden.
+              </p>
+            </details>
+            <p className="inventory-protection-modal__note">
+              Die App berechnet die Anwendung der Schutzwerte auf Schaden oder
+              Wettereffekte nicht automatisch. Die Regeln für Magieresistenz werden
+              hier nicht erläutert.
+            </p>
+          </section>
+        </Modal.Body>
+      </Modal>
       {err && <div className={`${err.variant}-alert`}>{err.msg}</div>}
       <div className="inventory-equipment">
         <div className="inventory-equipment__slots inventory-equipment__slots--left">
