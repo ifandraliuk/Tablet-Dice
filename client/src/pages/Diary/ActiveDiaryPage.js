@@ -195,6 +195,7 @@ const ActiveDiaryCategory = React.memo(function ActiveDiaryCategory({
             note={note}
             showCategory={activeCategory === ALL_DIARY_CATEGORIES}
             user={user}
+            search={search}
             fractionTheme={fractionTheme}
             editId={editId}
             onRemove={onRemove}

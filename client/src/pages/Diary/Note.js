@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Popover from "react-bootstrap/Popover";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,9 +6,15 @@ import { faUserGroup, faMarker, faTrash } from "@fortawesome/free-solid-svg-icon
 import { getOriginAccentStyle } from "../../data/OriginColors";
 import NoteDate from "./NoteDate";
 import { getSharingInfo } from "./sharingInfo";
+import { diaryPreview } from "./diaryPreview";
 
-function Note({ note, user, fractionTheme, onEdit, editId, onRemove, showCategory, submitMessage = "" }) {
+function Note({ note, user, fractionTheme, onEdit, editId, onRemove, showCategory, search = "", submitMessage = "" }) {
   const { players, text, createdAt } = note;
+  const preview = useMemo(() => diaryPreview(text), [text]);
+  const [expanded, setExpanded] = useState(Boolean(search.trim()));
+  useEffect(() => {
+    setExpanded(Boolean(search.trim()));
+  }, [search]);
   const sharing = getSharingInfo(players, user?._id);
   const popover = (
     <Popover
@@ -75,7 +81,18 @@ function Note({ note, user, fractionTheme, onEdit, editId, onRemove, showCategor
           {submitMessage}
         </div>
       )}
-      <div className="diary-note__text" dangerouslySetInnerHTML={{ __html: text }} />
+      <div id={`diary-note-text-${note._id}`} className="diary-note__text" dangerouslySetInnerHTML={{ __html: preview && !expanded ? preview : text }} />
+      {preview && (
+        <button
+          type="button"
+          className="diary-note__toggle"
+          aria-expanded={expanded}
+          aria-controls={`diary-note-text-${note._id}`}
+          onClick={() => setExpanded((value) => !value)}
+        >
+          {expanded ? "Weniger anzeigen" : "Mehr anzeigen"}
+        </button>
+      )}
     </article>
   );
 }

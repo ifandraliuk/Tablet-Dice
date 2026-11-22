@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { editDiary } from "../../features/diary/diarySlice";
 import ActiveDiaryCategory from "./ActiveDiaryPage";
 import NotePopup from "./NotePopup";
+import ShareDialog from "./ShareDialog";
 
 jest.mock("react-redux", () => ({ useDispatch: jest.fn(), useSelector: jest.fn() }));
 jest.mock("../../features/diary/diarySlice", () => ({ editDiary: jest.fn((data) => data) }));
@@ -111,6 +112,44 @@ test("selects participants when creating and retains the selection when reopenin
   fireEvent.click(within(dialog).getByRole("button", { name: "Übernehmen" }));
   fireEvent.click(screen.getByRole("button", { name: "Teilen mit 1 Mitspieler" }));
   expect(screen.getByRole("checkbox", { name: /Freund/ })).toBeChecked();
+});
+
+test("filters participants by name without losing hidden selections when creating", () => {
+  render(<CreateHarness />);
+  fireEvent.click(screen.getByRole("button", { name: "Teilen mit 0 Mitspielern" }));
+  const search = screen.getByRole("searchbox", { name: "Mitspieler suchen" });
+  fireEvent.change(search, { target: { value: "  FREUND  " } });
+  fireEvent.click(screen.getByRole("checkbox", { name: /Freund/ }));
+  expect(screen.queryByRole("checkbox", { name: /Andere/ })).not.toBeInTheDocument();
+  fireEvent.change(search, { target: { value: "andere" } });
+  fireEvent.click(screen.getByRole("checkbox", { name: /Andere/ }));
+  fireEvent.change(search, { target: { value: "unbekannt" } });
+  expect(screen.getByRole("status")).toHaveTextContent("Keine Mitspieler für diese Suche gefunden.");
+  fireEvent.click(screen.getByRole("button", { name: "Übernehmen" }));
+  fireEvent.click(screen.getByRole("button", { name: "Teilen mit 2 Mitspielern" }));
+  expect(screen.getByRole("searchbox", { name: "Mitspieler suchen" })).toHaveValue("");
+  expect(screen.getByRole("checkbox", { name: /Freund/ })).toBeChecked();
+  expect(screen.getByRole("checkbox", { name: /Andere/ })).toBeChecked();
+  expect(screen.queryByRole("checkbox", { name: /Ich/ })).not.toBeInTheDocument();
+});
+
+test("preserves existing hidden participants when confirming a filtered edit", async () => {
+  renderEdit();
+  fireEvent.click(screen.getByTitle("Teilen"));
+  fireEvent.change(screen.getByRole("searchbox", { name: "Mitspieler suchen" }), { target: { value: "andere" } });
+  fireEvent.click(screen.getByRole("checkbox", { name: /Andere/ }));
+  fireEvent.click(screen.getByRole("button", { name: "Übernehmen" }));
+  fireEvent.click(screen.getByTitle("Speichern"));
+  await waitFor(() => expect(editDiary).toHaveBeenCalledWith({
+    id: "note",
+    data: { text: "Erinnerung", players: ["me", "friend", "other"], category: "Erlebtes" },
+  }));
+});
+
+test("keeps the existing empty-player message when there is nobody to choose", () => {
+  render(<ShareDialog show selectedPlayers={["me"]} user={user} userList={[user]} onHide={jest.fn()} onConfirm={jest.fn()} />);
+  expect(screen.getByText("Keine weiteren Spieler vorhanden.")).toBeInTheDocument();
+  expect(screen.queryByRole("searchbox", { name: "Mitspieler suchen" })).not.toBeInTheDocument();
 });
 
 test("preserves existing participants when editing without opening sharing", async () => {

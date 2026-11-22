@@ -188,6 +188,22 @@
   margin-bottom: 0;
 }
 
+.diary-page .diary-note__toggle {
+  margin-top: 0.4rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--fraction-accent, #e6ce63);
+  font-size: 0.85rem;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.diary-page .diary-note__toggle:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
 @media (max-width: 767px) {
   .diary-page .filter-sidebar {
     flex-direction: row !important;

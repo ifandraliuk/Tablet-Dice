@@ -188,3 +188,21 @@ test("clears a stale search after a successful creation", async () => {
   fireEvent.click(screen.getByRole("button", { name: "Speichern" }));
   await waitFor(() => expect(search).toHaveValue(""));
 });
+
+test("shows text found beyond the preview when searching", () => {
+  const me = { _id: "me", name: "Ich" };
+  const state = {
+    auth: { user: me },
+    player: { fractionTheme: "Welles" },
+    diaries: {
+      userList: [me],
+      diary: [{ _id: "long", category: "Personen", text: `<p>${"a".repeat(610)} Geheimwort</p>`, players: [me] }],
+    },
+  };
+  useSelector.mockImplementation((selector) => selector(state));
+  render(<Diary />);
+  expect(screen.queryByText(/Geheimwort/)).not.toBeInTheDocument();
+  fireEvent.change(screen.getByRole("searchbox", { name: "Einträge durchsuchen" }), { target: { value: "Geheimwort" } });
+  expect(screen.getByText(/Geheimwort/)).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Weniger anzeigen" })).toHaveAttribute("aria-expanded", "true");
+});

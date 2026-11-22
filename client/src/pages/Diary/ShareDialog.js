@@ -4,14 +4,24 @@ import originColors, { getOriginAccentStyle } from "../../data/OriginColors";
 
 function ShareDialog({ show, onHide, selectedPlayers, onConfirm, user, userList, fractionTheme }) {
   const [draft, setDraft] = useState([]);
+  const [search, setSearch] = useState("");
   const selectablePlayers = (userList || []).filter((player) => {
     const id = player?._id ?? player?.id;
     return id && String(id) !== String(user?._id);
+  });
+  const query = search.trim().toLocaleLowerCase("de-DE");
+  const filteredPlayers = selectablePlayers.filter((player) => {
+    const name = player.name ?? player.username ?? String(player._id ?? player.id);
+    return name.toLocaleLowerCase("de-DE").includes(query);
   });
 
   useEffect(() => {
     if (show) setDraft(selectedPlayers.map(String));
   }, [show, selectedPlayers]);
+
+  useEffect(() => {
+    if (show) setSearch("");
+  }, [show]);
 
   const toggleUser = (id) => {
     setDraft((previous) =>
@@ -38,7 +48,16 @@ function ShareDialog({ show, onHide, selectedPlayers, onConfirm, user, userList,
           <p className="mb-0">Keine weiteren Spieler vorhanden.</p>
         ) : (
           <Form>
-            {selectablePlayers.map((player) => {
+            <Form.Control
+              type="search"
+              className="dark-filter-control mb-3"
+              aria-label="Mitspieler suchen"
+              placeholder="Mitspieler suchen …"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+            />
+            {filteredPlayers.length === 0 && <p role="status">Keine Mitspieler für diese Suche gefunden.</p>}
+            {filteredPlayers.map((player) => {
               const playerId = String(player._id ?? player.id);
               const playerName = player.name ?? player.username ?? playerId;
               const fallbackImage = `/race/${player.sex === "männlich" ? "m" : "w"}/${player.kind || "Mensch"}.png`;

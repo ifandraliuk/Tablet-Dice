@@ -49,3 +49,31 @@ test("handles missing or invalid dates and prevents editing a second entry", () 
   expect(screen.getByText("Ohne Datum")).toBeInTheDocument();
   expect(screen.getByRole("button", { name: "Eintrag bearbeiten" })).toBeDisabled();
 });
+
+test("expands and collapses long rich text without hiding focusable links in the preview", () => {
+  const longNote = {
+    ...note,
+    text: `<p><strong>${"a".repeat(610)}</strong></p><p><a href="/karte">Verborgene Karte</a></p>`,
+  };
+  render(<Note note={longNote} user={{ _id: "me" }} editId="" />);
+  const toggle = screen.getByRole("button", { name: "Mehr anzeigen" });
+  expect(toggle).toHaveAttribute("aria-expanded", "false");
+  expect(screen.queryByRole("link", { name: "Verborgene Karte" })).not.toBeInTheDocument();
+  expect(document.querySelector(".diary-note__text strong").textContent).toHaveLength(600);
+  expect(document.querySelector(".diary-note__text")).toHaveTextContent(`${"a".repeat(600)}…`);
+  fireEvent.click(toggle);
+  expect(screen.getByRole("link", { name: "Verborgene Karte" })).toHaveAttribute("href", "/karte");
+  expect(screen.getByRole("button", { name: "Weniger anzeigen" })).toHaveAttribute("aria-expanded", "true");
+  fireEvent.click(screen.getByRole("button", { name: "Weniger anzeigen" }));
+  expect(screen.queryByRole("link", { name: "Verborgene Karte" })).not.toBeInTheDocument();
+});
+
+test("automatically shows the full text for search results and allows collapsing it", () => {
+  const longNote = { ...note, text: `<p>${"a".repeat(610)} Suchtreffer</p>` };
+  const { rerender } = render(<Note note={longNote} user={{ _id: "me" }} editId="" />);
+  expect(screen.queryByText(/Suchtreffer/)).not.toBeInTheDocument();
+  rerender(<Note note={longNote} user={{ _id: "me" }} editId="" search="suchtreffer" />);
+  expect(screen.getByText(/Suchtreffer/)).toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "Weniger anzeigen" }));
+  expect(screen.queryByText(/Suchtreffer/)).not.toBeInTheDocument();
+});
