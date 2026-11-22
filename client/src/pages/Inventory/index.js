@@ -38,7 +38,6 @@ import {
   getArmor,
   getUserWeapons,
 } from "../../features/inventory/inventorySlice";
-import { reset as playerReset } from "../../features/player/playerSlice";
 import Equipment from "./Equipment";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
@@ -163,8 +162,6 @@ function InventoryPage() {
     }
     return () => {
       inventoryPageMounted.current = false;
-      dispatch(reset());
-      dispatch(playerReset());
     };
   }, [user, dispatch, navigate]);
 

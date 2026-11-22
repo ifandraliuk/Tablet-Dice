@@ -14,7 +14,6 @@ import {
   getGeneral,
   getLevel,
   getProfession,
-  reset,
   updateLevel,
 } from "../../features/player/playerSlice";
 import { AnimatePresence, motion } from "framer-motion";
@@ -101,11 +100,7 @@ function Dashboard() {
     } else {
       // Redirect to "/" if user is not logged in
       navigate("/");
-      dispatch(reset());
     }
-    return () => {
-      dispatch(reset());
-    };
   }, [dispatch, user, navigate]);
   const checkActionVisibility = () => {
     console.log("check visibility ", armorCategory);

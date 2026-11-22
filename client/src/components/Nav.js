@@ -14,6 +14,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout, reset } from "../features/auth/AuthSlice";
 import { reset as playerReset } from "../features/player/playerSlice";
+import { reset as inventoryReset } from "../features/inventory/inventorySlice";
 import { useNavigate } from "react-router-dom";
 
 function Navbar() {
@@ -26,6 +27,7 @@ function Navbar() {
     dispatch(logout());
     dispatch(reset());
     dispatch(playerReset());
+    dispatch(inventoryReset());
     localStorage.clear();
     navigate("/");
   };
