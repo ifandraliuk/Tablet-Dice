@@ -12,7 +12,7 @@ import Note from "./Note";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMarker, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Editor from "./Editor";
-import { diaryViewForPlayers } from "./diaryView";
+import { ALL_DIARY_CATEGORIES, diaryViewForPlayers, matchesDiaryCategory } from "./diaryView";
 import { samePlayers } from "./draftUtils";
 import { matchesDiarySearch } from "./diarySearch";
 
@@ -83,7 +83,7 @@ const ActiveDiaryCategory = React.memo(function ActiveDiaryCategory({
     if (!Array.isArray(diary)) return [];
 
     return diary
-      .filter((note) => note.category === activeCategory)
+      .filter((note) => matchesDiaryCategory(note, activeCategory))
       .filter((note) => diaryViewForPlayers(note.players || []) === viewMode);
   }, [diary, activeCategory, viewMode]);
 
@@ -101,7 +101,7 @@ const ActiveDiaryCategory = React.memo(function ActiveDiaryCategory({
   }
 
   if (notes.length === 0) {
-    return <h5>Keine Notizen in dieser Kategorie</h5>;
+    return <h5>{activeCategory === ALL_DIARY_CATEGORIES ? "Keine Einträge in dieser Ansicht" : "Keine Notizen in dieser Kategorie"}</h5>;
   }
 
   if (matchingNotes.length === 0) {
@@ -132,6 +132,11 @@ const ActiveDiaryCategory = React.memo(function ActiveDiaryCategory({
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    const editedNote = notes.find((note) => note._id === editId);
+    if (!editedNote) {
+      setSaveError("Der Eintrag konnte nicht gefunden werden.");
+      return;
+    }
     if (!draftText.trim()) {
       setSaveError("Bitte gib einen Text ein.");
       return;
@@ -141,13 +146,13 @@ const ActiveDiaryCategory = React.memo(function ActiveDiaryCategory({
     try {
       await dispatch(editDiary({
         id: editId,
-        data: { text: draftText, players: share, category: activeCategory },
+        data: { text: draftText, players: share, category: editedNote.category },
       })).unwrap();
       setEditedNoteId(editId);
       setSubmitMessage("Notiz erfolgreich bearbeitet.");
       setEditId("");
       setEdit(false);
-      if (onSavedText) onSavedText(draftText, notes.find((note) => note._id === editId)?.createdAt);
+      if (onSavedText) onSavedText(draftText, editedNote.createdAt);
       setViewMode(diaryViewForPlayers(share));
     } catch (error) {
       setSaveError(typeof error === "string" ? error : "Die Notiz konnte nicht gespeichert werden.");
@@ -165,6 +170,7 @@ const ActiveDiaryCategory = React.memo(function ActiveDiaryCategory({
           <Editor
             key={note._id}
             note={note}
+            showCategory={activeCategory === ALL_DIARY_CATEGORIES}
             setDraftText={setDraftText}
             draftText={draftText}
             user={user}
@@ -187,6 +193,7 @@ const ActiveDiaryCategory = React.memo(function ActiveDiaryCategory({
             key={note._id}
             activeCategory={activeCategory}
             note={note}
+            showCategory={activeCategory === ALL_DIARY_CATEGORIES}
             user={user}
             fractionTheme={fractionTheme}
             editId={editId}

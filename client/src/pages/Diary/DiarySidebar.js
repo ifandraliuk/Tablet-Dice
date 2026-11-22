@@ -7,10 +7,12 @@ import {
   faCircleExclamation,
   faCircleQuestion,
   faFeather,
+  faLayerGroup,
 } from "@fortawesome/free-solid-svg-icons";
 import { diaryCategories } from "../../data/ConstVariables";
 import { faFortAwesome } from "@fortawesome/free-brands-svg-icons";
 import { motion } from "framer-motion";
+import { ALL_DIARY_CATEGORIES } from "./diaryView";
 
 const DiarySidebar = React.memo(function DiarySidebar({
   diary,
@@ -23,6 +25,7 @@ const DiarySidebar = React.memo(function DiarySidebar({
 
   const icons = useMemo(
     () => ({
+      [ALL_DIARY_CATEGORIES]: faLayerGroup,
       Personen: faPeopleGroup,
       Orte: faFortAwesome,
       Wissen: faBookAtlas,
@@ -47,8 +50,9 @@ const DiarySidebar = React.memo(function DiarySidebar({
 
   return (
     <div className="filter-sidebar d-flex flex-column mt-2">
-      {diaryCategories?.map((category) => {
-        const count = categoryCounts[category] || 0;
+      {[ALL_DIARY_CATEGORIES, ...diaryCategories].map((category) => {
+        const label = category === ALL_DIARY_CATEGORIES ? "Alle Kategorien" : category;
+        const count = category === ALL_DIARY_CATEGORIES ? (diary?.length || 0) : (categoryCounts[category] || 0);
         const isExpanded =
           activeCategory === category || hoveredCategory === category;
 
@@ -57,9 +61,9 @@ const DiarySidebar = React.memo(function DiarySidebar({
             key={category}
             type="button"
             disabled={disabled}
-            aria-label={`${category} (${count})`}
+            aria-label={`${label} (${count})`}
             aria-pressed={activeCategory === category}
-            title={`${category} (${count})`}
+            title={`${label} (${count})`}
             className={`button diary-filter-btn mb-2 ${
               activeCategory === category ? `${fractionTheme}-active` : ""
             }`}
@@ -72,7 +76,7 @@ const DiarySidebar = React.memo(function DiarySidebar({
             whileHover="open"
             variants={{
               closed: { width: 44 },
-              open: { width: 190 },
+              open: { width: category === ALL_DIARY_CATEGORIES ? 240 : 190 },
             }}
             transition={{ type: "spring", stiffness: 500, damping: 35 }}
           >
@@ -97,7 +101,7 @@ const DiarySidebar = React.memo(function DiarySidebar({
               transition={{ duration: 0.15 }}
               style={{ whiteSpace: "nowrap", overflow: "hidden" }}
             >
-              {category} ({count})
+              {label} ({count})
             </motion.span>
 
             <span className="diary-filter-icon">

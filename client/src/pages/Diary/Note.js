@@ -7,7 +7,7 @@ import { getOriginAccentStyle } from "../../data/OriginColors";
 import NoteDate from "./NoteDate";
 import { getSharingInfo } from "./sharingInfo";
 
-function Note({ note, user, fractionTheme, onEdit, editId, onRemove, submitMessage = "" }) {
+function Note({ note, user, fractionTheme, onEdit, editId, onRemove, showCategory, submitMessage = "" }) {
   const { players, text, createdAt } = note;
   const sharing = getSharingInfo(players, user?._id);
   const popover = (
@@ -36,7 +36,10 @@ function Note({ note, user, fractionTheme, onEdit, editId, onRemove, submitMessa
   return (
     <article className="diary-note">
       <header className="diary-note__header">
-        <NoteDate createdAt={createdAt} />
+        <div className="diary-note__details">
+          {showCategory && <span className="diary-note__category">{note.category || "Sonstiges"}</span>}
+          <NoteDate createdAt={createdAt} updatedAt={note.updatedAt} />
+        </div>
         <div className="diary-note__actions">
           <OverlayTrigger trigger="click" placement="bottom" overlay={popover} rootClose>
             <button type="button" className="share-chip" title="Freigabe anzeigen" aria-label={`Freigabe anzeigen: ${sharing.label}`}>

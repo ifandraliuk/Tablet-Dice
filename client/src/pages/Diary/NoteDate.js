@@ -1,22 +1,34 @@
 import React from "react";
 import { formatDiaryDate } from "./diaryDate";
 
-function NoteDate({ createdAt }) {
+function formatTime(date) {
+  return date.toLocaleTimeString("de-DE", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+function NoteDate({ createdAt, updatedAt }) {
   const dateText = formatDiaryDate(createdAt);
   if (!dateText) {
     return <span className="diary-note__date">Ohne Datum</span>;
   }
 
   const date = new Date(createdAt);
-  const timeText = date.toLocaleTimeString("de-DE", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const updatedDateText = formatDiaryDate(updatedAt);
+  const updatedDate = updatedDateText ? new Date(updatedAt) : null;
 
   return (
-    <time className="diary-note__date" dateTime={date.toISOString()}>
-      {dateText} · {timeText}
-    </time>
+    <div className="diary-note__timestamps">
+      <span className="diary-note__date">
+        Erstellt: <time dateTime={date.toISOString()}>{dateText} · {formatTime(date)}</time>
+      </span>
+      {updatedDate && updatedDate.getTime() > date.getTime() && (
+        <span className="diary-note__date">
+          Zuletzt geändert: <time dateTime={updatedDate.toISOString()}>{updatedDateText} · {formatTime(updatedDate)}</time>
+        </span>
+      )}
+    </div>
   );
 }
 

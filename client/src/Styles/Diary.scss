@@ -127,7 +127,7 @@
 .diary-page .diary-note__header {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 0.5rem;
   margin-bottom: 0.75rem;
@@ -138,6 +138,27 @@
 .diary-page .diary-note__date {
   color: rgba(245, 240, 227, 0.75);
   font-size: 0.8rem;
+}
+
+.diary-page .diary-note__details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+}
+
+.diary-page .diary-note__timestamps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.diary-page .diary-note__category {
+  padding-left: 0.45rem;
+  border-left: 2px solid var(--fraction-accent, rgba(245, 240, 227, 0.55));
+  color: var(--fraction-accent, #f5f0e3);
+  font-size: 0.95rem;
+  font-weight: 600;
 }
 
 .diary-page .diary-note__actions {

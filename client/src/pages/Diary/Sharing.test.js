@@ -21,6 +21,8 @@ const note = {
   _id: "note",
   category: "Erlebtes",
   text: "Erinnerung",
+  createdAt: "2025-03-15T12:30:00.000Z",
+  updatedAt: "2025-03-16T14:45:00.000Z",
   players: [{ _id: "me", name: "Ich" }, { _id: "friend", name: "Freund" }],
 };
 
@@ -113,6 +115,7 @@ test("selects participants when creating and retains the selection when reopenin
 
 test("preserves existing participants when editing without opening sharing", async () => {
   renderEdit();
+  expect(screen.getByText(/Zuletzt geändert:/).querySelector("time")).toHaveAttribute("datetime", note.updatedAt);
   fireEvent.change(screen.getByLabelText("Notiztext"), { target: { value: "Neue Erinnerung" } });
   fireEvent.click(screen.getByTitle("Speichern"));
   await waitFor(() => expect(editDiary).toHaveBeenCalledWith({

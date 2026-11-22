@@ -27,7 +27,7 @@ import { motion } from "framer-motion";
 import DiarySidebar from "./DiarySidebar";
 import ActiveDiaryCategory from "./ActiveDiaryPage";
 import { getOriginAccentStyle } from "../../data/OriginColors";
-import { diaryViewForPlayers } from "./diaryView";
+import { ALL_DIARY_CATEGORIES, diaryViewForPlayers, matchesDiaryCategory } from "./diaryView";
 import { hasDraftContent } from "./draftUtils";
 import { matchesDiarySearch } from "./diarySearch";
 
@@ -38,6 +38,7 @@ function Diary() {
 
   const VIEW_MODE_KEY = "diary-view-mode";
   const CATEGORY_KEY = "diary-active-category";
+  const LAST_CATEGORY_KEY = "diary-last-category";
   const SORT_KEY = "diary-sort-direction";
 
   const [viewMode, setViewMode] = useState(() => {
@@ -49,12 +50,19 @@ function Diary() {
   const [activeCategory, setCategory] = useState(() => {
     return localStorage.getItem(CATEGORY_KEY) || "Personen";
   });
+  const [lastCategory, setLastCategory] = useState(() => {
+    const active = localStorage.getItem(CATEGORY_KEY);
+    const last = localStorage.getItem(LAST_CATEGORY_KEY);
+    if (diaryCategories.includes(active)) return active;
+    return diaryCategories.includes(last) ? last : diaryCategories[0];
+  });
   const [saveData, setSave] = useState(false);
   const [edit, setEdit] = useState(false);
   const [editId, setEditId] = useState("");
   const [showFilterPopup, setShowFilterPopup] = useState(false);
   const [isCreatePopupOpen, setIsCreatePopupOpen] = useState(false);
-  const [createCategory, setCreateCategory] = useState(activeCategory);
+  const [createCategory, setCreateCategory] = useState(lastCategory);
+  const [initialCreateCategory, setInitialCreateCategory] = useState(lastCategory);
   const [createSaving, setCreateSaving] = useState(false);
   const [createError, setCreateError] = useState("");
   const [editDirty, setEditDirty] = useState(false);
@@ -101,6 +109,10 @@ const modules = {
   }, [activeCategory]);
 
   useEffect(() => {
+    localStorage.setItem(LAST_CATEGORY_KEY, lastCategory);
+  }, [lastCategory]);
+
+  useEffect(() => {
     localStorage.setItem(SORT_KEY, sortDirection);
   }, [sortDirection]);
 
@@ -122,8 +134,12 @@ const modules = {
   const handleShowShared = () => {
     if (viewMode !== "shared") navigateFromEdit(() => setViewMode("shared"));
   };
+  const selectCategory = (category) => {
+    setCategory(category);
+    if (diaryCategories.includes(category)) setLastCategory(category);
+  };
   const handleCategoryChange = (category) => {
-    if (category !== activeCategory) navigateFromEdit(() => setCategory(category));
+    if (category !== activeCategory) navigateFromEdit(() => selectCategory(category));
   };
   const handleToggleEdit = () => setEdit((v) => !v);
   const handleCreate = () => navigateFromEdit(() => {
@@ -131,7 +147,9 @@ const modules = {
     setText("");
     setEditId(null);
     shareWith([String(user._id)]);
-    setCreateCategory(activeCategory);
+    const defaultCategory = activeCategory === ALL_DIARY_CATEGORIES ? lastCategory : activeCategory;
+    setCreateCategory(defaultCategory);
+    setInitialCreateCategory(defaultCategory);
     setCreateError("");
     setIsCreatePopupOpen(true);
   });
@@ -139,7 +157,7 @@ const modules = {
   const closeCreatePopup = () => {
     if (createSaving) return;
     const dirty = hasDraftContent(text) ||
-      createCategory !== activeCategory ||
+      createCategory !== initialCreateCategory ||
       share.length > 1;
     requestDiscard(dirty, () => setIsCreatePopupOpen(false));
   };
@@ -160,7 +178,7 @@ const modules = {
         players: share,
         category: createCategory,
       })).unwrap();
-      setCategory(createCategory);
+      selectCategory(createCategory);
       setViewMode(diaryViewForPlayers(share));
       if (!matchesDiarySearch(noteText, search, createdNote?.createdAt)) setSearch("");
       setText("");
@@ -251,13 +269,13 @@ const modules = {
   const mineCount =
     diary?.filter((entry) => {
       const players = entry?.players || [];
-      return entry?.category === activeCategory && diaryViewForPlayers(players) === "mine";
+      return matchesDiaryCategory(entry, activeCategory) && diaryViewForPlayers(players) === "mine";
     }).length || 0;
 
   const sharedCount =
     diary?.filter((entry) => {
       const players = entry?.players || [];
-      return diaryViewForPlayers(players) === "shared" && entry?.category === activeCategory;
+      return diaryViewForPlayers(players) === "shared" && matchesDiaryCategory(entry, activeCategory);
     }).length || 0;
   /* TODOS:
   1. edit mode -switch from Note to Editor
@@ -367,7 +385,7 @@ const modules = {
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
                     disabled={editActive}
-                    title={editActive ? "Suche ist während der Bearbeitung deaktiviert" : undefined}
+                    title={editActive ? "Suche ist während der Bearbeitung deaktiviert" : "Suche nach Text oder Erstellungsdatum"}
                   />
                 </div>
 

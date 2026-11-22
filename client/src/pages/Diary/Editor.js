@@ -23,7 +23,7 @@ const modules = {
 
 function Editor({
   draftText, setDraftText, user, userList, share, shareWith, fractionTheme,
-  activeCategory, onSubmit, onCancelEdit, saving, saveError, note,
+  activeCategory, onSubmit, onCancelEdit, saving, saveError, note, showCategory,
 }) {
   const [shareOpen, setShareOpen] = useState(false);
   const sharing = getSharingInfo(share, user?._id);
@@ -31,7 +31,10 @@ function Editor({
   return (
     <article className="diary-note diary-note--editing">
       <header className="diary-note__header">
-        <NoteDate createdAt={note?.createdAt} />
+        <div className="diary-note__details">
+          {showCategory && <span className="diary-note__category">{note?.category || "Sonstiges"}</span>}
+          <NoteDate createdAt={note?.createdAt} updatedAt={note?.updatedAt} />
+        </div>
         <div className="diary-note__actions">
           <button type="button" className="share-chip" title="Teilen" aria-label={`Freigabe bearbeiten: ${sharing.label}`} onClick={() => setShareOpen(true)} disabled={saving}>
             <FontAwesomeIcon icon={faUserGroup} aria-hidden="true" />

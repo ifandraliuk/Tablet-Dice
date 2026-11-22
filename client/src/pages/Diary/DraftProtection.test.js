@@ -123,3 +123,13 @@ test("allows leaving an unchanged edit without confirmation", () => {
   expect(screen.queryByRole("dialog", { name: "Änderungen verwerfen?" })).not.toBeInTheDocument();
   expect(localStorage.getItem("diary-active-category")).toBe("Orte");
 });
+
+test("guards switching to all categories while editing a draft", () => {
+  render(<Diary />);
+  openEditor();
+  fireEvent.change(screen.getByLabelText("Notiztext"), { target: { value: "Entwurf" } });
+  fireEvent.click(screen.getByRole("button", { name: "Alle Kategorien (1)" }));
+  fireEvent.click(within(confirmDialog()).getByRole("button", { name: "Weiter bearbeiten" }));
+  expect(screen.getByLabelText("Notiztext")).toHaveValue("Entwurf");
+  expect(localStorage.getItem("diary-active-category")).toBe("Personen");
+});

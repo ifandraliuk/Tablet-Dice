@@ -1,6 +1,7 @@
 import React from "react";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { useDispatch, useSelector } from "react-redux";
+import { editDiary, postDiary } from "../../features/diary/diarySlice";
 import Diary from "./index";
 
 const mockNavigate = jest.fn();
@@ -78,6 +79,69 @@ test("searches the displayed creation date within the selected category and tab"
   expect(screen.getByText("Gemeinsamer Drache")).toBeInTheDocument();
   fireEvent.change(search, { target: { value: "16.03.2025" } });
   expect(screen.getByText("Keine Einträge für diese Suche gefunden.")).toBeInTheDocument();
+});
+
+test("searches across categories while keeping private and shared entries separate", () => {
+  render(<Diary />);
+  fireEvent.click(screen.getByRole("button", { name: "Alle Kategorien (4)" }));
+  expect(screen.getByRole("tab", { name: "Private Einträge (3)" })).toHaveAttribute("aria-selected", "true");
+  expect(screen.getByRole("tab", { name: "Gemeinsame Einträge (1)" })).toBeInTheDocument();
+  fireEvent.change(screen.getByRole("searchbox", { name: "Einträge durchsuchen" }), { target: { value: "drache" } });
+  expect(screen.getByText("Drache")).toBeInTheDocument();
+  expect(screen.getByText("Drachenhöhle")).toBeInTheDocument();
+  expect(screen.getByText("Drachenhöhle").closest("article")).toHaveTextContent("Orte");
+  expect(screen.queryByText("Gemeinsamer Drache")).not.toBeInTheDocument();
+  fireEvent.change(screen.getByRole("searchbox", { name: "Einträge durchsuchen" }), { target: { value: "15.03.2025" } });
+  expect(screen.getByText("Drache")).toBeInTheDocument();
+  expect(screen.getByText("Drachenhöhle")).toBeInTheDocument();
+  fireEvent.change(screen.getByRole("searchbox", { name: "Einträge durchsuchen" }), { target: { value: "drache" } });
+  fireEvent.click(screen.getByRole("tab", { name: "Gemeinsame Einträge (1)" }));
+  expect(screen.getByText("Gemeinsamer Drache")).toBeInTheDocument();
+  expect(screen.queryByText("Drachenhöhle")).not.toBeInTheDocument();
+});
+
+test("saves a new entry in the last category when created from all categories", async () => {
+  render(<Diary />);
+  fireEvent.click(screen.getByRole("button", { name: "Orte (1)" }));
+  fireEvent.click(screen.getByRole("button", { name: "Alle Kategorien (4)" }));
+  fireEvent.click(screen.getByTitle("Neue Notiz"));
+  fireEvent.change(screen.getByLabelText("Notiztext"), { target: { value: "Neuer Ort" } });
+  fireEvent.click(screen.getByRole("button", { name: "Speichern" }));
+  await waitFor(() => expect(postDiary).toHaveBeenCalledWith({
+    text: "Neuer Ort", category: "Orte", players: ["me"],
+  }));
+  await waitFor(() => expect(localStorage.getItem("diary-active-category")).toBe("Orte"));
+});
+
+test("preserves an entry's category when editing in the all-categories view", async () => {
+  render(<Diary />);
+  fireEvent.click(screen.getByRole("button", { name: "Alle Kategorien (4)" }));
+  const card = screen.getByText("Drachenhöhle").closest("article");
+  expect(card.querySelector(".diary-note__details").firstElementChild).toHaveTextContent("Orte");
+  fireEvent.click(within(card).getByRole("button", { name: "Eintrag bearbeiten" }));
+  expect(screen.getByText("Orte")).toBeInTheDocument();
+  expect(document.querySelector(".diary-note--editing .diary-note__details").firstElementChild).toHaveTextContent("Orte");
+  fireEvent.change(screen.getByLabelText("Notiztext"), { target: { value: "Andere Höhle" } });
+  fireEvent.click(screen.getByTitle("Speichern"));
+  await waitFor(() => expect(editDiary).toHaveBeenCalledWith({
+    id: "4", data: { text: "Andere Höhle", players: ["me"], category: "Orte" },
+  }));
+});
+
+test("uses the last concrete category when creating from the all-categories view", () => {
+  const { unmount } = render(<Diary />);
+  fireEvent.click(screen.getByRole("button", { name: "Orte (1)" }));
+  fireEvent.click(screen.getByRole("button", { name: "Alle Kategorien (4)" }));
+  fireEvent.click(screen.getByTitle("Neue Notiz"));
+  expect(screen.getByLabelText("Kategorie")).toHaveValue("Orte");
+  fireEvent.click(screen.getByRole("button", { name: "Abbrechen" }));
+  expect(screen.queryByRole("dialog", { name: "Änderungen verwerfen?" })).not.toBeInTheDocument();
+  expect(localStorage.getItem("diary-last-category")).toBe("Orte");
+  unmount();
+  render(<Diary />);
+  expect(screen.getByRole("button", { name: "Alle Kategorien (4)" })).toHaveAttribute("aria-pressed", "true");
+  fireEvent.click(screen.getByTitle("Neue Notiz"));
+  expect(screen.getByLabelText("Kategorie")).toHaveValue("Orte");
 });
 
 test("keeps a matching date search after editing", async () => {
