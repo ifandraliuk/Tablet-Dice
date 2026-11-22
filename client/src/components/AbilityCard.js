@@ -51,7 +51,7 @@ function AbilityCard(props) {
   const resourceName = germanAttr[type] || type;
   return (
     <motion.div
-      className="ability-card"
+      className={`ability-card${props.selected ? " ability-card--selected" : ""}`}
       variants={animateCard}
       whileHover="hover"
     initial="init"
@@ -120,6 +120,8 @@ function AbilityCard(props) {
               onClick={props?.customClick ? props.customClick : onClick}
               theme=""
               className="ability-card__use-button"
+              ariaPressed={props.selected}
+              ariaLabel={props.selectionLabel}
               hoverScale={1}
             />
 

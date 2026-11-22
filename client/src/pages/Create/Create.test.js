@@ -88,8 +88,11 @@ test("shows the first ability reminder until an ability is selected", () => {
   expect(screen.getByRole("status")).toHaveTextContent("Wähle deine erste Fertigkeit");
   fireEvent.click(screen.getByRole("button", { name: "Krieger" }));
   expect(screen.getByRole("status")).toHaveTextContent("Wähle deine erste Fertigkeit");
-  fireEvent.click(screen.getByRole("button", { name: "Wählen" }));
+  fireEvent.click(screen.getByRole("button", { name: "Schlag wählen" }));
   expect(screen.queryByRole("status")).not.toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Schlag ausgewählt" })).toHaveAttribute("aria-pressed", "true");
+  fireEvent.click(screen.getByRole("button", { name: "Krieger" }));
+  expect(screen.getByRole("button", { name: "Schlag ausgewählt" })).toHaveAttribute("aria-pressed", "true");
   fireEvent.click(screen.getByRole("button", { name: "Späher" }));
   expect(screen.getByRole("status")).toHaveTextContent("Wähle deine erste Fertigkeit");
 });
