@@ -297,6 +297,46 @@
   justify-content: space-between;
   gap: 0.5rem;
 }
+.crafting-recipe__actions {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.3rem;
+  flex: 0 0 auto;
+}
+.crafting-recipe__rarity {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 0.45rem;
+}
+.crafting-recipe__info {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.72);
+}
+.crafting-recipe__info:hover,
+.crafting-recipe__info:focus-visible {
+  color: var(--fraction-accent, #f3d28a);
+  background: rgba(255, 255, 255, 0.08);
+  outline: 1px solid var(--fraction-accent, #f3d28a);
+  outline-offset: 1px;
+}
+.extended-info-description h3 {
+  margin: 0.75rem 0 0.35rem;
+  font-size: 1rem;
+  color: var(--diary-origin-color, #f3d28a);
+}
+.extended-info-description p {
+  margin-bottom: 0.75rem;
+  text-align: left;
+  white-space: pre-wrap;
+}
 .crafting-recipe__identity,
 .crafting-inventory__item {
   display: flex;

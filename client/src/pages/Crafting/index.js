@@ -2,11 +2,15 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { getTalent, getPlayerTalent } from "../../features/talent/talentSlice";
 import { getInventory } from "../../features/inventory/inventorySlice";
 import { pageTransition } from "../../data/Animations";
 import ItemIcon from "../../components/ItemIcon";
+import RarityBadge from "../../components/RarityBadge";
+import ExtendedInfo from "../Inventory/ExtendedInfo";
 import { TalentProbe, TalentProbeRules } from "../../components/TalentProbe";
 import useTalentProbeData from "../../components/useTalentProbeData";
 import { professions, ownInventory, materialAvailability, professionResources, stationAccess } from "./craftingData";
@@ -37,6 +41,7 @@ function Crafting() {
   const [visibleCount, setVisibleCount] = useState(savedProfession && Number.isSafeInteger(saved.visibleCount) && saved.visibleCount >= 12 ? saved.visibleCount : 12);
   const [favorites, setFavorites] = useState([]);
   const [favoriteError, setFavoriteError] = useState("");
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
   const favoriteKey = user?._id ? `craftingFavorites:${user._id}` : null;
   const probeData = useTalentProbeData(user);
 
@@ -231,8 +236,12 @@ function Crafting() {
                       const level = selected.stations.findIndex((item) => item.values.includes(recipe.production));
                       const access = stationAccess(selectedPoints, level);
                       return <article className="crafting-recipe" key={recipe._id}>
-                        <div className="crafting-recipe__header"><div className="crafting-recipe__identity"><span aria-hidden="true"><ItemIcon item={recipe} /></span><div><h3>{recipe.name}</h3><span>Stufe {level + 1} · {selected.stations[level].name}{recipe.rarity ? ` · ${recipe.rarity}` : ""}</span></div></div>
-                          <button type="button" className="crafting-favorite" aria-label={`${recipe.name} ${favorites.includes(recipe._id) ? "aus Favoriten entfernen" : "als Favorit speichern"}`} aria-pressed={favorites.includes(recipe._id)} disabled={!favoriteKey || Boolean(favoriteError)} onClick={() => toggleFavorite(recipe._id)}>{favorites.includes(recipe._id) ? "★" : "☆"}</button></div>
+                        <div className="crafting-recipe__header"><div className="crafting-recipe__identity"><span aria-hidden="true"><ItemIcon item={recipe} /></span><div><h3>{recipe.name}</h3><span>Stufe {level + 1} · {selected.stations[level].name}</span></div></div>
+                          <div className="crafting-recipe__actions">
+                            <button type="button" className="crafting-recipe__info" aria-label={`Informationen zu ${recipe.name}`} title="Gegenstandsinformationen" aria-haspopup="dialog" onClick={() => setSelectedRecipe(recipe)}><FontAwesomeIcon icon={faCircleInfo} aria-hidden="true" /></button>
+                            <button type="button" className="crafting-favorite" aria-label={`${recipe.name} ${favorites.includes(recipe._id) ? "aus Favoriten entfernen" : "als Favorit speichern"}`} aria-pressed={favorites.includes(recipe._id)} disabled={!favoriteKey || Boolean(favoriteError)} onClick={() => toggleFavorite(recipe._id)}>{favorites.includes(recipe._id) ? "★" : "☆"}</button>
+                          </div></div>
+                        {recipe.rarity && <div className="crafting-recipe__rarity"><RarityBadge rarity={recipe.rarity} /></div>}
                         <p className={ready ? "crafting-ready" : "crafting-missing"}>{requirements === null ? "Materialangaben unvollständig" : ready ? "Material vorhanden" : "Material fehlt"}</p>
                         {access === "locked" && <p className="crafting-station-warning">Herstellungsort vorläufig gesperrt</p>}
                         {access === "exception" && <p className="crafting-station-warning">Erster Ort: ungelernt mit Malus nutzbar</p>}
@@ -258,6 +267,7 @@ function Crafting() {
           )}
         </main>
       </div>
+      {selectedRecipe && <ExtendedInfo customItemInfo={selectedRecipe} minimized showDescription setShowInfo={setSelectedRecipe} />}
     </motion.div>
   );
 }

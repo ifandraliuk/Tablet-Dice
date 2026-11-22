@@ -19,14 +19,15 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { getUsers } from "../../features/diary/diarySlice";
 import { buttonImpackt } from "../../data/Animations";
-import { itemNames } from "../../data/ConstVariables";
 import { getOriginAccentStyle } from "../../data/OriginColors";
 import MotionButton from "../../components/MotionButton";
+import RarityBadge from "../../components/RarityBadge";
 
 function ExtendedInfo({
   setShowInfo,
   minimized,
   compactWeapon = false,
+  showDescription = false,
   dbButtons,
   customItemInfo,
   hideInfo,
@@ -73,6 +74,7 @@ function ExtendedInfo({
     production,
     bonuses,
     material,
+    description,
   } = item;
   const enchantment = extendedItemInfo.enchantment
     ? extendedItemInfo.enchantment
@@ -88,7 +90,6 @@ function ExtendedInfo({
     ["Preis", price],
     ["Gewicht", weight],
   ];
-  const rarityColor = itemNames?.rarity?.[rarity] || "common";
   const detailColumns = [
     itemDetails.filter((_, index) => index % 2 === 0),
     itemDetails.filter((_, index) => index % 2 === 1),
@@ -359,9 +360,7 @@ function ExtendedInfo({
                       <span className="extended-info-mode-label">{category}</span>
                     )}
                   </div>
-                  <span className={`extended-info-rarity ${rarityColor}`}>
-                    {rarity}
-                  </span>
+                  <RarityBadge rarity={rarity} />
                 </header>
                 {!compactWeapon && (
                   <div className="col-12 extended-info-detail-grid">
@@ -395,6 +394,13 @@ function ExtendedInfo({
                     <span>Bonus</span>
                     <strong className={`${fractionTheme}-text`}>{bonuses}</strong>
                   </div>
+                )}
+
+                {showDescription && description && (
+                  <section className="col-12 extended-info-description">
+                    <h3>Beschreibung</h3>
+                    <p>{description}</p>
+                  </section>
                 )}
 
                 {!compactWeapon && <section

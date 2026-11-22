@@ -45,10 +45,12 @@ beforeEach(() => {
   const state = {
     auth: { user: { _id: "hero", name: "Held" } },
     player: { fractionTheme: "Welles" },
+    inventory: { inventory: [], extendedId: "" },
+    diaries: { userList: [] },
   };
   useSelector.mockImplementation((selector) => selector(state));
   axios.get.mockResolvedValue({ data: [
-    { _id: "sword", name: "Schwert", category: "Waffe", genus: "Schwert", production: "Schmiede", material: [{ element: { _id: "wood", name: "Buchenholz", category: "Ressource", genus: "Holz" }, amount: 2 }] },
+    { _id: "sword", name: "Schwert", category: "Waffe", genus: "Schwert", rarity: "selten", dice: "1W8", bonuses: "+2 Stärke", description: "Eine verlässliche Klinge.", production: "Schmiede", material: [{ element: { _id: "wood", name: "Buchenholz", category: "Ressource", genus: "Holz" }, amount: 2 }] },
     { _id: "dagger", name: "Dolch", category: "Waffe", genus: "Dolch", production: "Lavaschmiede", material: [{ element: { _id: "wood", name: "Buchenholz", category: "Ressource", genus: "Holz" }, amount: 1 }] },
   ] });
 });
@@ -85,6 +87,8 @@ test("shows learned professions, recipe shortages, search, filters and persisten
   fireEvent.change(within(dialog).getByLabelText("Anzeige"), { target: { value: "all" } });
   const sword = (await within(dialog).findByText("Schwert")).closest("article");
   const dagger = within(dialog).getByText("Dolch").closest("article");
+  expect(within(sword).getByText("selten")).toHaveClass("extended-info-rarity", "rare");
+  expect(dagger.querySelector(".extended-info-rarity")).not.toBeInTheDocument();
   expect(within(dagger).queryByText(/Herstellungsort vorläufig gesperrt/)).not.toBeInTheDocument();
   expect(within(dialog).getAllByRole("article")[0]).toBe(dagger);
   expect(sword).toHaveTextContent("Buchenholz: 1/2");
@@ -249,4 +253,26 @@ test("does not restore crafting state belonging to another character", async () 
   render(<Crafting />);
   expect(await screen.findByRole("button", { name: /Schmieden/ })).toBeInTheDocument();
   expect(screen.queryByRole("region", { name: /Kochen · Herstellung/ })).not.toBeInTheDocument();
+});
+
+test("opens read-only item details for a recipe and returns to the same selection", async () => {
+  render(<Crafting />);
+  fireEvent.click(await screen.findByRole("button", { name: /Schmieden/ }));
+  const detail = await screen.findByRole("region", { name: "Schmieden · Herstellung" });
+  fireEvent.change(within(detail).getByLabelText("Anzeige"), { target: { value: "all" } });
+  const infoButton = await within(detail).findByRole("button", { name: "Informationen zu Schwert" });
+  infoButton.focus();
+  fireEvent.click(infoButton);
+  const popup = screen.getByRole("dialog", { name: "Gegenstand: Schwert" });
+  expect(popup).toHaveTextContent("1W8");
+  expect(popup).toHaveTextContent("+2 Stärke");
+  expect(popup).toHaveTextContent("Eine verlässliche Klinge.");
+  expect(within(popup).queryByRole("button", { name: /hinzufügen|abziehen|teilen|löschen|ausrüsten|aufteilen/i })).not.toBeInTheDocument();
+  fireEvent.click(within(popup).getByRole("button", { name: "Fenster schließen" }));
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  expect(infoButton).toHaveFocus();
+  expect(within(detail).getByLabelText("Anzeige")).toHaveValue("all");
+  fireEvent.click(infoButton);
+  fireEvent.keyDown(window, { key: "Escape" });
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
 });
