@@ -39,7 +39,8 @@ function BarList() {
     dispatch(resetBars());
   };
   return (
-    <div className="mt-2">
+    <section className="dashboard-resources">
+      <h2 className="dashboard-section-title">Ressourcen</h2>
       {bar.map(
         (name, i) =>
           attributes &&
@@ -68,6 +69,8 @@ function BarList() {
           type="number"
           className="form-control dark-filter-control bar-adjustment-value"
           value={damage.val}
+          min="0"
+          step="1"
           name="val"
           onChange={onChange}
           aria-label={`Wert für ${damage.type}`}
@@ -79,7 +82,7 @@ function BarList() {
           className="bar-adjustment-buttons resource-adjustment-buttons"
         />
       </div>
-    </div>
+    </section>
   );
 }
 

@@ -30,6 +30,8 @@ const LevelUp = ({ level, newLevel, fraction }) => {
       variants={variants}
       animate="active"
       onClick={newLevel}
+      aria-label={`Stufe ${level} erreicht. Stufe erhöhen`}
+      title="Stufe erhöhen"
     >
       {level}
       <strong className={`${fraction}-text`}>

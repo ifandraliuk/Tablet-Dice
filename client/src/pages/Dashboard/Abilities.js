@@ -60,9 +60,9 @@ function Abilities() {
     }
   };
   return (
-    <div className="container">
-      <h2>Fertigkeiten</h2>
-      <div className="row">
+    <section className="dashboard-abilities">
+      <h2 className="dashboard-section-title">Fertigkeiten</h2>
+      <div className="dashboard-abilities__filters">
         <div className="segmented-toggle" role="tablist" aria-label="Fertigkeiten">
           {specializations.map((specialization) => (
             <button
@@ -82,12 +82,12 @@ function Abilities() {
           ))}
         </div>
       </div>
-      <div className="row justify-content-center">
+      <div className="dashboard-ability-grid">
         <AnimatePresence>
           {abilities?.map((ability, ind) => {
             return (
               ability.specialization === filterCategory && (
-                <motion.div className="col-auto col-3"
+                <motion.div className="dashboard-ability-grid__item"
                 key={ability._id}
                 layout
                 initial={{ translateY: -30, opacity: 0 }}
@@ -106,6 +106,7 @@ function Abilities() {
                     userclass={_id}
                     useAbility={useAbility}
                     theme={fractionTheme}
+                    isDashboard
                   />
                 </motion.div>
               )
@@ -113,7 +114,7 @@ function Abilities() {
           })}
         </AnimatePresence>
       </div>
-    </div>
+    </section>
   );
 }
 

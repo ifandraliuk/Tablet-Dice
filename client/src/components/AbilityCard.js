@@ -11,11 +11,14 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "framer-motion";
 import MotionButton from "./MotionButton";
+import { germanAttr } from "../data/ConstVariables";
 
 function AbilityCard(props) {
   const { _id, name, description, price, type, dice } = props.ability;
-  const {userclass, theme} = props;
-  
+  const { userclass } = props;
+  const [descriptionExpanded, setDescriptionExpanded] = useState(false);
+  const hasLongDescription = (description?.length || 0) > 140;
+
   const [toAnimate, setAnimate] = useState(false)
   const animateCard = {
     init: {
@@ -23,7 +26,7 @@ function AbilityCard(props) {
       scale: 1,
     },
     hover: {
-      y: -20,
+      y: -4,
     },
     animation: {
         scale: 0.8,
@@ -45,9 +48,10 @@ function AbilityCard(props) {
     setAnimate(true)
     console.log(toAnimate)
   }
+  const resourceName = germanAttr[type] || type;
   return (
     <motion.div
-      className="row h-100 ability-card"
+      className="ability-card"
       variants={animateCard}
       whileHover="hover"
     initial="init"
@@ -58,58 +62,67 @@ function AbilityCard(props) {
         }
     }}
     >
-      <div
-        className="row "
-        style={{ textTransform: "uppercase", textAlign: "center" }}
-      >
-        <div className="col-auto">
-          {type === "stamina" ? (
-            <FontAwesomeIcon icon={faBolt} />
-          ) : type === "mana" ? (
-            <FontAwesomeIcon icon={faStar} />
-          ) : type === "spirit" ? (
-            <FontAwesomeIcon icon={faGhost} />
-          ) : (
-            <FontAwesomeIcon icon={faHeart} />
-          )}
-          {` ${price}`}
-        </div>
-        <div className="col-auto ms-auto">
-          <FontAwesomeIcon icon={faDiceD20} />
-          {` ${dice}`}
-        </div>
+      <div className="ability-card__meta">
+        <span className="ability-card__meta-item">
+          <span className="ability-card__meta-label">Kosten</span>
+          <span className="ability-card__meta-value">
+            {type === "stamina" ? (
+              <FontAwesomeIcon icon={faBolt} aria-hidden="true" />
+            ) : type === "mana" ? (
+              <FontAwesomeIcon icon={faStar} aria-hidden="true" />
+            ) : type === "spirit" ? (
+              <FontAwesomeIcon icon={faGhost} aria-hidden="true" />
+            ) : (
+              <FontAwesomeIcon icon={faHeart} aria-hidden="true" />
+            )}
+            {` ${price} ${resourceName}`}
+          </span>
+        </span>
+        <span className="ability-card__meta-item ability-card__meta-item--check">
+          <span className="ability-card__meta-label">Probe</span>
+          <span className="ability-card__meta-value">
+            <FontAwesomeIcon icon={faDiceD20} aria-hidden="true" />
+            {` ${dice}`}
+          </span>
+        </span>
       </div>
-      <div className="row m-0 p-0 ">
-        <Image src={`/abilities/${userclass && userclass}/${_id}.svg`}></Image>
+      <Image
+        className="ability-card__image"
+        src={`/abilities/${userclass && userclass}/${_id}.svg`}
+        alt={name}
+      />
+      <h3 className="ability-card__title">{name}</h3>
+      <div className="ability-card__description">
+        <p
+          className={
+            props.isDashboard && hasLongDescription && !descriptionExpanded
+              ? "is-collapsed"
+              : undefined
+          }
+        >
+          {description}
+        </p>
+        {props.isDashboard && hasLongDescription && (
+          <button
+            type="button"
+            className="ability-card__description-toggle"
+            aria-expanded={descriptionExpanded}
+            onClick={() => setDescriptionExpanded((expanded) => !expanded)}
+          >
+            {descriptionExpanded ? "Weniger anzeigen" : "Mehr anzeigen"}
+          </button>
+        )}
       </div>
-      <div
-        className="row m-auto"
-        style={{ textTransform: "uppercase", textAlign: "center" }}
-      >
-        <div style={{ letterSpacing: "2px" }}>{name}</div>
-      </div>
-      <div
-        className="row"
-        style={{
-          textAlign: "center",
-          fontSize: "14px",
-          marginLeft: "2px",
-          marginRight: "2px",
-          marginTop: "5px",
-        }}
-      >
-        {description}
-      </div>
-      <div className="row">
-        <div className="col-auto ms-auto me-auto mb-1">
+      <div className="ability-card__actions">
         <MotionButton 
               name={_id}
               content={props.buttonText ? props.buttonText : "Verwenden"}
               onClick={props?.customClick ? props.customClick : onClick}
               theme=""
+              className="ability-card__use-button"
+              hoverScale={1}
             />
 
-        </div>
       </div>
     </motion.div>
   );

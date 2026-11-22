@@ -148,171 +148,153 @@ function Dashboard() {
         />
       )}
       <div className="dashboard-page">
-        <div className={`bg ${fractionTheme}-bg container-fluid`}>
-          <div className="row dark-bg">
-            <div className="col-lg-3 col-md-10 col-sm-12">
+        <div className={`bg ${fractionTheme}-bg`}>
+          <div className="container-fluid dark-bg dashboard-layout">
+            <aside className="dashboard-sidebar">
               <div className="row">
-                <div
-                  className="p-2 col-lg-7 col-md-8 col-sm-6 border-pattern p-0"
-                  style={{ overflow: "hidden" }}
-                >
-                  <button
-                    style={{ zIndex: 2, position: "absolute" }}
-                    onClick={() => setShowImage(!showImage)}
-                  >
-                    <FontAwesomeIcon icon={faBars} />
-                  </button>
-
-                  <AnimatePresence mode="wait">
-                    {showImage ? (
-                      <motion.img
-                        key="img"
-                        initial={{
-                          opacity: 0,
-                        }}
-                        animate={{
-                          opacity: 1,
-                        }}
-                        exit={{
-                          opacity: 0,
-                          transition: {
-                            duration: 0.5,
-                          },
-                        }}
-                        className="user-img"
-                        src={`/user/${user?._id}.jpeg`}
-                      ></motion.img>
-                    ) : (
-                      <GeneralInfo key="info" />
-                    )}
-                  </AnimatePresence>
-                </div>
-                <div className="col-lg-3 col-md-4 mt-3 col-sm-3 d-flex-column">
-                  <div className="row  mb-2 justify-content-center">
+                <div className="dashboard-profile">
+                  <div className="dashboard-profile__identity">
+                    <h2>{user?.name}</h2>
+                    <span>{profession?.name}</span>
                     <LevelUp
                       level={level}
                       newLevel={newLevel}
                       fraction={fractionTheme}
                     />
                   </div>
+                  <div className="dashboard-profile__visual">
+                    <AnimatePresence mode="wait">
+                      {showImage ? (
+                        <motion.img
+                          key="img"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0, transition: { duration: 0.25 } }}
+                          className="user-img"
+                          src={`/user/${user?._id}.jpeg`}
+                          alt={`Charakterbild von ${user?.name || "deinem Charakter"}`}
+                        />
+                      ) : (
+                        <GeneralInfo key="info" />
+                      )}
+                    </AnimatePresence>
+                    <button
+                      type="button"
+                      className="dashboard-profile__toggle"
+                      aria-label={
+                        showImage
+                          ? "Charakterinformationen anzeigen"
+                          : "Charakterbild anzeigen"
+                      }
+                      title={
+                        showImage
+                          ? "Charakterinformationen anzeigen"
+                          : "Charakterbild anzeigen"
+                      }
+                      onClick={() => setShowImage(!showImage)}
+                    >
+                      <FontAwesomeIcon icon={faBars} />
+                    </button>
+                  </div>
+                </div>
+                <section className="dashboard-sidebar__equipment" aria-label="Ausrüstung">
+                  <h3>Ausrüstung</h3>
+                  <div className="dashboard-sidebar__equipment-items">
                   {mainWeapon && (
-                    <div id={mainWeapon._id} className="row m-auto">
+                    <div id={mainWeapon._id}>
                       <EquippedItem
                         equippedItem={mainWeapon}
+                        category="Haupthand"
                         delayValue={0.3}
                         setShowInfo={setExtendedId}
                       />
                     </div>
                   )}
                   {secondWeapon && (
-                    <div className="row m-auto">
+                    <div>
                       <EquippedItem
                         equippedItem={secondWeapon}
+                        category="Nebenhand"
                         delayValue={0.4}
                         setShowInfo={setExtendedId}
                       />
                     </div>
                   )}
                   {rangedWeapon && (
-                    <div className="row m-auto">
+                    <div>
                       <EquippedItem
                         equippedItem={rangedWeapon}
+                        category="Fernkampf"
                         delayValue={0.4}
                         setShowInfo={setExtendedId}
                       />
                     </div>
                   )}
-                  <div className="row  justify-content-center">
-                    <div className="col-auto">
+                  </div>
+                  <div className="dashboard-sidebar__defenses">
+                    <div>
                       <FontAwesomeIcon icon={faShield} />
-                      {armor}
+                      <span>Rüstung</span>
+                      <strong>{armor || 0}</strong>
                     </div>
-                    <div className="col-auto violet-text">
+                    <div className="violet-text">
                       <FontAwesomeIcon icon={faShieldHalved} />
-                      {getArmorBonusValue("Magie")
-                        ? getArmorBonusValue("Magie")
-                        : 0}
+                      <span>Magie</span>
+                      <strong>{getArmorBonusValue("Magie") || 0}</strong>
                     </div>
                   </div>
-                </div>
+                </section>
               </div>
 
-              <div className="row">
-                <div className="col-12">
-                  {/** <h3>
-                    Stufe: <strong>{player?.level}</strong>
-                  </h3>
-                </div>
-                <div className="col-auto  border">
-                  <button className={fractionTheme} onClick={newLevel}>
-                    <FontAwesomeIcon icon={faLevelUp} />
-                        </button>*/}
-
-                  <Fraction fraction={fractionTheme} />
-                </div>
+              <div className="dashboard-sidebar__fraction">
+                <span>Fraktion</span>
+                <strong>{fractionTheme}</strong>
+                <Fraction fraction={fractionTheme} />
               </div>
-              <div className="col-lg-7 col-md-7 col-sm-12 mt-3"></div>
-            </div>
+            </aside>
             {/*second column */}
-            <div className="col-lg-9">
+            <main className="dashboard-main">
               <div className="row m-1">
                 <div className="row">
                   <div className="col-lg-12 col-md-12">
                     {attributes ? (
-                      <AttributeList />
+                      <div className="dashboard-attributes">
+                        <AttributeList />
+                      </div>
                     ) : (
                       <Spinner animation="border" />
                     )}
                   </div>
                 </div>
-                <div className="row mt-2">
-                  <div className="col-12">
-                    <FontAwesomeIcon
-                      icon={faCircle}
-                      style={{ color: "#63E6BE" }}
-                    />{" "}
-                    <text className="me-3">Aktion</text>
-
-
-                    {Array.from({ length: reactionCounter }).map((_, i) => (
-            
-                
-                        <FontAwesomeIcon
-                          icon={faSquare}
-                          style={{ color: "#fc97e9" }}
-                          className="me-1"
-                        />
-                       
-           
-                    ))}
-                    
-                    {
-                      reactionCounter >=1 && <text className="me-3">Reaktion</text>
-                    } 
-                    {Array.from({ length: bonusActionCounter }).map((_, i) => (
-                      <FontAwesomeIcon
-                        key={i}
-                        icon={faDiamond}
-                        className="me-1"
-                        style={{ color: "#ff7b24" }}
-                      />
-                    ))}
-                   {
-
-                   bonusActionCounter >=1 && <text className="me-3">Bonus Aktion</text>
-                   } 
-                    <FontAwesomeIcon
-                      icon={faPlay}
-                      style={{ color: "#ffd43b" }}
-                    />
-                    <text className="me-3">Bewegung</text>
-                  </div>
-                </div>
+                <ul className="dashboard-action-economy" aria-label="Aktionen">
+                  <li className="is-action">
+                    <FontAwesomeIcon icon={faCircle} aria-hidden="true" />
+                    <span>Aktion</span>
+                  </li>
+                  {reactionCounter > 0 && (
+                    <li className="is-reaction">
+                      <FontAwesomeIcon icon={faSquare} aria-hidden="true" />
+                      <span>Reaktion</span>
+                      <strong>{reactionCounter}</strong>
+                    </li>
+                  )}
+                  {bonusActionCounter > 0 && (
+                    <li className="is-bonus-action">
+                      <FontAwesomeIcon icon={faDiamond} aria-hidden="true" />
+                      <span>Bonusaktion</span>
+                      <strong>{bonusActionCounter}</strong>
+                    </li>
+                  )}
+                  <li className="is-movement">
+                    <FontAwesomeIcon icon={faPlay} aria-hidden="true" />
+                    <span>Bewegung</span>
+                  </li>
+                </ul>
 
                 <BarList />
                 {profession ? <Abilities /> : <Spinner animation="border" />}
               </div>
-              <div className="row">
+{/*               <div className="row dashboard-bonuses" visible="false">
                 <div className="col-lg-7 col-md-12">
                   <h3>Aktive Boni</h3>
                   {bonis?.length === 0 ? (
@@ -327,8 +309,8 @@ function Dashboard() {
                     <h5>{setboni}</h5>
                   </div>
                 )}
-              </div>
-            </div>
+              </div> */}
+            </main>
           </div>
         </div>
       </div>{" "}

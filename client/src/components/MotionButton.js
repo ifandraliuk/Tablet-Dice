@@ -11,6 +11,7 @@ const MotionButton = ({
   ariaPressed,
   ariaLabel,
   className = "",
+  hoverScale = 0.8,
 }) => {
 
   const buttonVariants = {
@@ -32,7 +33,7 @@ const MotionButton = ({
       },
     },
     whileHover: {
-      scale: 0.8,
+      scale: hoverScale,
     },
     whileTap: {
       scale: [0.8, 1, 0.9],

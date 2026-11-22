@@ -41,12 +41,12 @@ function Attributes() {
       ) : (
         <h3>Attribute</h3>
       )}
-      <div className="row info-div border-pattern-top">
+      <div className="row info-div border-pattern-top dashboard-attribute-grid">
         {keys?.map(
           (key) =>
           attributes[key] > 0 && (
-              <div key={key} className="col me-0 w-auto">
-                <h6>{`${allAttributes[key]}:`}</h6>
+              <div key={key} className="dashboard-attribute">
+                <h6>{allAttributes[key]}</h6>
                 <strong className={`${fractionTheme}-text`}>{attributes[key]}</strong>
                
                 {difference !== 0 && (
