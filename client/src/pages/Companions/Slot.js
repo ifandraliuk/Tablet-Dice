@@ -235,6 +235,8 @@ function Slot({
               <div className="companion-health-progress">
                 <ProgressBar
                   color={creature?.status}
+                  name="Lebenspunkte"
+                  ariaLabel={`Lebenspunkte von ${name}`}
                   current={currentHP < 0 ? creature?.hitpoints : currentHP}
                   max={creature?.hitpoints}
                 />

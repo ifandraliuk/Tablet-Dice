@@ -222,6 +222,39 @@
   margin-bottom: 0.75rem;
   padding-bottom: 0.25rem;
 }
+.companions-page .companion-health-bar {
+  position: relative;
+  width: 100%;
+  height: 1.5rem;
+  overflow: hidden;
+  border: 1px solid rgba(245, 240, 227, 0.2);
+  border-radius: 999px;
+  background-color: rgb(24, 24, 24);
+}
+.companions-page .companion-health-bar__fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  height: 100%;
+  transition: width 0.3s ease;
+}
+.companions-page .companion-health-bar__label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .companions-page .companion-health-bar__fill {
+    transition: none;
+  }
+}
 .companions-page .companion-health-controls {
   margin-bottom: 0.75rem;
   padding-bottom: 0.75rem;
