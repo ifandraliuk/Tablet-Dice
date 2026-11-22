@@ -103,15 +103,17 @@ const updateLevel = asyncHandler(async (req, res) => {
       return res.status(500).json({ message: "Spieler nicht gefunden" });
     }
 
+    let pointsLeft = updatedUser.pointsLeft;
     // Check if the user's level is a multiple of 5
     if (updatedUser.level % 5 === 0) {
       console.log("1 Attributespunkt freigeschaltet!");
       // If yes, increment pointsLeft by 1
       await updatedUser.updateOne({ $inc: { pointsLeft: 1 } });
+      pointsLeft += 1;
     }
 
     // Return the updated user information in the response
-    res.status(200).json({ level: updatedUser.level, pointsLeft: updatedUser.pointsLeft });
+    res.status(200).json({ level: updatedUser.level, pointsLeft });
   } catch (error) {
     // Handle unexpected errors
     console.error("Error in getLevel:", error);

@@ -170,7 +170,7 @@ const updateAttribute = async (attributeData, token) => {
   };
 
   const response = await axios.put(
-    API_URL + "attributes/" + attributeData,
+    "/attributes/" + attributeData,
     null,
     config
   );

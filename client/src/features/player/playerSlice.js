@@ -20,6 +20,7 @@ const initialState = {
   pointsLeft: 0,
   attributes: [],
   attributesLoaded: false,
+  attributeUpdatePending: false,
   profession: {},
   general: {},
   bars: {
@@ -189,7 +190,6 @@ export const updateAttribute = createAsyncThunk(
   async (attributeData, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
-      console.log(token, attributeData);
       return await playerService.updateAttribute(attributeData, token);
     } catch (error) {
       const msg =
@@ -632,17 +632,21 @@ export const playerSlice = createSlice({
         state.message = action.payload;
       })
       .addCase(updateAttribute.pending, (state) => {
+        state.attributeUpdatePending = true;
         state.isLoading = true;
         state.isError = false;
         state.isSuccess = false;
       })
       .addCase(updateAttribute.fulfilled, (state, action) => {
+        state.attributeUpdatePending = false;
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.player.attributes[action.payload.attr] = action.payload.value;
+        state.attributes[action.payload.attr] = action.payload.value;
+        state.pointsLeft = action.payload.pointsLeft;
       })
       .addCase(updateAttribute.rejected, (state, action) => {
+        state.attributeUpdatePending = false;
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

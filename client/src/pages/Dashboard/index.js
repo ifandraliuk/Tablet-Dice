@@ -70,7 +70,7 @@ function Dashboard() {
   const dispatch = useDispatch();
 
   const newLevel = () => {
-    dispatch(updateLevel());
+    return dispatch(updateLevel()).unwrap();
   };
   const selectedWeapon = [mainWeapon, secondWeapon, rangedWeapon].find(
     (weapon) => weapon?._id === selectedWeaponId

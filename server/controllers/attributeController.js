@@ -37,26 +37,40 @@ const setAttributes = asyncHandler( async (req, res)=>{
 
 
 // @desc update users attribute
-// @route PUT player/attributes/:attr
+// @route PUT /attributes/:attr
 // @access Private
+const attributeNames = [
+    "vitality", "stamina", "mana", "spirit",
+    "strength", "dexterity", "intelligent", "charisma",
+];
+
 const updateAttribute = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.user.id);
-    if (!user) [res.status(400).json({ message: "Nutzer nicht gefunden" })];
-    if (user.attributes && user.attributes[req.params.attr]) {
-      const val = user.attributes[req.params.attr];
-      console.log("Old value: ", val);
-      user.attributes[req.params.attr] = val + 1;
-  
-      const doc = await user.save();
-      console.log("updating attribute ", req.params.attr);
-      if (!doc) {
-        res.status(400).json({ message: "Update fehlgesclagen" });
-      }
-      res
-        .status(200)
-        .json({ attr: req.params.attr, value: doc.attributes[req.params.attr] });
+    const attr = req.params.attr;
+    if (!attributeNames.includes(attr)) {
+      return res.status(400).json({ message: "Ungültiges Attribut." });
     }
-  });
+    const path = `attributes.${attr}`;
+    const user = await User.findOneAndUpdate(
+      {
+        _id: req.user.id,
+        [path]: { $type: "number", $gt: 0 },
+        $expr: {
+          $gt: [
+            "$pointsLeft",
+            { $add: attributeNames.map((name) => ({ $ifNull: [`$attributes.${name}`, 0] })) },
+          ],
+        },
+      },
+      { $inc: { [path]: 1 } },
+      { new: true, runValidators: true }
+    );
+    if (!user) {
+      return res.status(409).json({
+        message: "Kein freier Attributspunkt vorhanden oder Attribut nicht verfügbar. Bitte aktualisiere die Seite.",
+      });
+    }
+    return res.status(200).json({ attr, value: user.attributes[attr], pointsLeft: user.pointsLeft });
+});
   
 // @desc Get user data
 // @route GET /attributes
