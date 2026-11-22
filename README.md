@@ -23,4 +23,6 @@ Frontend: React, Sass, Redux
 ## Crafting
 Crafting uses the shared station definitions in `client/src/pages/Crafting/stations.json`. The server validates the recipe, profession, station access and current inventory before atomically updating inventory and talent records in a MongoDB transaction. MongoDB must support transactions (for example, Atlas or a replica set); standalone deployments cannot complete crafting. The transaction also stores a retry identifier for 30 days to prevent an uncertain request from being applied twice.
 
+Station artwork is configured in `client/src/pages/Crafting/stationImages.json`: each profession has three entries in station order. Replace `null` with an image URL, for example `/images/crafting/schmiede.webp` for a file in `client/public/images/crafting/`. The same image is used for the profession card and station preview. Empty entries show a placeholder; an unavailable configured image shows a loading error.
+
 The optional integration test `node server/controllers/craftingController.integration.test.js` connects using `server/.env` and creates temporary, uniquely prefixed collections in the `test` database. It removes only those test collections afterward; use a test cluster with permission to create and drop collections.

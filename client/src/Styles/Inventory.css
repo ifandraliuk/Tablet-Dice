@@ -170,16 +170,6 @@
   border-left-color: var(--item-rarity-accent, rgba(245, 240, 227, 0.5));
   background: rgba(40, 40, 40, 0.96);
 }
-.inventory-page .inventory-item--rarity-primitive { --item-rarity-accent: #7f7f7f; }
-.inventory-page .inventory-item--rarity-common { --item-rarity-accent: #dddddd; }
-.inventory-page .inventory-item--rarity-highgrade { --item-rarity-accent: #97cec8; }
-.inventory-page .inventory-item--rarity-magical { --item-rarity-accent: #ff8b00; }
-.inventory-page .inventory-item--rarity-extraordinary { --item-rarity-accent: #9172d3; }
-.inventory-page .inventory-item--rarity-rare { --item-rarity-accent: #54e20a; }
-.inventory-page .inventory-item--rarity-amazing { --item-rarity-accent: #f3ff00; }
-.inventory-page .inventory-item--rarity-epic { --item-rarity-accent: #0066cc; }
-.inventory-page .inventory-item--rarity-legendary { --item-rarity-accent: #ff0000; }
-.inventory-page .inventory-item--rarity-unique { --item-rarity-accent: #f9c74f; }
 .inventory-page .inventory-items--compact .inventory-item {
   position: relative;
   justify-content: center;

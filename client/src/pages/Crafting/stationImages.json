@@ -1,0 +1,9 @@
+{
+  "Alchemie": [null, null, null],
+  "Holzverarbeiten": [null, null, null],
+  "Verzaubern": [null, null, null],
+  "Kochen": [null, null, null],
+  "Lederverarbeitung": ["/crafting/images/leatherworking-1.png", "/crafting/images/leatherworking-2.png", "/crafting/images/leatherworking-3.png"],
+  "Schmieden": ["/crafting/images/smithing-1.png", "/crafting/images/smithing-2.png", "/crafting/images/smithing-3.png"],
+  "Schneidern": [null, null, null]
+}

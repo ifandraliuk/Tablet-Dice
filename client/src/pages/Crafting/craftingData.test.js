@@ -1,4 +1,4 @@
-import { materialAvailability, ownInventory, professionResources, professions, stationAccess } from "./craftingData";
+import { materialAvailability, ownInventory, professionResources, professions, stationAccess, highestStationIndex } from "./craftingData";
 
 test("counts only owned stacks and combines repeated ingredients", () => {
   const wood = { _id: "wood", name: "Buchenholz", category: "Ressource" };
@@ -50,6 +50,16 @@ test("assigns three ordered stations and known database spellings", () => {
 });
 
 test.each([
+  ["Lederverarbeitung", "leatherworking"],
+  ["Schmieden", "smithing"],
+])("assigns the station images in order for %s", (name, filename) => {
+  const profession = professions.find((item) => item.name === name);
+  expect(profession.stations.map((station) => station.image)).toEqual(
+    [1, 2, 3].map((level) => `/crafting/images/${filename}-${level}.png`)
+  );
+});
+
+test.each([
   [0, ["exception", "locked", "locked"]],
   [1, ["unlocked", "locked", "locked"]],
   [9, ["unlocked", "locked", "locked"]],
@@ -65,3 +75,8 @@ test("rejects invalid station indices", () => {
   expect(stationAccess(1, -1)).toBe("locked");
   expect(stationAccess(1, 3)).toBe("locked");
 });
+
+test.each([[0, 0], [1, 0], [9, 0], [10, 1], [19, 1], [20, 2]])(
+  "chooses the highest unlocked station at %i points",
+  (points, index) => expect(highestStationIndex(points)).toBe(index)
+);

@@ -308,7 +308,7 @@ const ItemsView = ({
                 {visibleItems.map((item) => (
                     <tr
                       key={item._id}
-                      className={`inventory-items-table__row inventory-item--rarity-${
+                      className={`inventory-items-table__row item-rarity-${
                         itemNames?.rarity?.[
                           item.enchantment?.rarity ?? item.rarity
                         ] || "unknown"

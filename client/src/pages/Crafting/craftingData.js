@@ -1,4 +1,5 @@
 import stations from "./stations.json";
+import stationImages from "./stationImages.json";
 
 export const professions = [
   { name: "Alchemie", description: "Verarbeite Pflanzen zu Essenzen, Tränken und Giften.", stations: [
@@ -39,6 +40,7 @@ export const professions = [
   stations: profession.stations.map((station, index) => ({
     ...station,
     values: stations.professions[profession.name][index],
+    image: stationImages[profession.name][index],
   })),
 }));
 
@@ -48,6 +50,14 @@ export function stationAccess(points, index) {
   if (!Number.isInteger(index) || index < 0 || index >= stationPointRequirements.length) return "locked";
   if (points >= stationPointRequirements[index]) return "unlocked";
   return index === 0 ? "exception" : "locked";
+}
+
+export function highestStationIndex(points) {
+  const unlocked = stationPointRequirements.reduce(
+    (highest, requirement, index) => points >= requirement ? index : highest,
+    -1
+  );
+  return Math.max(0, unlocked);
 }
 
 export function ownInventory(inventory, userName) {

@@ -29,7 +29,7 @@ const getEquipmentTileClass = (equippedItem) => {
     itemNames?.rarity?.[equippedItem?.enchantment?.rarity ?? item?.rarity] ??
     "unknown";
 
-  return `inventory-item inventory-equipment__slot inventory-item--rarity-${rarity}`;
+  return `inventory-item inventory-equipment__slot item-rarity-${rarity}`;
 };
 
 const Equipment = memo(({ setShowInfo, onSelectEmptySlot, selectedSlot, err }) => {

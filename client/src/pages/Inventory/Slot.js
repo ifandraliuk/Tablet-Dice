@@ -113,7 +113,7 @@ function Slot({
             type="button"
             layout
             key={entry._id}
-            className={`inventory-item inventory-item--rarity-${rarityClass}`}
+            className={`inventory-item item-rarity-${rarityClass}`}
             data-item-name={viewMode === "compact" ? itemName : undefined}
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}

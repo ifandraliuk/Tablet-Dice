@@ -1180,6 +1180,17 @@ body h6 {
   font-size: 0.78rem;
   font-weight: 700;
 }
+.item-rarity-primitive { --item-rarity-accent: #7f7f7f; }
+.item-rarity-common { --item-rarity-accent: #dddddd; }
+.item-rarity-highgrade { --item-rarity-accent: #97cec8; }
+.item-rarity-magical { --item-rarity-accent: #ff8b00; }
+.item-rarity-extraordinary { --item-rarity-accent: #9172d3; }
+.item-rarity-rare { --item-rarity-accent: #54e20a; }
+.item-rarity-amazing { --item-rarity-accent: #f3ff00; }
+.item-rarity-epic { --item-rarity-accent: #0066cc; }
+.item-rarity-legendary { --item-rarity-accent: #ff0000; }
+.item-rarity-unique { --item-rarity-accent: #f9c74f; }
+
 .extended-info-rarity.primitive { --rarity-accent: #7f7f7f; }
 .extended-info-rarity.common { --rarity-accent: #dddddd; }
 .extended-info-rarity.highgrade { --rarity-accent: #97cec8; }

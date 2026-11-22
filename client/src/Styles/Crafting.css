@@ -37,6 +37,58 @@
   background: rgba(18, 18, 17, 0.72);
   transition: background-color 0.18s ease, border-color 0.18s ease;
 }
+.crafting-station-image {
+  display: grid;
+  gap: 0.4rem;
+  color: #f5f0e3;
+}
+.crafting-station-image__visual {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(245, 240, 227, 0.18);
+  border-radius: 0.45rem;
+  background: linear-gradient(135deg, rgba(55, 53, 46, 0.9), rgba(20, 20, 19, 0.98));
+}
+.crafting-profession > .crafting-station-image { color: #f5f0e3; }
+.crafting-station-image--card .crafting-station-image__visual { height: 7rem; }
+.crafting-station-image--detail {
+  width: 100%;
+  grid-column: span 2;
+  grid-template-columns: 10rem minmax(0, 1fr);
+  gap: 0;
+  align-items: start;
+  overflow: hidden;
+  border: 1px solid rgba(245, 240, 227, 0.16);
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+}
+.crafting-station-image--detail .crafting-station-image__content {
+  align-content: start;
+  gap: 0.3rem;
+  padding: 0.75rem;
+  overflow-wrap: anywhere;
+}
+.crafting-station-image--detail .crafting-station-image__visual {
+  aspect-ratio: 1;
+  border: 0;
+  border-right: 1px solid rgba(245, 240, 227, 0.16);
+  border-radius: 0;
+}
+.crafting-station-image__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.crafting-station-image__content { display: grid; gap: 0.1rem; line-height: 1.25; }
+.crafting-station-image__eyebrow,
+.crafting-station-image__status,
+.crafting-station-image__placeholder { font-size: 0.78rem; color: rgba(245, 240, 227, 0.82); }
+.crafting-station-image__name { font-size: 1.05rem; font-weight: 700; color: #fff; }
+.crafting-station-image__placeholder { padding: 0.5rem; text-align: center; font-style: italic; }
 .crafting-page .crafting-profession:hover {
   border-color: var(--fraction-accent, #f3d28a);
   background: rgba(35, 35, 33, 0.92);
@@ -177,6 +229,13 @@
   font-size: 1.1rem;
   color: var(--fraction-accent, #f3d28a);
 }
+.crafting-detail__overview {
+  display: grid;
+  grid-template-columns: 10rem minmax(11rem, 15rem) minmax(0, 1fr);
+  gap: 0.75rem;
+  margin: 0.75rem 0 1rem;
+  align-items: start;
+}
 .crafting-detail p {
   text-align: left;
 }
@@ -211,16 +270,10 @@
   gap: 0.25rem;
   color: var(--fraction-accent, #f3d28a);
 }
-.crafting-detail__notes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.2rem 1.25rem;
-  margin: 0.65rem 0 1rem;
+.crafting-detail__probe-note {
+  margin: 0.65rem 0 0;
   color: rgba(245, 240, 227, 0.7);
   font-size: 0.85rem;
-}
-.crafting-detail__notes p {
-  margin: 0;
 }
 .crafting-favorites-note {
   margin: -0.25rem 0 0.75rem;
@@ -234,6 +287,17 @@
 }
 .crafting-workspace > * {
   min-width: 0;
+}
+.crafting-workspace > .crafting-inventory {
+  position: relative;
+}
+.crafting-workspace > .crafting-inventory::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -0.5rem;
+  border-left: 1px solid var(--fraction-accent, rgba(245, 240, 227, 0.55));
 }
 .crafting-filters {
   display: grid;
@@ -316,6 +380,11 @@
   border: 1px solid rgba(245, 240, 227, 0.16);
   border-radius: 0.5rem;
   background: rgba(0, 0, 0, 0.2);
+}
+.crafting-recipe {
+  border-left: 2px solid var(--item-rarity-accent, rgba(245, 240, 227, 0.35));
+  border-bottom-color: var(--item-rarity-accent, rgba(245, 240, 227, 0.35));
+  border-radius: 0 0.45rem 0 0.45rem;
 }
 .crafting-recipe__header {
   display: flex;
@@ -494,11 +563,25 @@
 }
 @media (max-width: 767.98px) {
   .crafting-page { padding: 0.75rem; }
+  .crafting-detail__overview { grid-template-columns: 10rem minmax(0, 1fr); }
+  .crafting-detail__overview > .crafting-probe { grid-column: span 2; }
   .crafting-workspace { grid-template-columns: minmax(0, 1fr); }
+  .crafting-workspace > .crafting-inventory::before {
+    top: -0.5rem;
+    right: 0;
+    bottom: auto;
+    left: 0;
+    border-left: 0;
+    border-top: 1px solid var(--fraction-accent, rgba(245, 240, 227, 0.55));
+  }
   .crafting-dialog__layout { grid-template-columns: minmax(0, 1fr); }
   .crafting-mobile-jump {
     display: inline-block;
     margin-bottom: 0.75rem;
     color: var(--fraction-accent, #f3d28a);
+  }
+  @media (max-width: 480px) {
+    .crafting-detail__overview,
+    .crafting-station-image--detail { grid-template-columns: 7rem minmax(0, 1fr); }
   }
 }

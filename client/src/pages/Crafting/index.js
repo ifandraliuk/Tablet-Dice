@@ -8,13 +8,15 @@ import axios from "axios";
 import { getTalent, getPlayerTalent } from "../../features/talent/talentSlice";
 import { getInventory } from "../../features/inventory/inventorySlice";
 import { pageTransition } from "../../data/Animations";
+import { itemNames } from "../../data/ConstVariables";
 import ItemIcon from "../../components/ItemIcon";
 import RarityBadge from "../../components/RarityBadge";
 import ExtendedInfo from "../Inventory/ExtendedInfo";
 import CraftingDialog from "./CraftingDialog";
+import StationImage from "./StationImage";
 import { TalentProbe, TalentProbeRules } from "../../components/TalentProbe";
 import useTalentProbeData from "../../components/useTalentProbeData";
-import { professions, ownInventory, materialAvailability, professionResources, stationAccess, stationPointRequirements } from "./craftingData";
+import { professions, ownInventory, materialAvailability, professionResources, stationAccess, stationPointRequirements, highestStationIndex } from "./craftingData";
 import "../../Styles/Crafting.css";
 
 const errorText = (error) =>
@@ -170,8 +172,10 @@ function Crafting() {
                     const talent = data.talents.find((item) => item.category === "Handwerk" && item.name === profession.name);
                     const points = data.playerTalents.find((entry) => entry.talent?._id === talent._id)?.points || 0;
                     const unlockedCount = profession.stations.filter((item, index) => stationAccess(points, index) === "unlocked").length;
+                    const previewIndex = highestStationIndex(points);
                     return (
                       <button type="button" className="crafting-profession" key={profession.name} onClick={() => openProfession(profession)}>
+                        <StationImage key={`${profession.name}-${previewIndex}`} station={profession.stations[previewIndex]} index={previewIndex} points={points} context="card" />
                         <strong>{profession.name}</strong>
                         <span className="crafting-profession__description">{profession.description}</span>
                         <span className="crafting-profession__progress">
@@ -192,7 +196,7 @@ function Crafting() {
               )}
             </>
           ) : (
-          <section className="crafting-detail" aria-labelledby="crafting-detail-title">
+          <section className="crafting-detail" aria-label={`${selected.name} · Herstellung`}>
             <div className="crafting-detail__navigation">
               <button type="button" className="crafting-back" onClick={() => setSelected(null)}>← Zur Berufsauswahl</button>
               <label>Beruf wechseln
@@ -205,9 +209,21 @@ function Crafting() {
               </label>
             </div>
             <header className="crafting-detail__heading">
-              <h1 id="crafting-detail-title">{selected.name} · Herstellung</h1>
+              <h1>{selected.name}</h1>
               <span className={`creature-status ${selectedPoints > 0 ? "creature-status--default" : "creature-status--muted"}`}>{selectedPoints > 0 ? `${selectedPoints} ${selectedPoints === 1 ? "Talentpunkt" : "Talentpunkte"}` : "Noch nicht gelernt · 0 Punkte"}</span>
             </header>
+            <div className="crafting-detail__overview">
+              {(() => {
+                const previewIndex = station ? Number(station) - 1 : highestStationIndex(selectedPoints);
+                return <StationImage key={`${selected.name}-${previewIndex}`} station={selected.stations[previewIndex]} index={previewIndex} points={selectedPoints} context="detail" allStations={!station} />;
+              })()}
+              <div className="crafting-probe">
+                <div className="crafting-probe__heading"><strong>Deine Talentprobe</strong><TalentProbeRules fractionTheme={fractionTheme} /></div>
+                <TalentProbe dice={selectedTalent?.dice} attributes={probeData.attributes} points={selectedPoints} bonus={selectedBonus} loading={probeData.loading} compact showBonus />
+                {probeData.error && <p role="alert">Probenwerte konnten nicht geladen werden: {probeData.error} <button type="button" onClick={probeData.retry}>Erneut versuchen</button></p>}
+                <p className="crafting-detail__probe-note">Alle drei Stufen verwenden dieselbe Talentprobe.</p>
+              </div>
+            </div>
             {selectedPoints < 1 && (
               <div className="crafting-learn-hint">
                 <strong>Entdecke {selected.name}</strong>
@@ -215,14 +231,6 @@ function Crafting() {
                 <Link to={`/talents?talent=${encodeURIComponent(selected.name)}`} state={{ craftingReturn: { userId: user?._id, profession: selected.name, tab, search, station, filter, favoritesOnly, visibleCount } }}>Talent {selected.name} ansehen →</Link>
               </div>
             )}
-            <div className="crafting-probe">
-              <div className="crafting-probe__heading"><strong>Deine Talentprobe</strong><TalentProbeRules fractionTheme={fractionTheme} /></div>
-              <TalentProbe dice={selectedTalent?.dice} attributes={probeData.attributes} points={selectedPoints} bonus={selectedBonus} loading={probeData.loading} compact showBonus />
-              {probeData.error && <p role="alert">Probenwerte konnten nicht geladen werden: {probeData.error} <button type="button" onClick={probeData.retry}>Erneut versuchen</button></p>}
-            </div>
-            <div className="crafting-detail__notes">
-              <p>Alle drei Stufen verwenden dieselbe Talentprobe.</p>
-            </div>
             {!favoriteKey && <p role="alert">Favoriten sind ohne Charakterkennung nicht verfügbar.</p>}
             {favoriteError && <p role="alert">{favoriteError}</p>}
             <div className="crafting-workspace">
@@ -243,7 +251,7 @@ function Crafting() {
                     {results.slice(0, visibleCount).map(({ recipe, requirements, ready }) => {
                       const level = selected.stations.findIndex((item) => item.values.includes(recipe.production));
                       const access = stationAccess(selectedPoints, level);
-                      return <article className="crafting-recipe" key={recipe._id}>
+                      return <article className={`crafting-recipe item-rarity-${itemNames.rarity?.[recipe.rarity] || "unknown"}`} key={recipe._id}>
                         <div className="crafting-recipe__header"><div className="crafting-recipe__identity"><span aria-hidden="true"><ItemIcon item={recipe} /></span><div><h3>{recipe.name}</h3><span>Stufe {level + 1} · {selected.stations[level].name}</span></div></div>
                           <div className="crafting-recipe__actions">
                             <button type="button" className="crafting-recipe__info" aria-label={`Informationen zu ${recipe.name}`} title="Gegenstandsinformationen" aria-haspopup="dialog" onClick={() => setSelectedRecipe(recipe)}><FontAwesomeIcon icon={faCircleInfo} aria-hidden="true" /></button>

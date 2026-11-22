@@ -74,11 +74,15 @@ test("shows learned professions, recipe shortages, search, filters and persisten
   expect(screen.getByRole("button", { name: /Kochen/ })).toHaveTextContent("Bereite aus Zutaten Speisen und Getränke zu.");
   const cook = screen.getByRole("button", { name: /Kochen/ });
   expect(cook).toHaveTextContent("0/3");
+  expect(cook.querySelector(".crafting-station-image--card .crafting-station-image__content")).not.toBeInTheDocument();
+  expect(cook).toHaveTextContent("Lagerfeuer");
+  expect(cook).toHaveTextContent("ungelernt mit Malus nutzbar");
   expect(cook).toHaveTextContent("1. Lagerfeuer · ungelernt mit Malus nutzbar");
   expect(cook).toHaveTextContent("2. Kochstube · gesperrt");
   expect(cook.querySelectorAll(".crafting-profession__station.is-unlocked")).toHaveLength(0);
   fireEvent.click(smith);
   const dialog = await screen.findByRole("region", { name: "Schmieden · Herstellung" });
+  expect(within(dialog).getByRole("heading", { name: "Schmieden", level: 1 })).toBeInTheDocument();
   expect(dialog).toHaveTextContent("STR/GSK/AUS");
   expect(dialog).toHaveTextContent("10 / 15 / 10");
   expect(dialog).toHaveTextContent("Ausgleich: 2 Talentpunkte + 1 Ausrüstungsbonus = 3");
@@ -90,6 +94,8 @@ test("shows learned professions, recipe shortages, search, filters and persisten
   const sword = (await within(dialog).findByText("Schwert")).closest("article");
   const dagger = within(dialog).getByText("Dolch").closest("article");
   expect(within(sword).getByText("selten")).toHaveClass("extended-info-rarity", "rare");
+  expect(sword).toHaveClass("item-rarity-rare");
+  expect(dagger).toHaveClass("item-rarity-unknown");
   expect(dagger.querySelector(".extended-info-rarity")).not.toBeInTheDocument();
   expect(within(dagger).getByText("Herstellungsort gesperrt · ab 20 Talentpunkten")).toBeInTheDocument();
   expect(within(dialog).getAllByRole("article")[0]).toBe(dagger);
@@ -127,6 +133,15 @@ test("shows learned professions, recipe shortages, search, filters and persisten
   axios.get.mockResolvedValueOnce({ data: [] });
   fireEvent.click(screen.getByRole("button", { name: /Kochen/ }));
   const cooking = await screen.findByRole("region", { name: "Kochen · Herstellung" });
+  expect(cooking.querySelector(".crafting-station-image--detail")).toHaveTextContent("Lagerfeuer");
+  expect(cooking.querySelector(".crafting-station-image--detail")).toHaveTextContent("Ungelernt mit Malus nutzbar");
+  const overview = cooking.querySelector(".crafting-detail__overview");
+  expect(overview.querySelector(".crafting-station-image--detail")).toBeInTheDocument();
+  expect(overview.querySelector(".crafting-probe")).toHaveTextContent("Deine Talentprobe");
+  expect(overview).toHaveTextContent("Alle drei Stufen verwenden dieselbe Talentprobe.");
+  fireEvent.change(within(cooking).getByLabelText("Herstellungsort"), { target: { value: "" } });
+  expect(cooking.querySelector(".crafting-station-image--detail")).toHaveTextContent("Alle Stufen · Ortsvorschau");
+  expect(cooking.querySelector(".crafting-station-image--detail")).toHaveTextContent("Lagerfeuer");
   expect(await within(cooking).findByText(/keine Rezepte/i)).toBeInTheDocument();
   expect(within(cooking).getByText("Keine passenden Ressourcen im Inventar.")).toBeInTheDocument();
 });
@@ -254,9 +269,16 @@ test.each([[1, 1], [9, 1], [10, 2], [19, 2], [20, 3]])(
     expect(smith).toHaveTextContent(`${unlockedCount}/3`);
     expect(smith.querySelectorAll(".crafting-profession__station.is-unlocked")).toHaveLength(unlockedCount);
     expect(smith.querySelectorAll(".crafting-profession__progress-track .is-unlocked")).toHaveLength(unlockedCount);
+    const preview = smith.querySelector(".crafting-station-image--card");
+    expect(preview.querySelector(".crafting-station-image__content")).not.toBeInTheDocument();
+    expect(preview.querySelector("img")).toHaveAttribute("src", `/crafting/images/smithing-${unlockedCount}.png`);
     fireEvent.click(smith);
     const detail = await screen.findByRole("region", { name: "Schmieden · Herstellung" });
+    expect(detail.querySelector(".crafting-station-image--detail")).toHaveTextContent("Herstellungsort · Stufe 1");
     fireEvent.change(within(detail).getByLabelText("Herstellungsort"), { target: { value: "2" } });
+    expect(detail.querySelector(".crafting-station-image--detail")).toHaveTextContent("Edelmetallschmiede");
+    expect(detail.querySelector(".crafting-station-image--detail img")).toHaveAttribute("src", "/crafting/images/smithing-2.png");
+    expect(detail.querySelector(".crafting-station-image--detail")).toHaveTextContent(points < 10 ? "Gesperrt · ab 10 Talentpunkten" : "Freigeschaltet");
     const ring = (await within(detail).findByText("Ring")).closest("article");
     if (points < 10) {
       expect(within(ring).getByText("Herstellungsort gesperrt · ab 10 Talentpunkten")).toBeInTheDocument();
@@ -272,6 +294,10 @@ test.each([[1, 1], [9, 1], [10, 2], [19, 2], [20, 3]])(
     }
     if (points < 20) expect(within(dagger).getByRole("button", { name: "Herstellen" })).toBeDisabled();
     else expect(within(dagger).getByRole("button", { name: "Herstellen" })).toBeEnabled();
+    fireEvent.change(within(detail).getByLabelText("Herstellungsort"), { target: { value: "" } });
+    expect(detail.querySelector(".crafting-station-image--detail")).toHaveTextContent("Alle Stufen · Ortsvorschau");
+    expect(detail.querySelector(".crafting-station-image--detail")).toHaveTextContent(["Schmiede", "Edelmetallschmiede", "Lavaschmiede"][unlockedCount - 1]);
+    expect(detail.querySelector(".crafting-station-image--detail img")).toHaveAttribute("src", `/crafting/images/smithing-${unlockedCount}.png`);
   }
 );
 
