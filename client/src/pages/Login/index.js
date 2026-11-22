@@ -4,6 +4,9 @@ import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router-dom";
 import { login, reset } from "../../features/auth/AuthSlice";
 import { useSelector, useDispatch } from "react-redux";
+import originColors from "../../data/OriginColors";
+
+const originGradient = `linear-gradient(90deg, ${Object.values(originColors).join(", ")})`;
 
 function Login() {
   const [formData, setFormData] = useState({ name: "", pwd: "" });
@@ -53,7 +56,7 @@ function Login() {
     <main className="login-page">
       <div className="background">
         <div className="vignette">
-          <section className="login-card" aria-labelledby="login-title">
+          <section className="login-card" aria-labelledby="login-title" style={{ "--login-origins": originGradient }}>
             <header className="login-card__header">
               <span className="login-card__eyebrow">Tablet &amp; Dice</span>
               <h1 id="login-title">Willkommen in den Dragonlands</h1>
@@ -69,7 +72,7 @@ function Login() {
                 <Form.Control name="pwd" type="password" placeholder="Passwort" autoComplete="current-password" onChange={onChange} value={pwd} />
               </Form.Group>
               {isError && <div className="login-form__error" role="alert">{message}</div>}
-              <button className="login-btn" type="submit">Einloggen</button>
+              <button className="login-btn" type="submit"><span>Einloggen</span><span className="login-btn__arrow" aria-hidden="true">→</span></button>
             </Form>
             <div className="login-card__register">
               <span>Noch keinen Charakter?</span>

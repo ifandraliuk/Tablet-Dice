@@ -1,5 +1,5 @@
 .login-page {
-  --login-accent: #f3d28a;
+  --login-accent: #f5f0e3;
   min-height: 100vh;
   padding: 0;
   color: #f5f0e3;
@@ -21,10 +21,11 @@
 }
 
 .login-card {
+  position: relative;
+  overflow: hidden;
   width: min(100%, 28rem);
   padding: clamp(1.5rem, 4vw, 2.5rem);
-  border: 1px solid rgba(243, 210, 138, 0.38);
-  border-top: 3px solid var(--login-accent);
+  border: 1px solid rgba(245, 240, 227, 0.25);
   border-radius: 0.75rem;
   background: rgba(24, 24, 24, 0.94);
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
@@ -36,11 +37,21 @@
 
 .login-card__eyebrow {
   display: block;
-  margin-bottom: 0.6rem;
+  margin-bottom: 1rem;
   color: var(--login-accent);
   font-size: 0.8rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
+}
+
+.login-card__eyebrow::after {
+  content: "";
+  display: block;
+  width: min(100%, 12rem);
+  height: 4px;
+  margin: 0.7rem auto 0;
+  border-radius: 999px;
+  background: var(--login-origins);
 }
 
 .login-page .login-card h1 {
@@ -85,7 +96,7 @@
 
 .login-page .login-form .form-control:focus {
   border-color: var(--login-accent);
-  box-shadow: 0 0 0 0.2rem rgba(243, 210, 138, 0.15);
+  box-shadow: 0 0 0 0.2rem rgba(245, 240, 227, 0.15);
 }
 
 .login-form__error {
@@ -98,17 +109,39 @@
 }
 
 .login-page .login-btn {
+  position: relative;
+  overflow: hidden;
   min-height: 2.8rem;
   border: 1px solid var(--login-accent);
   border-radius: 0.4rem;
-  background: var(--login-accent);
-  color: #201a10;
+  background: linear-gradient(135deg, #fff, #e2ded4);
+  color: #202020;
   font-weight: 700;
+  transition: box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.login-btn__arrow {
+  display: inline-block;
+  margin-left: 0.5rem;
+  transition: transform 0.18s ease;
 }
 
 .login-page .login-btn:hover {
-  background: #ffe1a0;
-  color: #201a10;
+  background: linear-gradient(135deg, #fff, #eeeae1);
+  color: #202020;
+  box-shadow: 0 4px 16px rgba(245, 240, 227, 0.18);
+  transform: translateY(-2px);
+}
+
+.login-btn:hover .login-btn__arrow,
+.login-btn:focus-visible .login-btn__arrow { transform: translateX(0.2rem); }
+
+@media (prefers-reduced-motion: reduce) {
+  .login-page .login-btn,
+  .login-btn__arrow { transition: none; }
+  .login-page .login-btn:hover,
+  .login-btn:hover .login-btn__arrow,
+  .login-btn:focus-visible .login-btn__arrow { transform: none; }
 }
 
 .login-card__register {
@@ -125,15 +158,15 @@
 .login-page .register-btn {
   min-height: 2.6rem;
   padding: 0.5rem;
-  border: 1px solid rgba(243, 210, 138, 0.5);
+  border: 1px solid rgba(245, 240, 227, 0.4);
   border-radius: 0.4rem;
   color: var(--login-accent);
 }
 
 .login-page .register-btn:hover {
   border-color: var(--login-accent);
-  background: rgba(243, 210, 138, 0.1);
-  color: #ffe1a0;
+  background: rgba(245, 240, 227, 0.1);
+  color: #fff;
 }
 
 .login-page button:focus-visible {

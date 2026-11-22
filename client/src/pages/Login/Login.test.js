@@ -1,6 +1,7 @@
 import React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import Login from "./index";
+import originColors from "../../data/OriginColors";
 
 const mockDispatch = jest.fn();
 const mockNavigate = jest.fn();
@@ -20,6 +21,12 @@ beforeEach(() => {
   mockAuth = { user: null, registered: false, isError: false, isSuccess: false, message: "" };
   mockDispatch.mockClear();
   mockNavigate.mockClear();
+});
+
+test("uses all origin colors in the decorative gradient", () => {
+  render(<Login />);
+  const gradient = screen.getByRole("region", { name: "Willkommen in den Dragonlands" }).style.getPropertyValue("--login-origins");
+  Object.values(originColors).forEach((color) => expect(gradient).toContain(color));
 });
 
 test("submits the entered credentials through the form", () => {

@@ -67,6 +67,7 @@ export const getFraction = createAsyncThunk(
     try {
       const token = thunkAPI.getState().auth.user.token;
       const fraction = await playerService.getFraction(token);
+      if (thunkAPI.signal.aborted) return thunkAPI.rejectWithValue("Anfrage abgebrochen.");
       localStorage.setItem("fraction", fraction);
       return fraction;
     } catch (error) {
@@ -298,6 +299,9 @@ export const playerSlice = createSlice({
   initialState,
   reducers: {
     reset: (state) => initialState,
+    clearFraction: (state) => {
+      state.fractionTheme = "";
+    },
     resetLocalData: (state) => {
       state.fractionTheme = "";
       state.equipped = [];
@@ -686,6 +690,7 @@ export const playerSlice = createSlice({
 
 export const {
   reset,
+  clearFraction,
   resetLocalData,
   updateActions,
   loadPercentage,
