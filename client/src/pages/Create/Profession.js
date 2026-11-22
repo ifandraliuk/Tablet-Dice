@@ -8,7 +8,7 @@ import {
   setActiveProfession,
 } from "../../features/creation/creationSlice";
 import AbilityCard from "../../components/AbilityCard";
-import ExclamationMark from "../../components/ExclamationMark";
+import "../../Styles/Attributes.css";
 
 function Profession() {
   const dispatch = useDispatch();
@@ -79,10 +79,14 @@ function Profession() {
         </div>
       </div>
       <div className="row mt-2">
-        <div className="col-2 d-flex justify-content-end align-items-start">{activeAbility?.length> 0 ? "": <ExclamationMark />}</div>
-        <div className="col-10">
-           <h4>Wähle deine erste Fertigkeit</h4>
-
+        <div className="attribute-heading create-ability-heading">
+          <h4>Fertigkeiten</h4>
+          {!activeAbility && (
+            <span className="attribute-points" role="status">
+              <span className="attribute-points__icon" aria-hidden="true">!</span>
+              Wähle deine erste Fertigkeit
+            </span>
+          )}
         </div>
         <div className="row">
             {" "}

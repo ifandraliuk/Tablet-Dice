@@ -65,6 +65,9 @@
 .create-page .create-accent { color: var(--create-accent); }
 .create-page .border-pattern.left { border-image: none; border-left: 1px solid var(--create-border); }
 .create-page .ability-icon { width: 5em; }
+.create-page .create-ability-heading { margin-bottom: 0.75rem; }
+.create-page .create-ability-heading h4 { margin: 0; }
+.create-page .create-ability-heading .attribute-points { --fraction-accent: var(--create-accent); }
 .create-page .kingdom-map { width: 100%; cursor: zoom-in; }
 .create-modal__fields { display: grid; gap: 0.4rem; }
 .create-modal__fields label:not(:first-child) { margin-top: 0.5rem; }

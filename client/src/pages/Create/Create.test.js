@@ -52,6 +52,7 @@ test("naming dialog submits the entered data and cancels without submitting", ()
       auth: (state = { isSuccess: false, isError: false }) => state,
     },
   });
+
   const onSubmit = jest.fn((event) => event.preventDefault());
   const onClose = jest.fn();
   render(<Provider store={store}><CreateWindow origin="Algor" onSubmit={onSubmit} onClose={onClose} /></Provider>);
@@ -65,4 +66,30 @@ test("naming dialog submits the entered data and cancels without submitting", ()
   fireEvent.click(within(dialog).getByRole("button", { name: "Abbrechen" }));
   expect(onClose).toHaveBeenCalledTimes(1);
   expect(onSubmit).toHaveBeenCalledTimes(1);
+});
+
+test("shows the first ability reminder until an ability is selected", () => {
+  const initialCreation = creationReducer(undefined, { type: "init" });
+  const store = configureStore({
+    reducer: { creation: creationReducer, auth: (state = { user: null }) => state },
+    preloadedState: {
+      creation: {
+        ...initialCreation,
+        partActive: "profession",
+        professionList: [
+          { _id: "profession", name: "Krieger", abilities: [{ _id: "ability", name: "Schlag", specialization: "Novize", description: "Ein Schlag", type: "stamina", price: 1, dice: "1W6" }] },
+          { _id: "other", name: "Späher", abilities: [] },
+        ],
+      },
+    },
+  });
+  render(<Provider store={store}><MemoryRouter><CreateCharacter /></MemoryRouter></Provider>);
+  expect(screen.getByRole("heading", { name: "Fertigkeiten" })).toBeInTheDocument();
+  expect(screen.getByRole("status")).toHaveTextContent("Wähle deine erste Fertigkeit");
+  fireEvent.click(screen.getByRole("button", { name: "Krieger" }));
+  expect(screen.getByRole("status")).toHaveTextContent("Wähle deine erste Fertigkeit");
+  fireEvent.click(screen.getByRole("button", { name: "Wählen" }));
+  expect(screen.queryByRole("status")).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "Späher" }));
+  expect(screen.getByRole("status")).toHaveTextContent("Wähle deine erste Fertigkeit");
 });
