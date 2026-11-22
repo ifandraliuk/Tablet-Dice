@@ -15,6 +15,8 @@ function AllTalents({
   categorizedTalents,
   fractionTheme,
   bonusMap,
+  probeData,
+  targetTalent,
 }) {
   console.log("ALLTALENTS rerender");
 
@@ -58,10 +60,7 @@ function AllTalents({
               .map((talent) => {
                 const existsPoints =
                   playerTalentPointsByName.get(talent.name) ?? null;
-                const bonus =
-                  existsPoints != null
-                    ? bonusMap.get(talent.name) ?? null
-                    : null;
+                const bonus = bonusMap.get(talent.name) ?? null;
 
                 return (
                   <AllTalentRow
@@ -70,6 +69,8 @@ function AllTalents({
                     icons={icons}
                     existsPoints={existsPoints}
                     bonus={bonus}
+                    probeData={probeData}
+                    highlighted={talent.category === "Handwerk" && talent.name === targetTalent}
                     handleClick={handleClick}
                   />
                 );

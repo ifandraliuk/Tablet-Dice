@@ -2,18 +2,21 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faPlus } from "@fortawesome/free-solid-svg-icons";
 import MotionButton from "../../components/MotionButton";
+import { TalentProbe } from "../../components/TalentProbe";
 
 const AllTalentRow = React.memo(function AllTalentRow({
   talent,
   icons,
   existsPoints, // number | null (null = nicht gelernt)
   bonus, // number | null
+  probeData,
+  highlighted,
   handleClick,
 }) {
   const learned = existsPoints != null;
 
   return (
-    <tr>
+    <tr id={highlighted ? "talent-progression-target" : undefined} className={highlighted ? "talent-progression-target" : undefined}>
       <td>{talent.name}</td>
 
       <td className={`${talent.category}`}>
@@ -22,18 +25,13 @@ const AllTalentRow = React.memo(function AllTalentRow({
         </span>
       </td>
 
-      <td>{talent.dice}</td>
+      <td><TalentProbe dice={talent.dice} attributes={probeData.attributes} points={existsPoints ?? 0} loading={probeData.loading} compact /></td>
 
       <td>
         {learned ? existsPoints : 0}
         {bonus != null ? (
-          <>
-            {talent.points}
-            <strong className="green-text">{`+(${bonus})`}</strong>
-          </>
-        ) : (
-          talent.points
-        )}
+          <strong className="green-text">{`+(${bonus})`}</strong>
+        ) : null}
       </td>
 
       <td>

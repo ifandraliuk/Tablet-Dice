@@ -1,0 +1,43 @@
+.talent-probe {
+  display: grid;
+  gap: 0.2rem;
+  line-height: 1.35;
+}
+.talent-probe__values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.6rem;
+  color: var(--fraction-accent, #f3d28a);
+}
+.talent-probe__note {
+  color: rgba(245, 240, 227, 0.75);
+  font-size: 0.8rem;
+}
+.talents-page .talent-probe {
+  justify-items: center;
+  text-align: center;
+}
+.talents-page .talent-probe__values {
+  justify-content: center;
+}
+.talent-probe-info {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.72);
+  vertical-align: middle;
+  transition: color 0.18s ease, background-color 0.18s ease;
+}
+.talent-probe-info:hover,
+.talent-probe-info:focus-visible {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--fraction-accent, white);
+  outline: 1px solid var(--fraction-accent, rgba(245, 240, 227, 0.65));
+  outline-offset: 1px;
+}

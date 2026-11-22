@@ -3,6 +3,7 @@ import React, {
   useState,
   useCallback,
   useMemo,
+  useRef,
   shallowEqual,
 } from "react";
 import "../../Styles/Talents.css";
@@ -22,7 +23,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Image, Spinner } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   getTalent,
   addToPlayer,
@@ -31,22 +32,22 @@ import {
   getUserBoni,
   reset,
 } from "../../features/talent/talentSlice";
-import { getAttributes } from "../../features/player/playerSlice";
 import AllTalents from "./AllTalents";
 import ActiveTalents from "./ActiveTalents";
 import AttributeList from "../Dashboard/Attributes";
 import ScrollUpButton from "../../components/ScrollUpButton";
 import { motion } from "framer-motion";
 import { pageTransition } from "../../data/Animations";
-import { getCategoryBoni } from "../../features/inventory/inventorySlice";
 import TalentFilterSidebar from "./TalentFilterSidbar";
+import { TalentProbeRules } from "../../components/TalentProbe";
+import useTalentProbeData from "../../components/useTalentProbeData";
 
 function Talents() {
   console.log("TALENTS rendered");
 
   const { user } = useSelector((state) => state.auth);
   const { fractionTheme, attributes } = useSelector((state) => state.player);
-  const { talentBoni } = useSelector((state) => state.inventory);
+  const probeData = useTalentProbeData(user);
   const {
     allTalents,
     kindName,
@@ -62,21 +63,40 @@ function Talents() {
 
   const [filter, setFilter] = useState("");
   const [viewMode, setViewMode] = useState("active"); // "active" oder "all"
+  const location = useLocation();
+  const targetTalent = new URLSearchParams(location.search).get("talent");
+  const scrolledTarget = useRef(null);
 
   const [newTalents, setNewTalent] = useState([]);
   const [edit, toEdit] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  useEffect(() => {
+    if (targetTalent) {
+      setViewMode("all");
+      setFilter("Handwerk");
+      scrolledTarget.current = null;
+    }
+  }, [targetTalent]);
+
+  useEffect(() => {
+    if (!targetTalent || viewMode !== "all" || filter !== "Handwerk" || scrolledTarget.current === targetTalent) return;
+    const target = document.getElementById("talent-progression-target");
+    if (target) {
+      target.scrollIntoView({ block: "center" });
+      scrolledTarget.current = targetTalent;
+    }
+  }, [targetTalent, viewMode, filter, allTalents]);
   const bonusMap = useMemo(() => {
     const map = new Map(); // Key: Talent-Name, Value: Bonus-Wert
 
-    for (const el of talentBoni) {
+    for (const el of probeData.boni || []) {
       // passt das zu deiner Struktur: el.bonus.type und el.value
       map.set(el.bonus.type, el.value);
     }
 
     return map;
-  }, [talentBoni]);
+  }, [probeData.boni]);
   const icons = useMemo(
     () => ({
       Nahkampf: faKhanda,
@@ -92,9 +112,6 @@ function Talents() {
 
   useEffect(() => {
     if (!user) return;
-    if (attributes?.length === 0) {
-      dispatch(getAttributes());
-    }
     if (allTalents?.length === 0) {
       dispatch(getTalent());
     }
@@ -103,7 +120,6 @@ function Talents() {
     }
 
     dispatch(getUserBoni());
-    dispatch(getCategoryBoni("talent"));
   }, [user, attributes, dispatch]);
 
   useEffect(() => {
@@ -199,6 +215,7 @@ function Talents() {
                 ) : (
                   <Spinner animation="border" />
                 )}
+                {probeData.error && <p role="alert">Probenwerte konnten nicht geladen werden: {probeData.error} <button type="button" onClick={probeData.retry}>Erneut versuchen</button></p>}
                 <div className="row align-items-center">
                   {/* Linksbündige Buttons */}
                   <div className="col-auto me-auto">
@@ -236,7 +253,8 @@ function Talents() {
                   </div>
 
                   {/* Rechtsbündige Buttons */}
-                  <div className="col-auto">
+                  <div className="col-auto talents-toolbar-actions">
+                    <TalentProbeRules fractionTheme={fractionTheme} />
                     {edit ? (
                       <button
                         type="button"
@@ -278,6 +296,7 @@ function Talents() {
                         fractionTheme={fractionTheme}
                         newTalents={newTalents}
                         bonusMap={bonusMap}
+                        probeData={probeData}
                       />
                     ) : (
                       <h5>Du hast noch keine Talente...</h5>
@@ -291,6 +310,8 @@ function Talents() {
                       setFilter={setFilter}
                       fractionTheme={fractionTheme}
                       bonusMap={bonusMap}
+                      probeData={probeData}
+                      targetTalent={targetTalent}
                     />
                   )}
                   </div>

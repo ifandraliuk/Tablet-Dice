@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import playerService from "./playerService";
 import { boniList } from "../../data/ConstVariables";
+import { clearSessionStorage } from "../../data/localStorage";
 const user = JSON.parse(localStorage.getItem("user"));
 console.log(user);
 const vitality = JSON.parse(localStorage.getItem("vitality"));
@@ -55,7 +56,7 @@ export const getPlayer = createAsyncThunk("player/get", async (_, thunkAPI) => {
       error.message ||
       error.toString();
     console.log(error.message);
-    localStorage.clear();
+    clearSessionStorage();
     return thunkAPI.rejectWithValue(msg);
   }
 });

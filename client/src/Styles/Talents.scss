@@ -17,6 +17,16 @@
         margin-left:2px;
         padding:0;
     }
+    .talents-toolbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+    .talent-progression-target td {
+        background: rgba(255, 255, 255, 0.08);
+        border-top: 1px solid var(--fraction-accent, #f3d28a);
+        border-bottom: 1px solid var(--fraction-accent, #f3d28a);
+    }
     .sort-btn:focus{
         color: $categoryGreen;
         border: none;
@@ -55,6 +65,17 @@
         padding-bottom: 0.1rem;
         border-bottom: 2px solid var(--talent-category-color);
         line-height: 1.4;
+    }
+
+    @media (max-width: 767.98px) {
+        .custom-table {
+            font-size: 0.8rem;
+        }
+        .custom-table th,
+        .custom-table td {
+            padding: 0 0.2rem;
+            overflow-wrap: anywhere;
+        }
     }
 
     .talent{

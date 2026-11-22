@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { clearSessionStorage } from "../../data/localStorage";
 
 
 const API_URL = "/users/"
@@ -30,7 +31,7 @@ const login = async (userData) => {
 const logout = () => {
     localStorage.removeItem("user")
     localStorage.removeItem("fraction")
-    localStorage.clear();
+    clearSessionStorage();
     
 }
 

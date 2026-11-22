@@ -9,6 +9,7 @@ import {
   faPaw,
   faGlobe,
   faFeather,
+  faHammer,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -16,6 +17,7 @@ import { logout, reset } from "../features/auth/AuthSlice";
 import { reset as playerReset } from "../features/player/playerSlice";
 import { reset as inventoryReset } from "../features/inventory/inventorySlice";
 import { useNavigate } from "react-router-dom";
+import { clearSessionStorage } from "../data/localStorage";
 
 function Navbar() {
   const { user } = useSelector((state) => state.auth);
@@ -28,7 +30,7 @@ function Navbar() {
     dispatch(reset());
     dispatch(playerReset());
     dispatch(inventoryReset());
-    localStorage.clear();
+    clearSessionStorage();
     navigate("/");
   };
 
@@ -73,6 +75,11 @@ function Navbar() {
           <li>
             <Link className={`link ${location.pathname === "/talents" && "active"}`} to="/talents">
               <FontAwesomeIcon icon={faDiceD20}  className={location.pathname === "/talents" ? `${fractionTheme}-text` : ""} /> Talente
+            </Link>
+          </li>
+          <li>
+            <Link className={`link ${location.pathname === "/crafting" && "active"}`} to="/crafting">
+              <FontAwesomeIcon icon={faHammer} className={location.pathname === "/crafting" ? `${fractionTheme}-text` : ""} /> Herstellung
             </Link>
           </li>
           <li>

@@ -2,6 +2,20 @@ const asyncHandler = require("express-async-handler");
 
 const Item = require("../models/itemsModel");
 
+const getRecipes = asyncHandler(async (req, res) => {
+  const productions = Array.isArray(req.query.production)
+    ? req.query.production
+    : [req.query.production];
+  if (!productions.length || productions.length > 20 ||
+      productions.some((value) => typeof value !== "string" || !value.trim() || value.length > 100)) {
+    return res.status(400).json({ message: "Bitte gültige Herstellungsorte angeben." });
+  }
+  const items = await Item.find({ production: { $in: productions } })
+    .sort({ name: 1, _id: 1 })
+    .populate({ path: "material.element", model: "Item", select: "name category genus rarity" });
+  return res.status(200).json(items);
+});
+
 const migrateRarityValues = async (req, res, next) => {
   try {
     const rarityOrder = {
@@ -278,6 +292,7 @@ module.exports = {
   getSearchInCategory,
   getItem,
   getProductions,
+  getRecipes,
   findItem,
   updateItem,
   rename,

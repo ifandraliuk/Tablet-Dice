@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../features/auth/AuthSlice";
 import { useNavigate } from "react-router-dom";
+import { clearSessionStorage } from "../data/localStorage";
 
 function ErrorPage() {
   const { player, isError } = useSelector((state) => state.player);
@@ -13,7 +14,7 @@ function ErrorPage() {
       dispatch(logout());
     }
     if (isError) {
-      localStorage.clear();
+      clearSessionStorage();
       navigate("/");
     }
   }, [isError, player, user, navigate, dispatch]);

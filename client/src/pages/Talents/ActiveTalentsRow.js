@@ -12,9 +12,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { tableAnimation } from "../../data/Animations";
+import { TalentProbe } from "../../components/TalentProbe";
 
 const ActiveTalentRow = React.memo(function TalentRow({
-  el, bonus, edit, icons, draftValue, handleChange, handleRemove
+  el, bonus, edit, icons, draftValue, handleChange, handleRemove, probeData
 }) {
   return (
     <motion.tr
@@ -31,7 +32,7 @@ const ActiveTalentRow = React.memo(function TalentRow({
           <FontAwesomeIcon icon={icons[el.talent.category]} /> {el.talent.category}
         </span>
       </td>
-      <td>{el.talent.dice}</td>
+      <td><TalentProbe dice={el.talent.dice} attributes={probeData.attributes} points={el.points} loading={probeData.loading} compact /></td>
 
       {edit ? (
         <td>

@@ -30,7 +30,8 @@ function ActiveTalents({
   handleSubmit,
   fractionTheme,
   newTalents,
-  bonusMap
+  bonusMap,
+  probeData
 }) {
   console.log("ACTIVETALENTS rerender");
   const { playerTalents } = useSelector((state) => state.talents);
@@ -115,6 +116,7 @@ function ActiveTalents({
                           key={el._id}
                           el={el}
                           bonus={bonus}
+                          probeData={probeData}
                           edit={edit}
                           icons={icons}
                           draftValue={draftMap[el._id] ?? el.points}

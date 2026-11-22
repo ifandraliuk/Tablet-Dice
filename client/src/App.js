@@ -18,6 +18,7 @@ import Dashboard from "./pages/Dashboard/index";
 import { AnimatePresence } from "framer-motion";
 import Navbar from "./components/Nav";
 import Atlas from "./pages/Atlas";
+import Crafting from "./pages/Crafting";
 import { getFraction } from "./features/player/playerSlice";
 import { ToastContainer } from "react-toastify";
 
@@ -60,6 +61,7 @@ function App() {
                   element={<InventoryPage />}
                 ></Route>
                 <Route exact path="/talents" element={<Talents />}></Route>
+                <Route path="/crafting" element={<Crafting />}></Route>
                 <Route exact path="/bestiaria" element={<Bestiaria />}></Route>
                 <Route
                   path="/companions"

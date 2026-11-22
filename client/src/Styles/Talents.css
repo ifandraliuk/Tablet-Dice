@@ -11,6 +11,16 @@
   margin-left: 2px;
   padding: 0;
 }
+.talents-page .talents-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.talents-page .talent-progression-target td {
+  background: rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--fraction-accent, #f3d28a);
+  border-bottom: 1px solid var(--fraction-accent, #f3d28a);
+}
 .talents-page .sort-btn:focus {
   color: rgb(144, 190, 109);
   border: none;
@@ -47,6 +57,16 @@
   padding-bottom: 0.1rem;
   border-bottom: 2px solid var(--talent-category-color);
   line-height: 1.4;
+}
+@media (max-width: 767.98px) {
+  .talents-page .custom-table {
+    font-size: 0.8rem;
+  }
+  .talents-page .custom-table th,
+  .talents-page .custom-table td {
+    padding: 0 0.2rem;
+    overflow-wrap: anywhere;
+  }
 }
 .talents-page .talent {
   background-color: black;

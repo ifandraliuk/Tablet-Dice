@@ -6,6 +6,7 @@ import { login, register, reset } from "../../features/auth/AuthSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { buttonAnimation } from "../../data/Animations";
 import { motion } from "framer-motion";
+import { clearSessionStorage } from "../../data/localStorage";
 
 function Login() {
   const [formData, setFormData] = useState({ name: "", pwd: "" });
@@ -30,7 +31,7 @@ function Login() {
   useEffect(() => {
     if (isError) {
       console.log(message, isError);
-      localStorage.clear()
+      clearSessionStorage()
     }
     if (user && !registered) {
       //dispatch(getPlayer());
@@ -39,7 +40,7 @@ function Login() {
       navigate("/register");
     } else {
       navigate("/");
-      localStorage.clear()
+      clearSessionStorage()
 
     }
     // Set everything to false

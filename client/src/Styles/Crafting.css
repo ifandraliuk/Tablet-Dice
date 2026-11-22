@@ -1,0 +1,336 @@
+.crafting-page {
+  min-height: 100vh;
+  padding: 1.25rem;
+  color: #f5f0e3;
+  background-color: rgba(24, 24, 24, 0.92);
+}
+.crafting-heading {
+  margin-bottom: 1rem;
+}
+.crafting-heading h1 {
+  color: var(--fraction-accent, #f3d28a);
+}
+.crafting-heading p,
+.crafting-hint,
+.crafting-inventory p {
+  color: rgba(245, 240, 227, 0.7);
+  text-align: left;
+}
+.crafting-hint {
+  margin: 0.75rem 0 1rem;
+  font-size: 0.85rem;
+}
+.crafting-professions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: 0.75rem;
+}
+.crafting-profession {
+  display: grid;
+  gap: 0.5rem;
+  align-content: start;
+  padding: 1rem;
+  text-align: left;
+  color: #f5f0e3;
+  border: 1px solid rgba(245, 240, 227, 0.16);
+  border-radius: 0.65rem;
+  background: rgba(18, 18, 17, 0.72);
+  transition: background-color 0.18s ease, border-color 0.18s ease;
+}
+.crafting-page .crafting-profession:hover {
+  border-color: var(--fraction-accent, #f3d28a);
+  background: rgba(35, 35, 33, 0.92);
+}
+.crafting-profession:focus-visible {
+  border-color: var(--fraction-accent, #f3d28a);
+  outline: 1px solid var(--fraction-accent, #f3d28a);
+  outline-offset: 2px;
+}
+.crafting-profession > strong {
+  color: var(--fraction-accent, #f3d28a);
+  font-size: 1.1rem;
+}
+.crafting-profession > span:not(.creature-status) {
+  font-size: 0.85rem;
+  color: rgba(245, 240, 227, 0.75);
+}
+.crafting-profession > .creature-status {
+  justify-self: start;
+}
+.crafting-profession__stations {
+  display: grid;
+  gap: 0.2rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(245, 240, 227, 0.12);
+}
+.crafting-detail {
+  overflow-wrap: anywhere;
+}
+.crafting-detail__navigation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.crafting-detail__navigation label {
+  display: grid;
+  gap: 0.3rem;
+  min-width: min(100%, 14rem);
+  font-size: 0.85rem;
+}
+.crafting-back {
+  padding: 0.45rem 0.7rem;
+  border: 1px solid rgba(245, 240, 227, 0.22);
+  border-radius: 0.4rem;
+  background: rgba(24, 24, 24, 0.8);
+  color: #f5f0e3;
+}
+.crafting-back:hover,
+.crafting-back:focus-visible {
+  border-color: var(--fraction-accent, #f3d28a);
+  color: var(--fraction-accent, #f3d28a);
+}
+.crafting-back:focus-visible {
+  outline: 2px solid var(--fraction-accent, #f3d28a);
+  outline-offset: 2px;
+}
+.crafting-detail__heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.65rem;
+}
+.crafting-detail__heading h1 {
+  margin: 0;
+  color: var(--fraction-accent, #f3d28a);
+}
+.crafting-detail h2 {
+  font-size: 1.1rem;
+  color: var(--fraction-accent, #f3d28a);
+}
+.crafting-detail p {
+  text-align: left;
+}
+.crafting-learn-hint {
+  margin: 0.75rem 0 1rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid rgba(245, 240, 227, 0.2);
+  border-left: 3px solid var(--fraction-accent, #f3d28a);
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+}
+.crafting-learn-hint p {
+  margin: 0.35rem 0;
+  color: rgba(245, 240, 227, 0.8);
+}
+.crafting-learn-hint a {
+  color: var(--fraction-accent, #f3d28a);
+}
+.crafting-learn-hint a:focus-visible {
+  outline: 2px solid var(--fraction-accent, #f3d28a);
+  outline-offset: 3px;
+}
+.crafting-probe {
+  margin-bottom: 0;
+}
+.crafting-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(13rem, 1fr);
+  gap: 1rem;
+}
+.crafting-workspace > * {
+  min-width: 0;
+}
+.crafting-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+.crafting-filters label {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.82rem;
+}
+.crafting-filters .crafting-favorites-filter {
+  display: flex;
+  align-items: center;
+  align-self: end;
+  gap: 0.6rem;
+  min-height: 2.4rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.crafting-favorites-filter input {
+  appearance: none;
+  flex: 0 0 auto;
+  width: 2.6rem;
+  height: 1.45rem;
+  margin: 0;
+  border: 1px solid rgba(245, 240, 227, 0.45);
+  border-radius: 999px;
+  background: #454545;
+  cursor: pointer;
+}
+.crafting-favorites-filter input::before {
+  content: "";
+  display: block;
+  width: 1.05rem;
+  height: 1.05rem;
+  margin: 0.14rem;
+  border-radius: 50%;
+  background: #f5f0e3;
+  transition: transform 0.18s ease;
+}
+.crafting-favorites-filter input:checked {
+  border-color: var(--fraction-accent, #f3d28a);
+  background: var(--fraction-accent, #f3d28a);
+}
+.crafting-favorites-filter input:checked::before {
+  transform: translateX(1.1rem);
+  background: #181818;
+}
+.crafting-favorites-filter input:focus-visible {
+  outline: 2px solid var(--fraction-accent, #f3d28a);
+  outline-offset: 3px;
+}
+.crafting-favorites-filter input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.crafting-mobile-jump {
+  display: none;
+  color: #f5f0e3;
+}
+.crafting-mobile-jump:focus-visible {
+  outline: 2px solid var(--fraction-accent, #f3d28a);
+  outline-offset: 2px;
+}
+#crafting-recipes,
+#crafting-inventory-title {
+  scroll-margin-top: 1rem;
+}
+.crafting-recipes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  align-items: start;
+  gap: 0.65rem;
+}
+.crafting-recipe,
+.crafting-inventory {
+  padding: 0.85rem;
+  border: 1px solid rgba(245, 240, 227, 0.16);
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+}
+.crafting-recipe__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.crafting-recipe__identity,
+.crafting-inventory__item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+}
+.crafting-recipe__identity > div,
+.crafting-inventory__item > span:last-child {
+  min-width: 0;
+}
+.crafting-recipe h3 {
+  font-size: 1rem;
+  margin: 0 0 0.2rem;
+}
+.crafting-recipe__header span {
+  color: rgba(245, 240, 227, 0.65);
+  font-size: 0.8rem;
+}
+.crafting-favorite {
+  flex: 0 0 auto;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid rgba(245, 240, 227, 0.2);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--fraction-accent, #f3d28a);
+  font-size: 1.3rem;
+}
+.crafting-favorite:focus-visible {
+  outline: 2px solid var(--fraction-accent, #f3d28a);
+  outline-offset: 2px;
+}
+.crafting-ready,
+.crafting-missing {
+  margin: 0.75rem 0 0.3rem;
+  font-weight: 600;
+}
+.crafting-ready { color: #a7dca6; }
+.crafting-missing { color: #ff9a9a; }
+.crafting-material-count--ready { color: #b7e4c7; }
+.crafting-material-count--missing { color: #ff9a9a; }
+.crafting-recipe ul {
+  padding-left: 1.1rem;
+  font-size: 0.85rem;
+}
+.crafting-recipe .crafting-materials {
+  display: grid;
+  gap: 0.4rem;
+  padding: 0;
+  list-style: none;
+}
+.crafting-materials li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.crafting-materials .small-icon,
+.crafting-inventory .small-icon {
+  width: 2rem !important;
+  height: 2rem !important;
+}
+.crafting-action {
+  padding: 0.35rem 0.6rem;
+  border: 1px solid rgba(245, 240, 227, 0.2);
+  border-radius: 0.4rem;
+  color: rgba(245, 240, 227, 0.55);
+  background: transparent;
+  cursor: not-allowed;
+}
+.crafting-more {
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--fraction-accent, rgba(249, 199, 79, 0.45));
+  border-radius: 0.4rem;
+  background: rgba(255, 255, 255, 0.06);
+  color: #f5f0e3;
+}
+.crafting-more:focus-visible {
+  outline: 2px solid var(--fraction-accent, #f3d28a);
+  outline-offset: 2px;
+}
+.crafting-inventory ul {
+  padding: 0;
+  list-style: none;
+}
+.crafting-inventory li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid rgba(245, 240, 227, 0.08);
+}
+@media (max-width: 767.98px) {
+  .crafting-page { padding: 0.75rem; }
+  .crafting-workspace { grid-template-columns: minmax(0, 1fr); }
+  .crafting-mobile-jump {
+    display: inline-block;
+    margin-bottom: 0.75rem;
+    color: var(--fraction-accent, #f3d28a);
+  }
+}
