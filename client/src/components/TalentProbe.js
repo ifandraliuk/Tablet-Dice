@@ -9,7 +9,7 @@ import "../Styles/ThemedModal.css";
 
 const attributeKeys = { ...diceAbbr, GSK: "dexterity", AUS: "stamina", MAN: "mana" };
 
-export function TalentProbe({ dice, attributes, points, bonus, compact = false, loading = false }) {
+export function TalentProbe({ dice, attributes, points, bonus, compact = false, showBonus = !compact, loading = false }) {
   const parts = typeof dice === "string" ? dice.split("/").map((part) => part.trim()) : [];
   const learned = points > 0;
   const valuesAvailable = parts.length === 3 && parts.every((part) =>
@@ -26,7 +26,7 @@ export function TalentProbe({ dice, attributes, points, bonus, compact = false, 
         </span>
       ) : <span className="talent-probe__note">{loading ? "Probenwerte werden geladen …" : attributes ? "Attributwerte nicht verfügbar" : "Probenwerte nicht verfügbar"}</span>}
       {!learned && <span className="talent-probe__note">Ungelernt: −1 je Attribut</span>}
-      {!compact && Number.isFinite(bonus) && <span className="talent-probe__note">Ausgleich: {points} Talentpunkte {bonus < 0 ? "−" : "+"} {Math.abs(bonus)} Ausrüstungsbonus = {points + bonus}</span>}
+      {showBonus && Number.isFinite(bonus) && <span className="talent-probe__note">Ausgleich: {points} Talentpunkte {bonus < 0 ? "−" : "+"} {Math.abs(bonus)} Ausrüstungsbonus = {points + bonus}</span>}
     </div>
   );
 }

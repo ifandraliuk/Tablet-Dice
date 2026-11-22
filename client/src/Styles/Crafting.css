@@ -200,7 +200,32 @@
   outline-offset: 3px;
 }
 .crafting-probe {
-  margin-bottom: 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(245, 240, 227, 0.16);
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+}
+.crafting-probe__heading {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--fraction-accent, #f3d28a);
+}
+.crafting-detail__notes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 1.25rem;
+  margin: 0.65rem 0 1rem;
+  color: rgba(245, 240, 227, 0.7);
+  font-size: 0.85rem;
+}
+.crafting-detail__notes p {
+  margin: 0;
+}
+.crafting-favorites-note {
+  margin: -0.25rem 0 0.75rem;
+  color: rgba(245, 240, 227, 0.7);
+  font-size: 0.8rem;
 }
 .crafting-workspace {
   display: grid;
@@ -377,8 +402,8 @@
 }
 .crafting-ready { color: #a7dca6; }
 .crafting-missing { color: #ff9a9a; }
-.crafting-material-count--ready { color: #b7e4c7; }
-.crafting-material-count--missing { color: #ff9a9a; }
+.crafting-material-count--ready { color: #b7e4c7; font-weight: 700; }
+.crafting-material-count--missing { color: #ff9a9a; font-weight: 700; }
 .crafting-recipe ul {
   padding-left: 1.1rem;
   font-size: 0.85rem;

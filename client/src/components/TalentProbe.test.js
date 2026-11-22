@@ -35,7 +35,14 @@ test("explains the inclusive threshold and shared pool", async () => {
 });
 
 test("keeps the talent table compact while retaining the unlearned penalty", () => {
-  render(<TalentProbe dice="VIT/GSK/AUS" attributes={{ vitality: 10, dexterity: 15, stamina: 10 }} points={0} compact />);
+  render(<TalentProbe dice="VIT/GSK/AUS" attributes={{ vitality: 10, dexterity: 15, stamina: 10 }} points={0} bonus={2} compact />);
   expect(screen.getByText("9 / 14 / 9")).toBeInTheDocument();
   expect(screen.getByText("Ungelernt: −1 je Attribut")).toBeInTheDocument();
+  expect(screen.queryByText(/Ausgleich:/)).not.toBeInTheDocument();
+});
+
+test("can show the shared pool with compact values", () => {
+  render(<TalentProbe dice="VIT/GSK/AUS" attributes={{ vitality: 10, dexterity: 15, stamina: 10 }} points={2} bonus={-1} compact showBonus />);
+  expect(screen.getByText("10 / 15 / 10")).toBeInTheDocument();
+  expect(screen.getByText("Ausgleich: 2 Talentpunkte − 1 Ausrüstungsbonus = 1")).toBeInTheDocument();
 });

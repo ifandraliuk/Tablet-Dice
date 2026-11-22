@@ -436,7 +436,7 @@ textarea:focus {
 }
 
 strong {
-  color: rgb(243, 114, 44);
+  color: #fff !important;
 }
 
 input {

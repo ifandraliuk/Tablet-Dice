@@ -76,9 +76,7 @@ test("shows learned professions, recipe shortages, search, filters and persisten
   fireEvent.click(smith);
   const dialog = await screen.findByRole("region", { name: "Schmieden · Herstellung" });
   expect(dialog).toHaveTextContent("STR/GSK/AUS");
-  expect(dialog).toHaveTextContent("STR 10");
-  expect(dialog).toHaveTextContent("GSK 15");
-  expect(dialog).toHaveTextContent("AUS 10");
+  expect(dialog).toHaveTextContent("10 / 15 / 10");
   expect(dialog).toHaveTextContent("Ausgleich: 2 Talentpunkte + 1 Ausrüstungsbonus = 3");
   expect(dialog).toHaveTextContent("2 Talentpunkte");
   expect(within(dialog).queryByText("Entdecke Schmieden")).not.toBeInTheDocument();
@@ -180,9 +178,8 @@ test("switches professions directly and resets recipe filters", async () => {
   expect(within(cooking).getByText("Noch nicht gelernt · 0 Punkte")).toBeInTheDocument();
   expect(within(cooking).getByText(/Auch ungelernt kannst du alle Rezepte ansehen/)).toHaveTextContent("−1 auf jeden Attributwert");
   expect(within(cooking).getByRole("link", { name: "Talent Kochen ansehen →" })).toHaveAttribute("href", "/talents?talent=Kochen");
-  expect(cooking).toHaveTextContent("VIT 9");
-  expect(cooking).toHaveTextContent("GSK 14");
-  expect(cooking).toHaveTextContent("AUS 9");
+  expect(cooking).toHaveTextContent("VIT/GSK/AUS");
+  expect(cooking).toHaveTextContent("9 / 14 / 9");
   expect(cooking).toHaveTextContent("Ungelernt: −1 je Attribut");
   await waitFor(() => expect(within(cooking).getByText(/keine Rezepte/i)).toBeInTheDocument());
 });

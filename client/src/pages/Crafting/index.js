@@ -211,11 +211,15 @@ function Crafting() {
                 <Link to={`/talents?talent=${encodeURIComponent(selected.name)}`} state={{ craftingReturn: { userId: user?._id, profession: selected.name, tab, search, station, filter, favoritesOnly, visibleCount } }}>Talent {selected.name} ansehen →</Link>
               </div>
             )}
-            <div className="crafting-probe"><strong>Talentprobe:</strong> <TalentProbeRules fractionTheme={fractionTheme} />
-              <TalentProbe dice={selectedTalent?.dice} attributes={probeData.attributes} points={selectedPoints} bonus={probeData.boni ? (probeData.boni.find((item) => item.bonus?.type === selected.name)?.value ?? 0) : null} loading={probeData.loading} />
+            <div className="crafting-probe">
+              <div className="crafting-probe__heading"><strong>Deine Talentprobe</strong><TalentProbeRules fractionTheme={fractionTheme} /></div>
+              <TalentProbe dice={selectedTalent?.dice} attributes={probeData.attributes} points={selectedPoints} bonus={probeData.boni ? (probeData.boni.find((item) => item.bonus?.type === selected.name)?.value ?? 0) : null} loading={probeData.loading} compact showBonus />
               {probeData.error && <p role="alert">Probenwerte konnten nicht geladen werden: {probeData.error} <button type="button" onClick={probeData.retry}>Erneut versuchen</button></p>}
             </div>
-            <p className="crafting-hint">Die Ortsfreischaltung ist vorläufig. Alle drei Stufen verwenden dieselbe Talentprobe. Die Herstellung selbst ist noch nicht verfügbar. Favoriten werden nur in diesem Browser gespeichert.</p>
+            <div className="crafting-detail__notes">
+              <p>Alle drei Stufen verwenden dieselbe Talentprobe. Die Ortsfreischaltung ist vorläufig.</p>
+              <p>Die Herstellung ist noch nicht verfügbar.</p>
+            </div>
             {!favoriteKey && <p role="alert">Favoriten sind ohne Charakterkennung nicht verfügbar.</p>}
             {favoriteError && <p role="alert">{favoriteError}</p>}
             <div className="crafting-workspace">
@@ -227,6 +231,7 @@ function Crafting() {
                   <label>Anzeige<select className="form-select dark-filter-control" value={filter} onChange={(event) => { setFilter(event.target.value); setVisibleCount(12); }}><option value="all">Alle Rezepte</option><option value="ready">Material vorhanden</option></select></label>
                   <label className="crafting-favorites-filter"><input type="checkbox" role="switch" checked={favoritesOnly} disabled={!favoriteKey || Boolean(favoriteError)} onChange={(event) => { setFavoritesOnly(event.target.checked); setVisibleCount(12); }} /> Nur Favoriten</label>
                 </div>
+                <p className="crafting-favorites-note">Favoriten werden nur in diesem Browser gespeichert.</p>
                 <a className="crafting-mobile-jump" href="#crafting-inventory-title">Zu deinen Ressourcen ↓</a>
                 {recipeError ? <p role="alert">Rezepte konnten nicht geladen werden: {recipeError} <button type="button" onClick={() => setSelected({ ...selected })}>Erneut versuchen</button></p> : recipes === null ? <p role="status">Rezepte werden geladen …</p> : results.length === 0 ? <p>{selected.name === "Verzaubern" ? "Herstellungsorte für Verzaubern werden später ergänzt; Rezepte können deshalb noch nicht zugeordnet werden." : recipes.length ? `Keine Rezepte für diese Auswahl gefunden. Passe die Suche, den Herstellungsort${favoritesOnly ? ", die Anzeige oder den Favoritenfilter" : " oder die Anzeige"} an, um weitere Rezepte zu sehen.` : "Für diesen Beruf wurden keine Rezepte gefunden."}</p> : (
                   <>
@@ -245,7 +250,7 @@ function Crafting() {
                         <p className={ready ? "crafting-ready" : "crafting-missing"}>{requirements === null ? "Materialangaben unvollständig" : ready ? "Material vorhanden" : "Material fehlt"}</p>
                         {access === "locked" && <p className="crafting-station-warning">Herstellungsort vorläufig gesperrt</p>}
                         {access === "exception" && <p className="crafting-station-warning">Erster Ort: ungelernt mit Malus nutzbar</p>}
-                        {requirements && <ul className="crafting-materials">{requirements.map((item) => <li key={item.id}><span aria-hidden="true"><ItemIcon item={item.item} /></span><span>{item.name}: <strong className={item.available >= item.required ? "crafting-material-count--ready" : "crafting-material-count--missing"}>{item.available}/{item.required}</strong>{item.available < item.required ? ` · ${item.required - item.available} fehlt` : " · vorhanden"}</span></li>)}</ul>}
+                        {requirements && <ul className="crafting-materials">{requirements.map((item) => <li key={item.id}><span aria-hidden="true"><ItemIcon item={item.item} /></span><span>{item.name}: <span className={item.available >= item.required ? "crafting-material-count--ready" : "crafting-material-count--missing"}>{item.available}/{item.required}</span>{item.available < item.required ? ` · ${item.required - item.available} fehlt` : " · vorhanden"}</span></li>)}</ul>}
                         <button className="crafting-action" type="button" disabled title="Herstellung folgt später">Herstellen · demnächst</button>
                       </article>;
                     })}
