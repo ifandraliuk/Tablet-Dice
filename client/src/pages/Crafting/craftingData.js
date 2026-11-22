@@ -1,42 +1,52 @@
+import stations from "./stations.json";
+
 export const professions = [
   { name: "Alchemie", description: "Verarbeite Pflanzen zu Essenzen, Tränken und Giften.", stations: [
-    { name: "Alchemiehütte", values: ["Alchemiehütte", "Alechmiehütte"] },
-    { name: "Alchemiewerkstatt", values: ["Alchemiewerkstatt"] },
-    { name: "Alchemieturm", values: ["Alchemieturm", "Alchemistenturm"] },
+    { name: "Alchemiehütte" },
+    { name: "Alchemiewerkstatt" },
+    { name: "Alchemieturm" },
   ] },
   { name: "Holzverarbeiten", description: "Fertige Bögen, Armbrüste und Werkzeuge für deine Abenteuer.", stations: [
-    { name: "Zimmerei", values: ["Zimmerei"] },
-    { name: "Holzwerkstatt", values: ["Holzwerkstatt"] },
-    { name: "Holzmanufaktur", values: ["Holzmanufaktur"] },
+    { name: "Zimmerei" },
+    { name: "Holzwerkstatt" },
+    { name: "Holzmanufaktur" },
   ] },
   { name: "Verzaubern", description: "Erkunde die Kunst der Verzauberung. Rezepte und Herstellungsorte folgen später.", stations: [
-    { name: "Stufe 1", values: [] }, { name: "Stufe 2", values: [] }, { name: "Stufe 3", values: [] },
+    { name: "Stufe 1" }, { name: "Stufe 2" }, { name: "Stufe 3" },
   ] },
   { name: "Kochen", description: "Bereite aus Zutaten Speisen und Getränke zu.", stations: [
-    { name: "Lagerfeuer", values: ["Lagerfeuer"] },
-    { name: "Kochstube", values: ["Kochstube"] },
-    { name: "Taverne", values: ["Taverne"] },
+    { name: "Lagerfeuer" },
+    { name: "Kochstube" },
+    { name: "Taverne" },
   ] },
   { name: "Lederverarbeitung", description: "Verarbeite Materialien zu Rüstungsteilen und Sätteln.", stations: [
-    { name: "Lederei", values: ["Lederei"] },
-    { name: "Lederwerkstatt", values: ["Lederwerkstatt"] },
-    { name: "Ledermanufaktur", values: ["Ledermanufaktur"] },
+    { name: "Lederei" },
+    { name: "Lederwerkstatt" },
+    { name: "Ledermanufaktur" },
   ] },
   { name: "Schmieden", description: "Schmiede Waffen, Rüstungsteile und Werkzeuge.", stations: [
-    { name: "Schmiede", values: ["Schmiede"] },
-    { name: "Edelmetallschmiede", values: ["Edelmetallschmiede"] },
-    { name: "Lavaschmiede", values: ["Lavaschmiede"] },
+    { name: "Schmiede" },
+    { name: "Edelmetallschmiede" },
+    { name: "Lavaschmiede" },
   ] },
   { name: "Schneidern", description: "Fertige Garn und Stoffe sowie Kleidung und Roben.", stations: [
-    { name: "Schneiderei", values: ["Schneiderei"] },
-    { name: "Weberei", values: ["Weberei"] },
-    { name: "Stoffmanufaktur", values: ["Stoffmanufaktur"] },
+    { name: "Schneiderei" },
+    { name: "Weberei" },
+    { name: "Stoffmanufaktur" },
   ] },
-];
+].map((profession) => ({
+  ...profession,
+  stations: profession.stations.map((station, index) => ({
+    ...station,
+    values: stations.professions[profession.name][index],
+  })),
+}));
+
+export const stationPointRequirements = stations.thresholds;
 
 export function stationAccess(points, index) {
-  if (!Number.isInteger(index) || index < 0 || index >= 3) return "locked";
-  if (points >= 1) return "unlocked";
+  if (!Number.isInteger(index) || index < 0 || index >= stationPointRequirements.length) return "locked";
+  if (points >= stationPointRequirements[index]) return "unlocked";
   return index === 0 ? "exception" : "locked";
 }
 

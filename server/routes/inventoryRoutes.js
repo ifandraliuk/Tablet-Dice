@@ -20,6 +20,7 @@ const {
     } = require("../controllers/inventoryController");
 
 const { protect } = require("../middleware/authMiddleware");
+const { craft } = require("../controllers/craftingController");
 
 // Add to inventory from items Db
 router
@@ -34,6 +35,7 @@ router
 
 router.route("/capacity").get(protect, getLoadCapacity)
 router.route("/armor").get(protect, getArmor)
+router.route("/craft").post(protect, craft)
 router
 .route("/money")
 .get(protect, getMoney)
@@ -76,4 +78,3 @@ router
     .route("/substract-one")
     .put(protect,substractAmount)
 module.exports = router;
-

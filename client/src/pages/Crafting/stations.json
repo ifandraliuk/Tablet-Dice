@@ -1,0 +1,12 @@
+{
+  "thresholds": [1, 10, 20],
+  "professions": {
+    "Alchemie": [["Alchemiehütte", "Alechmiehütte"], ["Alchemiewerkstatt"], ["Alchemieturm", "Alchemistenturm"]],
+    "Holzverarbeiten": [["Zimmerei"], ["Holzwerkstatt"], ["Holzmanufaktur"]],
+    "Verzaubern": [[], [], []],
+    "Kochen": [["Lagerfeuer"], ["Kochstube"], ["Taverne"]],
+    "Lederverarbeitung": [["Lederei"], ["Lederwerkstatt"], ["Ledermanufaktur"]],
+    "Schmieden": [["Schmiede"], ["Edelmetallschmiede"], ["Lavaschmiede"]],
+    "Schneidern": [["Schneiderei"], ["Weberei"], ["Stoffmanufaktur"]]
+  }
+}

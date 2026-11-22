@@ -5,6 +5,8 @@ import { useLocation } from "react-router-dom";
 import axios from "axios";
 import Crafting from "./index";
 
+let mockSmithPoints = 2;
+
 jest.mock("axios", () => ({ get: jest.fn() }));
 jest.mock("../../components/useTalentProbeData", () => () => ({
   attributes: { strength: 10, dexterity: 15, stamina: 10, vitality: 10 },
@@ -29,7 +31,7 @@ jest.mock("react-redux", () => {
       { _id: "smith", name: "Schmieden", category: "Handwerk", dice: "STR/GSK/AUS" },
       { _id: "cook", name: "Kochen", category: "Handwerk", dice: "VIT/GSK/AUS" },
     ],
-    playerTalents: [{ talent: { _id: "smith" }, points: 2 }],
+    playerTalents: [{ talent: { _id: "smith" }, points: mockSmithPoints }],
     inventory: { data: [
       { status: "Held", item: { _id: "wood", name: "Buchenholz", category: "Ressource", genus: "Holz" }, amount: 1 },
       { status: "Held", item: { _id: "chitin", name: "Chitin", category: "Ressource", genus: "Material" }, amount: 7 },
@@ -40,6 +42,7 @@ jest.mock("react-redux", () => {
 });
 
 beforeEach(() => {
+  mockSmithPoints = 2;
   localStorage.clear();
   useLocation.mockReturnValue({ state: null });
   const state = {
@@ -62,8 +65,9 @@ test("shows learned professions, recipe shortages, search, filters and persisten
   expect(smith).toHaveTextContent("3. Lavaschmiede");
   expect(smith).toHaveTextContent("Schmiede Waffen, Rüstungsteile und Werkzeuge.");
   expect(smith).toHaveTextContent("Beruf entdecken");
-  expect(smith).toHaveTextContent("3/3");
-  expect(smith.querySelectorAll(".crafting-profession__station.is-unlocked")).toHaveLength(3);
+  expect(smith).toHaveTextContent("1/3");
+  expect(smith).toHaveTextContent("2. Edelmetallschmiede · gesperrt · ab 10 Talentpunkten");
+  expect(smith.querySelectorAll(".crafting-profession__station.is-unlocked")).toHaveLength(1);
   expect(screen.queryByRole("button", { name: /Kochen/ })).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "Alle Berufe" }));
   expect(screen.getByRole("button", { name: /Kochen/ })).toHaveTextContent("Noch nicht gelernt");
@@ -87,7 +91,7 @@ test("shows learned professions, recipe shortages, search, filters and persisten
   const dagger = within(dialog).getByText("Dolch").closest("article");
   expect(within(sword).getByText("selten")).toHaveClass("extended-info-rarity", "rare");
   expect(dagger.querySelector(".extended-info-rarity")).not.toBeInTheDocument();
-  expect(within(dagger).queryByText(/Herstellungsort vorläufig gesperrt/)).not.toBeInTheDocument();
+  expect(within(dagger).getByText("Herstellungsort gesperrt · ab 20 Talentpunkten")).toBeInTheDocument();
   expect(within(dialog).getAllByRole("article")[0]).toBe(dagger);
   expect(sword).toHaveTextContent("Buchenholz: 1/2");
   expect(sword).toHaveTextContent("1 fehlt");
@@ -101,7 +105,8 @@ test("shows learned professions, recipe shortages, search, filters and persisten
   expect(resources).toHaveTextContent("Buchenholz");
   expect(resources).not.toHaveTextContent("Chitin");
   expect(resources.querySelector('img[name="wood"]')).toHaveAttribute("src", expect.stringContaining("/wood.svg"));
-  expect(within(dialog).getAllByRole("button", { name: "Herstellen · demnächst" })[0]).toBeDisabled();
+  expect(within(dagger).getByRole("button", { name: "Herstellen" })).toBeDisabled();
+  expect(within(sword).getByRole("button", { name: "Herstellen" })).toBeDisabled();
   fireEvent.click(within(dialog).getByRole("button", { name: "Schwert als Favorit speichern" }));
   expect(JSON.parse(localStorage.getItem("craftingFavorites:hero"))).toEqual(["sword"]);
   fireEvent.click(within(dialog).getByRole("switch", { name: "Nur Favoriten" }));
@@ -221,12 +226,54 @@ test("keeps recipes discoverable for unlearned professions", async () => {
   const recipe = (await within(detail).findByText("Mahlzeit")).closest("article");
   expect(within(recipe).getByText("Material vorhanden")).toBeInTheDocument();
   expect(within(recipe).getByText("Erster Ort: ungelernt mit Malus nutzbar")).toBeInTheDocument();
-  expect(within(detail).getByRole("button", { name: "Herstellen · demnächst" })).toBeDisabled();
+  expect(within(recipe).getByRole("button", { name: "Herstellen" })).toBeEnabled();
+  fireEvent.click(within(recipe).getByRole("button", { name: "Herstellen" }));
+  const craftingDialog = screen.getByRole("dialog", { name: "Herstellung bestätigen" });
+  expect(craftingDialog).toHaveTextContent("VIT/GSK/AUS");
+  expect(craftingDialog).toHaveTextContent("9 / 14 / 9");
+  expect(craftingDialog).toHaveTextContent("Ungelernt: −1 je Attribut");
+  expect(within(craftingDialog).getByLabelText("1 wird verbraucht")).toHaveTextContent("−1");
+  fireEvent.click(within(craftingDialog).getByRole("button", { name: "Abbrechen" }));
   fireEvent.change(within(detail).getByLabelText("Herstellungsort"), { target: { value: "2" } });
   const soup = within(detail).getByText("Suppe").closest("article");
-  expect(within(soup).getByText("Herstellungsort vorläufig gesperrt")).toBeInTheDocument();
-  expect(within(soup).getByRole("button", { name: "Herstellen · demnächst" })).toBeDisabled();
+  expect(within(soup).getByText("Herstellungsort gesperrt · ab 10 Talentpunkten")).toBeInTheDocument();
+  expect(within(soup).getByRole("button", { name: "Herstellen" })).toBeDisabled();
 });
+
+test.each([[1, 1], [9, 1], [10, 2], [19, 2], [20, 3]])(
+  "shows consistent station access at %i talent points",
+  async (points, unlockedCount) => {
+    mockSmithPoints = points;
+    const material = [{ element: { _id: "wood", name: "Buchenholz" }, amount: 1 }];
+    axios.get.mockResolvedValueOnce({ data: [
+      { _id: "ring", name: "Ring", production: "Edelmetallschmiede", material },
+      { _id: "dagger", name: "Dolch", production: "Lavaschmiede", material },
+    ] });
+    render(<Crafting />);
+    const smith = await screen.findByRole("button", { name: /Schmieden/ });
+    expect(smith).toHaveTextContent(`${unlockedCount}/3`);
+    expect(smith.querySelectorAll(".crafting-profession__station.is-unlocked")).toHaveLength(unlockedCount);
+    expect(smith.querySelectorAll(".crafting-profession__progress-track .is-unlocked")).toHaveLength(unlockedCount);
+    fireEvent.click(smith);
+    const detail = await screen.findByRole("region", { name: "Schmieden · Herstellung" });
+    fireEvent.change(within(detail).getByLabelText("Herstellungsort"), { target: { value: "2" } });
+    const ring = (await within(detail).findByText("Ring")).closest("article");
+    if (points < 10) {
+      expect(within(ring).getByText("Herstellungsort gesperrt · ab 10 Talentpunkten")).toBeInTheDocument();
+    } else {
+      expect(within(ring).queryByText(/Herstellungsort gesperrt/)).not.toBeInTheDocument();
+    }
+    fireEvent.change(within(detail).getByLabelText("Herstellungsort"), { target: { value: "3" } });
+    const dagger = (await within(detail).findByText("Dolch")).closest("article");
+    if (points < 20) {
+      expect(within(dagger).getByText("Herstellungsort gesperrt · ab 20 Talentpunkten")).toBeInTheDocument();
+    } else {
+      expect(within(dagger).queryByText(/Herstellungsort gesperrt/)).not.toBeInTheDocument();
+    }
+    if (points < 20) expect(within(dagger).getByRole("button", { name: "Herstellen" })).toBeDisabled();
+    else expect(within(dagger).getByRole("button", { name: "Herstellen" })).toBeEnabled();
+  }
+);
 
 test("restores profession and recipe filters when returning from talents", async () => {
   localStorage.setItem("craftingFavorites:hero", JSON.stringify(["dagger"]));

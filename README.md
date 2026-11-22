@@ -11,7 +11,7 @@ In this project I'm going to digitilize a simplified version of a [Pen & Paper] 
 
 ## Goals:
 * Companions and taming system. Enjoy exploring the world and have fun not only by taming creatures, but by equipping and leveling it. 
-* Additional inventory functionality. Craft potions or equipment, destroy elements etc. 
+* Additional inventory functionality, such as destroying elements.
 * Battle system: save initiative role for the fight, add enemies as a gamemaster and keep tracking about the battle in battellog.
 * Campaigns: start your adventure in one of the epic world events. Join a bad or good campaign with lore description and strategy.
 # Project info
@@ -19,3 +19,8 @@ This is a MERN project and is used to develope my skills in programming by mixin
 Database: Mongodb
 Backend: Node, Express
 Frontend: React, Sass, Redux
+
+## Crafting
+Crafting uses the shared station definitions in `client/src/pages/Crafting/stations.json`. The server validates the recipe, profession, station access and current inventory before atomically updating inventory and talent records in a MongoDB transaction. MongoDB must support transactions (for example, Atlas or a replica set); standalone deployments cannot complete crafting. The transaction also stores a retry identifier for 30 days to prevent an uncertain request from being applied twice.
+
+The optional integration test `node server/controllers/craftingController.integration.test.js` connects using `server/.env` and creates temporary, uniquely prefixed collections in the `test` database. It removes only those test collections afterward; use a test cluster with permission to create and drop collections.

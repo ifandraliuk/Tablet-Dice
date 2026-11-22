@@ -49,9 +49,19 @@ test("assigns three ordered stations and known database spellings", () => {
   expect(alchemy.stations[2].values).toContain("Alchemistenturm");
 });
 
-test("marks the first station as an unlearned exception and learned stations unlocked", () => {
-  expect([0, 1, 2].map((index) => stationAccess(0, index))).toEqual(["exception", "locked", "locked"]);
-  expect([0, 1, 2].map((index) => stationAccess(1, index))).toEqual(["unlocked", "unlocked", "unlocked"]);
+test.each([
+  [0, ["exception", "locked", "locked"]],
+  [1, ["unlocked", "locked", "locked"]],
+  [9, ["unlocked", "locked", "locked"]],
+  [10, ["unlocked", "unlocked", "locked"]],
+  [19, ["unlocked", "unlocked", "locked"]],
+  [20, ["unlocked", "unlocked", "unlocked"]],
+  [21, ["unlocked", "unlocked", "unlocked"]],
+])("applies station thresholds at %i talent points", (points, expected) => {
+  expect([0, 1, 2].map((index) => stationAccess(points, index))).toEqual(expected);
+});
+
+test("rejects invalid station indices", () => {
   expect(stationAccess(1, -1)).toBe("locked");
   expect(stationAccess(1, 3)).toBe("locked");
 });

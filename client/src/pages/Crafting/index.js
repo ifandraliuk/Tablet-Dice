@@ -11,9 +11,10 @@ import { pageTransition } from "../../data/Animations";
 import ItemIcon from "../../components/ItemIcon";
 import RarityBadge from "../../components/RarityBadge";
 import ExtendedInfo from "../Inventory/ExtendedInfo";
+import CraftingDialog from "./CraftingDialog";
 import { TalentProbe, TalentProbeRules } from "../../components/TalentProbe";
 import useTalentProbeData from "../../components/useTalentProbeData";
-import { professions, ownInventory, materialAvailability, professionResources, stationAccess } from "./craftingData";
+import { professions, ownInventory, materialAvailability, professionResources, stationAccess, stationPointRequirements } from "./craftingData";
 import "../../Styles/Crafting.css";
 
 const errorText = (error) =>
@@ -42,6 +43,7 @@ function Crafting() {
   const [favorites, setFavorites] = useState([]);
   const [favoriteError, setFavoriteError] = useState("");
   const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [craftingRecipe, setCraftingRecipe] = useState(null);
   const favoriteKey = user?._id ? `craftingFavorites:${user._id}` : null;
   const probeData = useTalentProbeData(user);
 
@@ -110,6 +112,7 @@ function Crafting() {
   });
   const selectedTalent = data?.talents.find((item) => item.category === "Handwerk" && item.name === selected?.name);
   const selectedPoints = data?.playerTalents.find((entry) => entry.talent?._id === selectedTalent?._id)?.points || 0;
+  const selectedBonus = probeData.boni ? (probeData.boni.find((item) => item.bonus?.type === selected?.name)?.value ?? 0) : null;
   const matchingRecipes = (selected ? recipes || [] : []).map((recipe) => {
     const requirements = materialAvailability(recipe, owned);
     const ready = requirements !== null && requirements.every((item) => item.available >= item.required);
@@ -160,25 +163,26 @@ function Crafting() {
                 <button type="button" className={`segmented-toggle__button ${tab === "mine" ? "is-active" : ""}`} aria-pressed={tab === "mine"} onClick={() => setTab("mine")}>Meine Berufe</button>
                 <button type="button" className={`segmented-toggle__button ${tab === "all" ? "is-active" : ""}`} aria-pressed={tab === "all"} onClick={() => setTab("all")}>Alle Berufe</button>
               </div>
-              <p className="crafting-hint">Die Ortsfreischaltung ist vorläufig: Gelernte Berufe zeigen 3/3, ungelernte 0/3. Ungelernt ist der erste Ort als Ausnahme mit Malus nutzbar. Die endgültigen Regeln folgen später.</p>
+              <p className="crafting-hint">Herstellungsorte werden bei 1, 10 und 20 Talentpunkten freigeschaltet. Der erste Ort ist auch ungelernt mit Malus nutzbar.</p>
               {visibleProfessions.length === 0 ? <p>Keine Berufe mit mindestens einem investierten Talentpunkt. Unter „Alle Berufe“ findest du die Übersicht.</p> : (
                 <div className="crafting-professions">
                   {visibleProfessions.map((profession) => {
                     const talent = data.talents.find((item) => item.category === "Handwerk" && item.name === profession.name);
                     const points = data.playerTalents.find((entry) => entry.talent?._id === talent._id)?.points || 0;
+                    const unlockedCount = profession.stations.filter((item, index) => stationAccess(points, index) === "unlocked").length;
                     return (
                       <button type="button" className="crafting-profession" key={profession.name} onClick={() => openProfession(profession)}>
                         <strong>{profession.name}</strong>
                         <span className="crafting-profession__description">{profession.description}</span>
                         <span className="crafting-profession__progress">
-                          <span className="crafting-profession__progress-heading"><span>Freigeschaltete Orte · vorläufig</span><strong>{points >= 1 ? 3 : 0}/3</strong></span>
+                          <span className="crafting-profession__progress-heading"><span>Freigeschaltete Orte</span><strong>{unlockedCount}/{profession.stations.length}</strong></span>
                           <span className="crafting-profession__progress-track" aria-hidden="true">{profession.stations.map((item, index) => <span key={index} className={stationAccess(points, index) === "unlocked" ? "is-unlocked" : ""} />)}</span>
                         </span>
                         <span className={`creature-status ${points > 0 ? "creature-status--default" : "creature-status--muted"}`}>{points > 0 ? `${points} ${points === 1 ? "Talentpunkt" : "Talentpunkte"}` : "Noch nicht gelernt · 0 Punkte"}</span>
                         <span>Probe: {talent.dice || "nicht hinterlegt"}</span>
                         <span className="crafting-profession__stations"><span className="crafting-profession__stations-label">Herstellungsorte</span>{profession.stations.map((item, index) => {
                           const access = stationAccess(points, index);
-                          return <span className={`crafting-profession__station is-${access}`} key={index}><span className="crafting-profession__station-icon" aria-hidden="true">{access === "unlocked" ? "✓" : access === "exception" ? "◇" : "–"}</span><span>{index + 1}. {item.name} <span className="crafting-profession__station-status">· {access === "unlocked" ? "freigeschaltet" : access === "exception" ? "ungelernt mit Malus nutzbar" : "gesperrt"}</span></span></span>;
+                          return <span className={`crafting-profession__station is-${access}`} key={index}><span className="crafting-profession__station-icon" aria-hidden="true">{access === "unlocked" ? "✓" : access === "exception" ? "◇" : "–"}</span><span>{index + 1}. {item.name} <span className="crafting-profession__station-status">· {access === "unlocked" ? "freigeschaltet" : access === "exception" ? "ungelernt mit Malus nutzbar" : `gesperrt · ab ${stationPointRequirements[index]} Talentpunkten`}</span></span></span>;
                         })}</span>
                         <span className="crafting-profession__link">Beruf entdecken <span aria-hidden="true">→</span></span>
                       </button>
@@ -213,12 +217,11 @@ function Crafting() {
             )}
             <div className="crafting-probe">
               <div className="crafting-probe__heading"><strong>Deine Talentprobe</strong><TalentProbeRules fractionTheme={fractionTheme} /></div>
-              <TalentProbe dice={selectedTalent?.dice} attributes={probeData.attributes} points={selectedPoints} bonus={probeData.boni ? (probeData.boni.find((item) => item.bonus?.type === selected.name)?.value ?? 0) : null} loading={probeData.loading} compact showBonus />
+              <TalentProbe dice={selectedTalent?.dice} attributes={probeData.attributes} points={selectedPoints} bonus={selectedBonus} loading={probeData.loading} compact showBonus />
               {probeData.error && <p role="alert">Probenwerte konnten nicht geladen werden: {probeData.error} <button type="button" onClick={probeData.retry}>Erneut versuchen</button></p>}
             </div>
             <div className="crafting-detail__notes">
-              <p>Alle drei Stufen verwenden dieselbe Talentprobe. Die Ortsfreischaltung ist vorläufig.</p>
-              <p>Die Herstellung ist noch nicht verfügbar.</p>
+              <p>Alle drei Stufen verwenden dieselbe Talentprobe.</p>
             </div>
             {!favoriteKey && <p role="alert">Favoriten sind ohne Charakterkennung nicht verfügbar.</p>}
             {favoriteError && <p role="alert">{favoriteError}</p>}
@@ -248,10 +251,10 @@ function Crafting() {
                           </div></div>
                         {recipe.rarity && <div className="crafting-recipe__rarity"><RarityBadge rarity={recipe.rarity} /></div>}
                         <p className={ready ? "crafting-ready" : "crafting-missing"}>{requirements === null ? "Materialangaben unvollständig" : ready ? "Material vorhanden" : "Material fehlt"}</p>
-                        {access === "locked" && <p className="crafting-station-warning">Herstellungsort vorläufig gesperrt</p>}
+                        {access === "locked" && <p className="crafting-station-warning">Herstellungsort gesperrt · ab {stationPointRequirements[level]} Talentpunkten</p>}
                         {access === "exception" && <p className="crafting-station-warning">Erster Ort: ungelernt mit Malus nutzbar</p>}
                         {requirements && <ul className="crafting-materials">{requirements.map((item) => <li key={item.id}><span aria-hidden="true"><ItemIcon item={item.item} /></span><span>{item.name}: <span className={item.available >= item.required ? "crafting-material-count--ready" : "crafting-material-count--missing"}>{item.available}/{item.required}</span>{item.available < item.required ? ` · ${item.required - item.available} fehlt` : " · vorhanden"}</span></li>)}</ul>}
-                        <button className="crafting-action" type="button" disabled title="Herstellung folgt später">Herstellen · demnächst</button>
+                        <button className="crafting-action" type="button" disabled={!ready || access === "locked"} title={!ready ? "Benötigte Materialien fehlen" : access === "locked" ? "Herstellungsort gesperrt" : "Herstellung vorbereiten"} onClick={() => setCraftingRecipe({ recipe, requirements, station: selected.stations[level].name })}>Herstellen</button>
                       </article>;
                     })}
                   </div>
@@ -273,6 +276,10 @@ function Crafting() {
         </main>
       </div>
       {selectedRecipe && <ExtendedInfo customItemInfo={selectedRecipe} minimized showDescription setShowInfo={setSelectedRecipe} />}
+      {craftingRecipe && <CraftingDialog {...craftingRecipe} profession={selected.name} token={user?.token} fractionTheme={fractionTheme} talentDice={selectedTalent?.dice} points={selectedPoints} bonus={selectedBonus} probeData={probeData} onClose={() => setCraftingRecipe(null)} onRefresh={async () => {
+        const [inventory, playerTalents] = await Promise.all([dispatch(getInventory()).unwrap(), dispatch(getPlayerTalent()).unwrap()]);
+        setData((current) => ({ ...current, inventory: inventory.data, playerTalents }));
+      }} />}
     </motion.div>
   );
 }
