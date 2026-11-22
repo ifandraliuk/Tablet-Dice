@@ -57,11 +57,77 @@
 .crafting-profession > .creature-status {
   justify-self: start;
 }
+.crafting-profession > .crafting-profession__description {
+  color: #f5f0e3;
+  line-height: 1.45;
+}
+.crafting-profession__progress {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.15rem 0;
+}
+.crafting-profession__progress-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+.crafting-profession__progress-heading strong {
+  color: #f5f0e3;
+  font-size: 0.95rem;
+}
+.crafting-profession__progress-track {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.3rem;
+}
+.crafting-profession__progress-track > span {
+  height: 0.4rem;
+  border: 1px solid rgba(245, 240, 227, 0.25);
+  border-radius: 999px;
+  background: rgba(245, 240, 227, 0.08);
+}
+.crafting-profession__progress-track > .is-unlocked {
+  border-color: var(--fraction-accent, #f3d28a);
+  background: var(--fraction-accent, #f3d28a);
+}
 .crafting-profession__stations {
   display: grid;
   gap: 0.2rem;
   padding-top: 0.5rem;
   border-top: 1px solid rgba(245, 240, 227, 0.12);
+}
+.crafting-profession__stations-label {
+  font-weight: 600;
+  color: #f5f0e3;
+}
+.crafting-profession__station {
+  display: flex;
+  gap: 0.4rem;
+}
+.crafting-profession__station-icon {
+  flex: 0 0 1rem;
+  text-align: center;
+  font-weight: 700;
+}
+.crafting-profession__station.is-unlocked .crafting-profession__station-icon {
+  color: #b7e4c7;
+}
+.crafting-profession__station.is-exception .crafting-profession__station-icon {
+  color: var(--fraction-accent, #f3d28a);
+}
+.crafting-profession__station-status {
+  font-size: 0.78rem;
+}
+.crafting-station-warning {
+  margin: 0.3rem 0;
+  color: #f3d28a;
+  font-size: 0.85rem;
+}
+.crafting-profession > .crafting-profession__link {
+  padding-top: 0.25rem;
+  color: var(--fraction-accent, #f3d28a);
+  font-weight: 600;
 }
 .crafting-detail {
   overflow-wrap: anywhere;

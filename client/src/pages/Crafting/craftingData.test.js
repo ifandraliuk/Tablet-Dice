@@ -1,4 +1,4 @@
-import { materialAvailability, ownInventory, professionResources, professions } from "./craftingData";
+import { materialAvailability, ownInventory, professionResources, professions, stationAccess } from "./craftingData";
 
 test("counts only owned stacks and combines repeated ingredients", () => {
   const wood = { _id: "wood", name: "Buchenholz", category: "Ressource" };
@@ -42,7 +42,16 @@ test("does not claim readiness when recipe materials are missing or invalid", ()
 test("assigns three ordered stations and known database spellings", () => {
   expect(professions).toHaveLength(7);
   expect(professions.every((profession) => profession.stations.length === 3)).toBe(true);
+  expect(professions.every((profession) => profession.description.length > 0)).toBe(true);
+  expect(professions.find((profession) => profession.name === "Verzaubern").description).toMatch(/folgen später/);
   const alchemy = professions.find((profession) => profession.name === "Alchemie");
   expect(alchemy.stations[0].values).toContain("Alechmiehütte");
   expect(alchemy.stations[2].values).toContain("Alchemistenturm");
+});
+
+test("marks the first station as an unlearned exception and learned stations unlocked", () => {
+  expect([0, 1, 2].map((index) => stationAccess(0, index))).toEqual(["exception", "locked", "locked"]);
+  expect([0, 1, 2].map((index) => stationAccess(1, index))).toEqual(["unlocked", "unlocked", "unlocked"]);
+  expect(stationAccess(1, -1)).toBe("locked");
+  expect(stationAccess(1, 3)).toBe("locked");
 });

@@ -9,7 +9,7 @@ import { pageTransition } from "../../data/Animations";
 import ItemIcon from "../../components/ItemIcon";
 import { TalentProbe, TalentProbeRules } from "../../components/TalentProbe";
 import useTalentProbeData from "../../components/useTalentProbeData";
-import { professions, ownInventory, materialAvailability, professionResources } from "./craftingData";
+import { professions, ownInventory, materialAvailability, professionResources, stationAccess } from "./craftingData";
 import "../../Styles/Crafting.css";
 
 const errorText = (error) =>
@@ -155,7 +155,7 @@ function Crafting() {
                 <button type="button" className={`segmented-toggle__button ${tab === "mine" ? "is-active" : ""}`} aria-pressed={tab === "mine"} onClick={() => setTab("mine")}>Meine Berufe</button>
                 <button type="button" className={`segmented-toggle__button ${tab === "all" ? "is-active" : ""}`} aria-pressed={tab === "all"} onClick={() => setTab("all")}>Alle Berufe</button>
               </div>
-              <p className="crafting-hint">Alle Herstellungsorte sind vorläufig verfügbar. Die Freischaltung nach Talentpunkten folgt später.</p>
+              <p className="crafting-hint">Die Ortsfreischaltung ist vorläufig: Gelernte Berufe zeigen 3/3, ungelernte 0/3. Ungelernt ist der erste Ort als Ausnahme mit Malus nutzbar. Die endgültigen Regeln folgen später.</p>
               {visibleProfessions.length === 0 ? <p>Keine Berufe mit mindestens einem investierten Talentpunkt. Unter „Alle Berufe“ findest du die Übersicht.</p> : (
                 <div className="crafting-professions">
                   {visibleProfessions.map((profession) => {
@@ -164,9 +164,18 @@ function Crafting() {
                     return (
                       <button type="button" className="crafting-profession" key={profession.name} onClick={() => openProfession(profession)}>
                         <strong>{profession.name}</strong>
+                        <span className="crafting-profession__description">{profession.description}</span>
+                        <span className="crafting-profession__progress">
+                          <span className="crafting-profession__progress-heading"><span>Freigeschaltete Orte · vorläufig</span><strong>{points >= 1 ? 3 : 0}/3</strong></span>
+                          <span className="crafting-profession__progress-track" aria-hidden="true">{profession.stations.map((item, index) => <span key={index} className={stationAccess(points, index) === "unlocked" ? "is-unlocked" : ""} />)}</span>
+                        </span>
                         <span className={`creature-status ${points > 0 ? "creature-status--default" : "creature-status--muted"}`}>{points > 0 ? `${points} ${points === 1 ? "Talentpunkt" : "Talentpunkte"}` : "Noch nicht gelernt · 0 Punkte"}</span>
                         <span>Probe: {talent.dice || "nicht hinterlegt"}</span>
-                        <span className="crafting-profession__stations">{profession.stations.map((item, index) => <span key={index}>{index + 1}. {item.name}</span>)}</span>
+                        <span className="crafting-profession__stations"><span className="crafting-profession__stations-label">Herstellungsorte</span>{profession.stations.map((item, index) => {
+                          const access = stationAccess(points, index);
+                          return <span className={`crafting-profession__station is-${access}`} key={index}><span className="crafting-profession__station-icon" aria-hidden="true">{access === "unlocked" ? "✓" : access === "exception" ? "◇" : "–"}</span><span>{index + 1}. {item.name} <span className="crafting-profession__station-status">· {access === "unlocked" ? "freigeschaltet" : access === "exception" ? "ungelernt mit Malus nutzbar" : "gesperrt"}</span></span></span>;
+                        })}</span>
+                        <span className="crafting-profession__link">Beruf entdecken <span aria-hidden="true">→</span></span>
                       </button>
                     );
                   })}
@@ -193,7 +202,7 @@ function Crafting() {
             {selectedPoints < 1 && (
               <div className="crafting-learn-hint">
                 <strong>Entdecke {selected.name}</strong>
-                <p>Auch ungelernt kannst du Rezepte ansehen und im Spiel eine Talentprobe ablegen. Dabei gilt −1 auf jeden Attributwert. Gelernte Talentpunkte helfen dir, Überschreitungen bei der Probe auszugleichen.</p>
+                <p>Auch ungelernt kannst du alle Rezepte ansehen. Am ersten Herstellungsort kannst du im Spiel eine Talentprobe ablegen; dabei gilt −1 auf jeden Attributwert. Gelernte Talentpunkte helfen dir, Überschreitungen bei der Probe auszugleichen.</p>
                 <Link to={`/talents?talent=${encodeURIComponent(selected.name)}`} state={{ craftingReturn: { userId: user?._id, profession: selected.name, tab, search, station, filter, favoritesOnly, visibleCount } }}>Talent {selected.name} ansehen →</Link>
               </div>
             )}
@@ -201,7 +210,7 @@ function Crafting() {
               <TalentProbe dice={selectedTalent?.dice} attributes={probeData.attributes} points={selectedPoints} bonus={probeData.boni ? (probeData.boni.find((item) => item.bonus?.type === selected.name)?.value ?? 0) : null} loading={probeData.loading} />
               {probeData.error && <p role="alert">Probenwerte konnten nicht geladen werden: {probeData.error} <button type="button" onClick={probeData.retry}>Erneut versuchen</button></p>}
             </div>
-            <p className="crafting-hint">Alle drei Stufen verwenden vorläufig dieselbe Talentprobe. Die Herstellung selbst ist noch nicht verfügbar. Favoriten werden nur in diesem Browser gespeichert.</p>
+            <p className="crafting-hint">Die Ortsfreischaltung ist vorläufig. Alle drei Stufen verwenden dieselbe Talentprobe. Die Herstellung selbst ist noch nicht verfügbar. Favoriten werden nur in diesem Browser gespeichert.</p>
             {!favoriteKey && <p role="alert">Favoriten sind ohne Charakterkennung nicht verfügbar.</p>}
             {favoriteError && <p role="alert">{favoriteError}</p>}
             <div className="crafting-workspace">
@@ -220,10 +229,13 @@ function Crafting() {
                   <div className="crafting-recipes">
                     {results.slice(0, visibleCount).map(({ recipe, requirements, ready }) => {
                       const level = selected.stations.findIndex((item) => item.values.includes(recipe.production));
+                      const access = stationAccess(selectedPoints, level);
                       return <article className="crafting-recipe" key={recipe._id}>
                         <div className="crafting-recipe__header"><div className="crafting-recipe__identity"><span aria-hidden="true"><ItemIcon item={recipe} /></span><div><h3>{recipe.name}</h3><span>Stufe {level + 1} · {selected.stations[level].name}{recipe.rarity ? ` · ${recipe.rarity}` : ""}</span></div></div>
                           <button type="button" className="crafting-favorite" aria-label={`${recipe.name} ${favorites.includes(recipe._id) ? "aus Favoriten entfernen" : "als Favorit speichern"}`} aria-pressed={favorites.includes(recipe._id)} disabled={!favoriteKey || Boolean(favoriteError)} onClick={() => toggleFavorite(recipe._id)}>{favorites.includes(recipe._id) ? "★" : "☆"}</button></div>
                         <p className={ready ? "crafting-ready" : "crafting-missing"}>{requirements === null ? "Materialangaben unvollständig" : ready ? "Material vorhanden" : "Material fehlt"}</p>
+                        {access === "locked" && <p className="crafting-station-warning">Herstellungsort vorläufig gesperrt</p>}
+                        {access === "exception" && <p className="crafting-station-warning">Erster Ort: ungelernt mit Malus nutzbar</p>}
                         {requirements && <ul className="crafting-materials">{requirements.map((item) => <li key={item.id}><span aria-hidden="true"><ItemIcon item={item.item} /></span><span>{item.name}: <strong className={item.available >= item.required ? "crafting-material-count--ready" : "crafting-material-count--missing"}>{item.available}/{item.required}</strong>{item.available < item.required ? ` · ${item.required - item.available} fehlt` : " · vorhanden"}</span></li>)}</ul>}
                         <button className="crafting-action" type="button" disabled title="Herstellung folgt später">Herstellen · demnächst</button>
                       </article>;

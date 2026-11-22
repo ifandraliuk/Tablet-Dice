@@ -1,38 +1,44 @@
 export const professions = [
-  { name: "Alchemie", stations: [
+  { name: "Alchemie", description: "Verarbeite Pflanzen zu Essenzen, Tränken und Giften.", stations: [
     { name: "Alchemiehütte", values: ["Alchemiehütte", "Alechmiehütte"] },
     { name: "Alchemiewerkstatt", values: ["Alchemiewerkstatt"] },
     { name: "Alchemieturm", values: ["Alchemieturm", "Alchemistenturm"] },
   ] },
-  { name: "Holzverarbeiten", stations: [
+  { name: "Holzverarbeiten", description: "Fertige Bögen, Armbrüste und Werkzeuge für deine Abenteuer.", stations: [
     { name: "Zimmerei", values: ["Zimmerei"] },
     { name: "Holzwerkstatt", values: ["Holzwerkstatt"] },
     { name: "Holzmanufaktur", values: ["Holzmanufaktur"] },
   ] },
-  { name: "Verzaubern", stations: [
+  { name: "Verzaubern", description: "Erkunde die Kunst der Verzauberung. Rezepte und Herstellungsorte folgen später.", stations: [
     { name: "Stufe 1", values: [] }, { name: "Stufe 2", values: [] }, { name: "Stufe 3", values: [] },
   ] },
-  { name: "Kochen", stations: [
+  { name: "Kochen", description: "Bereite aus Zutaten Speisen und Getränke zu.", stations: [
     { name: "Lagerfeuer", values: ["Lagerfeuer"] },
     { name: "Kochstube", values: ["Kochstube"] },
     { name: "Taverne", values: ["Taverne"] },
   ] },
-  { name: "Lederverarbeitung", stations: [
+  { name: "Lederverarbeitung", description: "Verarbeite Materialien zu Rüstungsteilen und Sätteln.", stations: [
     { name: "Lederei", values: ["Lederei"] },
     { name: "Lederwerkstatt", values: ["Lederwerkstatt"] },
     { name: "Ledermanufaktur", values: ["Ledermanufaktur"] },
   ] },
-  { name: "Schmieden", stations: [
+  { name: "Schmieden", description: "Schmiede Waffen, Rüstungsteile und Werkzeuge.", stations: [
     { name: "Schmiede", values: ["Schmiede"] },
     { name: "Edelmetallschmiede", values: ["Edelmetallschmiede"] },
     { name: "Lavaschmiede", values: ["Lavaschmiede"] },
   ] },
-  { name: "Schneidern", stations: [
+  { name: "Schneidern", description: "Fertige Garn und Stoffe sowie Kleidung und Roben.", stations: [
     { name: "Schneiderei", values: ["Schneiderei"] },
     { name: "Weberei", values: ["Weberei"] },
     { name: "Stoffmanufaktur", values: ["Stoffmanufaktur"] },
   ] },
 ];
+
+export function stationAccess(points, index) {
+  if (!Number.isInteger(index) || index < 0 || index >= 3) return "locked";
+  if (points >= 1) return "unlocked";
+  return index === 0 ? "exception" : "locked";
+}
 
 export function ownInventory(inventory, userName) {
   return inventory.filter((entry) => entry.status === userName && entry.item);

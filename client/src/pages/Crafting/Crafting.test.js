@@ -58,9 +58,19 @@ test("shows learned professions, recipe shortages, search, filters and persisten
   const smith = await screen.findByRole("button", { name: /Schmieden/ });
   expect(smith).toHaveTextContent("1. Schmiede");
   expect(smith).toHaveTextContent("3. Lavaschmiede");
+  expect(smith).toHaveTextContent("Schmiede Waffen, Rüstungsteile und Werkzeuge.");
+  expect(smith).toHaveTextContent("Beruf entdecken");
+  expect(smith).toHaveTextContent("3/3");
+  expect(smith.querySelectorAll(".crafting-profession__station.is-unlocked")).toHaveLength(3);
   expect(screen.queryByRole("button", { name: /Kochen/ })).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "Alle Berufe" }));
   expect(screen.getByRole("button", { name: /Kochen/ })).toHaveTextContent("Noch nicht gelernt");
+  expect(screen.getByRole("button", { name: /Kochen/ })).toHaveTextContent("Bereite aus Zutaten Speisen und Getränke zu.");
+  const cook = screen.getByRole("button", { name: /Kochen/ });
+  expect(cook).toHaveTextContent("0/3");
+  expect(cook).toHaveTextContent("1. Lagerfeuer · ungelernt mit Malus nutzbar");
+  expect(cook).toHaveTextContent("2. Kochstube · gesperrt");
+  expect(cook.querySelectorAll(".crafting-profession__station.is-unlocked")).toHaveLength(0);
   fireEvent.click(smith);
   const dialog = await screen.findByRole("region", { name: "Schmieden · Herstellung" });
   expect(dialog).toHaveTextContent("STR/GSK/AUS");
@@ -75,6 +85,7 @@ test("shows learned professions, recipe shortages, search, filters and persisten
   fireEvent.change(within(dialog).getByLabelText("Anzeige"), { target: { value: "all" } });
   const sword = (await within(dialog).findByText("Schwert")).closest("article");
   const dagger = within(dialog).getByText("Dolch").closest("article");
+  expect(within(dagger).queryByText(/Herstellungsort vorläufig gesperrt/)).not.toBeInTheDocument();
   expect(within(dialog).getAllByRole("article")[0]).toBe(dagger);
   expect(sword).toHaveTextContent("Buchenholz: 1/2");
   expect(sword).toHaveTextContent("1 fehlt");
@@ -163,7 +174,7 @@ test("switches professions directly and resets recipe filters", async () => {
   expect(within(cooking).getByLabelText("Anzeige")).toHaveValue("ready");
   expect(within(cooking).getByRole("switch", { name: "Nur Favoriten" })).not.toBeChecked();
   expect(within(cooking).getByText("Noch nicht gelernt · 0 Punkte")).toBeInTheDocument();
-  expect(within(cooking).getByText(/Auch ungelernt kannst du Rezepte ansehen/)).toHaveTextContent("−1 auf jeden Attributwert");
+  expect(within(cooking).getByText(/Auch ungelernt kannst du alle Rezepte ansehen/)).toHaveTextContent("−1 auf jeden Attributwert");
   expect(within(cooking).getByRole("link", { name: "Talent Kochen ansehen →" })).toHaveAttribute("href", "/talents?talent=Kochen");
   expect(cooking).toHaveTextContent("VIT 9");
   expect(cooking).toHaveTextContent("GSK 14");
@@ -199,6 +210,7 @@ test("sorts ready recipes before pagination without treating incomplete data as 
 test("keeps recipes discoverable for unlearned professions", async () => {
   axios.get.mockResolvedValueOnce({ data: [
     { _id: "meal", name: "Mahlzeit", production: "Lagerfeuer", material: [{ element: { _id: "wood", name: "Buchenholz" }, amount: 1 }] },
+    { _id: "soup", name: "Suppe", production: "Kochstube", material: [{ element: { _id: "wood", name: "Buchenholz" }, amount: 1 }] },
   ] });
   render(<Crafting />);
   await screen.findByRole("button", { name: /Schmieden/ });
@@ -207,7 +219,12 @@ test("keeps recipes discoverable for unlearned professions", async () => {
   const detail = await screen.findByRole("region", { name: "Kochen · Herstellung" });
   const recipe = (await within(detail).findByText("Mahlzeit")).closest("article");
   expect(within(recipe).getByText("Material vorhanden")).toBeInTheDocument();
+  expect(within(recipe).getByText("Erster Ort: ungelernt mit Malus nutzbar")).toBeInTheDocument();
   expect(within(detail).getByRole("button", { name: "Herstellen · demnächst" })).toBeDisabled();
+  fireEvent.change(within(detail).getByLabelText("Herstellungsort"), { target: { value: "2" } });
+  const soup = within(detail).getByText("Suppe").closest("article");
+  expect(within(soup).getByText("Herstellungsort vorläufig gesperrt")).toBeInTheDocument();
+  expect(within(soup).getByRole("button", { name: "Herstellen · demnächst" })).toBeDisabled();
 });
 
 test("restores profession and recipe filters when returning from talents", async () => {
