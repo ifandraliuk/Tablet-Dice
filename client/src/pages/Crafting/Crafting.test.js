@@ -160,6 +160,24 @@ test("filters recipes by station and available materials", async () => {
   expect(within(dialog).getByText(/Keine Rezepte/)).toBeInTheDocument();
 });
 
+test("opens and closes the selected station preview, including its access status", async () => {
+  render(<Crafting />);
+  fireEvent.click(await screen.findByRole("button", { name: /Schmieden/ }));
+  const detail = await screen.findByRole("region", { name: "Schmieden · Herstellung" });
+  fireEvent.change(within(detail).getByLabelText("Herstellungsort"), { target: { value: "2" } });
+  fireEvent.click(within(detail).getByRole("button", { name: "Edelmetallschmiede vergrößern" }));
+  const modal = await screen.findByRole("dialog", { name: "Edelmetallschmiede" });
+  expect(modal.querySelector("img")).toHaveAttribute("src", "/crafting/images/smithing-2.png");
+  expect(within(modal).getByText("Herstellungsort · Stufe 2")).toBeInTheDocument();
+  expect(within(modal).getByText("Gesperrt · ab 10 Talentpunkten")).toBeInTheDocument();
+  fireEvent.click(within(modal).getByRole("button", { name: "Schließen" }));
+  await waitFor(() => expect(screen.queryByRole("dialog", { name: "Edelmetallschmiede" })).not.toBeInTheDocument());
+  fireEvent.change(within(detail).getByLabelText("Herstellungsort"), { target: { value: "" } });
+  fireEvent.click(within(detail).getByRole("button", { name: "Schmiede vergrößern" }));
+  const allModal = await screen.findByRole("dialog", { name: "Schmiede" });
+  expect(within(allModal).getByText("Alle Stufen · Ortsvorschau · Stufe 1")).toBeInTheDocument();
+});
+
 test("reports recipe loading failures and permits retry", async () => {
   axios.get.mockRejectedValueOnce(new Error("Netzwerkfehler"));
   render(<Crafting />);

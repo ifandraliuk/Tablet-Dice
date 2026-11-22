@@ -50,8 +50,13 @@ test("assigns three ordered stations and known database spellings", () => {
 });
 
 test.each([
+  ["Alchemie", "alchemy"],
+  ["Holzverarbeiten", "woodworking"],
+  ["Verzaubern", "enchanting"],
+  ["Kochen", "cooking"],
   ["Lederverarbeitung", "leatherworking"],
   ["Schmieden", "smithing"],
+  ["Schneidern", "tailoring"],
 ])("assigns the station images in order for %s", (name, filename) => {
   const profession = professions.find((item) => item.name === name);
   expect(profession.stations.map((station) => station.image)).toEqual(

@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
@@ -9,6 +10,7 @@ import { getTalent, getPlayerTalent } from "../../features/talent/talentSlice";
 import { getInventory } from "../../features/inventory/inventorySlice";
 import { pageTransition } from "../../data/Animations";
 import { itemNames } from "../../data/ConstVariables";
+import { getOriginAccentStyle } from "../../data/OriginColors";
 import ItemIcon from "../../components/ItemIcon";
 import RarityBadge from "../../components/RarityBadge";
 import ExtendedInfo from "../Inventory/ExtendedInfo";
@@ -18,6 +20,7 @@ import { TalentProbe, TalentProbeRules } from "../../components/TalentProbe";
 import useTalentProbeData from "../../components/useTalentProbeData";
 import { professions, ownInventory, materialAvailability, professionResources, stationAccess, stationPointRequirements, highestStationIndex } from "./craftingData";
 import "../../Styles/Crafting.css";
+import "../../Styles/ThemedModal.css";
 
 const errorText = (error) =>
   typeof error === "string" ? error : error?.response?.data?.message || error?.message || "Bitte versuche es erneut.";
@@ -46,6 +49,7 @@ function Crafting() {
   const [favoriteError, setFavoriteError] = useState("");
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [craftingRecipe, setCraftingRecipe] = useState(null);
+  const [stationPreviewOpen, setStationPreviewOpen] = useState(false);
   const favoriteKey = user?._id ? `craftingFavorites:${user._id}` : null;
   const probeData = useTalentProbeData(user);
 
@@ -215,7 +219,13 @@ function Crafting() {
             <div className="crafting-detail__overview">
               {(() => {
                 const previewIndex = station ? Number(station) - 1 : highestStationIndex(selectedPoints);
-                return <StationImage key={`${selected.name}-${previewIndex}`} station={selected.stations[previewIndex]} index={previewIndex} points={selectedPoints} context="detail" allStations={!station} />;
+                return <React.Fragment key={`${selected.name}-${previewIndex}`}>
+                  <StationImage station={selected.stations[previewIndex]} index={previewIndex} points={selectedPoints} context="detail" allStations={!station} onZoom={() => setStationPreviewOpen(true)} />
+                  {stationPreviewOpen && <Modal show onHide={() => setStationPreviewOpen(false)} centered scrollable size="lg" className="themed-modal crafting-station-modal" style={getOriginAccentStyle(fractionTheme)} aria-labelledby="crafting-station-modal-title">
+                    <Modal.Header closeButton closeLabel="Schließen"><Modal.Title id="crafting-station-modal-title">{selected.stations[previewIndex].name}</Modal.Title></Modal.Header>
+                    <Modal.Body><StationImage station={selected.stations[previewIndex]} index={previewIndex} points={selectedPoints} context="modal" allStations={!station} /></Modal.Body>
+                  </Modal>}
+                </React.Fragment>;
               })()}
               <div className="crafting-probe">
                 <div className="crafting-probe__heading"><strong>Deine Talentprobe</strong><TalentProbeRules fractionTheme={fractionTheme} /></div>

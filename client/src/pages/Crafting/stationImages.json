@@ -1,9 +1,9 @@
 {
-  "Alchemie": [null, null, null],
-  "Holzverarbeiten": [null, null, null],
-  "Verzaubern": [null, null, null],
-  "Kochen": [null, null, null],
+  "Alchemie": ["/crafting/images/alchemy-1.png", "/crafting/images/alchemy-2.png", "/crafting/images/alchemy-3.png"],
+  "Holzverarbeiten": ["/crafting/images/woodworking-1.png", "/crafting/images/woodworking-2.png", "/crafting/images/woodworking-3.png"],
+  "Verzaubern": ["/crafting/images/enchanting-1.png", "/crafting/images/enchanting-2.png", "/crafting/images/enchanting-3.png"],
+  "Kochen": ["/crafting/images/cooking-1.png", "/crafting/images/cooking-2.png", "/crafting/images/cooking-3.png"],
   "Lederverarbeitung": ["/crafting/images/leatherworking-1.png", "/crafting/images/leatherworking-2.png", "/crafting/images/leatherworking-3.png"],
   "Schmieden": ["/crafting/images/smithing-1.png", "/crafting/images/smithing-2.png", "/crafting/images/smithing-3.png"],
-  "Schneidern": [null, null, null]
+  "Schneidern": ["/crafting/images/tailoring-1.png", "/crafting/images/tailoring-2.png", "/crafting/images/tailoring-3.png"]
 }

@@ -89,6 +89,27 @@
 .crafting-station-image__placeholder { font-size: 0.78rem; color: rgba(245, 240, 227, 0.82); }
 .crafting-station-image__name { font-size: 1.05rem; font-weight: 700; color: #fff; }
 .crafting-station-image__placeholder { padding: 0.5rem; text-align: center; font-style: italic; }
+.crafting-station-image__zoom {
+  justify-self: start;
+  margin-top: 0.3rem;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid rgba(245, 240, 227, 0.25);
+  border-radius: 0.35rem;
+  color: var(--fraction-accent, #f3d28a);
+  background: rgba(0, 0, 0, 0.25);
+}
+.crafting-station-image__zoom:hover,
+.crafting-station-image__zoom:focus-visible {
+  border-color: var(--fraction-accent, #f3d28a);
+  outline-color: var(--fraction-accent, #f3d28a);
+}
+.crafting-station-modal .crafting-station-image {
+  width: min(100%, 30rem);
+  margin: 0 auto;
+  gap: 0.75rem;
+}
+.crafting-station-image--modal .crafting-station-image__visual { aspect-ratio: 1; }
+.crafting-station-image--modal .crafting-station-image__content { gap: 0.3rem; }
 .crafting-page .crafting-profession:hover {
   border-color: var(--fraction-accent, #f3d28a);
   background: rgba(35, 35, 33, 0.92);
