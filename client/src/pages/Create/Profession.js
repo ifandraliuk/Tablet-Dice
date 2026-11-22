@@ -37,9 +37,9 @@ function Profession() {
               <MotionButton
                 name={professionName.name}
                 content={professionName.name}
-                theme={
-                  activeProfession._id === professionName._id ? "Thornheim" : ""
-                }
+                className="create-choice"
+                ariaPressed={activeProfession._id === professionName._id}
+                hoverScale={1}
                 onClick={(e) => dispatch(setActiveProfession(professionName))}
               />
             </div>
@@ -62,7 +62,7 @@ function Profession() {
                 <h4>Beschreibung</h4>
                 <p className="ms-2">{activeProfession.description}</p>
                 <h4>Kategorie</h4>
-                <p className="Thornheim-text mt-2 ms-2">
+                <p className="create-accent mt-2 ms-2">
                   {activeProfession.category}
                 </p>
                 <h4>Spezialzierungen</h4>
@@ -87,7 +87,7 @@ function Profession() {
         <div className="row">
             {" "}
             {availableAbilities?.map((ability) => (
-              <div className="col-3" key={ability._id}>
+              <div className="col-12 col-md-6 col-xl-3" key={ability._id}>
                 <AbilityCard
                   ability={ability}
                   userclass={activeProfession._id}

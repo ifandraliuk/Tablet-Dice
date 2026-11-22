@@ -31,10 +31,11 @@ function App() {
   const [fractionRetry, setFractionRetry] = useState(0);
   const userId = user?._id;
   const token = user?.token;
+  const isCreating = location.pathname === "/create";
   useEffect(() => {
     setFractionError("");
     dispatch(clearFraction());
-    if (!userId || !token) return;
+    if (!userId || !token || isCreating) return;
     let active = true;
     const request = dispatch(getFraction());
     request.unwrap().catch((error) => {
@@ -44,7 +45,7 @@ function App() {
       active = false;
       request.abort();
     };
-  }, [dispatch, userId, token, fractionRetry]);
+  }, [dispatch, userId, token, fractionRetry, isCreating]);
 
   return (
     <div className="g-0">

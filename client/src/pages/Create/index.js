@@ -11,9 +11,9 @@ import {
   setActive,
   uploadPicture,
 } from "../../features/creation/creationSlice";
-import { registationFullfilled, register } from "../../features/auth/AuthSlice";
-import { getFraction, getPlayer } from "../../features/player/playerSlice";
-import { useNavigate } from "react-router-dom";
+import { register } from "../../features/auth/AuthSlice";
+import { Link, useNavigate } from "react-router-dom";
+import { getOriginAccentStyle } from "../../data/OriginColors";
 import {
   faCircleCheck,
   faCircleXmark,
@@ -29,8 +29,8 @@ function CreateCharacter() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const categoryNames = {
-    general: "Allgemein",
     origin: "Herkunft",
+    general: "Allgemein",
     profession: "Profession",
     attributes: "Attribute",
   };
@@ -38,6 +38,7 @@ function CreateCharacter() {
     generalInfo,
     attributes,
     activeOrigin,
+    cuttedOrigin,
     activeProfession,
     activeAbility,
     userImage,
@@ -107,7 +108,6 @@ function CreateCharacter() {
   useEffect(() => {
     if (isSuccess && dataFilled && imageUploaded) {
       dispatch(resetCreation());
-      dispatch(getFraction())
       navigate("/player");
     }
   }, [isSuccess, dataFilled, imageUploaded, dispatch, navigate]);
@@ -155,43 +155,57 @@ function CreateCharacter() {
     }
   };
   return (
-    <div className="bg general-bg create-page">
+    <main className="create-page" style={cuttedOrigin ? getOriginAccentStyle(cuttedOrigin) : undefined}>
       {visible && (
-        <CreateWindow onSubmit={onSubmit} onClose={() => setVisible(false)} />
+        <CreateWindow onSubmit={onSubmit} onClose={() => setVisible(false)} origin={cuttedOrigin} />
       )}
-      <div className="container-fluid  g-5">
-        <div className="row menu">
+      <div className="create-shell">
+        <header className="create-header">
+          <Link to="/" className="create-back">← Zur Anmeldung</Link>
+          <span className="create-header__eyebrow">Tablet &amp; Dice</span>
+          <h1>Deinen Charakter erstellen</h1>
+          <p>Gestalte Schritt für Schritt deinen Charakter. Deine Auswahl bleibt beim Wechsel zwischen den Bereichen erhalten.</p>
+        </header>
+        <nav className="create-steps" aria-label="Schritte der Charaktererstellung">
           {Object.keys(categoryNames).map((menuName) => (
-            <div className="col-auto" key={menuName}>
               <button
+                type="button"
+                className={`create-step ${partActive === menuName ? "is-active" : ""}`}
                 name={menuName}
+                aria-current={partActive === menuName ? "step" : undefined}
                 onClick={(e) => dispatch(setActive(e.currentTarget.name))}
+                key={menuName}
               >
-                {categoryNames[menuName]}
+                <span>{categoryNames[menuName]}</span>
+                <span className="create-step__status">{completionFlags[menuName] ? "Abgeschlossen" : "Offen"}</span>
                 <FontAwesomeIcon
                   icon={completionFlags[menuName] ? faCircleCheck : faWarning}
+                  aria-hidden="true"
                   className={
                     completionFlags[menuName] ? " ms-2 success" : "ms-2 warning"
                   }
                 />
               </button>
-            </div>
           ))}
-          <div className="col-auto">
             <button
+              type="button"
+              className={`create-step ${partActive === "completion" ? "is-active" : ""}`}
               name="completion"
+              aria-current={partActive === "completion" ? "step" : undefined}
               onClick={(e) => dispatch(setActive(e.currentTarget.name))}
               disabled={completionFlags.complete ? false : true}
             >
-              Namensgebung
+              <span>Namensgebung</span>
+              <span className="create-step__status">{completionFlags.complete ? "Bereit" : "Noch gesperrt"}</span>
               <FontAwesomeIcon
                 icon={completionFlags.complete ? faCircleCheck : faCircleXmark}
+                aria-hidden="true"
                 className={completionFlags.complete ? " ms-2 success" : "ms-2"}
               />
             </button>
-          </div>
-        </div>
-        <div className="info-div ">
+        </nav>
+        <section className="create-content" aria-labelledby="create-section-title">
+          <h2 id="create-section-title">{categoryNames[partActive] || "Namensgebung"}</h2>
           {partActive === "general" ? (
             <General />
           ) : partActive === "profession" ? (
@@ -205,9 +219,9 @@ function CreateCharacter() {
           ) : (
             <></>
           )}
-        </div>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }
 

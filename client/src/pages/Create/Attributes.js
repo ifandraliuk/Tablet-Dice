@@ -51,7 +51,7 @@ function Attributes() {
             {keys.map((key) => (
               <div className="row" key={key}>
                 <div className="row mt-3">
-                  <label for={key}>
+                  <label htmlFor={key}>
                     {key === "mana" ? (
                       <span className="Beltamor-text">
                         {allAttributes[key]}
@@ -67,7 +67,7 @@ function Attributes() {
                     )}
                     :
                     {["vitality"].includes(key) && (
-                      <span class="required-asterisk">*</span>
+                      <span className="required-asterisk">*</span>
                     )}
                   </label>{" "}
                   <div className="row">

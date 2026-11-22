@@ -26,8 +26,7 @@ function General() {
     <div className="container">
     <div className="row mt-2">
       <div className="alert info">
-        Du erwachst vom Kitzeln eines Sonnenstrahls auf deiner Haut, du stehst
-        auf und schaust in den Spiegel. Wen siehst du?
+        Du stehst auf und wirfst einen Blick in den Spiegel. Wer blickt dir entgegen?
       </div>
       <div className="row">
         {racesList.map((kindName) => (
@@ -35,7 +34,9 @@ function General() {
             <MotionButton
               name={kindName}
               content={kindName}
-              theme={kind === kindName ? "Thornheim" : ""}
+              className="create-choice"
+              ariaPressed={kind === kindName}
+              hoverScale={1}
               onClick={(e) => setData("kind", e.target.name)}
             />
           </div>
@@ -56,7 +57,10 @@ function General() {
               <MotionButton
                 name="männlich"
                 icon={faMars}
-                theme={sex === "männlich" ? "Beltamor" : ""}
+                className="create-choice"
+                ariaLabel="Männlich"
+                ariaPressed={sex === "männlich"}
+                hoverScale={1}
                 onClick={(e) => setData("sex", e.target.name)}
               />
             </div>
@@ -64,7 +68,10 @@ function General() {
               <MotionButton
                 name="weiblich"
                 icon={faVenus}
-                theme={sex === "weiblich" ? "Algor" : ""}
+                className="create-choice"
+                ariaLabel="Weiblich"
+                ariaPressed={sex === "weiblich"}
+                hoverScale={1}
                 onClick={(e) => setData("sex", e.target.name)}
               />
             </div>
@@ -77,7 +84,7 @@ function General() {
               {races[kind ? kind : ""]?.descr}
             </p>
             <h4>Spezielle Fertigkeit</h4>
-            <u className="Thornheim-text mt-2">{`${races[kind].ability.name}: `}</u>
+            <u className="create-accent mt-2">{`${races[kind].ability.name}: `}</u>
             <p className="ms-3">{races[kind].ability.descr}</p>
           </div>
         </div>
@@ -99,7 +106,7 @@ function General() {
               ></input>
             </div>
             <div className="row mt-3">
-              <label htmlFor="age">Augenfarbe<span className="required-asterisk">*</span></label>{" "}
+              <label htmlFor="eyecolor">Augenfarbe<span className="required-asterisk">*</span></label>{" "}
             </div>
             <div className="row ms-2">
               <input
@@ -114,7 +121,7 @@ function General() {
               ></input>
             </div>
             <div className="row mt-3">
-              <label htmlFor="age">Frisur:<span className="required-asterisk">*</span></label>{" "}
+              <label htmlFor="haircut">Frisur:<span className="required-asterisk">*</span></label>{" "}
             </div>
             <div className="row ms-2">
               <input
@@ -129,7 +136,7 @@ function General() {
               ></input>
             </div>
             <div className="row mt-3">
-              <label htmlFor="age">Haarfarbe:<span className="required-asterisk">*</span></label>{" "}
+              <label htmlFor="haircolor">Haarfarbe:<span className="required-asterisk">*</span></label>{" "}
             </div>
             <div className="row ms-2">
               <input
@@ -144,7 +151,7 @@ function General() {
               ></input>
             </div>
             <div className="row mt-3">
-              <label htmlFor="age">Besondere Merkmale: </label>{" "}
+              <label htmlFor="more">Besondere Merkmale: </label>{" "}
             </div>
             <div className="row ms-2">
               <input

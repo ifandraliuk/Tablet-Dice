@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import creationService from "./creationService";
 const initialState = {
-  partActive: "general",
+  partActive: "origin",
   // General info
   generalInfo: {
     age: 0,

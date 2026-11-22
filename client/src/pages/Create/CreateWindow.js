@@ -1,110 +1,40 @@
 import React, { useState } from "react";
+import { Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
+import { getOriginAccentStyle } from "../../data/OriginColors";
+import "../../Styles/ThemedModal.css";
 
-const CreateWindow = ({ onSubmit, onClose }) => {
+const CreateWindow = ({ onSubmit, onClose, origin }) => {
   const [formData, setFormData] = useState({ name: "", pwd: "", check: "" });
   const { isError, isSuccess, message } = useSelector((state) => state.auth);
-  const infoError = useSelector((state) => state.creation.isError);
-  const infoMessage = useSelector((state) => state.creation.message);
-  const { name, pwd, check } = formData;
-
-  const onChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.id]: e.target.value,
-    }));
+  const { isError: infoError, message: infoMessage } = useSelector((state) => state.creation);
+  const onChange = (event) => {
+    setFormData((previous) => ({ ...previous, [event.target.id]: event.target.value }));
   };
+
   return (
-    <div className="blur-bg">
-      <div className="popup border ">
-        <div className="rowd-flex align-items-center justify-content-center">
-          <div className="col-auto  text-center">
-            <h4>Namensgebung</h4>
+    <Modal show onHide={onClose} centered className="themed-modal create-modal" style={origin ? getOriginAccentStyle(origin) : { "--diary-origin-color": "#f5f0e3", "--diary-origin-border": "rgba(245, 240, 227, 0.3)" }} aria-labelledby="create-modal-title">
+      <Modal.Header closeButton closeLabel="Schließen"><Modal.Title id="create-modal-title">Namensgebung</Modal.Title></Modal.Header>
+      <form onSubmit={(event) => onSubmit(event, formData)}>
+        <Modal.Body>
+          {isError && <p className="create-modal__error" role="alert">{message}</p>}
+          {infoError && <p className="create-modal__error" role="alert">{infoMessage}</p>}
+          {isSuccess && <p role="status">{message}</p>}
+          <div className="create-modal__fields">
+            <label htmlFor="name">Name <span className="required-asterisk">*</span></label>
+            <input id="name" type="text" value={formData.name} required autoFocus autoComplete="username" onChange={onChange} />
+            <label htmlFor="pwd">Passwort <span className="required-asterisk">*</span></label>
+            <input id="pwd" type="password" value={formData.pwd} required autoComplete="new-password" onChange={onChange} />
+            <label htmlFor="check">Passwort wiederholen <span className="required-asterisk">*</span></label>
+            <input id="check" type="password" value={formData.check} required autoComplete="new-password" onChange={onChange} />
           </div>
-          {isError && (
-            <div className="row">
-              <div className="alert error">{message}</div>
-            </div>
-          )}
-          {infoError && (
-            <div className="row">
-              <div className="alert error">{infoMessage}</div>
-            </div>
-          )}
-          {isSuccess && (
-            <div className="row">
-              <div className="alert info">{message}</div>
-            </div>
-          )}
-        </div>
-        <form className="border-pattern top">
-          <div className="row mt-3">
-            <label for="name">
-              Name<span class="required-asterisk">*</span>
-            </label>{" "}
-          </div>
-          <div className="row ms-2">
-            <input
-              className="Thornheim-text"
-              type="text"
-              id="name"
-              value={name}
-              required
-              autoFocus
-              onChange={onChange}
-            ></input>
-          </div>
-          <div className="row mt-3">
-            <label for="pwd">
-              Passwort<span class="required-asterisk">*</span>
-            </label>{" "}
-          </div>
-          <div className="row ms-2">
-            <input
-              className="Thornheim-text"
-              type="password"
-              id="pwd"
-              value={pwd}
-              required
-              onChange={onChange}
-            ></input>
-          </div>
-          <div className="row mt-3">
-            <label for="check">
-              Passwort wiederholen<span class="required-asterisk">*</span>
-            </label>{" "}
-          </div>
-          <div className="row ms-2">
-            <input
-              className="Thornheim-text"
-              type="password"
-              id="check"
-              value={check}
-              required
-              onChange={onChange}
-            ></input>
-          </div>
-
-          <div className="row mt-2 ">
-            <div className="col-6">
-              <button
-                onClick={(e) => onSubmit(e, formData)}
-                type="submit"
-                className="btn-light"
-              >
-                Bestätigen
-              </button>
-            </div>
-            <div className="col-6">
-              <button className="btn-light" onClick={onClose}>
-                Abbrechen
-              </button>
-            </div>
-          </div>
-        </form>
-
-      </div>
-    </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <button type="button" className="create-modal__button" onClick={onClose}>Abbrechen</button>
+          <button type="submit" className="create-modal__button create-modal__button--primary">Bestätigen</button>
+        </Modal.Footer>
+      </form>
+    </Modal>
   );
 };
 

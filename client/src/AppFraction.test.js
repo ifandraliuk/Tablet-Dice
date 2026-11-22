@@ -14,7 +14,10 @@ jest.mock("./components/Nav", () => () => <div>Navigation</div>);
 jest.mock("./pages/Login", () => () => <div>Login</div>);
 jest.mock("./pages/Login/index", () => () => <div>Login</div>);
 jest.mock("./pages/ErrorPage", () => () => null);
-jest.mock("./pages/Create/index", () => () => null);
+jest.mock("./pages/Create/index", () => () => {
+  const { Link } = require("react-router-dom");
+  return <Link to="/player">Charaktererstellung abschließen</Link>;
+});
 jest.mock("./pages/Talents/index", () => () => null);
 jest.mock("./pages/Bestiarium/index", () => () => null);
 jest.mock("./pages/Enemies", () => () => null);
@@ -24,11 +27,22 @@ jest.mock("./pages/Companions/index", () => () => null);
 jest.mock("./pages/Dashboard/index", () => () => <div>Dashboard</div>);
 jest.mock("./pages/Atlas", () => () => null);
 
-function renderApp() {
+function renderApp(path = "/player") {
   const store = configureStore({ reducer: { auth: authReducer, player: playerReducer } });
-  const rendered = render(<Provider store={store}><MemoryRouter initialEntries={["/player"]}><App /></MemoryRouter></Provider>);
+  const rendered = render(<Provider store={store}><MemoryRouter initialEntries={[path]}><App /></MemoryRouter></Provider>);
   return { store, ...rendered };
 }
+
+test("does not fetch an origin before character creation is complete", async () => {
+  playerService.getFraction.mockResolvedValueOnce("Algor");
+  const { store, container } = renderApp("/create");
+  act(() => { store.dispatch(login.fulfilled({ _id: "new", token: "token" }, "1")); });
+  expect(playerService.getFraction).not.toHaveBeenCalled();
+  expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole("link", { name: "Charaktererstellung abschließen" }));
+  await waitFor(() => expect(container.querySelector(".Algor-bg")).toBeInTheDocument());
+  expect(playerService.getFraction).toHaveBeenCalledWith("token");
+});
 
 beforeEach(() => {
   localStorage.clear();

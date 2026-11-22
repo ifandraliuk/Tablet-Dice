@@ -74,7 +74,7 @@ function Overview({onClick}) {
             </div>
             <h4 className="mt-2">Profession</h4>
             <div className="row">
-              <div className="col-4">
+              <div className="col-12 col-md-4">
                 <AbilityCard
                   ability={activeProfession?.abilities?.find(
                     (el) => el._id === activeAbility
@@ -84,7 +84,7 @@ function Overview({onClick}) {
                   customClick={() => {}}
                 />
               </div>
-              <div className="col-8">
+              <div className="col-12 col-md-8">
                 <h4>{activeProfession?.name}</h4>
                 <p className="ms-2">{activeProfession?.description}</p>
                 <p>
