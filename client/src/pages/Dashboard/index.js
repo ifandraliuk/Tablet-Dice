@@ -34,7 +34,6 @@ import {
   faPlay,
 } from "@fortawesome/free-solid-svg-icons";
 import {
-  extendInfo,
   getArmor,
   getCategoryBoni,
   getUserWeapons,
@@ -44,7 +43,7 @@ import ExtendedInfo from "../Inventory/ExtendedInfo";
 
 function Dashboard() {
   const { user } = useSelector((state) => state.auth);
-  const [showInfo, setShowInfo] = useState(false);
+  const [selectedWeaponId, setSelectedWeaponId] = useState(null);
   const [activeButton, setActiveButton] = useState(null); // active button
   const [isBonusActionVisible, setBonusActionVisible] = useState(false);
   const [isReactionVisible, setReactionVisible] = useState(false);
@@ -66,7 +65,6 @@ function Dashboard() {
     armorCategory,
     armor,
     armorBoni,
-    extendedId,
   } = useSelector((state) => state.inventory);
   const navigate = useNavigate();
   const [showImage, setShowImage] = useState(true);
@@ -75,10 +73,9 @@ function Dashboard() {
   const newLevel = () => {
     dispatch(updateLevel());
   };
-  const setExtendedId = (id) => {
-    setShowInfo((prevStatus) => !prevStatus);
-    dispatch(extendInfo({ id: id }));
-  };
+  const selectedWeapon = [mainWeapon, secondWeapon, rangedWeapon].find(
+    (weapon) => weapon?._id === selectedWeaponId
+  );
   const getArmorBonusValue = (armorType) => {
     console.log(armorType);
     if (armorBoni?.length > 0) {
@@ -137,14 +134,13 @@ function Dashboard() {
       animate="animate"
       exit="exit"
     >
-      {showInfo && (
+      {selectedWeapon && (
         <ExtendedInfo
-          customItemInfo={
-            extendedId === mainWeapon._id ? mainWeapon : secondWeapon
-          }
+          customItemInfo={selectedWeapon}
           key="extended-info"
           minimized={true}
-          hideInfo={setShowInfo}
+          compactWeapon={true}
+          setShowInfo={setSelectedWeaponId}
         />
       )}
       <div className="dashboard-page">
@@ -178,7 +174,7 @@ function Dashboard() {
                         <GeneralInfo key="info" />
                       )}
                     </AnimatePresence>
-                    <button
+{/*                     <button
                       type="button"
                       className="dashboard-profile__toggle"
                       aria-label={
@@ -192,9 +188,10 @@ function Dashboard() {
                           : "Charakterbild anzeigen"
                       }
                       onClick={() => setShowImage(!showImage)}
+                      
                     >
                       <FontAwesomeIcon icon={faBars} />
-                    </button>
+                    </button> */}
                   </div>
                 </div>
                 <section className="dashboard-sidebar__equipment" aria-label="Ausrüstung">
@@ -206,7 +203,7 @@ function Dashboard() {
                         equippedItem={mainWeapon}
                         category="Haupthand"
                         delayValue={0.3}
-                        setShowInfo={setExtendedId}
+                        setShowInfo={setSelectedWeaponId}
                       />
                     </div>
                   )}
@@ -216,7 +213,7 @@ function Dashboard() {
                         equippedItem={secondWeapon}
                         category="Nebenhand"
                         delayValue={0.4}
-                        setShowInfo={setExtendedId}
+                        setShowInfo={setSelectedWeaponId}
                       />
                     </div>
                   )}
@@ -226,7 +223,7 @@ function Dashboard() {
                         equippedItem={rangedWeapon}
                         category="Fernkampf"
                         delayValue={0.4}
-                        setShowInfo={setExtendedId}
+                        setShowInfo={setSelectedWeaponId}
                       />
                     </div>
                   )}

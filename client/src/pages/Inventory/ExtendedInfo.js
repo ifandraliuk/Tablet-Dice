@@ -26,6 +26,7 @@ import MotionButton from "../../components/MotionButton";
 function ExtendedInfo({
   setShowInfo,
   minimized,
+  compactWeapon = false,
   dbButtons,
   customItemInfo,
   hideInfo,
@@ -188,7 +189,7 @@ function ExtendedInfo({
         exit={{ opacity: 0, scale: 0.96, y: 10 }}
         transition={{ duration: 0.2 }}
         key="extended-container"
-        className={`extended-info-modal overflow-auto${contentToShow === "info" ? " extended-info-modal--details" : ""}`}
+        className={`extended-info-modal overflow-auto${contentToShow === "info" ? " extended-info-modal--details" : ""}${compactWeapon ? " extended-info-modal--weapon" : ""}`}
         style={getOriginAccentStyle(fractionTheme)}
         role="dialog"
         aria-modal="true"
@@ -213,12 +214,12 @@ function ExtendedInfo({
             <motion.div key="row-col1" className="extended-info-sidebar__content">
               <motion.div key="large-icon" className="extended-info-sidebar__icon">
                 <ItemIcon
-                  item={extendedItemInfo}
+                  item={compactWeapon ? item : extendedItemInfo}
                   enchantment={enchantment}
                   large={true}
                 />
               </motion.div>
-              {!minimized && (
+              {!minimized && !compactWeapon && (
                 <div className="extended-info-actions">
                   <div className="extended-info-action">
                     <motion.button
@@ -320,7 +321,7 @@ function ExtendedInfo({
                   </div>
                 </div>
               )}
-              {dbButtons && (
+              {dbButtons && !compactWeapon && (
                 <div className="extended-info-add-action">
                   <MotionButton
                     name={extendedItemInfo?._id}
@@ -350,25 +351,32 @@ function ExtendedInfo({
               >
                 <header className="col-12 extended-info-item-header">
                   <div className="extended-info-item-heading">
-                    <span className="extended-info-mode-label">{category}</span>
+                    {!compactWeapon && (
+                      <span className="extended-info-mode-label">{category}</span>
+                    )}
                     <h2>{name}</h2>
+                    {compactWeapon && (
+                      <span className="extended-info-mode-label">{category}</span>
+                    )}
                   </div>
                   <span className={`extended-info-rarity ${rarityColor}`}>
                     {rarity}
                   </span>
                 </header>
-                <div className="col-12 extended-info-detail-grid">
-                  {detailColumns.map((column, columnIndex) => (
-                    <dl className="extended-info-detail-column" key={columnIndex}>
-                      {column.map(([label, detailValue]) => (
-                        <div className="extended-info-detail" key={label}>
-                          <dt>{label}</dt>
-                          <dd className={`${fractionTheme}-text`}>{detailValue}</dd>
-                        </div>
-                      ))}
-                    </dl>
-                  ))}
-                </div>
+                {!compactWeapon && (
+                  <div className="col-12 extended-info-detail-grid">
+                    {detailColumns.map((column, columnIndex) => (
+                      <dl className="extended-info-detail-column" key={columnIndex}>
+                        {column.map(([label, detailValue]) => (
+                          <div className="extended-info-detail" key={label}>
+                            <dt>{label}</dt>
+                            <dd className={`${fractionTheme}-text`}>{detailValue}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    ))}
+                  </div>
+                )}
                 {dice && (
                   <div className="col-12 extended-info-highlight">
                     <span>
@@ -389,7 +397,7 @@ function ExtendedInfo({
                   </div>
                 )}
 
-                <section
+                {!compactWeapon && <section
                   className="col-12 extended-info-materials-section"
                   hidden={!showMaterials}
                 >
@@ -419,7 +427,7 @@ function ExtendedInfo({
                       );
                     })}
                   </div>
-                </section>
+                </section>}
               </motion.div>
             )}
             {contentToShow === "share" && (

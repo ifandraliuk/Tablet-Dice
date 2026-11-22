@@ -926,6 +926,11 @@ body h6 {
   border: 1px solid var(--extended-info-accent-border);
 }
 
+.extended-info-backdrop > .extended-info-modal--weapon {
+  width: min(560px, calc(100vw - 2rem));
+  max-width: min(560px, calc(100vw - 2rem));
+}
+
 .extended-info-modal__close {
   position: sticky;
   top: 0;
@@ -1153,6 +1158,11 @@ body h6 {
 .extended-info-item-heading .extended-info-mode-label {
   margin-bottom: 0.35rem;
 }
+
+.extended-info-modal--weapon .extended-info-item-heading .extended-info-mode-label {
+  margin: 0.35rem 0 0;
+}
+
 .extended-info-item-header h2 {
   margin: 0;
   overflow-wrap: anywhere;
