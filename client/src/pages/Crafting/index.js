@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { getTalent, getPlayerTalent } from "../../features/talent/talentSlice";
@@ -18,20 +18,23 @@ const errorText = (error) =>
 function Crafting() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useSelector((state) => state.auth);
   const { fractionTheme } = useSelector((state) => state.player);
+  const saved = user?._id && location.state?.craftingReturn?.userId === user._id ? location.state.craftingReturn : null;
+  const savedProfession = professions.find((item) => item.name === saved?.profession);
   const [data, setData] = useState(null);
   const [loadError, setLoadError] = useState("");
   const [reload, setReload] = useState(0);
-  const [tab, setTab] = useState("mine");
-  const [selected, setSelected] = useState(null);
+  const [tab, setTab] = useState(savedProfession && saved?.tab === "all" ? "all" : "mine");
+  const [selected, setSelected] = useState(savedProfession || null);
   const [recipes, setRecipes] = useState(null);
   const [recipeError, setRecipeError] = useState("");
-  const [search, setSearch] = useState("");
-  const [station, setStation] = useState("1");
-  const [filter, setFilter] = useState("ready");
-  const [favoritesOnly, setFavoritesOnly] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(12);
+  const [search, setSearch] = useState(savedProfession && typeof saved.search === "string" ? saved.search : "");
+  const [station, setStation] = useState(savedProfession && ["", "1", "2", "3"].includes(saved.station) ? saved.station : "1");
+  const [filter, setFilter] = useState(savedProfession && saved.filter === "all" ? "all" : "ready");
+  const [favoritesOnly, setFavoritesOnly] = useState(savedProfession && saved.favoritesOnly === true);
+  const [visibleCount, setVisibleCount] = useState(savedProfession && Number.isSafeInteger(saved.visibleCount) && saved.visibleCount >= 12 ? saved.visibleCount : 12);
   const [favorites, setFavorites] = useState([]);
   const [favoriteError, setFavoriteError] = useState("");
   const favoriteKey = user?._id ? `craftingFavorites:${user._id}` : null;
@@ -191,7 +194,7 @@ function Crafting() {
               <div className="crafting-learn-hint">
                 <strong>Entdecke {selected.name}</strong>
                 <p>Auch ungelernt kannst du Rezepte ansehen und im Spiel eine Talentprobe ablegen. Dabei gilt −1 auf jeden Attributwert. Gelernte Talentpunkte helfen dir, Überschreitungen bei der Probe auszugleichen.</p>
-                <Link to={`/talents?talent=${encodeURIComponent(selected.name)}`}>Talent {selected.name} ansehen →</Link>
+                <Link to={`/talents?talent=${encodeURIComponent(selected.name)}`} state={{ craftingReturn: { userId: user?._id, profession: selected.name, tab, search, station, filter, favoritesOnly, visibleCount } }}>Talent {selected.name} ansehen →</Link>
               </div>
             )}
             <div className="crafting-probe"><strong>Talentprobe:</strong> <TalentProbeRules fractionTheme={fractionTheme} />

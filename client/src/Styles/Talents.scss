@@ -22,6 +22,26 @@
         align-items: center;
         gap: 0.35rem;
     }
+    .talents-crafting-return {
+        position: sticky;
+        top: 0.5rem;
+        z-index: 3;
+        width: fit-content;
+        max-width: 100%;
+        margin-bottom: 0.75rem;
+        padding: 0.55rem 0.75rem;
+        border: 1px solid var(--fraction-accent, #f3d28a);
+        border-radius: 0.4rem;
+        background: rgba(24, 24, 24, 0.98);
+        color: #f5f0e3;
+    }
+    .talents-crafting-return a {
+        color: var(--fraction-accent, #f3d28a);
+    }
+    .talents-crafting-return a:focus-visible {
+        outline: 2px solid var(--fraction-accent, #f3d28a);
+        outline-offset: 3px;
+    }
     .talent-progression-target td {
         background: rgba(255, 255, 255, 0.08);
         border-top: 1px solid var(--fraction-accent, #f3d28a);

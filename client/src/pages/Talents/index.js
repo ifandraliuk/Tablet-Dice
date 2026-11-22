@@ -23,7 +23,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Image, Spinner } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   getTalent,
   addToPlayer,
@@ -65,6 +65,8 @@ function Talents() {
   const [viewMode, setViewMode] = useState("active"); // "active" oder "all"
   const location = useLocation();
   const targetTalent = new URLSearchParams(location.search).get("talent");
+  const craftingReturn = location.state?.craftingReturn;
+  const canReturnToCrafting = Boolean(user?._id && craftingReturn?.userId === user._id && craftingReturn.profession === targetTalent);
   const scrolledTarget = useRef(null);
 
   const [newTalents, setNewTalent] = useState([]);
@@ -210,6 +212,15 @@ function Talents() {
               </div>
 
               <div className="col-lg-7 col-md-12">
+                {canReturnToCrafting && (
+                  <div className="talents-crafting-return">
+                    {edit && newTalents.length > 0 ? (
+                      <span>Speichere deine Talentänderungen, bevor du zur Herstellung zurückkehrst.</span>
+                    ) : (
+                      <Link to="/crafting" state={{ craftingReturn }}>← Zurück zu {craftingReturn.profession} und den Rezepten</Link>
+                    )}
+                  </div>
+                )}
                 {attributes ? (
                   <AttributeList key={attributes._id} />
                 ) : (
