@@ -4,7 +4,11 @@
   --create-subtle: var(--diary-origin-subtle, rgba(245, 240, 227, 0.06));
   min-height: 100vh;
   padding: clamp(1rem, 3vw, 2rem);
-  background: #181818;
+  background-color: #181818;
+  background-image: linear-gradient(rgba(24, 24, 24, 0.88), rgba(24, 24, 24, 0.88)), url(~/public/pattern/general.svg);
+  background-size: auto, 15%;
+  background-repeat: repeat;
+  background-attachment: fixed;
   color: #f5f0e3;
 }
 .create-shell { width: min(100%, 80rem); margin: 0 auto; }
