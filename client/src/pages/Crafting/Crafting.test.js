@@ -1,6 +1,7 @@
 import React from "react";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 import Crafting from "./index";
 
@@ -13,7 +14,7 @@ jest.mock("../../components/useTalentProbeData", () => () => ({
 }));
 jest.mock("react-router-dom", () => {
   const navigate = jest.fn();
-  return { useNavigate: () => navigate, Link: ({ to, children, ...props }) => <a href={to} {...props}>{children}</a> };
+  return { useNavigate: () => navigate, useLocation: jest.fn(), Link: ({ to, state, children, ...props }) => <a href={to} {...props}>{children}</a> };
 });
 jest.mock("../../features/talent/talentSlice", () => ({
   getTalent: () => ({ type: "talents" }),
@@ -40,6 +41,7 @@ jest.mock("react-redux", () => {
 
 beforeEach(() => {
   localStorage.clear();
+  useLocation.mockReturnValue({ state: null });
   const state = {
     auth: { user: { _id: "hero", name: "Held" } },
     player: { fractionTheme: "Welles" },
@@ -206,4 +208,28 @@ test("keeps recipes discoverable for unlearned professions", async () => {
   const recipe = (await within(detail).findByText("Mahlzeit")).closest("article");
   expect(within(recipe).getByText("Material vorhanden")).toBeInTheDocument();
   expect(within(detail).getByRole("button", { name: "Herstellen · demnächst" })).toBeDisabled();
+});
+
+test("restores profession and recipe filters when returning from talents", async () => {
+  localStorage.setItem("craftingFavorites:hero", JSON.stringify(["dagger"]));
+  useLocation.mockReturnValue({ state: { craftingReturn: {
+    userId: "hero", profession: "Schmieden", tab: "all", search: "Dolch",
+    station: "3", filter: "all", favoritesOnly: true, visibleCount: 24,
+  } } });
+  render(<Crafting />);
+  const detail = await screen.findByRole("region", { name: "Schmieden · Herstellung" });
+  expect(within(detail).getByLabelText("Rezept suchen")).toHaveValue("Dolch");
+  expect(within(detail).getByLabelText("Herstellungsort")).toHaveValue("3");
+  expect(within(detail).getByLabelText("Anzeige")).toHaveValue("all");
+  expect(within(detail).getByRole("switch", { name: "Nur Favoriten" })).toBeChecked();
+  expect(await within(detail).findByText("Dolch")).toBeInTheDocument();
+  fireEvent.click(within(detail).getByRole("button", { name: "← Zur Berufsauswahl" }));
+  expect(screen.getByRole("button", { name: "Alle Berufe" })).toHaveAttribute("aria-pressed", "true");
+});
+
+test("does not restore crafting state belonging to another character", async () => {
+  useLocation.mockReturnValue({ state: { craftingReturn: { userId: "other", profession: "Kochen" } } });
+  render(<Crafting />);
+  expect(await screen.findByRole("button", { name: /Schmieden/ })).toBeInTheDocument();
+  expect(screen.queryByRole("region", { name: /Kochen · Herstellung/ })).not.toBeInTheDocument();
 });
