@@ -10,6 +10,7 @@ import {
 import AbilityCard from "../../components/AbilityCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBolt, faGhost, faStar } from "@fortawesome/free-solid-svg-icons";
+import { getProfessionImageSrc, handleProfessionImageError } from "../../data/professionImages";
 import "../../Styles/Attributes.css";
 
 const categoryStyles = {
@@ -64,16 +65,8 @@ function Profession() {
         <section className="create-profession__details" aria-labelledby="create-profession-name">
           <img
             alt=""
-            src={`/classes_img/${generalInfo.sex === "männlich" ? "m" : "w"}/${activeProfession._id}.svg`}
-            onError={(event) => {
-              const fallback = `/classes_img/${activeProfession._id}.svg`;
-              if (event.currentTarget.getAttribute("src") !== fallback) {
-                console.warn("Professionsbild nicht gefunden:", event.currentTarget.getAttribute("src"));
-                event.currentTarget.src = fallback;
-              } else {
-                console.warn("Professionsbild nicht gefunden:", fallback);
-              }
-            }}
+            src={getProfessionImageSrc(activeProfession._id, generalInfo.sex)}
+            onError={(event) => handleProfessionImageError(event, activeProfession._id)}
           />
           <div>
             <h4 id="create-profession-name">{activeProfession.name}</h4>

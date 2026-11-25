@@ -17,10 +17,11 @@ import {
   getCategoryBoni,
   getUserWeapons,
 } from "../../features/inventory/inventorySlice";
-import { getProfession } from "../../features/player/playerSlice";
+import { getGeneral, getProfession } from "../../features/player/playerSlice";
 import ItemIcon from "../../components/ItemIcon";
 import { itemNames } from "../../data/ConstVariables";
 import { getOriginAccentStyle } from "../../data/OriginColors";
+import { getProfessionImageSrc, handleProfessionImageError } from "../../data/professionImages";
 import "../../Styles/ThemedModal.css";
 
 const getEquipmentTileClass = (equippedItem) => {
@@ -41,11 +42,12 @@ const Equipment = memo(({ setShowInfo, onSelectEmptySlot, selectedSlot, err }) =
   );
   const { armor, armorCategory, armorBoni, mainWeapon, secondWeapon } =
     useSelector((state) => state.inventory);
-  const { profession, fractionTheme } = useSelector((state) => state.player);
+  const { profession, general, fractionTheme } = useSelector((state) => state.player);
   // console.log(equipped, mainWeapon, secondWeapon);
   useEffect(() => {
     dispatch(getUserWeapons());
     dispatch(getProfession());
+    dispatch(getGeneral());
   }, []);
 
   const getArmorBonusValue = (armorType) => {
@@ -276,11 +278,14 @@ const Equipment = memo(({ setShowInfo, onSelectEmptySlot, selectedSlot, err }) =
         <div className="inventory-equipment__character">
           {profession?._id && (
             <img
+              key={`${profession._id}-${general?.sex}`}
               className="userclass-img"
-              src={`/classes_img/${profession._id}.svg`}
+              src={getProfessionImageSrc(profession._id, general?.sex)}
               alt={`${profession.name} Klasse`}
               onError={(event) => {
-                event.currentTarget.hidden = true;
+                if (handleProfessionImageError(event, profession._id)) {
+                  event.currentTarget.hidden = true;
+                }
               }}
             />
           )}

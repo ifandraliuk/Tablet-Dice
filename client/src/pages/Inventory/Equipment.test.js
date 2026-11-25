@@ -1,6 +1,7 @@
 import React from "react";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { useSelector } from "react-redux";
+import { getGeneral } from "../../features/player/playerSlice";
 import Equipment from "./Equipment";
 
 jest.mock("react-redux", () => ({
@@ -13,6 +14,7 @@ jest.mock("../../features/inventory/inventorySlice", () => ({
   getUserWeapons: jest.fn(),
 }));
 jest.mock("../../features/player/playerSlice", () => ({
+  getGeneral: jest.fn(),
   getProfession: jest.fn(),
 }));
 
@@ -90,4 +92,50 @@ test("shows zero resistance when bonuses are unavailable", () => {
   renderEquipment(undefined);
   expect(screen.getByRole("group", { name: "Magie: 0" })).toBeInTheDocument();
   expect(screen.getByRole("group", { name: "Wasser: 0" })).toBeInTheDocument();
+});
+
+test("loads general information and updates the profession image with the character's sex", () => {
+  getGeneral.mockClear();
+  const player = { profession: { _id: "test", name: "Krieger" }, general: {}, fractionTheme: "Welles" };
+  useSelector.mockImplementation((selector) => selector({
+    inventory: { inventory: [], armorBoni: [] },
+    player,
+  }));
+  const { rerender } = render(<Equipment onSelectEmptySlot={jest.fn()} />);
+  expect(getGeneral).toHaveBeenCalled();
+  expect(screen.getByAltText("Krieger Klasse")).toHaveAttribute("src", "/classes_img/test.svg");
+
+  player.general = { sex: "weiblich" };
+  rerender(<Equipment onSelectEmptySlot={jest.fn()} />);
+  expect(screen.getByAltText("Krieger Klasse")).toHaveAttribute("src", "/classes_img/w/test.svg");
+  player.general = { sex: "männlich" };
+  rerender(<Equipment onSelectEmptySlot={jest.fn()} />);
+  expect(screen.getByAltText("Krieger Klasse")).toHaveAttribute("src", "/classes_img/m/test.svg");
+});
+
+test("falls back to the existing image and recovers after the character's sex changes", () => {
+  const player = {
+    profession: { _id: "test", name: "Krieger" },
+    general: { sex: "männlich" },
+    fractionTheme: "Welles",
+  };
+  useSelector.mockImplementation((selector) => selector({
+    inventory: { inventory: [], armorBoni: [] },
+    player,
+  }));
+  const warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+  const { rerender } = render(<Equipment onSelectEmptySlot={jest.fn()} />);
+  const image = screen.getByAltText("Krieger Klasse");
+  fireEvent.error(image);
+  expect(image).toHaveAttribute("src", "/classes_img/test.svg");
+  expect(image).not.toHaveAttribute("hidden");
+  fireEvent.error(image);
+  expect(image).toHaveAttribute("hidden");
+  expect(warn).toHaveBeenCalledTimes(2);
+
+  player.general = { sex: "weiblich" };
+  rerender(<Equipment onSelectEmptySlot={jest.fn()} />);
+  expect(screen.getByAltText("Krieger Klasse")).toHaveAttribute("src", "/classes_img/w/test.svg");
+  expect(screen.getByAltText("Krieger Klasse")).not.toHaveAttribute("hidden");
+  warn.mockRestore();
 });
