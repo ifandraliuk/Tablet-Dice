@@ -20,7 +20,7 @@ const categoryStyles = {
 
 function Profession() {
   const dispatch = useDispatch();
-  const { activeProfession, availableAbilities, activeAbility, specs, professionList, isLoading, isError, message } =
+  const { activeProfession, availableAbilities, activeAbility, specs, professionList, generalInfo, isLoading, isError, message } =
     useSelector((state) => state.creation);
   useEffect(() => {
     if (professionList.length === 0) dispatch(getProfessions());
@@ -62,7 +62,19 @@ function Profession() {
 
       {hasProfession && (
         <section className="create-profession__details" aria-labelledby="create-profession-name">
-          <img alt="" src={`/classes_img/${activeProfession._id}.svg`} />
+          <img
+            alt=""
+            src={`/classes_img/${generalInfo.sex === "männlich" ? "m" : "w"}/${activeProfession._id}.svg`}
+            onError={(event) => {
+              const fallback = `/classes_img/${activeProfession._id}.svg`;
+              if (event.currentTarget.getAttribute("src") !== fallback) {
+                console.warn("Professionsbild nicht gefunden:", event.currentTarget.getAttribute("src"));
+                event.currentTarget.src = fallback;
+              } else {
+                console.warn("Professionsbild nicht gefunden:", fallback);
+              }
+            }}
+          />
           <div>
             <h4 id="create-profession-name">{activeProfession.name}</h4>
             <p>{activeProfession.description}</p>
